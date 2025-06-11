@@ -48,7 +48,7 @@ jobs:
       # 5) Executa de fato a análise estática
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-        with:
+        # with:
           # Você pode selecionar pacotes de consulta extras ou configurar um `config-file`
           # queries: ./path/to/custom-queries/
           # config-file: .github/codeql/codeql-config.yml
