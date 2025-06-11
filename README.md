@@ -4,17 +4,17 @@ Este projeto utiliza Docker e Docker Compose para gerenciar os contêineres do b
 
 ## 🏗 Comandos para iniciar os serviços
 ### 📦 Rodar o banco de dados
-Inicie apenas o PostgreSQL e pgAdmin:
+Inicie apenas o PostgreSQL e pgAdmin:<br>
 ``docker-compose -f docker-compose.db.yml up -d``
 
 
 ### 🖥 Rodar o servidor + banco
-Inicie o NestJS junto com o banco de dados:
+Inicie o NestJS junto com o banco de dados:<br>
 ``docker-compose -f docker-compose.app.yml -f docker-compose.db.yml up -d``
 
 
 ### 📜 Ver logs do NestJS
-Para visualizar os logs da aplicação:
+Para visualizar os logs da aplicação:<br>
 ``docker logs -f nest_api``
 
 
@@ -24,7 +24,7 @@ Para visualizar os logs da aplicação:
 - 🔗 Postman: [https://app.getpostman.com/join-team?invite_code=58f4c15f967d63612f4e9e18bb98f0bad8747a2e80c920a529e1089b2d0214be](https://app.getpostman.com/join-team?invite_code=58f4c15f967d63612f4e9e18bb98f0bad8747a2e80c920a529e1089b2d0214be)
 
 ### 🔧 Ferramentas de Desenvolvimento
-🛠 Rodar Prettier para formatar código
+🛠 Rodar Prettier para formatar código:<br>
 ``pnpm prettier --write "src/**/*.ts"``
 
 
