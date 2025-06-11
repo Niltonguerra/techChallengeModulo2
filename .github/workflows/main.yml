@@ -23,7 +23,9 @@ jobs:
           cache: 'pnpm' # Otimiza cache de dependências
 
       - name: Instalar pnpm
-        run: npm install -g pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       - name: Instalar dependências
         working-directory: back-end-educa-facil
