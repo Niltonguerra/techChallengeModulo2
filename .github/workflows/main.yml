@@ -16,6 +16,13 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v3
 
+      - name: Entrar na pasta correta
+        run: cd back-end-educa-facil
+
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+
+
       - name: Configurar Node.js
         uses: actions/setup-node@v3
         with:
