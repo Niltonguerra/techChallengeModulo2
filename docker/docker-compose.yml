@@ -1,0 +1,19 @@
+services:
+  db:
+    extends:
+      file: docker-compose.db.yml
+      service: db
+  
+  pgadmin:
+    extends:
+      file: docker-compose.db.yml
+      service: pgadmin
+  
+  api:
+    extends:
+      file: docker-compose.app.yml
+      service: api
+  
+volumes:
+    pgdata:
+
