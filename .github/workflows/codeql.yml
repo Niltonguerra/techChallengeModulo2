@@ -1,0 +1,54 @@
+name: CodeQL Analysis
+
+# Dispara em pushes/PRs para main e também num schedule diário (opcional)
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'back-end-educa-facil/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'back-end-educa-facil/**'
+  schedule:
+    - cron: '0 3 * * *'  # todo dia às 03:00 UTC
+
+permissions:
+  actions: read               # só leitura em actions
+  security-events: write      # necessário para registrar alertas de segurança
+
+jobs:
+  codeql:
+    name: Análise CodeQL
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Faz checkout do repositório
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      # 2) Inicializa o CodeQL, apontando pro JavaScript/TypeScript
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      # 3) Tenta detectar e buildar o projeto automaticamente
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
+      # 4) Se você precisar de um build customizado, substitua o passo acima por:
+      #   - name: Build customizado
+      #     run: |
+      #       cd back-end-educa-facil
+      #       corepack enable && corepack prepare pnpm@latest --activate
+      #       pnpm install --frozen-lockfile
+      #       pnpm build
+
+      # 5) Executa de fato a análise estática
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          # Você pode selecionar pacotes de consulta extras ou configurar um `config-file`
+          # queries: ./path/to/custom-queries/
+          # config-file: .github/codeql/codeql-config.yml
