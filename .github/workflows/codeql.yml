@@ -51,4 +51,4 @@ jobs:
         # with:
           # Você pode selecionar pacotes de consulta extras ou configurar um `config-file`
           # queries: ./path/to/custom-queries/
-          # config-file: .github/codeql/codeql-config.yml
+          # config-file: .github/codeql/codeql-config.yml 
