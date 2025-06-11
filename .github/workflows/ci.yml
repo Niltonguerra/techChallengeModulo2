@@ -1,0 +1,106 @@
+name: CI Pipeline
+
+# 1) Gatilhos refinados (rodar só quando arquivos do back-end ou do próprio workflow mudarem)
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/**'
+      - 'back-end-educa-facil/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/**'
+      - 'back-end-educa-facil/**'
+
+# 2) Somente 1 run por branch ao mesmo tempo; cancel-in-progress aborta runs antigas
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # —— JOB 1: LINTING
+  lint:
+    name: Lint & Type-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with: node-version: 18
+      - name: Habilitar Corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+      - name: Instalar deps (lint)
+        working-directory: back-end-educa-facil
+        run: pnpm install --frozen-lockfile
+      - name: ESLint
+        working-directory: back-end-educa-facil
+        run: pnpm lint
+      - name: Type-check
+        working-directory: back-end-educa-facil
+        run: pnpm tsc --noEmit
+
+  # —— JOB 2: TESTS (unit + integration) em paralelo em múltiplas versões de Node
+  test:
+    name: Testes (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [16, 18, 20]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with: node-version: ${{ matrix.node }}
+      - name: Habilitar Corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('back-end-educa-facil/pnpm-lock.yaml') }}
+      - name: Instalar deps
+        working-directory: back-end-educa-facil
+        run: pnpm install --frozen-lockfile
+      - name: Unit tests
+        working-directory: back-end-educa-facil
+        run: pnpm test --ci
+      # Se tiver testes de integração:
+      #- name: Integration tests
+      #    working-directory: back-end-educa-facil
+      #    run: pnpm test:integration
+
+  # —— JOB 3: BUILD (depende de lint e test)
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [ lint, test ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with: node-version: 18
+      - name: Habilitar Corepack + pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('back-end-educa-facil/pnpm-lock.yaml') }}
+      - name: Instalar deps
+        working-directory: back-end-educa-facil
+        run: pnpm install --frozen-lockfile
+      - name: Fazer build
+        working-directory: back-end-educa-facil
+        run: pnpm build
+      - name: Upload do build como artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-build
+          path: back-end-educa-facil/dist
