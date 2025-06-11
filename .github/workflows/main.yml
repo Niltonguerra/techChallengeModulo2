@@ -16,12 +16,14 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Configurar Node.js com pnpm
+      - name: Configurar Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'pnpm'
-          package-manager: 'pnpm'  # Configura o pnpm automaticamente
+          cache: 'pnpm' # Mantém o cache das dependências
+
+      - name: Instalar pnpm
+        run: npm install -g pnpm
 
       - name: Verificar instalação do pnpm
         run: pnpm --version
