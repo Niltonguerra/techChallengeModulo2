@@ -117,7 +117,7 @@ jobs:
         run: pnpm build
 
       - name: Upload do build como artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend-build
           path: back-end-educa-facil/dist
