@@ -1,0 +1,45 @@
+name: Testes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'back-end-educa-facil/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'back-end-educa-facil/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('back-end-educa-facil/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install deps
+        working-directory: back-end-educa-facil
+        run: pnpm install --frozen-lockfile
+
+      - name: Unit tests
+        working-directory: back-end-educa-facil
+        run: pnpm test --ci

@@ -1,0 +1,46 @@
+name: Build
+
+# roda automaticamente assim que lint + testes de ‘Testes’ concluírem OK
+on:
+  workflow_run:
+    workflows: ["Lint & Type-check", "Testes"]
+    types:
+      - completed
+
+jobs:
+  build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Enable Corepack & pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('back-end-educa-facil/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-store-
+
+      - name: Install deps
+        working-directory: back-end-educa-facil
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: back-end-educa-facil
+        run: pnpm build
+
+      - name: Publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: back-end-educa-facil/dist
