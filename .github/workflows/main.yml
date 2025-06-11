@@ -2,11 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
@@ -20,17 +18,23 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'pnpm'
-          check-latest: true
 
-      - name: Instalar pnpm via Corepack
+      - name: Habilitar Corepack e preparar pnpm
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
-          echo "pnpm instalado em: $(which pnpm)"
-          
-      - name: Verificar instalação do pnpm
+          echo "pnpm em: $(which pnpm)"
+
+      - name: Verificar pnpm
         run: pnpm --version
+
+      - name: Cache do pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/pnpm
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('back-end-educa-facil/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Instalar dependências
         working-directory: back-end-educa-facil
