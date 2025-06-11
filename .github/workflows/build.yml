@@ -1,6 +1,5 @@
 name: Build
 
-# roda automaticamente assim que lint + testes de ‘Testes’ concluírem OK
 on:
   workflow_run:
     workflows: ["Lint & Type-check", "Testes"]

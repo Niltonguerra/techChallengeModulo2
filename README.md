@@ -39,4 +39,10 @@ Para visualizar os logs da aplicação:<br>
 - E-mail: admin@admin.com
 - Senha: admin
 
+### Comandos úteis:
+comando para criar um modulo em nest com todas as dependências:
 
+``nome="nome do modulo" && nest generate module $nome && nest generate service $nome && nest generate controller $nome && nest generate pipe $nome && nest generate decorator $nome && nest generate guard $nome && nest generate middleware $nome && nest generate filter $nome ``
+
+- substitua o nome do modulo pelo nome do modulo que você quer criar, por exemplo:
+`nome="post" && nest generate module $nome && nest generate service $nome && nest generate controller $nome && nest generate pipe $nome && nest generate decorator $nome && nest generate guard $nome && nest generate middleware $nome && nest generate filter $nome`

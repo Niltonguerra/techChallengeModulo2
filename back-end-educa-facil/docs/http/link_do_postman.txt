@@ -1,0 +1,2 @@
+link_do_postman:
+https://app.getpostman.com/join-team?invite_code=58f4c15f967d63612f4e9e18bb98f0bad8747a2e80c920a529e1089b2d0214be
