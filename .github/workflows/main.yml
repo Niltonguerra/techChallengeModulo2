@@ -16,16 +16,19 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Configurar Node.js e pnpm
+      - name: Configurar Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'pnpm'  # Agora o cache usa pnpm, não npm
+          cache: 'pnpm'
           check-latest: true
 
-      - name: Instalar pnpm corretamente
-        run: npm install -g pnpm
-
+      - name: Instalar pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+          echo "pnpm instalado em: $(which pnpm)"
+          
       - name: Verificar instalação do pnpm
         run: pnpm --version
 
