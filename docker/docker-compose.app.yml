@@ -9,7 +9,7 @@ services:
     restart: always
     depends_on:
       - db
-    environment:
-      DATABASE_URL: postgres://nest_user:nest_password@db:5432/nest_db
+    # environment:
+    #   DATABASE_URL: postgres://nest_user:nest_password@db:5432/nest_db
     ports:
       - "3000:3000"

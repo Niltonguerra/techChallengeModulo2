@@ -4,9 +4,9 @@ services:
     container_name: postgres_db
     restart: always
     environment:
+      POSTGRES_DB: nest_db
       POSTGRES_USER: nest_user
       POSTGRES_PASSWORD: nest_password
-      POSTGRES_DB: nest_db
     ports:
       - "5432:5432"
     volumes:
