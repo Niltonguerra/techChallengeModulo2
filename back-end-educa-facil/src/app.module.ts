@@ -17,9 +17,9 @@ import { Livro } from './livro/livro.entity';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         host:
-          config.get<string>('AMBIENTE') === 'DEV'
-            ? config.get<string>('DB_HOST_DEV')
-            : config.get<string>('DB_HOST_PROD'),
+          config.get<string>('AMBIENTE') === 'PROD'
+            ? config.get<string>('DB_HOST_PROD')
+            : config.get<string>('DB_HOST_DEV'),
         port: parseInt(config.get<string>('DB_PORT') ?? '5432', 10),
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
