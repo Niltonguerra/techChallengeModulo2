@@ -9,7 +9,8 @@ services:
     restart: always
     depends_on:
       - db
-    # environment:
-    #   DATABASE_URL: postgres://nest_user:nest_password@db:5432/nest_db
+      - rabbitmq
     ports:
       - "3000:3000"
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672

@@ -8,12 +8,7 @@ services:
     extends:
       file: docker-compose.db.yml
       service: pgadmin
-  
-  api:
-    extends:
-      file: docker-compose.app.yml
-      service: api
-  
+
   rabbitmq:
     extends:
       file: docker-compose.rabbitmq.yml

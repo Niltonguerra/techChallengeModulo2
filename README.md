@@ -3,6 +3,9 @@
 Este projeto utiliza Docker e Docker Compose para gerenciar os contêineres do banco de dados, servidor e pgAdmin.
 
 ## 🏗 comandos uteis:
+🏗 comando para rodar os serviços localmente:<br>
+``docker compose -f docker/docker-compose.local.yml up -d``
+
 🏗 comando para rodar o banco e o pgadmin:<br>
 ``docker compose -f docker/docker-compose.db.yml up -d``
 
