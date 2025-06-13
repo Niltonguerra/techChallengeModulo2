@@ -26,7 +26,7 @@ Este projeto utiliza Docker e Docker Compose para gerenciar os contêineres do b
 ## informações sobre o projeto:
 
 - versão do node: 18.20.8
-
+- é importante sempre que for rodar local mudar a variavel de ambiente chamada `AMBIENTE` para `DEV` quando for rodar local e mudar para `PROD` quando for subir para o servidor
 ### 🔑 Credenciais de acesso
 
 #### 🏦 Banco de Dados (PostgreSQL)
