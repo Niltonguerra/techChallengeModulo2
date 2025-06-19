@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostService } from './post.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Post } from '../entities/post.entity';
+import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDTO } from '../DTOs/createPost.DTO';
+import { CreatePostDTO } from './DTOs/createPost.DTO';
 
 describe('PostService', () => {
   let service: PostService;

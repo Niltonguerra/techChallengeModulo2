@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from './post.controller';
-import { createPostUseCase } from '../usecases/createPost.usecase';
-import { CreatePostDTO } from '../DTOs/createPost.DTO';
-import { CreateReturnMessageDTO } from '../DTOs/returnMessage.DTO';
+import { createPostUseCase } from './usecases/createPost.usecase';
+import { CreatePostDTO } from './DTOs/createPost.DTO';
+import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
 
 describe('PostController', () => {
   let controller: PostController;

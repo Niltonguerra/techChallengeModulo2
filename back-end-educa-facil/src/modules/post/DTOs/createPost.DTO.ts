@@ -1,11 +1,13 @@
-import { IsString, IsOptional, Length } from 'class-validator';
+import { IsString, IsOptional, Length, IsNotEmpty } from 'class-validator';
 
 export class CreatePostDTO {
-  @IsString()
+  @IsString({ message: 'O campo título deve ser uma string.' })
+  @IsNotEmpty({ message: 'O campo título não pode ser vazio.' })
   @Length(1, 255)
   title: string;
 
-  @IsString()
+  @IsString({ message: 'O campo descrição deve ser uma string.' })
+  @IsNotEmpty({ message: 'O campo descrição não pode ser vazio.' })
   description: string;
 
   @IsOptional()

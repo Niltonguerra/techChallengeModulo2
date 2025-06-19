@@ -1,5 +1,5 @@
 import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PostService } from '../services/post.service';
+import { PostService } from '../post.service';
 import { CreatePostDTO } from '../DTOs/createPost.DTO';
 import { CreateReturnMessageDTO } from '../DTOs/returnMessage.DTO';
 

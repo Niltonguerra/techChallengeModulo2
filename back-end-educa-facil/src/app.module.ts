@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostModule } from './modules/post/post.module';
 import { Post } from './modules/post/entities/post.entity';
@@ -9,7 +7,7 @@ import { Post } from './modules/post/entities/post.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Torna as variáveis disponíveis globalmente
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
