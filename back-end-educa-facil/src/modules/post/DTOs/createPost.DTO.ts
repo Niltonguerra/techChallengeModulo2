@@ -1,22 +1,22 @@
 import { IsString, IsOptional, Length, IsNotEmpty } from 'class-validator';
-
+import { validationText } from '@config/i18n/pt/validation';
 export class CreatePostDTO {
-  @IsString({ message: 'O campo título deve ser uma string.' })
-  @IsNotEmpty({ message: 'O campo título não pode ser vazio.' })
-  @Length(1, 255)
+  @IsString({ message: validationText.validation.isString })
+  @IsNotEmpty({ message: validationText.validation.isNotEmpty })
+  @Length(1, 255, { message: validationText.validation.Length })
   title: string;
 
-  @IsString({ message: 'O campo descrição deve ser uma string.' })
-  @IsNotEmpty({ message: 'O campo descrição não pode ser vazio.' })
+  @IsString({ message: validationText.validation.IsString })
+  @IsNotEmpty({ message: validationText.validation.isNotEmpty })
   description: string;
 
   @IsOptional()
-  @IsString()
-  @Length(1, 100)
+  @IsString({ message: validationText.validation.IsString })
+  @Length(1, 100, { message: validationText.validation.Length })
   author_id?: string;
 
   @IsOptional()
-  @IsString()
-  @Length(1, 100)
+  @IsString({ message: validationText.validation.IsString })
+  @Length(1, 100, { message: validationText.validation.Length })
   image?: string;
 }
