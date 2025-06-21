@@ -13,7 +13,7 @@ Este projeto utiliza Docker e Docker Compose para gerenciar os contêineres do b
 ``docker compose -f docker/docker-compose.yml up -d``
 
 🏗 comando para rodar o servidor local:<br>
-``pnpm run start``
+``pnpm run start:dev``
 
 📜 Ver logs do NestJS:<br>
 ``docker logs -f nest_api``
@@ -61,3 +61,13 @@ comando para criar um modulo em nest com todas as dependências:
 
 - comando para criar um modulo com um CRUD basico:
 ``nest g resource "nome do modulo a ser criado"``
+
+
+envs(sei que é errado deixar aqui, mas é para simplificar nossa vida):
+AMBIENTE=dev
+DB_HOST_DEV=localhost
+DB_HOST_PROD=db
+DB_PORT=5432
+DB_USERNAME=nest_user
+DB_PASSWORD=nest_password
+DB_DATABASE=nest_db

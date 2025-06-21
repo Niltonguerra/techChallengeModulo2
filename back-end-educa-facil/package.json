@@ -31,6 +31,7 @@
     "class-transformer": "0.5.1",
     "class-validator": "0.14.2",
     "dotenv": "16.5.0",
+    "git-rev-sync": "3.0.2",
     "pg": "8.16.0",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.1",
@@ -65,34 +66,34 @@
     "typescript": "5.7.3",
     "typescript-eslint": "8.20.0"
   },
-"jest": {
-  "moduleFileExtensions": [
-    "js",
-    "json",
-    "ts"
-  ],
-  "moduleNameMapper": {
-    "^@config/(.*)$": "<rootDir>/config/$1"
-  },
-  "rootDir": "src",
-  "testRegex": ".*\\.spec\\.ts$",
-  "transform": {
-    ".+\\.(t|j)s$": "ts-jest"
-  },
-  "collectCoverageFrom": [
-  "**/*.service.ts",
-  "**/*.controller.ts",
-  "**/*.usecase.ts"
-  ],
-  "coveragePathIgnorePatterns": [
-    "/node_modules/",
-    "modules/.*/DTOs/.*\\.ts$",
-    "modules/.*/decorators/.*\\.ts$",
-    "app.module.ts$",
-    "main.ts$",
-    ".*module\\.ts$"
-  ],
-  "coverageDirectory": "../coverage",
-  "testEnvironment": "node"
-}
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "moduleNameMapper": {
+      "^@config/(.*)$": "<rootDir>/config/$1"
+    },
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      ".+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.service.ts",
+      "**/*.controller.ts",
+      "**/*.usecase.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "modules/.*/DTOs/.*\\.ts$",
+      "modules/.*/decorators/.*\\.ts$",
+      "app.module.ts$",
+      "main.ts$",
+      ".*module\\.ts$"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  }
 }
