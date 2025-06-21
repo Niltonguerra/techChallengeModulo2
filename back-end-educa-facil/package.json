@@ -71,6 +71,9 @@
     "json",
     "ts"
   ],
+  "moduleNameMapper": {
+    "^@config/(.*)$": "<rootDir>/config/$1"
+  },
   "rootDir": "src",
   "testRegex": ".*\\.spec\\.ts$",
   "transform": {
