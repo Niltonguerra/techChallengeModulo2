@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { LivroModule } from './livro/livro.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Livro } from './livro/livro.entity';
+import { PostModule } from '@modules/post/post.module';
+import { Post } from '@modules/post/entities/post.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Torna as variáveis disponíveis globalmente
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -24,14 +22,12 @@ import { Livro } from './livro/livro.entity';
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_DATABASE'),
-        autoLoadEntities: config.get<string>('AMBIENTE') === 'DEV' ? true : false,
-        synchronize: config.get<string>('AMBIENTE') === 'DEV' ? true : false,
-        entities: [Livro],
+        autoLoadEntities: config.get<string>('AMBIENTE') === 'PROD' ? false : true,
+        synchronize: config.get<string>('AMBIENTE') === 'PROD' ? false : true,
+        entities: [Post],
       }),
     }),
-    LivroModule,
+    PostModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
