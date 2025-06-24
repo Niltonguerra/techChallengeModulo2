@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { SelectPostDTO } from './DTOs/select.DTO';
 
 @Injectable()
 export class PostService {
@@ -26,5 +27,9 @@ export class PostService {
 
   async listar(): Promise<Post[]> {
     return this.postRepository.find();
+  }
+
+  async getById(id: number): Promise<SelectPostDTO[]> {
+    return this.postRepository.find({where: {id : id}});
   }
 }
