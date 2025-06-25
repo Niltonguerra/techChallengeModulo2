@@ -6,7 +6,7 @@ import { SelectPostDTO } from '../DTOs/select.DTO';
 export class SelectPostUseCase {
   constructor(private readonly postService: PostService) {}
 
-  async selectPostUseCaseById(id: number): Promise<SelectPostDTO[]> {
+  async selectPostUseCaseById(id: string): Promise<SelectPostDTO[]> {
     try {
       return await this.postService.getById(id);
     } catch (error) {

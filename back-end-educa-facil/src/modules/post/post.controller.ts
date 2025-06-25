@@ -19,7 +19,7 @@ export class PostController {
   }
 
  @Get('id/:id')
-  async getById(@Param() id:number ): Promise<SelectPostDTO[]> {
+  async getById(@Param() id:string ): Promise<SelectPostDTO[]> {
     return await this.selectPostUseCase.selectPostUseCaseById(id);;
   }
   
