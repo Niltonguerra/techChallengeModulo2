@@ -32,4 +32,8 @@ export class PostService {
   async getById(id: string): Promise<SelectPostDTO[]> {
     return this.postRepository.find({where: {id : id}});
   }
+
+  async getAll(): Promise<SelectPostDTO[]> {
+    return this.postRepository.find();
+  }
 }

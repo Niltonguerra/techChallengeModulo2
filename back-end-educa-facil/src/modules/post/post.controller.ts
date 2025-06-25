@@ -8,7 +8,7 @@ import { SelectPostUseCase } from './usecases/selectPost.usecase';
 export class PostController {
   constructor(
     private readonly createPostUseCase: createPostUseCase,
-    private readonly selectPostUseCase: SelectPostUseCase
+    private readonly getPostUseCase: SelectPostUseCase
   ) {}
 
   @Post('create')
@@ -19,8 +19,13 @@ export class PostController {
   }
 
  @Get('id/:id')
-  async getById(@Param() id:string ): Promise<SelectPostDTO[]> {
-    return await this.selectPostUseCase.selectPostUseCaseById(id);;
+  async getById(@Param('id') id:string ): Promise<SelectPostDTO[]> {
+    return await this.getPostUseCase.getPostUseCaseById(id);;
+  }
+
+  @Get('')
+  async getAll(): Promise<SelectPostDTO[]> {
+    return await this.getPostUseCase.getAllPostUseCase();;
   }
   
 }
