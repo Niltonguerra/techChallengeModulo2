@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { UpdatePostDTO } from './DTOs/updatePost.DTO';
 
 @Injectable()
 export class PostService {
@@ -19,6 +20,23 @@ export class PostService {
     await this.postRepository.save(post);
     const returnService: CreateReturnMessageDTO = {
       message: 'Post criado com sucesso',
+      statusCode: '200',
+    };
+    return returnService;
+  }
+
+  async UpdatePostService(updatePostData: UpdatePostDTO): Promise<CreateReturnMessageDTO> {
+    const post = await this.postRepository.findOneBy({ id: updatePostData.id });
+
+    if (!post) {
+      throw new Error('Post não encontrado');
+    }
+
+    Object.assign(post, updatePostData);
+    await this.postRepository.save(post);
+
+    const returnService: CreateReturnMessageDTO = {
+      message: 'Post atualizado com sucesso',
       statusCode: '200',
     };
     return returnService;
