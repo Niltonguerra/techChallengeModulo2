@@ -23,7 +23,7 @@ export class Post {
   authorId?: string;
 
   /* //<< when user is done
-  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL', eager: true })
   @JoinColumn({ name: 'author_id' })
   author?: User;
   */
