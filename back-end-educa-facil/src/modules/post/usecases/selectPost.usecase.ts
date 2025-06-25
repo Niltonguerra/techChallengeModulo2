@@ -14,7 +14,7 @@ export class SelectPostUseCase {
       const errorMessage =
         error instanceof Error ? error.message : 'Erro desconhecido ao retornar';
       throw new HttpException(
-        `Erro ao criar o post: ${errorMessage}`,
+        `Erro ao criar ao buscar post: ${errorMessage}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

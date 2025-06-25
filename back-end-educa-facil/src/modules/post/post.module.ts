@@ -4,10 +4,11 @@ import { PostService } from './post.service';
 import { PostController } from './post.controller';
 import { createPostUseCase } from './usecases/createPost.usecase';
 import { Post } from './entities/post.entity';
+import { SelectPostUseCase } from './usecases/selectPost.usecase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Post])],
-  providers: [PostService, createPostUseCase],
+  providers: [PostService, createPostUseCase, SelectPostUseCase],
   controllers: [PostController],
 })
 export class PostModule {}
