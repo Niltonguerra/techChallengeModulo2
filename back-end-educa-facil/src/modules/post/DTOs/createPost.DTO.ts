@@ -9,53 +9,53 @@ import {
   ArrayNotEmpty,
   IsUrl,
 } from 'class-validator';
-import { validationText } from '@config/i18n/pt/validation';
+import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 export class CreatePostDTO {
-  @IsString({ message: validationText.validation.isString })
-  @IsNotEmpty({ message: validationText.validation.isNotEmpty })
-  @Length(20, 70, { message: validationText.validation.Length })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
+  @Length(20, 70, { message: systemMessage.validation.Length })
   title: string;
 
-  @IsString({ message: validationText.validation.isString })
-  @IsNotEmpty({ message: validationText.validation.isNotEmpty })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   description: string;
 
-  @IsArray({ message: validationText.validation.isArray })
-  @ArrayNotEmpty({ message: validationText.validation.isNotEmpty })
-  @IsString({ each: true, message: validationText.validation.isString })
+  @IsArray({ message: systemMessage.validation.isArray })
+  @ArrayNotEmpty({ message: systemMessage.validation.isNotEmpty })
+  @IsString({ each: true, message: systemMessage.validation.isString })
   search_field: string[];
 
-  @IsString({ message: validationText.validation.isString })
-  @IsNotEmpty({ message: validationText.validation.isNotEmpty })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   scheduled_publication: string;
 
   @IsOptional()
-  @IsString({ message: validationText.validation.isString })
-  @Length(50, 500, { message: validationText.validation.Length })
+  @IsString({ message: systemMessage.validation.isString })
+  @Length(50, 500, { message: systemMessage.validation.Length })
   introduction?: string;
 
   @IsOptional()
-  @IsObject({ message: validationText.validation.isObject })
+  @IsObject({ message: systemMessage.validation.isObject })
   external_link?: Record<string, string>;
 
-  @IsArray({ message: validationText.validation.isArray })
-  @ArrayNotEmpty({ message: validationText.validation.isNotEmpty })
-  @IsString({ each: true, message: validationText.validation.isString })
+  @IsArray({ message: systemMessage.validation.isArray })
+  @ArrayNotEmpty({ message: systemMessage.validation.isNotEmpty })
+  @IsString({ each: true, message: systemMessage.validation.isString })
   content_hashtags: string[];
 
-  @IsString({ message: validationText.validation.isString })
-  @IsNotEmpty({ message: validationText.validation.isNotEmpty })
-  @Length(1, 10, { message: validationText.validation.Length })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
+  @Length(1, 10, { message: systemMessage.validation.Length })
   style_id: string;
 
   @IsOptional()
-  @IsString({ message: validationText.validation.isString })
-  @IsUrl({}, { message: validationText.validation.isUrl })
-  @Length(1, 2048, { message: validationText.validation.Length })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsUrl({}, { message: systemMessage.validation.isUrl })
+  @Length(1, 2048, { message: systemMessage.validation.Length })
   image?: string;
 
   @IsOptional()
-  @IsUUID('4', { message: validationText.validation.isUUID })
+  @IsUUID('4', { message: systemMessage.validation.isUUID })
   author_id?: string;
 }

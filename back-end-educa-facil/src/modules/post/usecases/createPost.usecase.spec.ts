@@ -2,6 +2,7 @@ import { createPostUseCase } from './createPost.usecase';
 import { CreatePostDTO } from '../DTOs/createPost.DTO';
 import { CreateReturnMessageDTO } from '../DTOs/returnMessage.DTO';
 import { HttpException } from '@nestjs/common';
+import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 describe('createPostUseCase', () => {
   let useCase: createPostUseCase;
@@ -21,11 +22,15 @@ describe('createPostUseCase', () => {
       description: 'Descrição',
       author_id: 'autor123',
       image: 'imagem.jpg',
+      search_field: [],
+      scheduled_publication: '',
+      content_hashtags: [],
+      style_id: '',
     };
 
     const returnMessage: CreateReturnMessageDTO = {
-      message: 'Post criado com sucesso',
-      statusCode: '200',
+      message: systemMessage.ReturnMessage.sucessPost,
+      statusCode: 200,
     };
 
     mockPostService.createPostService.mockResolvedValue(returnMessage);
@@ -42,6 +47,10 @@ describe('createPostUseCase', () => {
       description: 'Descrição',
       author_id: 'autor123',
       image: 'imagem.jpg',
+      search_field: [],
+      scheduled_publication: '',
+      content_hashtags: [],
+      style_id: '',
     };
 
     mockPostService.createPostService.mockRejectedValue(new Error('Erro no service'));
