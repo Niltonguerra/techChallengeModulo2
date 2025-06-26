@@ -55,7 +55,7 @@ describe('PostService', () => {
     expect(mockRepository.save).toHaveBeenCalledWith(postCriado);
     expect(result).toEqual({
       message: systemMessage.ReturnMessage.sucessPost,
-      statusCode: '200',
+      statusCode: 200,
     });
   });
 
