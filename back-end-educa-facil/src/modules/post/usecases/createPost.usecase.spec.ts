@@ -1,30 +1,30 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { createPostUseCase } from './createPost.usecase';
-import { PostService } from '../post.service';
 import { CreatePostDTO } from '../DTOs/createPost.DTO';
 import { CreateReturnMessageDTO } from '../DTOs/returnMessage.DTO';
+import { HttpException } from '@nestjs/common';
 
 describe('createPostUseCase', () => {
   let useCase: createPostUseCase;
-  let postService: PostService;
+
+  const mockPostService = {
+    createPostService: jest.fn(),
+  };
 
   beforeEach(() => {
-    postService = {
-      createPostService: jest.fn(),
-    } as unknown as PostService;
-    useCase = new createPostUseCase(postService);
+    useCase = new createPostUseCase(mockPostService as any);
+    jest.clearAllMocks();
   });
 
-  it('deve retornar mensagem de sucesso ao criar um post', async () => {
+  it('deve criar um post e retornar a mensagem de sucesso', async () => {
     const dto: CreatePostDTO = {
-      title: 'Título válido para teste',
-      description: 'Descrição válida para teste',
-      search_field: ['busca1', 'busca2'],
-      scheduled_publication: '2025-07-01T10:00:00Z',
-      content_hashtags: ['#tag1', '#tag2'],
-      style_id: 'default',
-      author_id: 'b7e6b8e2-8d6a-4b2a-9e6a-123456789abc',
-      image: 'https://meusite.com/imagem.jpg',
+      title: 'Título',
+      description: 'Descrição',
+      author_id: 'autor123',
+      image: 'imagem.jpg',
+      search_field: [],
+      scheduled_publication: '',
+      content_hashtags: [],
+      style_id: '',
     };
 
     const returnMessage: CreateReturnMessageDTO = {
@@ -32,15 +32,27 @@ describe('createPostUseCase', () => {
       statusCode: 200,
     };
 
-    (postService.createPostService as jest.Mock).mockResolvedValue(returnMessage);
+    mockPostService.createPostService.mockResolvedValue(returnMessage);
 
-    await expect(useCase.createPostUseCase(dto)).resolves.toEqual(returnMessage);
-    expect(postService.createPostService).toHaveBeenCalledWith(dto);
+    const result = await useCase.createPostUseCase(dto);
+
+    expect(mockPostService.createPostService).toHaveBeenCalledWith(dto);
+    expect(result).toEqual(returnMessage);
   });
 
   it('deve lançar HttpException em caso de erro', async () => {
-    const dto = {} as CreatePostDTO;
-    (postService.createPostService as jest.Mock).mockRejectedValue(new Error('Erro no service'));
+    const dto: CreatePostDTO = {
+      title: 'Título',
+      description: 'Descrição',
+      author_id: 'autor123',
+      image: 'imagem.jpg',
+      search_field: [],
+      scheduled_publication: '',
+      content_hashtags: [],
+      style_id: '',
+    };
+
+    mockPostService.createPostService.mockRejectedValue(new Error('Erro no service'));
 
     await expect(useCase.createPostUseCase(dto)).rejects.toThrow(HttpException);
     await expect(useCase.createPostUseCase(dto)).rejects.toThrow(
