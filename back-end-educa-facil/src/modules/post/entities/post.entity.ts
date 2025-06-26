@@ -8,24 +8,79 @@ import {
 
 @Entity()
 export class Post {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', {
+    name: 'id',
+  })
   id: string;
 
-  @Column({ length: 255 })
+  @Column({
+    name: 'title',
+    type: 'varchar',
+  })
   title: string;
 
-  @Column('text')
+  @Column({
+    name: 'description',
+    type: 'varchar',
+  })
   description: string;
 
-  @Column({ length: 100, nullable: true })
-  author_id?: string;
+  @Column({
+    type: 'varchar',
+    array: true,
+    name: 'search_field',
+  })
+  search_field: string[];
 
-  @Column({ length: 100, nullable: true })
+  @Column({
+    nullable: true,
+    name: 'description',
+    type: 'varchar',
+  })
+  introduction?: string;
+
+  @Column({
+    nullable: true,
+    type: 'jsonb',
+    name: 'external_link',
+  })
+  external_link: Record<string, string>;
+
+  @Column({
+    type: 'varchar',
+    array: true,
+    name: 'content_hashtags',
+  })
+  content_hashtags: string[];
+
+  @Column({
+    type: 'varchar',
+    name: 'style_id',
+  })
+  style_id: string;
+
+  @Column({
+    nullable: true,
+    type: 'varchar',
+    name: 'image',
+  })
   image?: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp with time zone',
+  })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp with time zone',
+  })
   updatedAt: Date;
+
+  @Column({
+    name: 'author_id',
+    type: 'uuid',
+  })
+  author_id?: string;
 }
