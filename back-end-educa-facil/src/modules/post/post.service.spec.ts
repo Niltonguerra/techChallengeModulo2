@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDTO } from './DTOs/createPost.DTO';
+import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 describe('PostService', () => {
   let service: PostService;
@@ -38,6 +39,10 @@ describe('PostService', () => {
       description: 'Descrição',
       authorId: 'autor123',
       image: 'imagem.jpg',
+      search_field: [],
+      scheduled_publication: '',
+      content_hashtags: [],
+      style_id: '',
     };
 
     const postCriado = { id: 'uuid', ...dto };
@@ -49,8 +54,8 @@ describe('PostService', () => {
     expect(mockRepository.create).toHaveBeenCalledWith(expect.objectContaining(dto));
     expect(mockRepository.save).toHaveBeenCalledWith(postCriado);
     expect(result).toEqual({
-      message: 'Post criado com sucesso',
-      statusCode: '200',
+      message: systemMessage.ReturnMessage.sucessPost,
+      statusCode: 200,
     });
   });
 

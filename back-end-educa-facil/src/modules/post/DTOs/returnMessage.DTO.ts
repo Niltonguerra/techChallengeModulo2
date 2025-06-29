@@ -1,5 +1,5 @@
 export class CreateReturnMessageDTO {
-  statusCode: string;
+  statusCode: number;
   message: string;
 }
 

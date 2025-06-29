@@ -10,29 +10,84 @@ import {
 
 @Entity()
 export class Post {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', {
+    name: 'id',
+  })
   id: string;
 
-  @Column({ length: 255 })
+  @Column({
+    name: 'title',
+    type: 'varchar',
+  })
   title: string;
 
-  @Column('text')
+  @Column({
+    name: 'description',
+    type: 'varchar',
+  })
   description: string;
 
-  @Column({ type: 'uuid', nullable: true })
-  authorId?: string;
 
   /* //<< when user is done
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL', eager: true })
   @JoinColumn({ name: 'author_id' })
   author?: User;
   */
+=======
+  @Column({
+    type: 'varchar',
+    array: true,
+    name: 'search_field',
+  })
+  search_field: string[];
 
-  @Column({ length: 100, nullable: true })
+  @Column({
+    nullable: true,
+    name: 'introduction',
+    type: 'varchar',
+  })
+  introduction?: string;
+
+  @Column({
+    nullable: true,
+    type: 'jsonb',
+    name: 'external_link',
+  })
+  external_link: Record<string, string>;
+
+  @Column({
+    type: 'varchar',
+    array: true,
+    name: 'content_hashtags',
+  })
+  content_hashtags: string[];
+
+
+  @Column({
+    type: 'varchar',
+    name: 'style_id',
+  })
+  style_id: string;
+
+  @Column({
+    nullable: true,
+    type: 'varchar',
+    name: 'image',
+  })
   image?: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamp with time zone',
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp with time zone',
+  })
+  updated_at: Date;
+
 
   @UpdateDateColumn()
   updatedAt: Date;
@@ -46,4 +101,11 @@ export class Post {
     const fields = [this.title, this.description, this.authorId, this.image]; /*, this.author.name*/ //<<
     this.search = fields.filter(Boolean).join(' ').toLowerCase();
   }
+
+  @Column({
+    name: 'author_id',
+    type: 'uuid',
+  })
+  author_id?: string;
+
 }
