@@ -21,11 +21,15 @@ describe('createPostUseCase', () => {
       description: 'Descrição',
       author_id: 'autor123',
       image: 'imagem.jpg',
+      search_field: [],
+      scheduled_publication: '',
+      content_hashtags: [],
+      style_id: '',
     };
 
     const returnMessage: CreateReturnMessageDTO = {
       message: 'Post criado com sucesso',
-      statusCode: '200',
+      statusCode: 200,
     };
 
     mockPostService.createPostService.mockResolvedValue(returnMessage);
@@ -42,6 +46,10 @@ describe('createPostUseCase', () => {
       description: 'Descrição',
       author_id: 'autor123',
       image: 'imagem.jpg',
+      search_field: [],
+      scheduled_publication: '',
+      content_hashtags: [],
+      style_id: '',
     };
 
     mockPostService.createPostService.mockRejectedValue(new Error('Erro no service'));
