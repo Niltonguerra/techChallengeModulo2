@@ -5,9 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IPost } from './models/post.interface';
 
 @Entity()
-export class Post {
+export class Post implements IPost {
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
   })
