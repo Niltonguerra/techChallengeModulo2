@@ -6,6 +6,7 @@ import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { GetPostDTO } from './DTOs/getPost.DTO';
 
 @Injectable()
 export class PostService {
@@ -27,5 +28,9 @@ export class PostService {
 
   async listar(): Promise<Post[]> {
     return this.postRepository.find();
+  }
+
+  async getById(id: string): Promise<GetPostDTO[]> {
+    return this.postRepository.find({where: {id : id}});
   }
 }
