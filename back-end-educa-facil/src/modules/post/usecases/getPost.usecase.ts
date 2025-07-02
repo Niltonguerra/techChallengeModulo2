@@ -8,15 +8,9 @@ export class GetPostUseCase {
 
   async getPostUseCaseById(id: string): Promise<GetPostDTO[]> {
     try {
-      return this.postService.getById(id);
+      return await this.postService.getById(id);
     } catch (error) {
-      console.error(error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Erro desconhecido ao retornar';
-      throw new HttpException(
-        `Erro ao criar ao buscar post: ${errorMessage}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException(`Erro ao buscar o post: ${error.message}`, 500);
     }
   }
 
