@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { PostService } from '../post.service';
 import { GetPostDTO } from '../DTOs/getPost.DTO';
 
@@ -10,8 +10,8 @@ export class GetPostUseCase {
     try {
       return await this.postService.getById(id);
     } catch (error) {
-      throw new HttpException(`Erro ao buscar o post: ${error.message}`, 500);
+      const mensagemErro = error instanceof Error ? error.message : 'Erro desconhecido';
+      throw new HttpException(`Erro ao buscar o post: ${mensagemErro}`, 500);
     }
   }
-
 }

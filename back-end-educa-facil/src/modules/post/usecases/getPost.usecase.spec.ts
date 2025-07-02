@@ -21,7 +21,7 @@ describe('GetPostByIdUseCase', () => {
       external_link: {
         instagram: 'https://instagram.com/exemplo',
         youtube: 'https://youtube.com/exemplo',
-        tiktok: 'https://tiktok.com/@exemplo'
+        tiktok: 'https://tiktok.com/@exemplo',
       },
       search_field: ['arra'],
       introduction: 'fjojoga gelfjrd',
@@ -45,9 +45,11 @@ describe('GetPostByIdUseCase', () => {
   it('deve lançar HttpException em caso de erro', async () => {
     mockPostService.getById.mockRejectedValue(new Error('Erro no get'));
 
-    await expect(useCase.getPostUseCaseById('f9a7feed-37f4-4764-8f18-9cd74cfa7f54')).rejects.toThrow(HttpException);
-    await expect(useCase.getPostUseCaseById('f9a7feed-37f4-4764-8f18-9cd74cfa7f54')).rejects.toThrow(
-      'Erro ao buscar o post: Erro no get',
-    );
+    await expect(
+      useCase.getPostUseCaseById('f9a7feed-37f4-4764-8f18-9cd74cfa7f54'),
+    ).rejects.toThrow(HttpException);
+    await expect(
+      useCase.getPostUseCaseById('f9a7feed-37f4-4764-8f18-9cd74cfa7f54'),
+    ).rejects.toThrow('Erro ao buscar o post: Erro no get');
   });
 });
