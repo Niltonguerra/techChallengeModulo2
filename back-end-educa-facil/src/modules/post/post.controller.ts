@@ -4,7 +4,6 @@ import { listPostUseCase } from './usecases/listPost.usecase';
 import { ListPostDTO } from './DTOs/listPost.DTO'; 
 import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
-import { ReturnListPostDTO } from './DTOs/returnlistPost.DTO';
 
 
 @Controller('post')
@@ -21,12 +20,15 @@ export class PostController {
     return createPost;
   }
 
-   @Get()
-  async listPosts(
-    @Query() query: ListPostDTO,
-    @Headers('tokenSessao') tokenSessao: string,
-  ): Promise<ReturnListPostDTO[]> {
-    // você pode validar o token aqui se quiser
-    return this.listPostUseCase.execute(query);
+    @Get()
+  async listPosts(@Query() query: ListPostDTO) {
+    const offset = query.offset ? parseInt(query.offset) : 0;
+    const limit = query.limit ? parseInt(query.limit) : 10;
+
+    return this.listPostUseCase.execute({
+      ...query,
+      offset: offset.toString(),
+      limit: limit.toString(),
+    });
   }
 }

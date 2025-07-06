@@ -1,51 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Post } from '../entities/post.entity';
-import { Repository, Like } from 'typeorm';
+import { PostService } from '../post.service';
 import { ListPostDTO } from '../DTOs/listPost.DTO';
 import { ReturnListPostDTO } from '../DTOs/returnlistPost.DTO';
 
 @Injectable()
 export class listPostUseCase {
-    constructor(
-        @InjectRepository(Post)
-        private readonly postRepository: Repository<Post>,
-    ) { }
+  constructor(private readonly postService: PostService) {}
 
-    async execute(query: ListPostDTO): Promise<ReturnListPostDTO[]> {
-        const { offset = 0, limit = 10, search } = query;
+  async execute(query: ListPostDTO): Promise<ReturnListPostDTO[]> {
+    const offset = query.offset ? parseInt(query.offset, 10) : 0;
+    const limit = query.limit ? parseInt(query.limit, 10) : 10;
 
-        const where = search
-            ? [
-                { title: Like(`%${search}%`) },
-                { description: Like(`%${search}%`) },
-            ]
-            : {};
-
-        const [posts, total_post] = await this.postRepository.findAndCount({
-            where,
-            skip: offset,
-            take: limit,
-            order: { created_at: 'DESC' },
-        });
-
-        return posts.map(post => ({
-            title: post.title,
-            description: post.description,
-            introduction: post.description?.substring(0, 100) || '',
-            external_link: '', // preencha se já tiver na entidade
-            content_hashtags: [] as string[], // idem
-            style_id: '', // idem
-            image: post.image,
-            createdAt: post.created_at,
-            updatedAt: post.updated_at,
-            total_post,
-            author_id: {
-                name: '', // dependerá de relação com user
-                email: '',
-                social_midia: '',
-            },
-        }));
-
-    }
+    return this.postService.listPosts(offset, limit, query.search);
+  }
 }

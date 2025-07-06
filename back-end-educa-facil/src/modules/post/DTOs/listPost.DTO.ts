@@ -1,17 +1,14 @@
 import { IsOptional, IsString, IsNumberString } from 'class-validator';
-import { Transform } from 'class-transformer';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 export class ListPostDTO {
   @IsOptional()
-  @IsNumberString({}, { message: systemMessage.validation.isString })
-  @Transform(({ value }) => parseInt(value))
-  offset?: number = 0;
+  @IsNumberString({}, { message: systemMessage.validation.isNumber })
+  offset?: string;
 
   @IsOptional()
-  @IsNumberString({}, { message: systemMessage.validation.isString })
-  @Transform(({ value }) => parseInt(value))
-  limit?: number = 10;
+  @IsNumberString({}, { message: systemMessage.validation.isNumber })
+  limit?: string;
 
   @IsOptional()
   @IsString({ message: systemMessage.validation.isString })

@@ -10,6 +10,7 @@ export type SystemMessageType = {
     isUrl: string;
     isArray: string;
     isObject: string;
+    isNumberString: string;
   };
   ReturnMessage: {
     sucessPost: string;
