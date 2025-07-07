@@ -19,7 +19,7 @@ export class PostService {
 
     await this.postRepository.save(post);
     const returnService: CreateReturnMessageDTO = {
-      message: systemMessage.ReturnMessage.sucessPost,
+      message: systemMessage.ReturnMessage.sucessCreatePost,
       statusCode: 200,
     };
     return returnService;

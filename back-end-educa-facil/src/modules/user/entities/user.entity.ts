@@ -1,74 +1,70 @@
-import { User } from '@modules/user/entities/user.entity';
+import { Post } from '@modules/post/entities/post.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({
-  name: 'Post',
+  name: 'user',
 })
-export class Post {
+export class User {
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
   })
   id: string;
 
   @Column({
-    name: 'title',
+    name: 'name',
     type: 'varchar',
   })
-  title: string;
+  name: string;
 
   @Column({
-    name: 'description',
+    name: 'password',
     type: 'varchar',
   })
-  description: string;
+  password: string;
 
   @Column({
     type: 'varchar',
-    array: true,
-    name: 'search_field',
+    name: 'photo',
   })
-  search_field: string[];
+  photo: string;
 
   @Column({
-    nullable: true,
-    name: 'introduction',
+    name: 'email',
     type: 'varchar',
   })
-  introduction?: string;
+  email: string;
 
   @Column({
     nullable: true,
     type: 'jsonb',
-    name: 'external_link',
+    name: 'social_midia',
   })
-  external_link: Record<string, string>;
+  social_midia: Record<string, string>;
 
   @Column({
     type: 'varchar',
-    array: true,
-    name: 'content_hashtags',
+    name: 'permission',
   })
-  content_hashtags: string[];
+  permission: string;
 
   @Column({
-    type: 'varchar',
-    name: 'style_id',
+    type: 'boolean',
+    name: 'isActive',
   })
-  style_id: string;
+  isActive: boolean;
 
   @Column({
-    nullable: true,
-    type: 'varchar',
-    name: 'image',
+    type: 'boolean',
+    name: 'notification',
   })
-  image?: string;
+  notification: boolean;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -82,6 +78,6 @@ export class Post {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
-  user: User;
+  @OneToMany(() => Post, (post) => post.id, { cascade: true })
+  posts?: Post[] | undefined;
 }

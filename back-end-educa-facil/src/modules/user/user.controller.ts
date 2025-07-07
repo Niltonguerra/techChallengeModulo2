@@ -1,14 +1,14 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreatePostUseCase } from './usecases/createPost.usecase';
-import { CreatePostDTO } from './DTOs/createPost.DTO';
+import { CreateUserDTO } from './DTOs/createUser.dto';
 import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
+import { CreatePostUseCase } from './usecases/createPost.usecase';
 
-@Controller('post')
-export class PostController {
+@Controller('user')
+export class UserController {
   constructor(private readonly createPostUseCase: CreatePostUseCase) {}
 
   @Post('create')
-  async CreatePost(@Body() createPostData: CreatePostDTO): Promise<CreateReturnMessageDTO> {
+  async CreatePost(@Body() createPostData: CreateUserDTO): Promise<CreateReturnMessageDTO> {
     const createPost: CreateReturnMessageDTO =
       await this.createPostUseCase.createPostUseCase(createPostData);
     return createPost;
