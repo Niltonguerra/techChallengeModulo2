@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { FindOneUserReturnMessageDTO } from './DTOs/returnMessage.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -47,5 +48,17 @@ export class UserService {
       },
     };
     return returnMessage;
+  }
+
+  async comparePassword(userId: string, plainPassword: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error(systemMessage.ReturnMessage.errorUserNotFound);
+    }
+
+    return bcrypt.compare(plainPassword, user.password);
   }
 }

@@ -92,6 +92,12 @@ export class Post {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @Column({
+    name: 'authorId',
+    type: 'uuid',
+  })
+  authorId?: string;
+
   @Column('text', { nullable: true })
   search?: string;
 
@@ -101,10 +107,4 @@ export class Post {
     const fields = [this.title, this.description, this.authorId, this.image, this.author?.name];
     this.search = fields.filter(Boolean).join(' ').toLowerCase();
   }
-
-  @Column({
-    name: 'authorId',
-    type: 'uuid',
-  })
-  authorId?: string;
 }
