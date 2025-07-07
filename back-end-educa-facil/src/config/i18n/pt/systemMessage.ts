@@ -12,10 +12,12 @@ export const systemMessage: SystemMessageType = {
     isUrl: 'O campo $property deve ser uma URL',
     isArray: 'O campo $property deve ser um array.',
     isObject: 'O campo $property deve ser um objeto.',
+    isBoolean: 'O campo $property deve ser um valor booleano.',
   },
   ReturnMessage: {
-    sucessPost: 'Post criado com sucesso',
-    errorPost: 'Erro ao criar o post',
+    sucessCreatePost: 'Post criado com sucesso',
+    sucessCreateUser: 'Usuário criado com sucesso',
+    errorCreatePost: 'Erro ao criar o post',
     sucessUpdatePost: 'Post atualizado com sucesso',
     errorUpdatePost: 'Erro ao atualizar o post',
     sucessDeletePost: 'Post deletado com sucesso',
@@ -26,5 +28,6 @@ export const systemMessage: SystemMessageType = {
     errorGetPosts: 'Erro ao encontrar os posts',
     sucessGetPostById: 'Post encontrado com sucesso pelo ID',
     errorGetPostById: 'Erro ao encontrar o post pelo ID',
+    errorUserNotFound: 'Usuário não encontrado',
   },
 };

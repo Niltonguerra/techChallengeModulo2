@@ -1,3 +1,4 @@
+import { systemMessage } from '@config/i18n/pt/systemMessage';
 import {
   IsString,
   IsEmail,
@@ -5,43 +6,41 @@ import {
   IsOptional,
   IsObject,
   IsNotEmpty,
-  MinLength,
-  MaxLength,
   IsUrl,
+  Length,
 } from 'class-validator';
 
 export class CreateUserDTO {
-  @IsString({ message: 'O nome deve ser uma string.' })
-  @IsNotEmpty({ message: 'O nome não pode estar vazio.' })
-  @MinLength(2, { message: 'O nome deve ter pelo menos 2 caracteres.' })
-  @MaxLength(100, { message: 'O nome deve ter no máximo 100 caracteres.' })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
+  @Length(2, 100, { message: systemMessage.validation.Length })
   name: string;
 
-  @IsString({ message: 'A senha deve ser uma string.' })
-  @IsNotEmpty({ message: 'A senha não pode estar vazia.' })
-  @MinLength(6, { message: 'A senha deve ter pelo menos 6 caracteres.' })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
+  @Length(6, 48, { message: systemMessage.validation.Length })
   password: string;
 
-  @IsString({ message: 'A foto deve ser uma string.' })
-  @IsNotEmpty({ message: 'A foto não pode estar vazia.' })
-  @IsUrl({}, { message: 'A foto deve ser uma URL válida.' })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
+  @IsUrl({}, { message: systemMessage.validation.isUrl })
   photo: string;
 
-  @IsEmail({}, { message: 'O email deve ser um endereço válido.' })
-  @IsNotEmpty({ message: 'O email não pode estar vazio.' })
+  @IsEmail({}, { message: systemMessage.validation.isEmail })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   email: string;
 
   @IsOptional()
-  @IsObject({ message: 'Social mídia deve ser um objeto.' })
+  @IsObject({ message: systemMessage.validation.isObject })
   social_midia?: Record<string, string>;
 
-  @IsString({ message: 'A permissão deve ser uma string.' })
-  @IsNotEmpty({ message: 'A permissão não pode estar vazia.' })
+  @IsString({ message: systemMessage.validation.isString })
+  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   permission: string;
 
-  @IsBoolean({ message: 'isActive deve ser um valor booleano.' })
+  @IsBoolean({ message: systemMessage.validation.isBoolean })
   isActive: boolean;
 
-  @IsBoolean({ message: 'notification deve ser um valor booleano.' })
+  @IsBoolean({ message: systemMessage.validation.isBoolean })
   notification: boolean;
 }

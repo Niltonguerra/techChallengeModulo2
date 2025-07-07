@@ -8,7 +8,7 @@ import { CreateReturnMessageDTO } from '../DTOs/returnMessage.dto';
 export class CreatePostUseCase {
   constructor(private readonly userService: UserService) {}
 
-  async createPostUseCase(createUserData: CreateUserDTO): Promise<CreateReturnMessageDTO> {
+  async createUserUseCase(createUserData: CreateUserDTO): Promise<CreateReturnMessageDTO> {
     try {
       const user = await this.userService.createUser(createUserData);
       return user;
