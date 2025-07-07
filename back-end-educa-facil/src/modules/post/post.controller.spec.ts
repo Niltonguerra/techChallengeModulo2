@@ -40,7 +40,7 @@ describe('PostController', () => {
     const dto: CreatePostDTO = {
       title: 'Título',
       description: 'Descrição',
-      author_id: 'autor123',
+      authorId: 'autor123',
       image: 'imagem.jpg',
       search_field: [],
       scheduled_publication: '',
