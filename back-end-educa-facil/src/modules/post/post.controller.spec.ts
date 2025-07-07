@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from './post.controller';
-import { createPostUseCase } from './usecases/createPost.usecase';
+import { CreatePostUseCase } from './usecases/createPost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
 import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
@@ -22,7 +22,7 @@ describe('PostController', () => {
       controllers: [PostController],
       providers: [
         {
-          provide: createPostUseCase,
+          provide: CreatePostUseCase,
           useValue: mockCreatePostUseCase,
         },
         {
@@ -75,23 +75,23 @@ describe('PostController', () => {
     const id = 'post123';
     const posts: GetPostDTO[] = [
       {
-      title: 'Título',
-      description: 'Descrição',
-      external_link: {
-        instagram: 'https://instagram.com/exemplo',
-        youtube: 'https://youtube.com/exemplo',
-        tiktok: 'https://tiktok.com/@exemplo',
+        title: 'Título',
+        description: 'Descrição',
+        external_link: {
+          instagram: 'https://instagram.com/exemplo',
+          youtube: 'https://youtube.com/exemplo',
+          tiktok: 'https://tiktok.com/@exemplo',
+        },
+        search_field: ['arra'],
+        introduction: 'fjojoga gelfjrd',
+        content_hashtags: ['#supera'],
+        style_id: 'feijfo4t9wrrwifb314',
+        image: 'https://i.pinimg.com/736x/54/f9/25/54f925d3aeeefa1405dea76357f00da2.jpg',
+        created_at: new Date('2025-04-01'),
+        updated_at: new Date('2025-04-16'),
+        author_name: 'Lira da Silva',
+        author_email: 'ls@gmail.com',
       },
-      search_field: ['arra'],
-      introduction: 'fjojoga gelfjrd',
-      content_hashtags: ['#supera'],
-      style_id: 'feijfo4t9wrrwifb314',
-      image: 'https://i.pinimg.com/736x/54/f9/25/54f925d3aeeefa1405dea76357f00da2.jpg',
-      created_at: new Date('2025-04-01'),
-      updated_at: new Date('2025-04-16'),
-      author_name: 'Lira da Silva',
-      author_email: 'ls@gmail.com',
-    }
     ];
 
     it('should call use case and return array of posts', async () => {

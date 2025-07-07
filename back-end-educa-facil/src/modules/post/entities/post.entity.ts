@@ -1,14 +1,19 @@
+import { User } from '@modules/user/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
 
-@Entity()
+@Entity({
+  name: 'Post',
+})
 export class Post {
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
@@ -27,13 +32,10 @@ export class Post {
   })
   description: string;
 
-
-  /* //<< when user is done
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL', eager: true })
-  @JoinColumn({ name: 'author_id' })
+  @JoinColumn({ name: 'authorId' })
   author?: User;
-  */
-=======
+
   @Column({
     type: 'varchar',
     array: true,
@@ -62,7 +64,6 @@ export class Post {
   })
   content_hashtags: string[];
 
-
   @Column({
     type: 'varchar',
     name: 'style_id',
@@ -88,9 +89,14 @@ export class Post {
   })
   updated_at: Date;
 
-
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({
+    name: 'authorId',
+    type: 'uuid',
+  })
+  authorId?: string;
 
   @Column('text', { nullable: true })
   search?: string;
@@ -98,14 +104,7 @@ export class Post {
   @BeforeInsert()
   @BeforeUpdate()
   updateSearchField() {
-    const fields = [this.title, this.description, this.authorId, this.image]; /*, this.author.name*/ //<<
+    const fields = [this.title, this.description, this.authorId, this.image, this.author?.name];
     this.search = fields.filter(Boolean).join(' ').toLowerCase();
   }
-
-  @Column({
-    name: 'author_id',
-    type: 'uuid',
-  })
-  author_id?: string;
-
 }

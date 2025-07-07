@@ -30,11 +30,6 @@ export class CreatePostDTO {
   @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   scheduled_publication: string;
 
-  @IsOptional()
-  @IsString({ message: validationText.validation.IsString })
-  @Length(1, 100, { message: validationText.validation.Length })
-  authorId?: string;
-
   @IsString({ message: systemMessage.validation.isString })
   @Length(50, 500, { message: systemMessage.validation.Length })
   introduction?: string;
@@ -61,5 +56,5 @@ export class CreatePostDTO {
 
   @IsOptional()
   @IsUUID('4', { message: systemMessage.validation.isUUID })
-  author_id?: string;
+  authorId?: string;
 }

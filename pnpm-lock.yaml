@@ -1,0 +1,61 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      bcrypt:
+        specifier: ^6.0.0
+        version: 6.0.0
+    devDependencies:
+      '@types/bcrypt':
+        specifier: ^5.0.2
+        version: 5.0.2
+
+packages:
+
+  '@types/bcrypt@5.0.2':
+    resolution: {integrity: sha512-6atioO8Y75fNcbmj0G7UjI9lXN2pQ/IGJ2FWT4a/btd0Lk9lQalHLKhkgKVZ3r+spnmWUKfbMi1GEe9wyHQfNQ==}
+
+  '@types/node@24.0.10':
+    resolution: {integrity: sha512-ENHwaH+JIRTDIEEbDK6QSQntAYGtbvdDXnMXnZaZ6k13Du1dPMmprkEHIL7ok2Wl2aZevetwTAb5S+7yIF+enA==}
+
+  bcrypt@6.0.0:
+    resolution: {integrity: sha512-cU8v/EGSrnH+HnxV2z0J7/blxH8gq7Xh2JFT6Aroax7UohdmiJJlxApMxtKfuI7z68NvvVcmR78k2LbT6efhRg==}
+    engines: {node: '>= 18'}
+
+  node-addon-api@8.4.0:
+    resolution: {integrity: sha512-D9DI/gXHvVmjHS08SVch0Em8G5S1P+QWtU31appcKT/8wFSPRcdHadIFSAntdMMVM5zz+/DL+bL/gz3UDppqtg==}
+    engines: {node: ^18 || ^20 || >= 21}
+
+  node-gyp-build@4.8.4:
+    resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
+    hasBin: true
+
+  undici-types@7.8.0:
+    resolution: {integrity: sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw==}
+
+snapshots:
+
+  '@types/bcrypt@5.0.2':
+    dependencies:
+      '@types/node': 24.0.10
+
+  '@types/node@24.0.10':
+    dependencies:
+      undici-types: 7.8.0
+
+  bcrypt@6.0.0:
+    dependencies:
+      node-addon-api: 8.4.0
+      node-gyp-build: 4.8.4
+
+  node-addon-api@8.4.0: {}
+
+  node-gyp-build@4.8.4: {}
+
+  undici-types@7.8.0: {}
