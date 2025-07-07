@@ -1,4 +1,4 @@
-export class CreateReturnMessageDTO {
+export class ReturnMessageDTO {
   statusCode: number;
   message: string;
 }

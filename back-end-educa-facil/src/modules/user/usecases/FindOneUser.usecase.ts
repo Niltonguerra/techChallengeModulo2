@@ -1,13 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { UserService } from '../user.service';
-import { FindOneUserReturnMessageDTO } from '../DTOs/returnMessage.dto';
+import { UserService } from '../service/user.service';
+import { FindOneUserReturnMessageDTO, ReturnMessageDTO } from '../dtos/returnMessage.dto';
 
 @Injectable()
 export class FindOneUserUseCase {
   constructor(private readonly userService: UserService) {}
 
-  async findOneUserUseCase(field: string, value: string): Promise<FindOneUserReturnMessageDTO> {
+  async findOneUserUseCase(
+    field: string,
+    value: string,
+  ): Promise<FindOneUserReturnMessageDTO | ReturnMessageDTO> {
     try {
       const user = await this.userService.findOneUser(field, value);
       return user;

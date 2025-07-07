@@ -3,7 +3,7 @@ import { PostService } from './post.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDTO } from './DTOs/createPost.DTO';
+import { CreatePostDTO } from './dtos/createPost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 describe('PostService', () => {

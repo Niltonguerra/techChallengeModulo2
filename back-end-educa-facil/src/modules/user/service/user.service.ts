@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { CreateUserDTO } from './DTOs/createUser.dto';
-import { CreateReturnMessageDTO } from '@modules/post/DTOs/returnMessage.DTO';
+import { User } from '../entities/user.entity';
+import { CreateUserDTO } from '../dtos/createUser.dto';
+import { CreateReturnMessageDTO } from '@modules/post/dtos/returnMessage.DTO';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { FindOneUserReturnMessageDTO } from './DTOs/returnMessage.dto';
+import { FindOneUserReturnMessageDTO } from '../dtos/returnMessage.dto';
+import { LoginUsuarioInternoDTO } from '@modules/user/dtos/AuthUser.dto';
 
 @Injectable()
 export class UserService {
@@ -26,13 +27,20 @@ export class UserService {
     return returnService;
   }
 
-  async findOneUser(field: string, value: string): Promise<FindOneUserReturnMessageDTO> {
+  async findOneUser(
+    field: string,
+    value: string,
+  ): Promise<FindOneUserReturnMessageDTO | CreateReturnMessageDTO> {
     const user = await this.userRepository.findOne({
       where: { [field]: value },
     });
 
     if (!user) {
-      throw new Error(systemMessage.ReturnMessage.errorUserNotFound);
+      const returnMessage: CreateReturnMessageDTO = {
+        statusCode: 400,
+        message: systemMessage.ReturnMessage.errorUserNotFound,
+      };
+      return returnMessage;
     }
 
     const returnMessage: FindOneUserReturnMessageDTO = {
@@ -47,5 +55,23 @@ export class UserService {
       },
     };
     return returnMessage;
+  }
+
+  async findOneUserLogin(value: string): Promise<LoginUsuarioInternoDTO | null> {
+    const user = await this.userRepository.findOne({
+      where: { email: value },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      id: user.id,
+      password: user.password,
+      name: user.name,
+      email: user.email,
+      permission: user.permission,
+    };
   }
 }

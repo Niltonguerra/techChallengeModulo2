@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { CreatePostUseCase } from './usecases/createPost.usecase';
-import { CreatePostDTO } from './DTOs/createPost.DTO';
-import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
+import { CreatePostDTO } from './dtos/createPost.DTO';
+import { CreateReturnMessageDTO } from './dtos/returnMessage.DTO';
 
 @Controller('post')
 export class PostController {
