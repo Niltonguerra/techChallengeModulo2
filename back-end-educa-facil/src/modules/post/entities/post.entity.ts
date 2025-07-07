@@ -6,6 +6,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 
 @Entity({
@@ -28,6 +31,10 @@ export class Post {
     type: 'varchar',
   })
   description: string;
+
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL', eager: true })
+  @JoinColumn({ name: 'authorId' })
+  author?: User;
 
   @Column({
     type: 'varchar',
@@ -82,6 +89,22 @@ export class Post {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
-  user: User;
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @Column('text', { nullable: true })
+  search?: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateSearchField() {
+    const fields = [this.title, this.description, this.authorId, this.image, this.author?.name];
+    this.search = fields.filter(Boolean).join(' ').toLowerCase();
+  }
+
+  @Column({
+    name: 'authorId',
+    type: 'uuid',
+  })
+  authorId?: string;
 }
