@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateReturnMessageDTO, DeleteReturnMessageDTO } from './DTOs/returnMessage.DTO';
 import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
@@ -28,4 +28,19 @@ export class PostService {
   async listar(): Promise<Post[]> {
     return this.postRepository.find();
   }
+
+  async deletePostService(id: string): Promise<DeleteReturnMessageDTO> {
+    const iDpost = await this.postRepository.findOne({ where: { id } });
+    if (!iDpost) {
+      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+    }
+    await this.postRepository.remove(iDpost);
+    const returnMessage: DeleteReturnMessageDTO = {
+      message: systemMessage.ReturnMessage.sucessDeletePost,
+      statusCode: 200,
+    };
+    return returnMessage;
+  }
+
 }
+

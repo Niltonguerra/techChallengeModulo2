@@ -1,20 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostService } from './post.service';
+import { HttpException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
+
+import { PostService } from './post.service';
+import { Post } from './entities/post.entity';
 import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { CreateReturnMessageDTO, DeleteReturnMessageDTO } from './DTOs/returnMessage.DTO';
 
 describe('PostService', () => {
   let service: PostService;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let _repository: Repository<Post>;
+  let repository: Repository<Post>;
 
   const mockRepository = {
     create: jest.fn(),
     save: jest.fn(),
     find: jest.fn(),
+    findOne: jest.fn(),
+    remove: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -29,7 +33,7 @@ describe('PostService', () => {
     }).compile();
 
     service = module.get<PostService>(PostService);
-    _repository = module.get<Repository<Post>>(getRepositoryToken(Post));
+    repository = module.get<Repository<Post>>(getRepositoryToken(Post));
     jest.clearAllMocks();
   });
 
@@ -45,7 +49,7 @@ describe('PostService', () => {
       style_id: '',
     };
 
-    const postCriado = { id: 'uuid', ...dto };
+    const postCriado = { id: 'uuid', ...dto } as unknown as Post;
     mockRepository.create.mockReturnValue(postCriado);
     mockRepository.save.mockResolvedValue(postCriado);
 
@@ -53,7 +57,7 @@ describe('PostService', () => {
 
     expect(mockRepository.create).toHaveBeenCalledWith(expect.objectContaining(dto));
     expect(mockRepository.save).toHaveBeenCalledWith(postCriado);
-    expect(result).toEqual({
+    expect(result).toEqual<CreateReturnMessageDTO>({
       message: systemMessage.ReturnMessage.sucessPost,
       statusCode: 200,
     });
@@ -70,5 +74,31 @@ describe('PostService', () => {
 
     expect(mockRepository.find).toHaveBeenCalled();
     expect(result).toEqual(posts);
+  });
+
+  it('deve deletar um post existente e retornar mensagem de sucesso', async () => {
+    const postExistente = { id: 'uuid-del', title: 'Post a deletar' } as Post;
+    mockRepository.findOne.mockResolvedValue(postExistente);
+    mockRepository.remove.mockResolvedValue(postExistente);
+
+    const result = await service.deletePostService('uuid-del');
+
+    expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 'uuid-del' } });
+    expect(mockRepository.remove).toHaveBeenCalledWith(postExistente);
+    expect(result).toEqual<DeleteReturnMessageDTO>({
+      message: systemMessage.ReturnMessage.sucessDeletePost,
+      statusCode: 200,
+    });
+  });
+
+  it('deve lançar exceção ao tentar deletar um post inexistente', async () => {
+    mockRepository.findOne.mockResolvedValue(null);
+
+    await expect(service.deletePostService('uuid-inexistente')).rejects.toThrow(
+      new HttpException('Post not found', 404),
+    );
+
+    expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 'uuid-inexistente' } });
+    expect(mockRepository.remove).not.toHaveBeenCalled();
   });
 });
