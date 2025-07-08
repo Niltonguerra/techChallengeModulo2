@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@golevelup/nestjs-rabbitmq':
+        specifier: 6.0.1
+        version: 6.0.1(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/common':
         specifier: 11.0.1
         version: 11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -20,9 +23,6 @@ importers:
       '@nestjs/jwt':
         specifier: 11.0.0
         version: 11.0.0(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))
-      '@nestjs/microservices':
-        specifier: 11.1.3
-        version: 11.1.3(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1)(amqp-connection-manager@4.1.14(amqplib@0.10.8))(amqplib@0.10.8)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/passport':
         specifier: 11.0.5
         version: 11.0.5(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(passport@0.7.0)
@@ -99,6 +99,12 @@ importers:
       '@swc/core':
         specifier: 1.10.7
         version: 1.10.7
+      '@types/amqp-connection-manager':
+        specifier: 3.4.5
+        version: 3.4.5(amqplib@0.10.8)
+      '@types/amqplib':
+        specifier: 0.10.7
+        version: 0.10.7
       '@types/bcrypt':
         specifier: 5.0.2
         version: 5.0.2
@@ -412,6 +418,20 @@ packages:
   '@eslint/plugin-kit@0.2.8':
     resolution: {integrity: sha512-ZAoA40rNMPwSm+AeHpCq8STiNAwzWLJuP8Xv4CHIc9wv/PSuExjMrmjfYNj682vW0OOiZ1HKxzvjQr9XZIisQA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@golevelup/nestjs-discovery@5.0.0':
+    resolution: {integrity: sha512-NaIWLCLI+XvneUK05LH2idHLmLNITYT88YnpOuUQmllKtiJNIS3woSt7QXrMZ5k3qUWuZpehEVz1JtlX4I1KyA==}
+    peerDependencies:
+      '@nestjs/common': ^11.0.20
+      '@nestjs/core': ^11.0.20
+
+  '@golevelup/nestjs-rabbitmq@6.0.1':
+    resolution: {integrity: sha512-kOGjQ8w9o06WUSVnqOXNVXINnZZhD9Dq6ZdQu+WjLgZ7gku2RYfK/FplO0/1wz5wTnVQ1KkyjuHiAAwbcaOCug==}
+    peerDependencies:
+      '@nestjs/common': ^11.0.0
+      '@nestjs/core': ^11.0.0
+      reflect-metadata: ^0.2.2
+      rxjs: ^7.8.1
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1048,6 +1068,13 @@ packages:
 
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+
+  '@types/amqp-connection-manager@3.4.5':
+    resolution: {integrity: sha512-VfHJUZghfSZncs7x2O7r69oV6766GTS+0dGvKfGnyOUKazsYzdCIgNGI7WOqYqKlGwF9LcQAo4+6JXtnnP0liA==}
+    deprecated: This is a stub types definition. amqp-connection-manager provides its own type definitions, so you do not need this installed.
+
+  '@types/amqplib@0.10.7':
+    resolution: {integrity: sha512-IVj3avf9AQd2nXCx0PGk/OYq7VmHiyNxWFSb5HhU9ATh+i+gHWvVcljFTcTWQ/dyHJCTrzCixde+r/asL2ErDA==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -4125,6 +4152,23 @@ snapshots:
       '@eslint/core': 0.13.0
       levn: 0.4.1
 
+  '@golevelup/nestjs-discovery@5.0.0(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1)':
+    dependencies:
+      '@nestjs/common': 11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 11.0.1(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/microservices@11.1.3)(@nestjs/platform-express@11.0.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      lodash: 4.17.21
+
+  '@golevelup/nestjs-rabbitmq@6.0.1(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+    dependencies:
+      '@golevelup/nestjs-discovery': 5.0.0(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@11.0.1)
+      '@nestjs/common': 11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 11.0.1(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/microservices@11.1.3)(@nestjs/platform-express@11.0.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      amqp-connection-manager: 4.1.14(amqplib@0.10.8)
+      amqplib: 0.10.8
+      lodash: 4.17.21
+      reflect-metadata: 0.2.2
+      rxjs: 7.8.1
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -4626,6 +4670,7 @@ snapshots:
     optionalDependencies:
       amqp-connection-manager: 4.1.14(amqplib@0.10.8)
       amqplib: 0.10.8
+    optional: true
 
   '@nestjs/passport@11.0.5(@nestjs/common@11.0.1(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.1))(passport@0.7.0)':
     dependencies:
@@ -4795,6 +4840,16 @@ snapshots:
   '@tsconfig/node14@1.0.3': {}
 
   '@tsconfig/node16@1.0.4': {}
+
+  '@types/amqp-connection-manager@3.4.5(amqplib@0.10.8)':
+    dependencies:
+      amqp-connection-manager: 4.1.14(amqplib@0.10.8)
+    transitivePeerDependencies:
+      - amqplib
+
+  '@types/amqplib@0.10.7':
+    dependencies:
+      '@types/node': 22.10.7
 
   '@types/babel__core@7.20.5':
     dependencies:
