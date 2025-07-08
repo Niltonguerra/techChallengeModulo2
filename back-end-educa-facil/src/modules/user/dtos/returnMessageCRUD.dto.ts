@@ -1,8 +1,3 @@
-export class ReturnMessageDTO {
-  statusCode: number;
-  message: string;
-}
-
 export class FindOneUserReturnMessageDTO {
   statusCode: number;
   message: string;

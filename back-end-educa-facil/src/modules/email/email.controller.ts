@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { EmailService } from './email.service';
-import { ReturnMessageDTO } from './dtos/returnMessage.dto';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
 @Controller('email')
 export class EmailController {

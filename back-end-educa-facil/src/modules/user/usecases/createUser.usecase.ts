@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserService } from '../service/user.service';
 import { CreateUserDTO } from '../dtos/createUser.dto';
-import { ReturnMessageDTO } from '../dtos/returnMessage.dto';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
 @Injectable()
 export class CreatePostUseCase {

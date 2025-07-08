@@ -1,12 +1,13 @@
 import { Body, Controller, Get, Post, Query, UseGuards, UsePipes } from '@nestjs/common';
 import { CreateUserDTO } from '../dtos/createUser.dto';
-import { FindOneUserReturnMessageDTO, ReturnMessageDTO } from '../dtos/returnMessage.dto';
+import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
 import { CreatePostUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
 import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
 import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
 @Controller('user')
 export class UserController {

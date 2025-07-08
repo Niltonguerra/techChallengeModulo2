@@ -1,17 +1,17 @@
-import { createPostUseCase } from './createPost.usecase';
+import { CreatePostUseCase } from './createPost.usecase';
 import { CreatePostDTO } from '../dtos/createPost.DTO';
-import { CreateReturnMessageDTO } from '../dtos/returnMessage.DTO';
 import { HttpException } from '@nestjs/common';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
 describe('createPostUseCase', () => {
-  let useCase: createPostUseCase;
+  let useCase: CreatePostUseCase;
 
   const mockPostService = {
     createPostService: jest.fn(),
   };
 
   beforeEach(() => {
-    useCase = new createPostUseCase(mockPostService as any);
+    useCase = new CreatePostUseCase(mockPostService as any);
     jest.clearAllMocks();
   });
 
@@ -27,7 +27,7 @@ describe('createPostUseCase', () => {
       style_id: '',
     };
 
-    const returnMessage: CreateReturnMessageDTO = {
+    const returnMessage: ReturnMessageDTO = {
       message: 'Post criado com sucesso',
       statusCode: 200,
     };

@@ -38,7 +38,7 @@ export class RabbitMQHealthController {
   }
 
   @Get()
-  async healthCheck() {
+  healthCheck() {
     try {
       const connectionStatus = this.rabbitMQConnectionService.getConnectionStatus();
       const channelAvailable = this.rabbitMQConnectionService.isChannelAvailable();

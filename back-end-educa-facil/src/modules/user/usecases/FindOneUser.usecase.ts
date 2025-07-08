@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserService } from '../service/user.service';
-import { FindOneUserReturnMessageDTO, ReturnMessageDTO } from '../dtos/returnMessage.dto';
+import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
 @Injectable()
 export class FindOneUserUseCase {

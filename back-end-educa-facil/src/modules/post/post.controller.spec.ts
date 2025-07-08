@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from './post.controller';
-import { createPostUseCase } from './usecases/createPost.usecase';
 import { CreatePostDTO } from './dtos/createPost.DTO';
-import { CreateReturnMessageDTO } from './dtos/returnMessage.DTO';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { CreatePostUseCase } from './usecases/createPost.usecase';
 
 describe('PostController', () => {
   let controller: PostController;
@@ -16,7 +16,7 @@ describe('PostController', () => {
       controllers: [PostController],
       providers: [
         {
-          provide: createPostUseCase,
+          provide: CreatePostUseCase,
           useValue: mockCreatePostUseCase,
         },
       ],
@@ -39,7 +39,7 @@ describe('PostController', () => {
       style_id: '',
     };
 
-    const returnMessage: CreateReturnMessageDTO = {
+    const returnMessage: ReturnMessageDTO = {
       message: 'Post criado com sucesso',
       statusCode: 200,
     };
