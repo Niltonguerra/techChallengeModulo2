@@ -27,5 +27,6 @@ export type SystemMessageType = {
     sucessGetPostById: string;
     errorGetPostById: string;
     errorUserNotFound: string;
+    errorSendEmail: string;
   };
 };

@@ -65,11 +65,16 @@ comando para criar um modulo em nest com todas as dependências:
 
 envs(sei que é errado deixar aqui, mas é para simplificar nossa vida):
 AMBIENTE=dev
-DB_HOST_DEV=localhost
 DB_HOST_PROD=db
+DB_HOST_DEV=localhost
 DB_PORT=5432
+DB_DATABASE=nest_db
 DB_USERNAME=nest_user
 DB_PASSWORD=nest_password
-DB_DATABASE=nest_db
-
-
+BCRYPT_SALT_ROUNDS=10
+JWT_SECRET=educa_facil
+SECRET_JWT_EMAIL=educa_facil
+JWT_EXPIRES_IN=24h
+EMAIL_USER=educacaofacilfiap@gmail.com
+EMAIL_PASSWORD=svjkqhfvifjqryde
+senha_da_conta=4c5WG1gW8hxC

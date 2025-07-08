@@ -82,6 +82,8 @@ export class Post {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
-  user: User;
+  @ManyToOne(() => User, (user) => user.id, {
+    nullable: true,
+  })
+  user_id: User;
 }

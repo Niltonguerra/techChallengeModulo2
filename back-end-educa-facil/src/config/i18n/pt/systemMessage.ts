@@ -29,5 +29,6 @@ export const systemMessage: SystemMessageType = {
     sucessGetPostById: 'Post encontrado com sucesso pelo ID',
     errorGetPostById: 'Erro ao encontrar o post pelo ID',
     errorUserNotFound: 'Usuário não encontrado',
+    errorSendEmail: 'Erro ao enviar o e-mail',
   },
 };
