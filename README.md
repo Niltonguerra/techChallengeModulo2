@@ -63,6 +63,8 @@ comando para criar um modulo em nest com todas as dependências:
 ``nest g resource "nome do modulo a ser criado"``
 
 
+        
+
 envs(sei que é errado deixar aqui, mas é para simplificar nossa vida):
 AMBIENTE=dev
 DB_HOST_DEV=localhost

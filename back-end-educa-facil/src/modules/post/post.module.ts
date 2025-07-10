@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostController } from './post.controller';
 import { createPostUseCase } from './usecases/createPost.usecase';
+import { listPostUseCase } from './usecases/listPost.usecase';
 import { Post } from './entities/post.entity';
 import { GetPostUseCase } from './usecases/getPost.usecase';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';

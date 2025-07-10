@@ -12,6 +12,7 @@ export const systemMessage: SystemMessageType = {
     isUrl: 'O campo $property deve ser uma URL',
     isArray: 'O campo $property deve ser um array.',
     isObject: 'O campo $property deve ser um objeto.',
+    isNumberString: 'O campo $property deve ser um número.',
   },
   ReturnMessage: {
     sucessPost: 'Post criado com sucesso',
