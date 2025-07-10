@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateReturnMessageDTO, DeleteReturnMessageDTO } from './DTOs/returnMessage.DTO';
 import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
@@ -15,7 +15,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) {}
+  ) { }
 
   async createPostService(createPostData: CreatePostDTO): Promise<CreateReturnMessageDTO> {
     const post = this.postRepository.create({ id: uuidv4(), ...createPostData });
@@ -40,7 +40,7 @@ export class PostService {
 
     const returnService: CreateReturnMessageDTO = {
       message: 'Post atualizado com sucesso',
-      statusCode: '200',
+      statusCode: 200,
     };
     return returnService;
   }
@@ -49,7 +49,21 @@ export class PostService {
     return this.postRepository.find();
   }
 
+  async deletePostService(id: string): Promise<DeleteReturnMessageDTO> {
+    const iDpost = await this.postRepository.findOne({ where: { id } });
+    if (!iDpost) {
+      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+    }
+    await this.postRepository.remove(iDpost);
+    const returnMessage: DeleteReturnMessageDTO = {
+      message: systemMessage.ReturnMessage.sucessDeletePost,
+      statusCode: 200,
+    };
+    return returnMessage;
+  }
+
   async getById(id: string): Promise<GetPostDTO[]> {
     return this.postRepository.find({ where: { id: id } });
   }
 }
+
