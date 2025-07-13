@@ -13,6 +13,13 @@ export type SystemMessageType = {
     isBoolean: string;
   };
   ReturnMessage: {
+    FailedToProcessPassword: string;
+    isObject: string;
+    isnotEmptyPassword: string;
+    NotAcess: string;
+    errorFindUser: string;
+    errorCreateUser: string;
+    errorlogin: string;
     sucessCreatePost: string;
     sucessCreateUser: string;
     sucessCreateUserValidationEmail: string;

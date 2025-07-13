@@ -1,10 +1,7 @@
+import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { BadRequestException, Injectable, Logger, PipeTransform } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-
-interface HasPassword {
-  password?: string;
-}
 
 @Injectable()
 export class HashPasswordPipe implements PipeTransform {
@@ -15,17 +12,17 @@ export class HashPasswordPipe implements PipeTransform {
     this.saltRounds = 10;
   }
 
-  async transform(value: HasPassword): Promise<HasPassword> {
+  async transform(value: { password?: string }): Promise<{ password: string }> {
     if (!value || typeof value !== 'object') {
-      throw new BadRequestException('Invalid input data');
+      throw new BadRequestException(systemMessage.ReturnMessage.isObject);
     }
 
     if (!value.password || typeof value.password !== 'string') {
-      return value;
+      throw new BadRequestException(systemMessage.ReturnMessage.isnotEmptyPassword);
     }
 
     if (value.password.trim().length === 0) {
-      throw new BadRequestException('Password cannot be empty');
+      throw new BadRequestException(systemMessage.ReturnMessage.isnotEmptyPassword);
     }
 
     try {
@@ -35,8 +32,8 @@ export class HashPasswordPipe implements PipeTransform {
         password: hashedPassword,
       };
     } catch (error) {
-      this.logger.error('Error hashing password:', error);
-      throw new BadRequestException('Failed to process password');
+      this.logger.error('Error ao processar a senha:', error);
+      throw new BadRequestException(systemMessage.ReturnMessage.FailedToProcessPassword);
     }
   }
 }

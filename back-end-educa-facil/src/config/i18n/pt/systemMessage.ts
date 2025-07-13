@@ -15,6 +15,13 @@ export const systemMessage: SystemMessageType = {
     isBoolean: 'O campo $property deve ser um valor booleano.',
   },
   ReturnMessage: {
+    FailedToProcessPassword: 'Falha ao processar a senha.',
+    isObject: 'O valor deve ser um objeto.',
+    isnotEmptyPassword: 'A senha não pode estar vazia.',
+    NotAcess: 'Você não tem permissão para acessar este recurso.',
+    errorFindUser: 'Erro ao encontrar o usuário',
+    errorCreateUser: 'Erro ao criar o usuário',
+    errorlogin: 'credenciais inválidas',
     sucessCreatePost: 'Post criado com sucesso',
     sucessCreateUser: 'Usuário criado com sucesso',
     errorCreatePost: 'Erro ao criar o post',

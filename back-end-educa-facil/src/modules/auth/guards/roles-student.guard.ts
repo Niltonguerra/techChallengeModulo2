@@ -8,6 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../dtos/JwtPayload.dto';
+import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 @Injectable()
 export class RolesGuardStudent implements CanActivate {
@@ -22,7 +23,7 @@ export class RolesGuardStudent implements CanActivate {
     const user: JwtPayload = request.user;
 
     if (user.permission !== 'student' && user.permission !== 'admin') {
-      throw new ForbiddenException('Você não tem permissão para realizar essa ação');
+      throw new ForbiddenException(systemMessage.ReturnMessage.NotAcess);
     }
 
     return true;

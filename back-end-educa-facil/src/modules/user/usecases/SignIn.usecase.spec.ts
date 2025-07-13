@@ -47,6 +47,7 @@ describe('SignInUseCase', () => {
     userService.findOneUserLogin.mockResolvedValue(fakeUser);
 
     // Força bcrypt.compare a retornar `true`
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     jest.spyOn(bcrypt, 'compare').mockImplementation(function () {
       return Promise.resolve(true);
     });
@@ -83,6 +84,7 @@ describe('SignInUseCase', () => {
     userService.findOneUserLogin.mockResolvedValue(fakeUser);
 
     // Força bcrypt.compare a retornar `false`
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     jest.spyOn(bcrypt, 'compare').mockImplementation(function () {
       return Promise.resolve(false);
     });
