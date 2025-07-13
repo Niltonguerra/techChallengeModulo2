@@ -5,7 +5,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+<<<<<<< HEAD
   ManyToOne,
+=======
+  BeforeInsert,
+  BeforeUpdate,
+>>>>>>> origin/main
 } from 'typeorm';
 
 @Entity({
@@ -29,6 +34,13 @@ export class Post {
   })
   description: string;
 
+
+  /* //<< when user is done
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL', eager: true })
+  @JoinColumn({ name: 'author_id' })
+  author?: User;
+  */
+=======
   @Column({
     type: 'varchar',
     array: true,
@@ -57,6 +69,7 @@ export class Post {
   })
   content_hashtags: string[];
 
+
   @Column({
     type: 'varchar',
     name: 'style_id',
@@ -82,8 +95,31 @@ export class Post {
   })
   updated_at: Date;
 
+<<<<<<< HEAD
   @ManyToOne(() => User, (user) => user.id, {
     nullable: true,
   })
   user_id: User;
+=======
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @Column('text', { nullable: true })
+  search?: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateSearchField() {
+    const fields = [this.title, this.description, this.authorId, this.image]; /*, this.author.name*/ //<<
+    this.search = fields.filter(Boolean).join(' ').toLowerCase();
+  }
+
+  @Column({
+    name: 'author_id',
+    type: 'uuid',
+  })
+  author_id?: string;
+
+>>>>>>> origin/main
 }
