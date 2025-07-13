@@ -20,14 +20,18 @@ describe('HashPasswordPipe', () => {
   });
 
   it('deve lançar erro se value não for objeto', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await expect(pipe.transform(undefined as any)).rejects.toThrow(BadRequestException);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await expect(pipe.transform(undefined as any)).rejects.toThrow(
       systemMessage.ReturnMessage.isObject,
     );
   });
 
   it('deve lançar erro se password não for string', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await expect(pipe.transform({ password: 123 } as any)).rejects.toThrow(BadRequestException);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await expect(pipe.transform({ password: 123 } as any)).rejects.toThrow(
       systemMessage.ReturnMessage.isnotEmptyPassword,
     );

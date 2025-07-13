@@ -79,6 +79,7 @@ describe('PostService', () => {
     mockRepository.findOneBy.mockResolvedValue(fakePost);
     mockRepository.save.mockResolvedValue({ ...fakePost, ...dto });
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const result = await service.UpdatePostService(dto as any);
     expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: dto.id });
     expect(mockRepository.save).toHaveBeenCalledWith({ ...fakePost, ...dto });
@@ -87,6 +88,7 @@ describe('PostService', () => {
 
   it('deve lançar erro se tentar atualizar post inexistente', async () => {
     mockRepository.findOneBy.mockResolvedValue(null);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await expect(service.UpdatePostService({ id: 'notfound' } as any)).rejects.toThrow(
       'Post não encontrado',
     );

@@ -7,6 +7,7 @@ describe('JwtStrategyUser', () => {
 
   beforeEach(() => {
     configService = { get: jest.fn().mockReturnValue('test-secret') };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     strategy = new JwtStrategyUser(configService as any);
   });
 

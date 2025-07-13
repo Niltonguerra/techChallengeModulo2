@@ -35,7 +35,7 @@ export class EmailService {
         text: corpoMensagem,
       };
 
-      this.transporter.sendMail(mailOptions);
+      void this.transporter.sendMail(mailOptions);
       return 200;
     } catch (error) {
       const errorMessage =

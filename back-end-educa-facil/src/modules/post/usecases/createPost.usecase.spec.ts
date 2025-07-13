@@ -11,6 +11,7 @@ describe('createPostUseCase', () => {
   };
 
   beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     useCase = new CreatePostUseCase(mockPostService as any);
     jest.clearAllMocks();
   });
