@@ -127,7 +127,7 @@ describe('EmailService', () => {
     it('should handle non-Error exceptions', () => {
       // Arrange
       mockTransporter.sendMail.mockImplementation(() => {
-        throw 'String error';
+        throw new Error('String error');
       });
 
       // Act
