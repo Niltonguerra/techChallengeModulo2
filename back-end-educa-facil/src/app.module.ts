@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PostModule } from '@modules/posts/post.module';
-import { Post } from '@modules/posts/entities/post.entity';
+import { PostModule } from '@modules/post/post.module';
+import { Post } from '@modules/post/entities/post.entity';
 import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { EmailModule } from '@modules/email/email.module';
