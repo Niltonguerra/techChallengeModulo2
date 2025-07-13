@@ -16,38 +16,45 @@ export class CreateUserUseCase {
 
   async validationEmailCreateUser(createUserData: CreateUserDTO): Promise<ReturnMessageDTO> {
     try {
-      const verificaEmail = await this.userService.findOneUser('email', createUserData.email);
+      const existingUser = await this.userService.findOneUser('email', createUserData.email);
 
-      if (verificaEmail.statusCode === 200) {
-        throw new Error('Email já cadastrado');
+      if (existingUser.statusCode === 200) {
+        throw new HttpException(systemMessage.ReturnMessage.errorCreateUser, HttpStatus.CONFLICT);
       }
 
-      const ReturnEmail = this.emailService.EnviaVerificacaoEmail(
+      const emailStatus = this.emailService.EnviaVerificacaoEmail(
         createUserData.email,
         'user/validationEmail',
       );
 
-      if (ReturnEmail !== 200) {
-        throw new Error('Falha ao enviar o e-mail de verificação');
+      if (emailStatus !== 200) {
+        throw new HttpException(systemMessage.ReturnMessage.errorSendEmail, HttpStatus.BAD_GATEWAY);
       }
 
       const createUser: Omit<IUser, 'id'> = {
         ...createUserData,
         isActive: UserStatus.PENDING,
       };
+
       await this.userService.createUpdateUser(createUser);
-      const returnMessage: ReturnMessageDTO = {
+
+      return {
         statusCode: HttpStatus.CREATED,
         message: systemMessage.ReturnMessage.sucessCreateUserValidationEmail,
       };
-      return returnMessage;
     } catch (error) {
-      console.error(error);
       const errorMessage =
-        error instanceof Error ? error.message : systemMessage.ReturnMessage.errorCreatePost;
+        error instanceof HttpException
+          ? error.message
+          : systemMessage.ReturnMessage.errorCreateUser;
+
+      const status =
+        error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+
+      console.error(error);
       throw new HttpException(
-        `Erro ao criar o post: ${errorMessage}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        `${systemMessage.ReturnMessage.errorCreateUser}: ${errorMessage}`,
+        status,
       );
     }
   }
@@ -56,30 +63,35 @@ export class CreateUserUseCase {
     try {
       const userData = await this.userService.findOneUser('email', token);
 
-      if (userData.statusCode !== 200) {
-        throw new Error('Email não encontrado');
+      if (userData.statusCode !== 200 || !('user' in userData)) {
+        throw new HttpException(
+          systemMessage.ReturnMessage.errorUserNotFound,
+          HttpStatus.NOT_FOUND,
+        );
       }
 
-      if ('user' in userData) {
-        const ChangeStatusUser: Partial<IUser> = {
-          id: userData.user.id,
-          isActive: UserStatus.ACTIVE,
-        };
-        await this.userService.createUpdateUser(ChangeStatusUser);
-      }
+      const ChangeStatusUser: Partial<IUser> = {
+        id: userData.user.id,
+        isActive: UserStatus.ACTIVE,
+      };
+
+      await this.userService.createUpdateUser(ChangeStatusUser);
 
       return {
         statusCode: HttpStatus.CREATED,
-        message: 'Usuário criado com sucesso!',
+        message: systemMessage.ReturnMessage.sucessCreateUser,
       };
     } catch (error) {
       console.error(error);
-      const errorMessage =
-        error instanceof Error ? error.message : systemMessage.ReturnMessage.errorCreatePost;
-      throw new HttpException(
-        `Erro ao criar o post: ${errorMessage}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      const message =
+        error instanceof HttpException
+          ? error.message
+          : systemMessage.ReturnMessage.errorCreateUser;
+
+      const status =
+        error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+
+      throw new HttpException(`${systemMessage.ReturnMessage.errorCreateUser}: ${message}`, status);
     }
   }
 }
