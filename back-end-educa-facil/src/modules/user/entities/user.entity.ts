@@ -1,4 +1,4 @@
-import { Post } from '@modules/post/entities/post.entity';
+import { Post } from '@modules/posts/entities/post.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
