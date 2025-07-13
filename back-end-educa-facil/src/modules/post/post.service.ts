@@ -31,7 +31,7 @@ export class PostService {
     return returnService;
   }
 
-  async listPosts(offset: number, limit: number, search?: string): Promise<ReturnListPostDTO[]> {
+  async listPosts(offset = 0, limit = 10, search?: string): Promise<ReturnListPostDTO[]> {
     const where = search
       ? [
           { title: Like(`%${search}%`) },
@@ -43,26 +43,27 @@ export class PostService {
       where,
       skip: offset,
       take: limit,
-      order: { created_at: 'DESC' },
+      order: { createdAt: 'DESC' },
     });
 
     return posts.map(post => ({
       title: post.title,
       description: post.description,
       introduction: post.description?.substring(0, 100) || '',
-      external_link: '', // Completar se necessário
-      content_hashtags: [], // Completar se necessário
-      style_id: '', // Completar se necessário
+      external_link: '', 
+      content_hashtags: [], 
+      style_id: '', 
       image: post.image,
-      createdAt: post.created_at, // corrigido aqui
-      updatedAt: post.updated_at, // corrigido aqui
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
       total_post,
       author_id: {
-        name: '', // Incluir dados se houver relação com User
+        name: '', 
         email: '',
         social_midia: '',
       },
     }));
+  }
 async UpdatePostService(updatePostData: UpdatePostDTO): Promise<CreateReturnMessageDTO> {
     const post = await this.postRepository.findOneBy({ id: updatePostData.id });
 
@@ -75,7 +76,7 @@ async UpdatePostService(updatePostData: UpdatePostDTO): Promise<CreateReturnMess
 
     const returnService: CreateReturnMessageDTO = {
       message: 'Post atualizado com sucesso',
-      statusCode: '200',
+      statusCode: 200,
     };
     return returnService;
   }
@@ -84,7 +85,24 @@ async UpdatePostService(updatePostData: UpdatePostDTO): Promise<CreateReturnMess
     return this.postRepository.find();
   }
 
-  async getById(id: string): Promise<GetPostDTO[]> {
-    return this.postRepository.find({ where: { id: id } });
-  }
+  async getById(id: string): Promise<GetPostDTO> {
+  const post = await this.postRepository.findOne({ where: { id } });
+
+  if (!post) throw new Error('Post não encontrado');
+
+  return {
+    title: post.title,
+    description: post.description,
+    search_field: post.search_field,
+    introduction: post.introduction,
+    external_link: post.external_link,
+    content_hashtags: post.content_hashtags,
+    style_id: post.style_id,
+    image: post.image,
+    created_at: post.createdAt,
+    updated_at: post.updatedAt,
+    author_name: '', 
+    author_email: '', 
+  };
+}
 }

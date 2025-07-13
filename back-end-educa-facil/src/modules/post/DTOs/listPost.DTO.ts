@@ -3,12 +3,12 @@ import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 export class ListPostDTO {
   @IsOptional()
-  @IsNumberString({}, { message: systemMessage.validation.isNumber })
-  offset?: string;
+  @IsNumberString({}, { message: systemMessage.validation.isNumberString })
+  offset?: number;
 
   @IsOptional()
-  @IsNumberString({}, { message: systemMessage.validation.isNumber })
-  limit?: string;
+  @IsNumberString({}, { message: systemMessage.validation.isNumberString })
+  limit?: number;
 
   @IsOptional()
   @IsString({ message: systemMessage.validation.isString })

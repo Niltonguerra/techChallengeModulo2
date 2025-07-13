@@ -27,13 +27,6 @@ export class Post {
   })
   description: string;
 
-
-  /* //<< when user is done
-  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL', eager: true })
-  @JoinColumn({ name: 'author_id' })
-  author?: User;
-  */
-=======
   @Column({
     type: 'varchar',
     array: true,
@@ -62,7 +55,6 @@ export class Post {
   })
   content_hashtags: string[];
 
-
   @Column({
     type: 'varchar',
     name: 'style_id',
@@ -80,27 +72,16 @@ export class Post {
     name: 'created_at',
     type: 'timestamp with time zone',
   })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamp with time zone',
   })
-  updated_at: Date;
-
-
-  @UpdateDateColumn()
   updatedAt: Date;
 
   @Column('text', { nullable: true })
   search?: string;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  updateSearchField() {
-    const fields = [this.title, this.description, this.authorId, this.image]; /*, this.author.name*/ //<<
-    this.search = fields.filter(Boolean).join(' ').toLowerCase();
-  }
 
   @Column({
     name: 'author_id',
@@ -108,4 +89,15 @@ export class Post {
   })
   author_id?: string;
 
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateSearchField() {
+    const fields = [
+      this.title,
+      this.description,
+      this.author_id,
+      this.image,
+    ];
+    this.search = fields.filter(Boolean).join(' ').toLowerCase();
+  }
 }

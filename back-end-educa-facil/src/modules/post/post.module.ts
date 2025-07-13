@@ -9,7 +9,7 @@ import { GetPostUseCase } from './usecases/getPost.usecase';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 @Module({
   imports: [TypeOrmModule.forFeature([Post])],
-  providers: [PostService, createPostUseCase, UpdatePostUseCase, GetPostUseCase],
+  providers: [PostService, createPostUseCase, UpdatePostUseCase, GetPostUseCase, listPostUseCase],
   controllers: [PostController],
 })
 export class PostModule {}

@@ -14,7 +14,6 @@ import { GetPostUseCase } from './usecases/getPost.usecase';
 @Controller('post')
 export class PostController {
   constructor(
-    private readonly createPostUseCase: createPostUseCase,
     private readonly listPostUseCase: listPostUseCase,
     private readonly createPostUseCase: createPostUseCase,
     private readonly updatePostUseCase: UpdatePostUseCase,
@@ -29,17 +28,11 @@ export class PostController {
   }
 
     @Get()
-  async listPosts(@Query() query: ListPostDTO) {
-    const offset = query.offset ? parseInt(query.offset) : 0;
-    const limit = query.limit ? parseInt(query.limit) : 10;
-
-    return this.listPostUseCase.execute({
-      ...query,
-      offset: offset.toString(),
-      limit: limit.toString(),
-    });
-  }
+async listPosts(@Query() query: ListPostDTO) {
+  return this.listPostUseCase.execute(query); 
 }
+
+
   @Put('update')
   async UpdatePost(@Body() updatePostData: UpdatePostDTO): Promise<CreateReturnMessageDTO> {
     const updatedPost: CreateReturnMessageDTO =
@@ -49,7 +42,7 @@ export class PostController {
     
     
   @Get('id/:id')
-  async getById(@Param('id') id: string): Promise<GetPostDTO[]> {
+  async getById(@Param('id') id: string): Promise<GetPostDTO> {
     return await this.getPostUseCase.getPostUseCaseById(id);
   }
 }

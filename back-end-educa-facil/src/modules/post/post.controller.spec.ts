@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from './post.controller';
 import { createPostUseCase } from './usecases/createPost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
+import { listPostUseCase } from './usecases/listPost.usecase';
+import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
 import { GetPostDTO } from './DTOs/getPost.DTO';
@@ -17,19 +19,35 @@ describe('PostController', () => {
     getPostUseCaseById: jest.fn(),
   };
 
+  const mockListPostUseCase = {
+  execute: jest.fn(),
+};
+
+const mockUpdatePostUseCase = {
+  UpdatePostUseCase: jest.fn(),
+};
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostController],
       providers: [
-        {
-          provide: createPostUseCase,
-          useValue: mockCreatePostUseCase,
-        },
-        {
-          provide: GetPostUseCase,
-          useValue: mockGetPostUseCase,
-        },
-      ],
+  {
+    provide: createPostUseCase,
+    useValue: mockCreatePostUseCase,
+  },
+  {
+    provide: GetPostUseCase,
+    useValue: mockGetPostUseCase,
+  },
+  {
+    provide: listPostUseCase,
+    useValue: mockListPostUseCase,
+  },
+  {
+    provide: UpdatePostUseCase,
+    useValue: mockUpdatePostUseCase,
+  },
+],
     }).compile();
 
     controller = module.get<PostController>(PostController);
@@ -111,4 +129,51 @@ describe('PostController', () => {
       expect(mockGetPostUseCase.getPostUseCaseById).toHaveBeenCalledWith(id);
     });
   });
+
+  describe('listPosts', () => {
+  const query = { search: 'teste', offset: 0, limit: 10 }; 
+
+  const posts = [{ title: 'Post 1' }];
+
+  it('should return list of posts based on query', async () => {
+    mockListPostUseCase.execute.mockResolvedValue(posts);
+
+    const result = await controller.listPosts(query);
+
+    expect(mockListPostUseCase.execute).toHaveBeenCalledWith(query);
+    expect(result).toEqual(posts);
+  });
+});
+
+
+describe('UpdatePost', () => {
+  const dto = {
+    id: 'post123',
+    title: 'Novo título',
+    description: 'Nova descrição',
+  };
+
+  const response: CreateReturnMessageDTO = {
+    message: 'Post atualizado com sucesso',
+    statusCode: 200,
+  };
+
+  it('should update a post and return success message', async () => {
+    mockUpdatePostUseCase.UpdatePostUseCase.mockResolvedValue(response);
+
+    const result = await controller.UpdatePost(dto);
+
+    expect(mockUpdatePostUseCase.UpdatePostUseCase).toHaveBeenCalledWith(dto);
+    expect(result).toEqual(response);
+  });
+
+  it('should propagate errors from update use case', async () => {
+    const error = new Error('Erro ao atualizar post');
+    mockUpdatePostUseCase.UpdatePostUseCase.mockRejectedValue(error);
+
+    await expect(controller.UpdatePost(dto)).rejects.toThrow(error);
+  });
+});
+
+
 });
