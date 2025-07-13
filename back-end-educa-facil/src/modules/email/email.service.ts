@@ -25,15 +25,8 @@ export class EmailService {
 
   EnviaVerificacaoEmail(email: string, url: string): number {
     try {
-      const payload = { email: email };
-
-      const token = this.jwtService.sign(payload, {
-        secret: this.configService.get<string>('SECRET_JWT_EMAIL'),
-        expiresIn: '1h',
-      });
-
       const tituloMensagem = 'Verificação de e-mail do aplicativo MoveSmart';
-      const corpoMensagem = `Clique no link a seguir para verificar seu e-mail: http://localhost:3100/${url}?token=${token}`;
+      const corpoMensagem = `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${url}?token=${email}`;
 
       const mailOptions: SendEmailDTO = {
         from: this.configService.get<string>('EMAIL_USER', ''),

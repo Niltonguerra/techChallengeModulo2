@@ -6,7 +6,6 @@ import { Post } from '@modules/post/entities/post.entity';
 import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { EmailModule } from '@modules/email/email.module';
-import { RabbitMQProjectModule } from '@modules/rabbitMQ/rabbitMQProject.module';
 
 @Module({
   imports: [
@@ -35,7 +34,6 @@ import { RabbitMQProjectModule } from '@modules/rabbitMQ/rabbitMQProject.module'
     UserModule,
     AuthModule,
     EmailModule,
-    RabbitMQProjectModule,
   ],
 })
 export class AppModule {}

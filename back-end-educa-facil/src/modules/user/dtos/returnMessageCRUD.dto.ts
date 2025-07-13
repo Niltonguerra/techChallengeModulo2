@@ -2,6 +2,7 @@ export class FindOneUserReturnMessageDTO {
   statusCode: number;
   message: string;
   user: {
+    id: string;
     name: string;
     photo: string;
     email: string;

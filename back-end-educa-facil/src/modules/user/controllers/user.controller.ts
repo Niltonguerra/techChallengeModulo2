@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards, UsePipes } from '@nestjs/common';
 import { CreateUserDTO } from '../dtos/createUser.dto';
 import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
-import { CreatePostUseCase } from '../usecases/createUser.usecase';
+import { CreateUserUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
 import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
 import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
@@ -12,7 +12,7 @@ import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 @Controller('user')
 export class UserController {
   constructor(
-    private readonly createPostUseCase: CreatePostUseCase,
+    private readonly createPostUseCase: CreateUserUseCase,
     private readonly findOneUserUseCase: FindOneUserUseCase,
   ) {}
 
@@ -20,7 +20,13 @@ export class UserController {
   @UsePipes(HashPasswordPipe)
   async CreateUser(@Body() createPostData: CreateUserDTO): Promise<ReturnMessageDTO> {
     const createPost: ReturnMessageDTO =
-      await this.createPostUseCase.createUserUseCase(createPostData);
+      await this.createPostUseCase.validationEmailCreateUser(createPostData);
+    return createPost;
+  }
+
+  @Get('/validationEmail')
+  async validationEmail(@Query('token') token: string): Promise<ReturnMessageDTO> {
+    const createPost: ReturnMessageDTO = await this.createPostUseCase.create(token);
     return createPost;
   }
 

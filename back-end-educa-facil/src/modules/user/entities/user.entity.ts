@@ -7,11 +7,14 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
+import { UserStatus } from './enum/status.enum';
+import { UserPermission } from './enum/permission.enum';
+import { IUser } from './interfaces/user.interface';
 
 @Entity({
   name: 'User',
 })
-export class User {
+export class User implements IUser {
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
   })
@@ -52,13 +55,13 @@ export class User {
     type: 'varchar',
     name: 'permission',
   })
-  permission: string;
+  permission: UserPermission;
 
   @Column({
-    type: 'boolean',
-    name: 'isActive',
+    type: 'varchar',
+    name: 'is_active',
   })
-  isActive: boolean;
+  isActive: UserStatus;
 
   @Column({
     type: 'boolean',

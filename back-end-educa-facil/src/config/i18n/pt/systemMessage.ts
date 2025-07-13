@@ -30,5 +30,7 @@ export const systemMessage: SystemMessageType = {
     errorGetPostById: 'Erro ao encontrar o post pelo ID',
     errorUserNotFound: 'Usuário não encontrado',
     errorSendEmail: 'Erro ao enviar o e-mail',
+    sucessCreateUserValidationEmail:
+      'Usuário criado com sucesso. Verifique seu e-mail para ativar sua conta.',
   },
 };
