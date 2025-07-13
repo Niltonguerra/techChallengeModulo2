@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity({
@@ -85,5 +86,6 @@ export class Post {
   @ManyToOne(() => User, (user) => user.id, {
     nullable: true,
   })
+  @JoinColumn({ name: 'user_id' })
   user_id: User;
 }

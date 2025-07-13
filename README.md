@@ -62,19 +62,35 @@ comando para criar um modulo em nest com todas as dependências:
 - comando para criar um modulo com um CRUD basico:
 ``nest g resource "nome do modulo a ser criado"``
 
+## Credenciais:
 
-envs(sei que é errado deixar aqui, mas é para simplificar nossa vida):
-AMBIENTE=dev
-DB_HOST_PROD=db
+
+### predenciais de acesso da conta do google:
+email: educacaofacilfiap@gmail.com
+senha: 4c5WG1gW8hxC
+
+
+### envs:
+envs(sei que é errado deixar aqui, mas é para simplificar nossa vida) 
+
+AMBIENTE=PROD
+
 DB_HOST_DEV=localhost
-DB_PORT=5432
-DB_DATABASE=nest_db
-DB_USERNAME=nest_user
-DB_PASSWORD=nest_password
+DB_PORT_DEV=5432
+DB_DATABASE_DEV=nest_db
+DB_USERNAME_DEV=nest_user
+DB_PASSWORD_DEV=nest_password
+
+DB_HOST_PROD=dpg-d1pue3ruibrs73e5n0qg-a.oregon-postgres.render.com
+DB_PORT_PROD=5432
+DB_DATABASE_PROD=educa_facil
+DB_USERNAME_PROD=educa_facil_user
+DB_PASSWORD_PROD=D53q0bvcJlYdA3BECrNW5IHuoeZin9fT
+
 BCRYPT_SALT_ROUNDS=10
 JWT_SECRET=educa_facil
 SECRET_JWT_EMAIL=educa_facil
+JWT_EMAIL_EXPIRES_IN=1h
 JWT_EXPIRES_IN=24h
 EMAIL_USER=educacaofacilfiap@gmail.com
 EMAIL_PASSWORD=svjkqhfvifjqryde
-senha_da_conta=4c5WG1gW8hxC

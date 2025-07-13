@@ -15,20 +15,35 @@ import { EmailModule } from '@modules/email/email.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host:
-          config.get<string>('AMBIENTE') === 'PROD'
-            ? config.get<string>('DB_HOST_PROD')
-            : config.get<string>('DB_HOST_DEV'),
-        port: parseInt(config.get<string>('DB_PORT') ?? '5432', 10),
-        username: config.get<string>('DB_USERNAME'),
-        password: config.get<string>('DB_PASSWORD'),
-        database: config.get<string>('DB_DATABASE'),
-        autoLoadEntities: config.get<string>('AMBIENTE') === 'PROD' ? false : true,
-        synchronize: config.get<string>('AMBIENTE') === 'PROD' ? false : true,
-        entities: [Post],
-      }),
+      useFactory: (config: ConfigService) => {
+        if (config.get<string>('AMBIENTE') === 'PROD') {
+          return {
+            type: 'postgres',
+            host: config.get<string>('DB_HOST_PROD'),
+            port: config.get<number>('DB_PORT_PROD'),
+            username: config.get<string>('DB_USERNAME_PROD'),
+            password: config.get<string>('DB_PASSWORD_PROD'),
+            database: config.get<string>('DB_DATABASE_PROD'),
+            autoLoadEntities: true,
+            synchronize: true,
+            ssl: true,
+            extra: { ssl: { rejectUnauthorized: false } },
+            entities: [Post],
+          };
+        } else {
+          return {
+            type: 'postgres',
+            host: config.get<string>('DB_HOST_DEV'),
+            port: config.get<number>('DB_PORT_DEV'),
+            username: config.get<string>('DB_USERNAME_DEV'),
+            password: config.get<string>('DB_PASSWORD_DEV'),
+            database: config.get<string>('DB_DATABASE_DEV'),
+            autoLoadEntities: true,
+            synchronize: true,
+            entities: [Post],
+          };
+        }
+      },
     }),
     PostModule,
     UserModule,

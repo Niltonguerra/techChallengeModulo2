@@ -7,7 +7,7 @@ import { CreatePostUseCase } from './usecases/createPost.usecase';
 import { CreatePostDTO } from './dtos/createPost.DTO';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
-@Controller()
+@Controller('post')
 export class PostController {
   constructor(
     private readonly createPostUseCase: CreatePostUseCase,
