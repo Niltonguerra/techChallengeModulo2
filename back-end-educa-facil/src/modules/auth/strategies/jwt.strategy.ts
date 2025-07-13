@@ -5,11 +5,9 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from '../dtos/JwtPayload.dto';
 
 @Injectable()
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 export class JwtStrategyUser extends PassportStrategy(Strategy, 'jwt-user') {
   private readonly logger = new Logger(JwtStrategyUser.name);
   constructor(private readonly configService: ConfigService) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,

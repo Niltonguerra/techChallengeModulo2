@@ -10,7 +10,6 @@ import {
   Length,
 } from 'class-validator';
 import { UserPermission } from '../entities/enum/permission.enum';
-import { UserStatus } from '../entities/enum/status.enum';
 
 export class CreateUserDTO {
   @IsString({ message: systemMessage.validation.isString })
