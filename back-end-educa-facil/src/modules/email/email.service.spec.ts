@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Logger } from '@nestjs/common';
 import { EmailService } from './email.service';
 import * as nodemailer from 'nodemailer';
-import { Transporter } from 'nodemailer';
 
 // Mock do nodemailer
 jest.mock('nodemailer');
@@ -30,6 +29,11 @@ describe('EmailService', () => {
       get: jest.fn(),
     };
 
+    // Set the mock return values BEFORE module creation
+    mockConfigService.get
+      .mockReturnValueOnce('test@gmail.com') // EMAIL_USER
+      .mockReturnValueOnce('testpassword'); // EMAIL_PASSWORD
+
     // Mock do JwtService
     const mockJwtService = {
       sign: jest.fn(),
@@ -52,11 +56,6 @@ describe('EmailService', () => {
 
     service = module.get<EmailService>(EmailService);
     configService = module.get(ConfigService);
-
-    // Mock das variáveis de ambiente
-    configService.get
-      .mockReturnValueOnce('test@gmail.com') // EMAIL_USER
-      .mockReturnValueOnce('testpassword'); // EMAIL_PASSWORD
 
     // Mock do logger
     loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});

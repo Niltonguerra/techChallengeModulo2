@@ -7,12 +7,8 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdatePostDTO } from './DTOs/updatePost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-<<<<<<< HEAD
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-=======
 import { GetPostDTO } from './DTOs/getPost.DTO';
-
->>>>>>> origin/main
 
 @Injectable()
 export class PostService {
@@ -32,7 +28,7 @@ export class PostService {
     return returnService;
   }
 
-  async UpdatePostService(updatePostData: UpdatePostDTO): Promise<CreateReturnMessageDTO> {
+  async UpdatePostService(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     const post = await this.postRepository.findOneBy({ id: updatePostData.id });
 
     if (!post) {
@@ -42,9 +38,9 @@ export class PostService {
     Object.assign(post, updatePostData);
     await this.postRepository.save(post);
 
-    const returnService: CreateReturnMessageDTO = {
+    const returnService: ReturnMessageDTO = {
       message: 'Post atualizado com sucesso',
-      statusCode: '200',
+      statusCode: 200,
     };
     return returnService;
   }

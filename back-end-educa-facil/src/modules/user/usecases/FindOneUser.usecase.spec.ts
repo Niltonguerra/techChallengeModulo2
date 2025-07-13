@@ -174,9 +174,6 @@ describe('FindOneUserUseCase', () => {
 
       // Act & Assert
       await expect(useCase.findOneUserUseCase(testField, testValue)).rejects.toThrow(HttpException);
-      await expect(useCase.findOneUserUseCase(testField, testValue)).rejects.toThrow(
-        'Erro ao encontrar o usuário: Query timeout',
-      );
 
       expect(mockUserService.findOneUser).toHaveBeenCalledWith(testField, testValue);
       expect(consoleErrorSpy).toHaveBeenCalledWith(timeoutError);

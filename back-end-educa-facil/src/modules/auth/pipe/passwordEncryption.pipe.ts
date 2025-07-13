@@ -1,16 +1,10 @@
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { BadRequestException, Injectable, Logger, PipeTransform } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class HashPasswordPipe implements PipeTransform {
   private readonly logger = new Logger(HashPasswordPipe.name);
-  private readonly saltRounds: number;
-
-  constructor(private readonly configService: ConfigService) {
-    this.saltRounds = 10;
-  }
 
   async transform(value: { password?: string }): Promise<{ password: string }> {
     if (!value || typeof value !== 'object') {
@@ -26,7 +20,7 @@ export class HashPasswordPipe implements PipeTransform {
     }
 
     try {
-      const hashedPassword = await bcrypt.hash(value.password, this.saltRounds);
+      const hashedPassword = await bcrypt.hash(value.password, 10);
       return {
         ...value,
         password: hashedPassword,

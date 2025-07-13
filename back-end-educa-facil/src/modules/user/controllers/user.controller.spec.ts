@@ -47,6 +47,7 @@ describe('UserController', () => {
           provide: RolesGuardProfessor,
           useValue: { canActivate: jest.fn().mockReturnValue(true) },
         },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         { provide: HashPasswordPipe, useValue: { transform: jest.fn((v) => v) } },
         { provide: ConfigService, useValue: {} },
         { provide: Reflector, useValue: {} },

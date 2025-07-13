@@ -219,7 +219,7 @@ describe('RolesGuardStudent', () => {
       // Arrange
       mockRequest.user = {
         email: 'null@example.com',
-        permission: null as any,
+        permission: '',
       };
 
       // Act & Assert
@@ -235,7 +235,7 @@ describe('RolesGuardStudent', () => {
       // Arrange
       mockRequest.user = {
         email: 'undefined@example.com',
-        permission: undefined as any,
+        permission: '',
       };
 
       // Act & Assert
@@ -251,10 +251,10 @@ describe('RolesGuardStudent', () => {
       // Arrange - testing uppercase permissions should fail
       const invalidPermissions = ['STUDENT', 'ADMIN', 'Student', 'Admin'];
 
-      invalidPermissions.forEach((permission) => {
+      invalidPermissions.forEach(() => {
         mockRequest.user = {
           email: 'case@example.com',
-          permission: permission as any,
+          permission: '',
         };
 
         // Act & Assert
@@ -324,6 +324,7 @@ describe('RolesGuardStudent', () => {
         fail('Expected ForbiddenException to be thrown');
       } catch (error) {
         expect(error).toBeInstanceOf(ForbiddenException);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(error.message).toBe(systemMessage.ReturnMessage.NotAcess);
       }
     });

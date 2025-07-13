@@ -20,7 +20,7 @@ export class FindOneUserUseCase {
       const errorMessage =
         error instanceof Error ? error.message : systemMessage.ReturnMessage.errorUserNotFound;
       throw new HttpException(
-        `${systemMessage.ReturnMessage.errorFindUser} ${errorMessage}`,
+        `${systemMessage.ReturnMessage.errorFindUser}: ${errorMessage}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

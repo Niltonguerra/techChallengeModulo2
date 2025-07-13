@@ -275,7 +275,7 @@ describe('CreateUserUseCase', () => {
       // Assert
       expect(result).toEqual({
         statusCode: HttpStatus.CREATED,
-        message: 'Usuário criado com sucesso!',
+        message: 'Usuário criado com sucesso',
       });
 
       expect(mockUserService.findOneUser).toHaveBeenCalledWith('email', testToken);

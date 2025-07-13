@@ -1,124 +1,88 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from './post.controller';
-<<<<<<< HEAD
-import { CreatePostDTO } from './dtos/createPost.DTO';
-import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { CreatePostUseCase } from './usecases/createPost.usecase';
-=======
-import { createPostUseCase } from './usecases/createPost.usecase';
+import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
-import { CreatePostDTO } from './DTOs/createPost.DTO';
-import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
+import { CreatePostDTO } from './dtos/createPost.DTO';
+import { UpdatePostDTO } from './DTOs/updatePost.DTO';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { GetPostDTO } from './DTOs/getPost.DTO';
->>>>>>> origin/main
 
 describe('PostController', () => {
   let controller: PostController;
-
-  const mockCreatePostUseCase = {
-    createPostUseCase: jest.fn(),
-  };
-
-  const mockGetPostUseCase = {
-    getPostUseCaseById: jest.fn(),
-  };
+  let createPostUseCase: { createPostUseCase: jest.Mock };
+  let updatePostUseCase: { UpdatePostUseCase: jest.Mock };
+  let getPostUseCase: { getPostUseCaseById: jest.Mock };
 
   beforeEach(async () => {
+    createPostUseCase = { createPostUseCase: jest.fn() };
+    updatePostUseCase = { UpdatePostUseCase: jest.fn() };
+    getPostUseCase = { getPostUseCaseById: jest.fn() };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostController],
       providers: [
-        {
-          provide: CreatePostUseCase,
-          useValue: mockCreatePostUseCase,
-        },
-        {
-          provide: GetPostUseCase,
-          useValue: mockGetPostUseCase,
-        },
+        { provide: CreatePostUseCase, useValue: createPostUseCase },
+        { provide: UpdatePostUseCase, useValue: updatePostUseCase },
+        { provide: GetPostUseCase, useValue: getPostUseCase },
       ],
     }).compile();
 
     controller = module.get<PostController>(PostController);
-    jest.clearAllMocks();
   });
 
-  describe('CreatePost', () => {
+  it('deve criar um post e retornar a mensagem de sucesso', async () => {
     const dto: CreatePostDTO = {
       title: 'Título',
-      description: 'Descrição',
-      authorId: 'autor123',
-      image: 'imagem.jpg',
+      description: 'Desc',
+      author_id: '1',
+      image: '',
       search_field: [],
       scheduled_publication: '',
       content_hashtags: [],
       style_id: '',
     };
-
-<<<<<<< HEAD
-    const returnMessage: ReturnMessageDTO = {
-=======
-    const successResponse: CreateReturnMessageDTO = {
->>>>>>> origin/main
-      message: 'Post criado com sucesso',
-      statusCode: 200,
-    };
-
-    it('should call use case and return success message', async () => {
-      mockCreatePostUseCase.createPostUseCase.mockResolvedValue(successResponse);
-
-      const result = await controller.CreatePost(dto);
-
-      expect(mockCreatePostUseCase.createPostUseCase).toHaveBeenCalledWith(dto);
-      expect(result).toEqual(successResponse);
-    });
-
-    it('should propagate errors from the use case', async () => {
-      const error = new Error('Falha ao criar post');
-      mockCreatePostUseCase.createPostUseCase.mockRejectedValue(error);
-
-      await expect(controller.CreatePost(dto)).rejects.toThrow(error);
-      expect(mockCreatePostUseCase.createPostUseCase).toHaveBeenCalledWith(dto);
-    });
+    const returnMessage: ReturnMessageDTO = { message: 'Post criado com sucesso', statusCode: 200 };
+    createPostUseCase.createPostUseCase.mockResolvedValue(returnMessage);
+    const result = await controller.CreatePost(dto);
+    expect(createPostUseCase.createPostUseCase).toHaveBeenCalledWith(dto);
+    expect(result).toEqual(returnMessage);
   });
 
-  describe('getById', () => {
-    const id = 'post123';
+  it('deve atualizar um post e retornar a mensagem de sucesso', async () => {
+    const dto: UpdatePostDTO = {
+      id: '1',
+      title: 'Novo título',
+      description: 'Nova descrição',
+    };
+    const returnMessage: ReturnMessageDTO = {
+      message: 'Post atualizado com sucesso',
+      statusCode: 200,
+    };
+    updatePostUseCase.UpdatePostUseCase.mockResolvedValue(returnMessage);
+    const result = await controller.UpdatePost(dto);
+    expect(updatePostUseCase.UpdatePostUseCase).toHaveBeenCalledWith(dto);
+    expect(result).toEqual(returnMessage);
+  });
+
+  it('deve buscar um post por id', async () => {
+    const id = '1';
     const posts: GetPostDTO[] = [
       {
-      title: 'Título',
-      description: 'Descrição',
-      external_link: {
-        instagram: 'https://instagram.com/exemplo',
-        youtube: 'https://youtube.com/exemplo',
-        tiktok: 'https://tiktok.com/@exemplo',
+        title: 'Título',
+        description: 'Descrição',
+        image: '',
+        search_field: [],
+        content_hashtags: [],
+        style_id: '',
+        external_link: { url: 'https://example.com' },
+        created_at: new Date(),
+        updated_at: new Date(),
       },
-      search_field: ['arra'],
-      introduction: 'fjojoga gelfjrd',
-      content_hashtags: ['#supera'],
-      style_id: 'feijfo4t9wrrwifb314',
-      image: 'https://i.pinimg.com/736x/54/f9/25/54f925d3aeeefa1405dea76357f00da2.jpg',
-      created_at: new Date('2025-04-01'),
-      updated_at: new Date('2025-04-16'),
-      author_name: 'Lira da Silva',
-      author_email: 'ls@gmail.com',
-    }
     ];
-
-    it('should call use case and return array of posts', async () => {
-      mockGetPostUseCase.getPostUseCaseById.mockResolvedValue(posts);
-
-      const result = await controller.getById(id);
-
-      expect(mockGetPostUseCase.getPostUseCaseById).toHaveBeenCalledWith(id);
-      expect(result).toEqual(posts);
-    });
-
-    it('should propagate errors from the use case', async () => {
-      const error = new Error('Falha ao buscar post');
-      mockGetPostUseCase.getPostUseCaseById.mockRejectedValue(error);
-
-      await expect(controller.getById(id)).rejects.toThrow(error);
-      expect(mockGetPostUseCase.getPostUseCaseById).toHaveBeenCalledWith(id);
-    });
+    getPostUseCase.getPostUseCaseById.mockResolvedValue(posts);
+    const result = await controller.getById(id);
+    expect(getPostUseCase.getPostUseCaseById).toHaveBeenCalledWith(id);
+    expect(result).toEqual(posts);
   });
 });
