@@ -43,7 +43,7 @@ export class PostService {
       where,
       skip: offset,
       take: limit,
-      order: { createdAt: 'DESC' },
+      order: { created_at: 'DESC' } as any,
     });
 
     return posts.map(post => ({
@@ -54,8 +54,8 @@ export class PostService {
       content_hashtags: [], 
       style_id: '', 
       image: post.image,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
+      created_at: post.created_at,
+      updated_at: post.updated_at,
       total_post,
       author_id: {
         name: '', 
@@ -99,8 +99,8 @@ async UpdatePostService(updatePostData: UpdatePostDTO): Promise<CreateReturnMess
     content_hashtags: post.content_hashtags,
     style_id: post.style_id,
     image: post.image,
-    created_at: post.createdAt,
-    updated_at: post.updatedAt,
+    created_at: post.created_at,
+    updated_at: post.updated_at,
     author_name: '', 
     author_email: '', 
   };

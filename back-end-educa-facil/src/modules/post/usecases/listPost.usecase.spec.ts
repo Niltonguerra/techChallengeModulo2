@@ -36,8 +36,8 @@ describe('listPostUseCase', () => {
         content_hashtags: [],
         style_id: '',
         image: 'img.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
         total_post: 1,
         author_id: {
           name: '',

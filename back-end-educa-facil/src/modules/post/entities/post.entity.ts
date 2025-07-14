@@ -72,13 +72,13 @@ export class Post {
     name: 'created_at',
     type: 'timestamp with time zone',
   })
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamp with time zone',
   })
-  updatedAt: Date;
+  updated_at: Date;
 
   @Column('text', { nullable: true })
   search?: string;

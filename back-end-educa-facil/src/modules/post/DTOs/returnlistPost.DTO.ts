@@ -1,4 +1,4 @@
-export class ReturnListPostDTO {
+export interface ReturnListPostDTO {
   title: string;
   description: string;
   introduction: string;
@@ -6,8 +6,8 @@ export class ReturnListPostDTO {
   content_hashtags: string[];
   style_id: string;
   image?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
   total_post: number;
   author_id: {
     name: string;
