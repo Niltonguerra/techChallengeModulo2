@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CreateReturnMessageDTO } from './DTOs/returnMessage.DTO';
-import { CreatePostDTO } from './DTOs/createPost.DTO';
+
+import { CreatePostDTO } from './dtos/createPost.DTO';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdatePostDTO } from './DTOs/updatePost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { GetPostDTO } from './DTOs/getPost.DTO';
-
 
 @Injectable()
 export class PostService {
@@ -17,18 +17,18 @@ export class PostService {
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  async createPostService(createPostData: CreatePostDTO): Promise<CreateReturnMessageDTO> {
+  async createPostService(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const post = this.postRepository.create({ id: uuidv4(), ...createPostData });
 
     await this.postRepository.save(post);
-    const returnService: CreateReturnMessageDTO = {
-      message: systemMessage.ReturnMessage.sucessPost,
+    const returnService: ReturnMessageDTO = {
+      message: systemMessage.ReturnMessage.sucessCreatePost,
       statusCode: 200,
     };
     return returnService;
   }
 
-  async UpdatePostService(updatePostData: UpdatePostDTO): Promise<CreateReturnMessageDTO> {
+  async UpdatePostService(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     const post = await this.postRepository.findOneBy({ id: updatePostData.id });
 
     if (!post) {
@@ -38,9 +38,9 @@ export class PostService {
     Object.assign(post, updatePostData);
     await this.postRepository.save(post);
 
-    const returnService: CreateReturnMessageDTO = {
+    const returnService: ReturnMessageDTO = {
       message: 'Post atualizado com sucesso',
-      statusCode: '200',
+      statusCode: 200,
     };
     return returnService;
   }

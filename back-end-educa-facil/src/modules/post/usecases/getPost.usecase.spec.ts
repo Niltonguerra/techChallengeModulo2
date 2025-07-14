@@ -10,6 +10,7 @@ describe('GetPostByIdUseCase', () => {
   };
 
   beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     useCase = new GetPostUseCase(mockPostService as any);
     jest.clearAllMocks();
   });

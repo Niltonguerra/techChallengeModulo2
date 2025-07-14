@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   api:
-    build: 
+    build:
       context: ../back-end-educa-facil
       dockerfile: Dockerfile
     container_name: nest_api
@@ -12,5 +12,3 @@ services:
       - rabbitmq
     ports:
       - "3000:3000"
-    environment:
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672

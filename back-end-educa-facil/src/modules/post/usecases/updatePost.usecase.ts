@@ -1,13 +1,13 @@
 import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PostService } from '../post.service';
-import { UpdateReturnMessageDTO } from '../DTOs/returnMessage.DTO';
 import { UpdatePostDTO } from '../DTOs/updatePost.DTO';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
 @Injectable()
 export class UpdatePostUseCase {
   constructor(private readonly postService: PostService) {}
 
-  async UpdatePostUseCase(updatePostData: UpdatePostDTO): Promise<UpdateReturnMessageDTO> {
+  async UpdatePostUseCase(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     try {
       const post = await this.postService.UpdatePostService(updatePostData);
       return post;

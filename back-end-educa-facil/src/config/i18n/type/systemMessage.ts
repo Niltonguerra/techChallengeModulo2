@@ -10,10 +10,20 @@ export type SystemMessageType = {
     isUrl: string;
     isArray: string;
     isObject: string;
+    isBoolean: string;
   };
   ReturnMessage: {
-    sucessPost: string;
-    errorPost: string;
+    FailedToProcessPassword: string;
+    isObject: string;
+    isnotEmptyPassword: string;
+    NotAcess: string;
+    errorFindUser: string;
+    errorCreateUser: string;
+    errorlogin: string;
+    sucessCreatePost: string;
+    sucessCreateUser: string;
+    sucessCreateUserValidationEmail: string;
+    errorCreatePost: string;
     sucessUpdatePost: string;
     errorUpdatePost: string;
     sucessDeletePost: string;
@@ -24,5 +34,7 @@ export type SystemMessageType = {
     errorGetPosts: string;
     sucessGetPostById: string;
     errorGetPostById: string;
+    errorUserNotFound: string;
+    errorSendEmail: string;
   };
 };

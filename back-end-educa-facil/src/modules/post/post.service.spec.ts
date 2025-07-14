@@ -3,7 +3,7 @@ import { PostService } from './post.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDTO } from './DTOs/createPost.DTO';
+import { CreatePostDTO } from './dtos/createPost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 describe('PostService', () => {
@@ -15,6 +15,7 @@ describe('PostService', () => {
     create: jest.fn(),
     save: jest.fn(),
     find: jest.fn(),
+    findOneBy: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -54,7 +55,7 @@ describe('PostService', () => {
     expect(mockRepository.create).toHaveBeenCalledWith(expect.objectContaining(dto));
     expect(mockRepository.save).toHaveBeenCalledWith(postCriado);
     expect(result).toEqual({
-      message: systemMessage.ReturnMessage.sucessPost,
+      message: systemMessage.ReturnMessage.sucessCreatePost,
       statusCode: 200,
     });
   });
@@ -70,5 +71,33 @@ describe('PostService', () => {
 
     expect(mockRepository.find).toHaveBeenCalled();
     expect(result).toEqual(posts);
+  });
+
+  it('deve atualizar um post existente', async () => {
+    const dto = { id: '1', title: 'novo' };
+    const fakePost = { id: '1', title: 'antigo' };
+    mockRepository.findOneBy.mockResolvedValue(fakePost);
+    mockRepository.save.mockResolvedValue({ ...fakePost, ...dto });
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const result = await service.UpdatePostService(dto as any);
+    expect(mockRepository.findOneBy).toHaveBeenCalledWith({ id: dto.id });
+    expect(mockRepository.save).toHaveBeenCalledWith({ ...fakePost, ...dto });
+    expect(result).toEqual({ message: 'Post atualizado com sucesso', statusCode: 200 });
+  });
+
+  it('deve lançar erro se tentar atualizar post inexistente', async () => {
+    mockRepository.findOneBy.mockResolvedValue(null);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    await expect(service.UpdatePostService({ id: 'notfound' } as any)).rejects.toThrow(
+      'Post não encontrado',
+    );
+  });
+
+  it('deve buscar post por id', async () => {
+    mockRepository.find.mockResolvedValue([{ id: '1' }]);
+    const result = await service.getById('1');
+    expect(result).toEqual([{ id: '1' }]);
+    expect(mockRepository.find).toHaveBeenCalledWith({ where: { id: '1' } });
   });
 });

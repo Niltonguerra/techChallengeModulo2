@@ -31,8 +31,8 @@ export class CreatePostDTO {
   scheduled_publication: string;
 
   @IsOptional()
-  @IsString({ message: validationText.validation.IsString })
-  @Length(1, 100, { message: validationText.validation.Length })
+  @IsString({ message: systemMessage.validation.isString })
+  @Length(1, 100, { message: systemMessage.validation.Length })
   authorId?: string;
 
   @IsString({ message: systemMessage.validation.isString })
