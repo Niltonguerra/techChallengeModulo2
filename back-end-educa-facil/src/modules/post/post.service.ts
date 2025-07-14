@@ -43,7 +43,7 @@ export class PostService {
       where,
       skip: offset,
       take: limit,
-      order: { created_at: 'DESC' } as any,
+      order: { created_at: 'DESC' },
     });
 
     return posts.map(post => ({
