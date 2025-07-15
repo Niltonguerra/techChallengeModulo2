@@ -75,6 +75,10 @@ envs(sei que é errado deixar aqui, mas é para simplificar nossa vida)
 
 AMBIENTE=PROD
 
+        
+
+envs(sei que é errado deixar aqui, mas é para simplificar nossa vida):
+AMBIENTE=dev
 DB_HOST_DEV=localhost
 DB_PORT_DEV=5432
 DB_DATABASE_DEV=nest_db

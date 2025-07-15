@@ -13,6 +13,7 @@ export const systemMessage: SystemMessageType = {
     isArray: 'O campo $property deve ser um array.',
     isObject: 'O campo $property deve ser um objeto.',
     isBoolean: 'O campo $property deve ser um valor booleano.',
+    isNumberString: 'O campo $property deve ser um número.',
   },
   ReturnMessage: {
     FailedToProcessPassword: 'Falha ao processar a senha.',

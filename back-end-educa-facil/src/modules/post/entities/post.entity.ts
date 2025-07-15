@@ -7,6 +7,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 
 @Entity({
@@ -88,4 +90,18 @@ export class Post {
   })
   @JoinColumn({ name: 'user_id' })
   user_id: User;
+  @Column('text', { nullable: true })
+  search?: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateSearchField() {
+    const fields = [
+      this.title,
+      this.description,
+      this.user_id,
+      this.image,
+    ];
+    this.search = fields.filter(Boolean).join(' ').toLowerCase();
+  }
 }

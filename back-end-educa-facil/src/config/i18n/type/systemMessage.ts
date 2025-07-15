@@ -11,6 +11,7 @@ export type SystemMessageType = {
     isArray: string;
     isObject: string;
     isBoolean: string;
+    isNumberString: string;
   };
   ReturnMessage: {
     FailedToProcessPassword: string;
