@@ -31,8 +31,8 @@ describe('GetPostByIdUseCase', () => {
       image: 'https://i.pinimg.com/736x/54/f9/25/54f925d3aeeefa1405dea76357f00da2.jpg',
       created_at: new Date('2025-04-01'),
       updated_at: new Date('2025-04-16'),
-      author_name: 'Lira da Silva',
-      author_email: 'ls@gmail.com',
+      user_name: 'Lira da Silva',
+      user_email: 'ls@gmail.com',
     };
 
     mockPostService.getById.mockResolvedValue(postMock);

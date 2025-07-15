@@ -8,7 +8,12 @@ import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { ApiBearerAuth, ApiBody, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiTags('User')
+@ApiUnauthorizedResponse({description: 'Unauthorized', type: ReturnMessageDTO})
+@ApiInternalServerErrorResponse({description: 'Internal Server Error', type: ReturnMessageDTO})
 @Controller('user')
 export class UserController {
   constructor(
@@ -17,7 +22,12 @@ export class UserController {
   ) {}
 
   @Post('create')
+  @UseGuards(AuthGuard('jwt-user'))
+  @ApiBearerAuth('JWT-Auth')
   @UsePipes(HashPasswordPipe)
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiOkResponse({ type: ReturnMessageDTO, isArray: false })
+  @ApiBody({ type: CreateUserDTO })
   async CreateUser(@Body() createPostData: CreateUserDTO): Promise<ReturnMessageDTO> {
     const createPost: ReturnMessageDTO =
       await this.createPostUseCase.validationEmailCreateUser(createPostData);
@@ -25,13 +35,18 @@ export class UserController {
   }
 
   @Get('/validationEmail')
+  @ApiOperation({ summary: 'Validation email' })
+  @ApiOkResponse({ type: ReturnMessageDTO, isArray: false })
   async validationEmail(@Query('token') token: string): Promise<ReturnMessageDTO> {
     const createPost: ReturnMessageDTO = await this.createPostUseCase.create(token);
     return createPost;
   }
 
   @Get('findOne')
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
+  @ApiOperation({ summary: 'Search find one' })
+  @ApiOkResponse({ type: FindOneUserReturnMessageDTO, isArray: false })
   async FindOne(
     @Query() queryParams: FindOneUserQueryParamsDTO,
   ): Promise<FindOneUserReturnMessageDTO | ReturnMessageDTO> {

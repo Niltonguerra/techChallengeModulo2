@@ -1,12 +1,32 @@
+import { ApiProperty } from '@nestjs/swagger';
+
+export class UserDTO {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  photo: string;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  social_midia: Record<string, string>;
+
+  @ApiProperty()
+  notification: boolean;
+}
+
 export class FindOneUserReturnMessageDTO {
+  @ApiProperty()
   statusCode: number;
+
+  @ApiProperty()
   message: string;
-  user: {
-    id: string;
-    name: string;
-    photo: string;
-    email: string;
-    social_midia: Record<string, string>;
-    notification: boolean;
-  };
+
+  @ApiProperty()
+  user: UserDTO;
 }

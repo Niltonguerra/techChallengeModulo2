@@ -94,3 +94,6 @@ JWT_EMAIL_EXPIRES_IN=1h
 JWT_EXPIRES_IN=24h
 EMAIL_USER=educacaofacilfiap@gmail.com
 EMAIL_PASSWORD=svjkqhfvifjqryde
+
+SWAGGER_USER=admin
+SWAGGER_PASS=admin123
