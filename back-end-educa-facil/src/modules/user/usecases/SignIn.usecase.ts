@@ -36,21 +36,21 @@ export class SignInUseCase {
   private async validateUser(
     email: string,
     password: string,
-  ): Promise<LoginUsuarioInternoDTO | null> {
+  ): Promise<LoginUsuarioInternoDTO | false> {
     const user = await this.userService.findOneUserLogin(email);
 
-    if (user!.isActive === UserStatus.PENDING) {
-      return null;
+    if (!user) {
+      throw new UnauthorizedException(systemMessage.ReturnMessage.errorlogin);
     }
 
-    if (!user) {
-      return null;
+    if (user.isActive === UserStatus.PENDING) {
+      return false;
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return null;
+      return false;
     }
     return user;
   }
