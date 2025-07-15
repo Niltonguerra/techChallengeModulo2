@@ -10,6 +10,7 @@ import {
   IsUrl,
 } from 'class-validator';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { validationText } from '@config/i18n/pt/validation';
 
 export class CreatePostDTO {
   @IsString({ message: systemMessage.validation.isString })
@@ -31,8 +32,8 @@ export class CreatePostDTO {
   scheduled_publication: string;
 
   @IsOptional()
-  @IsString({ message: validationText.validation.IsString })
-  @Length(1, 100, { message: validationText.validation.Length })
+  @IsString({ message: validationText.validation.isString })
+  @Length(1, 100, { message: validationText.validation.length })
   authorId?: string;
 
   @IsString({ message: systemMessage.validation.isString })

@@ -8,6 +8,7 @@ import { UpdatePostDTO } from './DTOs/updatePost.DTO';
 import { GetPostDTO } from './DTOs/getPost.DTO';
 import { GetPostUseCase } from './usecases/getPost.usecase';
 
+
 @Controller()
 export class PostController {
   constructor(
@@ -17,6 +18,7 @@ export class PostController {
     private readonly getPostUseCase: GetPostUseCase,
   ) { }
 
+
   @Post('create')
   async CreatePost(@Body() createPostData: CreatePostDTO): Promise<CreateReturnMessageDTO> {
     const createPost: CreateReturnMessageDTO =
@@ -24,11 +26,13 @@ export class PostController {
     return createPost;
   }
 
+
   @Delete(':id')
   async deletePost(@Param('id') id: string): Promise<DeleteReturnMessageDTO> {
     const deletePost: DeleteReturnMessageDTO = await this.deletePostUseCase.deletePostUseCase(id);
     return deletePost;
   }
+
 
   // edit post, type put
   @Put('update')
@@ -39,10 +43,17 @@ export class PostController {
   }
 
 
+
+
   @Get('id/:id')
   async getById(@Param('id') id: string): Promise<GetPostDTO[]> {
     return await this.getPostUseCase.getPostUseCaseById(id);
   }
 }
+
+
+
+
+
 
 

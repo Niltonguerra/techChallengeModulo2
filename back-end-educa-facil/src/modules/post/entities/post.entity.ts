@@ -33,7 +33,7 @@ export class Post {
   @JoinColumn({ name: 'author_id' })
   author?: User;
   */
-=======
+
   @Column({
     type: 'varchar',
     array: true,
@@ -98,7 +98,7 @@ export class Post {
   @BeforeInsert()
   @BeforeUpdate()
   updateSearchField() {
-    const fields = [this.title, this.description, this.authorId, this.image]; /*, this.author.name*/ //<<
+    const fields = [this.title, this.description, this.author_id, this.image]; /*, this.author.name*/ //<<
     this.search = fields.filter(Boolean).join(' ').toLowerCase();
   }
 

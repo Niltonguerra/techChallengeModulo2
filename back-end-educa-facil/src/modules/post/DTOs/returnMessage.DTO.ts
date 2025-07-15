@@ -4,9 +4,10 @@ export class CreateReturnMessageDTO {
 }
 
 export class DeleteReturnMessageDTO {
+  message: string;
   statusCode: number;
 }
 export class UpdateReturnMessageDTO {
-  statusCode: string;
+  statusCode: number;
   message: string;
 }
