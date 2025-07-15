@@ -16,6 +16,7 @@ describe('PostService', () => {
     save: jest.fn(),
     find: jest.fn(),
     findOneBy: jest.fn(),
+    findOne: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -95,9 +96,22 @@ describe('PostService', () => {
   });
 
   it('deve buscar post por id', async () => {
-    mockRepository.find.mockResolvedValue([{ id: '1' }]);
-    const result = await service.getById('1');
-    expect(result).toEqual([{ id: '1' }]);
-    expect(mockRepository.find).toHaveBeenCalledWith({ where: { id: '1' } });
-  });
+  const fakePost = [{
+    id: '1',
+    title: 'Post 1',
+    description: 'Desc 1',
+    image: 'imagem.jpg',
+    created_at: new Date('2025-07-15T17:49:03.107Z'),
+    updated_at: new Date('2025-07-15T17:49:03.107Z'),
+  }];
+
+  mockRepository.find.mockResolvedValue(fakePost); // <-- certo agora
+
+  const result = await service.getById('1');
+
+  expect(mockRepository.find).toHaveBeenCalledWith({ where: { id: '1' } }); // <-- agora passa
+
+  expect(result).toEqual(fakePost); // ou adapte conforme necessário
 });
+})
+

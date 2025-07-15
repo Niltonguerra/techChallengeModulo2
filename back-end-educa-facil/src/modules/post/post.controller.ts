@@ -41,7 +41,7 @@ async listPosts(@Query() query: ListPostDTO) {
   }
 
   @Get('id/:id')
-  async getById(@Param('id') id: string): Promise<GetPostDTO> {
+  async getById(@Param('id') id: string): Promise<GetPostDTO[]> {
     return await this.getPostUseCase.getPostUseCaseById(id);
   }
 }

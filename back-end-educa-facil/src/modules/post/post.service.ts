@@ -85,24 +85,8 @@ async UpdatePostService(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO
     return this.postRepository.find();
   }
 
-  async getById(id: string): Promise<GetPostDTO> {
-  const post = await this.postRepository.findOne({ where: { id } });
-
-  if (!post) throw new Error('Post não encontrado');
-
-  return {
-    title: post.title,
-    description: post.description,
-    search_field: post.search_field,
-    introduction: post.introduction,
-    external_link: post.external_link,
-    content_hashtags: post.content_hashtags,
-    style_id: post.style_id,
-    image: post.image,
-    created_at: post.created_at,
-    updated_at: post.updated_at,
-    author_name: '', 
-    author_email: '', 
-  };
+  async getById(id: string): Promise<GetPostDTO[]> {
+  return this.postRepository.find({ where: { id } }); 
 }
+
 }
