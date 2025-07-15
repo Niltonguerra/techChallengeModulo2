@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/AuthUser.dto';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { UserStatus } from '../entities/enum/status.enum';
 
 @Injectable()
 export class SignInUseCase {
@@ -37,6 +38,10 @@ export class SignInUseCase {
     password: string,
   ): Promise<LoginUsuarioInternoDTO | null> {
     const user = await this.userService.findOneUserLogin(email);
+
+    if (user!.isActive === UserStatus.PENDING) {
+      return null;
+    }
 
     if (!user) {
       return null;
