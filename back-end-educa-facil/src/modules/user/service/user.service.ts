@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
@@ -30,20 +30,13 @@ export class UserService {
     return returnService;
   }
 
-  async findOneUser(
-    field: string,
-    value: string,
-  ): Promise<FindOneUserReturnMessageDTO | ReturnMessageDTO> {
+  async findOneUser(field: string, value: string): Promise<FindOneUserReturnMessageDTO> {
     const user = await this.userRepository.findOne({
       where: { [field]: value },
     });
 
     if (!user) {
-      const returnMessage: ReturnMessageDTO = {
-        statusCode: 400,
-        message: systemMessage.ReturnMessage.errorUserNotFound,
-      };
-      return returnMessage;
+      throw new HttpException(systemMessage.ReturnMessage.errorUserNotFound, 404);
     }
 
     const returnMessage: FindOneUserReturnMessageDTO = {

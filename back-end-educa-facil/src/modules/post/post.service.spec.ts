@@ -5,6 +5,7 @@ import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDTO } from './dtos/createPost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { GetPostDTO } from './dtos/getPostService.DTO';
 
 describe('PostService', () => {
   let service: PostService;
@@ -96,22 +97,24 @@ describe('PostService', () => {
   });
 
   it('deve buscar post por id', async () => {
-  const fakePost = [{
-    id: '1',
-    title: 'Post 1',
-    description: 'Desc 1',
-    image: 'imagem.jpg',
-    created_at: new Date('2025-07-15T17:49:03.107Z'),
-    updated_at: new Date('2025-07-15T17:49:03.107Z'),
-  }];
-
-  mockRepository.find.mockResolvedValue(fakePost); // <-- certo agora
-
-  const result = await service.getById('1');
-
-  expect(mockRepository.find).toHaveBeenCalledWith({ where: { id: '1' } }); // <-- agora passa
-
-  expect(result).toEqual(fakePost); // ou adapte conforme necessário
+    const fakePost: GetPostDTO[] = [
+      {
+        id: '1',
+        title: 'Post 1',
+        description: 'Desc 1',
+        image: 'imagem.jpg',
+        created_at: new Date('2025-07-15T17:49:03.107Z'),
+        updated_at: new Date('2025-07-15T17:49:03.107Z'),
+        external_link: { undefined: 'http://example.com' },
+        content_hashtags: [],
+        style_id: '',
+        introduction: undefined,
+        search: '',
+      },
+    ];
+    mockRepository.find.mockResolvedValue(fakePost);
+    const result = await service.getById('1');
+    expect(mockRepository.find).toHaveBeenCalledWith({ where: { id: '1' } });
+    expect(result).toEqual(fakePost);
+  });
 });
-})
-

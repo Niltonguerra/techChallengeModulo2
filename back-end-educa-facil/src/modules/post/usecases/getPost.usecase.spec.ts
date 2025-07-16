@@ -1,4 +1,4 @@
-import { GetPostDTO } from '../DTOs/getPost.DTO';
+import { GetPostDTO } from '../dtos/getPostService.DTO';
 import { HttpException } from '@nestjs/common';
 import { GetPostUseCase } from './getPost.usecase';
 

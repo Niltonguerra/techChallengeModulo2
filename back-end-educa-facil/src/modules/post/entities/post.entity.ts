@@ -33,13 +33,6 @@ export class Post {
   description: string;
 
   @Column({
-    type: 'varchar',
-    array: true,
-    name: 'search_field',
-  })
-  search_field: string[];
-
-  @Column({
     nullable: true,
     name: 'introduction',
     type: 'varchar',
@@ -89,19 +82,15 @@ export class Post {
     nullable: true,
   })
   @JoinColumn({ name: 'user_id' })
-  user_id: User;
+  user_id: string;
+
   @Column('text', { nullable: true })
   search?: string;
 
   @BeforeInsert()
   @BeforeUpdate()
   updateSearchField() {
-    const fields = [
-      this.title,
-      this.description,
-      this.user_id,
-      this.image,
-    ];
+    const fields = [this.title, this.description, this.user_id, this.image];
     this.search = fields.filter(Boolean).join(' ').toLowerCase();
   }
 }

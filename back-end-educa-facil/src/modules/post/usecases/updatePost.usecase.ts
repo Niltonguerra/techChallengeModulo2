@@ -1,6 +1,6 @@
 import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PostService } from '../post.service';
-import { UpdatePostDTO } from '../DTOs/updatePost.DTO';
+import { UpdatePostDTO } from '../dtos/updatePost.DTO';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
 @Injectable()

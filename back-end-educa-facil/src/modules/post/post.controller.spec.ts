@@ -6,9 +6,9 @@ import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
 import { CreatePostDTO } from './dtos/createPost.DTO';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { UpdatePostDTO } from './DTOs/updatePost.DTO';
-import { ListPostDTO } from './DTOs/listPost.DTO';
-import { GetPostDTO } from './DTOs/getPost.DTO';
+import { UpdatePostDTO } from './dtos/updatePost.DTO';
+import { ListPostDTO } from './dtos/listPost.DTO';
+import { GetPostDTO } from './dtos/getPostService.DTO';
 
 describe('PostController', () => {
   let controller: PostController;
@@ -109,12 +109,13 @@ describe('PostController', () => {
       title: 'Post 1',
       description: 'Desc',
       image: '',
-      search_field: [],
+      search: '',
       content_hashtags: [],
       style_id: '',
       external_link: { url: 'https://example.com' },
       created_at: new Date(),
       updated_at: new Date(),
+      id: '',
     };
 
     mockGetPostUseCase.getPostUseCaseById.mockResolvedValue(expected);
