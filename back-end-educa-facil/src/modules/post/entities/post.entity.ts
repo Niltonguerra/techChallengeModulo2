@@ -78,11 +78,10 @@ export class Post {
   })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.id, {
-    nullable: true,
-  })
-  @JoinColumn({ name: 'user_id' })
-  user_id: string;
+  @ManyToOne(() => User, (user) => user.posts, { nullable: true })
+@JoinColumn({ name: 'user_id' }) // se quiser especificar nome da FK
+  user: User;
+
 
   @Column('text', { nullable: true })
   search?: string;
@@ -90,7 +89,7 @@ export class Post {
   @BeforeInsert()
   @BeforeUpdate()
   updateSearchField() {
-    const fields = [this.title, this.description, this.user_id, this.image];
+    const fields = [this.title, this.description, this.user, this.image];
     this.search = fields.filter(Boolean).join(' ').toLowerCase();
   }
 }

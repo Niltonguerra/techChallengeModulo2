@@ -81,6 +81,10 @@ export class User implements IUser {
   })
   updated_at: Date;
 
-  @OneToMany(() => Post, (post) => post.id, { cascade: true })
-  posts?: Post[] | undefined;
+  // @OneToMany(() => Post, (post) => post.id, { cascade: true })
+  // posts?: Post[] | undefined;
+
+  @OneToMany(() => Post, (post) => post.user)
+posts: Post[];
+
 }

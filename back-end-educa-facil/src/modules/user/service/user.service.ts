@@ -40,15 +40,15 @@ export class UserService {
     }
 
     const returnMessage: FindOneUserReturnMessageDTO = {
-      statusCode: 200,
+      statusCode: 300,
       message: systemMessage.ReturnMessage.sucessGetPostById,
       user: {
-        id: user.id,
-        name: user.name,
-        photo: user.photo,
-        email: user.email,
-        social_midia: user.social_midia,
-        notification: user.notification,
+        id: user?.id ?? '',
+        name: user?.name ?? '',
+        photo: user?.photo ?? '',
+        email: user?.email ?? '',
+        social_midia: user?.social_midia ?? { platform: '', link: '' },
+        notification: user?.notification ?? false,
       },
     };
     return returnMessage;

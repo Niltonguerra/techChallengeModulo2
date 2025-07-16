@@ -16,20 +16,20 @@ export class CreateUserUseCase {
 
   async validationEmailCreateUser(createUserData: CreateUserDTO): Promise<ReturnMessageDTO> {
     try {
-      const existingUser = await this.userService.findOneUser('email', createUserData.email);
+      // const existingUser = await this.userService.findOneUser('email', createUserData.email);
 
-      if (existingUser.statusCode === 200) {
-        throw new HttpException(systemMessage.ReturnMessage.errorCreateUser, HttpStatus.CONFLICT);
-      }
+      // if (existingUser.statusCode === 200) {
+      //   throw new HttpException(systemMessage.ReturnMessage.errorCreateUser, HttpStatus.CONFLICT);
+      // }
 
-      const emailStatus = this.emailService.EnviaVerificacaoEmail(
-        createUserData.email,
-        'user/validationEmail',
-      );
+      // const emailStatus = this.emailService.EnviaVerificacaoEmail(
+      //   createUserData.email,
+      //   'user/validationEmail',
+      // );
 
-      if (emailStatus !== 200) {
-        throw new HttpException(systemMessage.ReturnMessage.errorSendEmail, HttpStatus.BAD_GATEWAY);
-      }
+      // if (emailStatus !== 200) {
+      //   throw new HttpException(systemMessage.ReturnMessage.errorSendEmail, HttpStatus.BAD_GATEWAY);
+      // }
 
       const createUser: Omit<IUser, 'id'> = {
         ...createUserData,

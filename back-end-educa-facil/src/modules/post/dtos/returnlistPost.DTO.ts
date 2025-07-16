@@ -6,6 +6,7 @@ export interface ReturnListPost {
 }
 
 export interface ListPost {
+  id: string;
   title: string;
   description: string;
   introduction: string;

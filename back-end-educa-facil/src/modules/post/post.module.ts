@@ -9,9 +9,10 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
 import { UserModule } from '@modules/user/user.module';
+import { User } from '@modules/user/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), AuthModule, UserModule],
+  imports: [TypeOrmModule.forFeature([Post, User]), AuthModule, UserModule],
   providers: [PostService, CreatePostUseCase, UpdatePostUseCase, GetPostUseCase, listPostUseCase],
   controllers: [PostController],
 })

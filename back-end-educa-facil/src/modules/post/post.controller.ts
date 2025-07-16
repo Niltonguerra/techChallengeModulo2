@@ -4,15 +4,14 @@ import { listPostUseCase } from './usecases/listPost.usecase';
 import { ListPostDTO } from './dtos/listPost.DTO';
 import { CreatePostDTO } from './dtos/createPost.DTO';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';
-import { GetPostDTO } from './dtos/getPostService.DTO';
+
 import { GetPostUseCase } from './usecases/getPost.usecase';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { UpdatePostDTO } from './dtos/updatePost.DTO';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
-import { GetPostControllerDTO } from './dtos/interfaces/GetPostController.DTO';
-import { ReturnListPostDTO } from './dtos/returnlistPost.DTO';
+
 
 @Controller('post')
 export class PostController {
@@ -24,19 +23,19 @@ export class PostController {
   ) {}
 
   @Get()
-  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
+  // @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   async listPosts(@Query() query: ListPostDTO) {
     return this.listPostUseCase.execute(query);
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
-  async getById(@Param('id') id: string): Promise<ReturnListPostDTO> {
+  // @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
+  async getById(@Param('id') id: string): Promise<any> {
     return await this.getPostUseCase.getPostUseCaseById(id);
   }
 
   @Post('create')
-  @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
+  // @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   async CreatePost(@Body() createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const createPost: ReturnMessageDTO =
       await this.createPostUseCase.createPostUseCase(createPostData);
