@@ -78,7 +78,6 @@ export class Post {
   })
   updated_at: Date;
 
-<<<<<<< HEAD
   @ManyToOne(() => User, (user) => user.posts, { nullable: true })
   @JoinColumn({ name: 'user_id' }) // se quiser especificar nome da FK
   user: User;
@@ -92,11 +91,4 @@ export class Post {
     const fields = [this.title, this.description, this.user ? this.user.name : '', this.image];
     this.search = fields.filter(Boolean).join(' ').toLowerCase();
   }
-=======
-  @ManyToOne(() => User, (user) => user.id, {
-    nullable: true,
-  })
-  @JoinColumn({ name: 'user_id' })
-  user_id: string[];
->>>>>>> main
 }

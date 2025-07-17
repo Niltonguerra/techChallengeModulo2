@@ -60,9 +60,5 @@ export class CreatePostDTO {
   image?: string;
 
   @IsUUID('4', { message: systemMessage.validation.isUUID })
-<<<<<<< HEAD:back-end-educa-facil/src/modules/post/dtos/createPost.DTO.ts
   author_id: string;
-=======
-  user_id: string[];
->>>>>>> main:back-end-educa-facil/src/modules/post/DTOs/createPost.DTO.ts
 }

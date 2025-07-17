@@ -4,19 +4,16 @@ import { CreatePostUseCase } from './usecases/createPost.usecase';
 import { listPostUseCase } from './usecases/listPost.usecase';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
-<<<<<<< HEAD
 import { CreatePostDTO } from './dtos/createPost.DTO';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { UpdatePostDTO } from './dtos/updatePost.DTO';
 import { ListPostDTO } from './dtos/listPost.DTO';
 import { GetPostDTO } from './dtos/getPostService.DTO';
-=======
 import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { UpdatePostDTO } from './DTOs/updatePost.DTO';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { GetPostDTO } from './DTOs/getPost.DTO';
 import { JwtService } from '@nestjs/jwt';
->>>>>>> main
 
 describe('PostController', () => {
   let controller: PostController;
@@ -41,24 +38,10 @@ describe('PostController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostController],
       providers: [
-<<<<<<< HEAD
         { provide: CreatePostUseCase, useValue: mockCreatePostUseCase },
         { provide: listPostUseCase, useValue: mockListPostUseCase },
         { provide: UpdatePostUseCase, useValue: mockUpdatePostUseCase },
         { provide: GetPostUseCase, useValue: mockGetPostUseCase },
-=======
-        { provide: CreatePostUseCase, useValue: createPostUseCase },
-        { provide: UpdatePostUseCase, useValue: updatePostUseCase },
-        { provide: GetPostUseCase, useValue: getPostUseCase },
-        {
-          provide: JwtService,
-          useValue: {
-            sign: jest.fn(),
-            verify: jest.fn(),
-            decode: jest.fn(),
-          },
-        },
->>>>>>> main
       ],
     }).compile();
 
@@ -67,15 +50,9 @@ describe('PostController', () => {
 
   it('deve criar um post', async () => {
     const dto: CreatePostDTO = {
-<<<<<<< HEAD
       title: 'Post Teste',
       description: 'Descrição do post',
       author_id: '123',
-=======
-      title: 'Título',
-      description: 'Desc',
-      user_id: ['1'],
->>>>>>> main
       image: '',
       search_field: [],
       scheduled_publication: '',
