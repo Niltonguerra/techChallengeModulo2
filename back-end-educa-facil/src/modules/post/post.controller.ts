@@ -43,7 +43,7 @@ export class PostController {
     return createPost;
   }
 
-  @Put('update')
+  @Put()
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   async UpdatePost(@Body() updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     const updatedPost: ReturnMessageDTO =
