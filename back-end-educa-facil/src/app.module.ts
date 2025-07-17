@@ -6,6 +6,7 @@ import { Post } from '@modules/post/entities/post.entity';
 import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { EmailModule } from '@modules/email/email.module';
+import { User } from '@modules/user/entities/user.entity';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { EmailModule } from '@modules/email/email.module';
             synchronize: true,
             ssl: true,
             extra: { ssl: { rejectUnauthorized: false } },
-            entities: [Post],
+            entities: [Post, User],
           };
         } else {
           return {
@@ -40,7 +41,7 @@ import { EmailModule } from '@modules/email/email.module';
             database: config.get<string>('DB_DATABASE_DEV'),
             autoLoadEntities: true,
             synchronize: true,
-            entities: [Post],
+            entities: [Post, User],
           };
         }
       },

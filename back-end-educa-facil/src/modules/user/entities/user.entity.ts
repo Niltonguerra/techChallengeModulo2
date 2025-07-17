@@ -7,8 +7,8 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { UserStatus } from './enum/status.enum';
-import { UserPermission } from './enum/permission.enum';
+import { UserStatusEnum } from '../enum/status.enum';
+import { UserPermissionEnum } from '../enum/permission.enum';
 import { IUser } from './interfaces/user.interface';
 
 @Entity({
@@ -55,13 +55,13 @@ export class User implements IUser {
     type: 'varchar',
     name: 'permission',
   })
-  permission: UserPermission;
+  permission: UserPermissionEnum;
 
   @Column({
     type: 'varchar',
     name: 'is_active',
   })
-  isActive: UserStatus;
+  is_active: UserStatusEnum;
 
   @Column({
     type: 'boolean',
@@ -85,6 +85,5 @@ export class User implements IUser {
   // posts?: Post[] | undefined;
 
   @OneToMany(() => Post, (post) => post.user)
-posts: Post[];
-
+  posts: Post[];
 }

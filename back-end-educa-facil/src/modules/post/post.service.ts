@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreatePostDTO } from './dtos/createPost.DTO';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
@@ -7,9 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { UpdatePostDTO } from './dtos/updatePost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { GetPostService } from './dtos/getPostService.DTO';
-import { Like } from 'typeorm';
-import { ListPost } from './dtos/returnlistPost.DTO';
+import { ReturnListPost } from './dtos/returnlistPost.DTO';
+import { searchByFieldPostEnum } from './enum/searchByFieldPost.enum';
 
 @Injectable()
 export class PostService {
@@ -30,161 +29,159 @@ export class PostService {
     return returnService;
   }
 
-  async listPosts(search?: string, offset = 0, limit = 10): Promise<any> {
-    const where = search
-      ? [{ title: Like(`%${search}%`) }, { description: Like(`%${search}%`) }]
-      : {};
-
-    // const [posts, total_post] = await this.postRepository.findAndCount({
-    //   where,
-    //   skip: offset,
-    //   take: limit,
-    //   order: { created_at: 'DESC' },
-    // });
-
-    // posts = await this.postRepository
-    //   .createQueryBuilder('p')
-    //   .select([
-    //     'p.id',
-    //     'p.title',
-    //     'p.description',
-    //     'p.search',
-    //     'p.introduction',
-    //     'p.external_link',
-    //     'p.content_hashtags',
-    //     'p.style_id',
-    //     'p.image', 
-    //     'p.created_at',
-    //     'p.updated_at',
-    //     'p.social_midia',
-    //     'u.name AS user_name',
-    //     'u.email AS user_email',
-    //     'u.social_media AS user_social_media'
-    //   ])
-    //   .innerJoin('user', 'u', 'u.id = p.user_id');
-      // .where('sc.inactive = :inactive', { inactive: 0 });
-
-    // const totalPosts: ListPost[] = posts.map((post) => ({
-    //   id: post.id,
-    //   title: post.title,
-    //   description: post.description,
-    //   search: post.search ?? '',
-    //   introduction: post.description?.substring(0, 100) || '',
-    //   external_link: post.external_link ?? '',
-    //   content_hashtags: post.content_hashtags,
-    //   style_id: post.style_id ?? '',
-    //   image: post.image ?? '',
-    //   created_at: post.created_at,
-    //   updated_at: post.updated_at,
-    //   user_name: post.;
-    //   user_email: post.user;
-    //   user_social_media
-
-    // }));
-    const [posts, total_post] = await this.postRepository
+  async listPosts(search?: string, offset = 0, limit = 10): Promise<ReturnListPost> {
+    const query = this.postRepository
       .createQueryBuilder('p')
       .leftJoinAndSelect('p.user', 'u')
       .select(['p', 'u'])
-      .getManyAndCount();
+      .orderBy('p.created_at', 'DESC')
+      .skip(offset)
+      .take(limit);
 
-    // .query(`
-    //   SELECT
-    //     p.id,
-    //     p.title,
-    //     p.description,
-    //     p.search,
-    //     p.introduction,
-    //     p.external_link,
-    //     p.content_hashtags,
-    //     p.style_id,
-    //     p.image,
-    //     p.created_at,
-    //     p.updated_at,
-    //     u.name AS user_name,
-    //     u.email AS user_email,
-    //     u.social_midia AS user_social_media
-    //   FROM
-    //     public."Post" p
-    //   LEFT JOIN
-    //     public."User" u ON u.id = p.user_id
+    if (search) {
+      query.where('p.title ILIKE :search OR p.description ILIKE :search', {
+        search: `%${search}%`,
+      });
+    }
 
-    //   ORDER BY
-    //     p.created_at DESC
-    //   OFFSET
-    //     ${offset}
-    //   LIMIT
-    //     ${limit};
-    //   `)
-      
-    // .createQueryBuilder('p')
-    //   .leftJoin('p.user', 'u')
-    //   .select([
-    //     'p.id',
-    //     'p.title',
-    //     'p.description',
-    //     'p.search',
-    //     'p.introduction',
-    //     'p.external_link',
-    //     'p.content_hashtags',
-    //     'p.style_id',
-    //     'p.image',
-    //     'p.created_at',
-    //     'p.updated_at',
-    //     'u.name AS user_name',
-    //     'u.email AS user_email',
-    //     'u.social_midia AS user_social_media'
-    //   ])
-    //   // .leftJoin('User', 'u', 'u.id = p.user_id')
-    //   // .leftJoin('p.user', 'u')
+    const [posts, total_post] = await query.getManyAndCount();
 
+    // const where = search ? [{ title: Like(`%${search}%`) }, { description: Like(`%${search}%`) }] : {};
+
+    // const [posts, total_post] = await this.postRepository
+    //   .createQueryBuilder('p')
+    //   .leftJoinAndSelect('p.user', 'u')
+    //   .select(['p', 'u'])
     //   .where(where)
     //   .orderBy('p.created_at', 'DESC')
     //   .skip(offset)
     //   .take(limit)
     //   .getManyAndCount();
-    this.logger.debug(posts);
-    this.logger.debug(total_post);
-    
+
+    const postDataReturn: ReturnListPost = {
+      message: systemMessage.ReturnMessage.sucessGetPosts,
+      statusCode: 200,
+      limit,
+      offset,
+      total: total_post,
+      ListPost: posts.map((p) => ({
+        id: p.id,
+        title: p.title,
+        description: p.description,
+        image: p.image,
+        introduction: p.introduction ?? (p.description?.substring(0, 100) || ''),
+        content_hashtags: p.content_hashtags,
+        style_id: p.style_id ?? '',
+        external_link: p.external_link ?? { url: '' },
+        created_at: p.created_at,
+        updated_at: p.updated_at,
+        user_name: p.user.name,
+        user_email: p.user.email,
+        user_social_media: p.user.social_midia,
+      })),
+    };
+
+    return postDataReturn;
   }
 
   async UpdatePostService(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     const post = await this.postRepository.findOneBy({ id: updatePostData.id });
 
     if (!post) {
-      throw new Error('Post não encontrado');
+      const message = systemMessage.ReturnMessage.errorUpdatePost;
+      const status = HttpStatus.NOT_FOUND;
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
     }
 
     Object.assign(post, updatePostData);
     await this.postRepository.save(post);
 
     const returnService: ReturnMessageDTO = {
-      message: 'Post atualizado com sucesso',
+      message: systemMessage.ReturnMessage.sucessUpdatePost,
       statusCode: 200,
     };
     return returnService;
   }
 
-  async getById(id: string): Promise<GetPostService> {
-    const post = await this.postRepository.findOne({ where: { id } });
+  async getById(id: string): Promise<ReturnListPost> {
+    const post: Post | null = await this.postRepository
+      .createQueryBuilder('p')
+      .leftJoinAndSelect('p.user', 'u')
+      .select(['p', 'u'])
+      .where('p.id = :id', { id })
+      .getOne();
 
     if (!post) {
-      throw new HttpException(systemMessage.ReturnMessage.errorGetPostById, 404);
+      const message = systemMessage.ReturnMessage.errorGetPostById;
+      const status = HttpStatus.NOT_FOUND;
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
     }
-    const postDataReturn: GetPostService = {
-      id: post.id,
-      title: post.title,
-      description: post.description,
-      search: post.search ?? '',
-      introduction: post.introduction ?? '',
-      external_link: post.external_link,
-      content_hashtags: post.content_hashtags,
-      style_id: post.style_id,
-      image: post.image ?? '',
-      created_at: post.created_at,
-      updated_at: post.updated_at,
-      user_id: ''
-    };
 
+    const postDataReturn: ReturnListPost = {
+      message: systemMessage.ReturnMessage.sucessGetPostById,
+      statusCode: 200,
+      limit: 10,
+      offset: 0,
+      total: 1,
+      ListPost: {
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        image: post.image,
+        introduction: post.introduction ?? (post.description?.substring(0, 100) || ''),
+        content_hashtags: post.content_hashtags,
+        style_id: post.style_id ?? '',
+        external_link: post.external_link ?? { url: '' },
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        user_name: post.user.name,
+        user_email: post.user.email,
+        user_social_media: post.user.social_midia,
+      },
+    };
+    return postDataReturn;
+  }
+
+  async getByField(field: searchByFieldPostEnum, value: string): Promise<ReturnListPost> {
+    const post: Post | null = await this.postRepository
+      .createQueryBuilder('p')
+      .leftJoinAndSelect('p.user', 'u')
+      .select(['p', 'u'])
+      .where(`p.${field} = :value`, { value })
+      .getOne();
+
+    if (!post) {
+      const postDataReturn: ReturnListPost = {
+        message: systemMessage.ReturnMessage.errorGetPostByField,
+        statusCode: 404,
+      };
+      return postDataReturn;
+    }
+
+    const postDataReturn: ReturnListPost = {
+      message: systemMessage.ReturnMessage.sucessGetPostByField,
+      statusCode: 200,
+      limit: 10,
+      offset: 0,
+      total: 1,
+      ListPost: {
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        image: post.image,
+        introduction: post.introduction ?? (post.description?.substring(0, 100) || ''),
+        content_hashtags: post.content_hashtags,
+        style_id: post.style_id ?? '',
+        external_link: post.external_link ?? { url: '' },
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        user_name: post.user.name,
+        user_email: post.user.email,
+        user_social_media: post.user.social_midia,
+      },
+    };
     return postDataReturn;
   }
 }

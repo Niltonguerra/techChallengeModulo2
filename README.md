@@ -79,17 +79,22 @@ AMBIENTE=PROD
 
 envs(sei que é errado deixar aqui, mas é para simplificar nossa vida):
 AMBIENTE=dev
+
 DB_HOST_DEV=localhost
 DB_PORT_DEV=5432
+URL_SERVER_DEV=http://localhost:3000/
 DB_DATABASE_DEV=nest_db
 DB_USERNAME_DEV=nest_user
 DB_PASSWORD_DEV=nest_password
 
+
 DB_HOST_PROD=dpg-d1pue3ruibrs73e5n0qg-a.oregon-postgres.render.com
 DB_PORT_PROD=5432
+URL_SERVER_PROD=https://techchallengemodulo2.onrender.com/
 DB_DATABASE_PROD=educa_facil
 DB_USERNAME_PROD=educa_facil_user
 DB_PASSWORD_PROD=D53q0bvcJlYdA3BECrNW5IHuoeZin9fT
+
 
 BCRYPT_SALT_ROUNDS=10
 JWT_SECRET=educa_facil

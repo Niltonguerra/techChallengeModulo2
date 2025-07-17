@@ -1,8 +1,10 @@
 export interface ReturnListPost {
-  ListPost: ListPost[];
-  total: number;
-  limit: number;
-  offset: number;
+  message: string;
+  statusCode: number;
+  ListPost?: ListPost[] | ListPost;
+  total?: number;
+  limit?: number;
+  offset?: number;
 }
 
 export interface ListPost {

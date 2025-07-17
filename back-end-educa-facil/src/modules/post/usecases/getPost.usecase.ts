@@ -1,38 +1,28 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PostService } from '../post.service';
 import { UserService } from '@modules/user/service/user.service';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-
+import { ReturnListPost } from '../dtos/returnlistPost.DTO';
 
 @Injectable()
 export class GetPostUseCase {
-  constructor(
-    private readonly postService: PostService,
-    private readonly userService: UserService,
-  ) {}
+  private readonly logger = new Logger(GetPostUseCase.name);
+  constructor(private readonly postService: PostService) {}
 
-  async getPostUseCaseById(id: string): Promise<any> {
+  async getPostUseCaseById(id: string): Promise<ReturnListPost> {
     try {
       const post = await this.postService.getById(id);
-
-      const user = await this.userService.findOneUser('id', post.user_id);
-
-      const ReturnMessage: any = {
-        ...post,
-        user_name: user.user.name,
-        user_email: user.user.email,
-        user_social_media: user.user.social_midia,
-        total_post: 1,
-      };
-      return ReturnMessage;
+      return post;
     } catch (error) {
-      console.error(error);
-      const errorMessage =
-        error instanceof Error ? error.message : systemMessage.ReturnMessage.errorGetPostById;
-      throw new HttpException(
-        `Erro ao buscar o post: ${errorMessage}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      const message =
+        error instanceof HttpException
+          ? error.message
+          : systemMessage.ReturnMessage.errorGetPostById;
+      const status =
+        error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
     }
   }
 }

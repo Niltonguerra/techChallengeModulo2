@@ -3,8 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserService } from './user.service';
 import { User } from '../entities/user.entity';
 import { IUser } from '../entities/interfaces/user.interface';
-import { UserPermission } from '../entities/enum/permission.enum';
-import { UserStatus } from '../entities/enum/status.enum';
+import { UserPermissionEnum } from '../enum/permission.enum';
+import { UserStatusEnum } from '../enum/status.enum';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 // Mock do uuid
@@ -30,8 +30,8 @@ describe('UserService', () => {
     password: 'hashedPassword123',
     photo: 'https://example.com/photo.jpg',
     social_midia: { twitter: '@testuser' },
-    permission: UserPermission.USER,
-    isActive: UserStatus.ACTIVE,
+    permission: UserPermissionEnum.USER,
+    isActive: UserStatusEnum.ACTIVE,
     notification: true,
     created_at: new Date('2024-01-01'),
     updated_at: new Date('2024-01-01'),
@@ -81,8 +81,8 @@ describe('UserService', () => {
         password: 'password123',
         photo: 'https://example.com/new-photo.jpg',
         social_midia: { linkedin: 'linkedin.com/in/newuser' },
-        permission: UserPermission.USER,
-        isActive: UserStatus.ACTIVE,
+        permission: UserPermissionEnum.USER,
+        isActive: UserStatusEnum.ACTIVE,
         notification: true,
       };
 
@@ -386,8 +386,8 @@ describe('UserService', () => {
       const adminUser = {
         ...mockUser,
         email,
-        permission: UserPermission.ADMIN,
-        isActive: UserStatus.ACTIVE,
+        permission: UserPermissionEnum.ADMIN,
+        isActive: UserStatusEnum.ACTIVE,
       };
 
       mockRepository.findOne.mockResolvedValue(adminUser);

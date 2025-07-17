@@ -1,14 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserService } from '../service/user.service';
 import { CreateUserDTO } from '../dtos/createUser.dto';
 import { EmailService } from '@modules/email/email.service';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { UserStatus } from '../entities/enum/status.enum';
+import { UserStatusEnum } from '../enum/status.enum';
 import { IUser } from '../entities/interfaces/user.interface';
 
 @Injectable()
 export class CreateUserUseCase {
+  private readonly logger = new Logger(CreateUserUseCase.name);
   constructor(
     private readonly userService: UserService,
     private readonly emailService: EmailService,
@@ -16,24 +17,24 @@ export class CreateUserUseCase {
 
   async validationEmailCreateUser(createUserData: CreateUserDTO): Promise<ReturnMessageDTO> {
     try {
-      // const existingUser = await this.userService.findOneUser('email', createUserData.email);
+      const existingUser = await this.userService.findOneUser('email', createUserData.email);
 
-      // if (existingUser.statusCode === 200) {
-      //   throw new HttpException(systemMessage.ReturnMessage.errorCreateUser, HttpStatus.CONFLICT);
-      // }
+      if (existingUser.statusCode === 200) {
+        throw new HttpException(systemMessage.ReturnMessage.errorCreateUser, HttpStatus.CONFLICT);
+      }
 
-      // const emailStatus = this.emailService.EnviaVerificacaoEmail(
-      //   createUserData.email,
-      //   'user/validationEmail',
-      // );
+      const emailStatus = this.emailService.EnviaVerificacaoEmail(
+        createUserData.email,
+        'user/validationEmail',
+      );
 
-      // if (emailStatus !== 200) {
-      //   throw new HttpException(systemMessage.ReturnMessage.errorSendEmail, HttpStatus.BAD_GATEWAY);
-      // }
+      if (emailStatus !== 200) {
+        throw new HttpException(systemMessage.ReturnMessage.errorSendEmail, HttpStatus.BAD_GATEWAY);
+      }
 
       const createUser: Omit<IUser, 'id'> = {
         ...createUserData,
-        isActive: UserStatus.PENDING,
+        is_active: UserStatusEnum.PENDING,
       };
 
       await this.userService.createUpdateUser(createUser);
@@ -43,19 +44,14 @@ export class CreateUserUseCase {
         message: systemMessage.ReturnMessage.sucessCreateUserValidationEmail,
       };
     } catch (error) {
-      const errorMessage =
+      const message =
         error instanceof HttpException
           ? error.message
           : systemMessage.ReturnMessage.errorCreateUser;
-
       const status =
         error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-
-      console.error(error);
-      throw new HttpException(
-        `${systemMessage.ReturnMessage.errorCreateUser}: ${errorMessage}`,
-        status,
-      );
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
     }
   }
 
@@ -63,7 +59,7 @@ export class CreateUserUseCase {
     try {
       const userData = await this.userService.findOneUser('email', token);
 
-      if (userData.statusCode !== 200 || !('user' in userData)) {
+      if (userData.statusCode !== 200 || !userData.user) {
         throw new HttpException(
           systemMessage.ReturnMessage.errorUserNotFound,
           HttpStatus.NOT_FOUND,
@@ -72,7 +68,7 @@ export class CreateUserUseCase {
 
       const ChangeStatusUser: Partial<IUser> = {
         id: userData.user.id,
-        isActive: UserStatus.ACTIVE,
+        is_active: UserStatusEnum.ACTIVE,
       };
 
       await this.userService.createUpdateUser(ChangeStatusUser);
@@ -82,15 +78,14 @@ export class CreateUserUseCase {
         message: systemMessage.ReturnMessage.sucessCreateUser,
       };
     } catch (error) {
-      console.error(error);
       const message =
         error instanceof HttpException
           ? error.message
           : systemMessage.ReturnMessage.errorCreateUser;
-
       const status =
         error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
+      this.logger.error(`${systemMessage.ReturnMessage.errorCreateUser}: ${message}`, status);
       throw new HttpException(`${systemMessage.ReturnMessage.errorCreateUser}: ${message}`, status);
     }
   }

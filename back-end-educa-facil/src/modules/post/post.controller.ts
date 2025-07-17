@@ -1,48 +1,47 @@
 import { Body, Controller, Post, Get, Param, Put, Query, Headers, UseGuards } from '@nestjs/common';
 import { CreatePostUseCase } from './usecases/createPost.usecase';
-import { listPostUseCase } from './usecases/listPost.usecase';
 import { ListPostDTO } from './dtos/listPost.DTO';
 import { CreatePostDTO } from './dtos/createPost.DTO';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';
-
 import { GetPostUseCase } from './usecases/getPost.usecase';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { UpdatePostDTO } from './dtos/updatePost.DTO';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
-
+import { ReturnListPost } from './dtos/returnlistPost.DTO';
+import { ListPostUseCase } from './usecases/listPost.usecase';
 
 @Controller('post')
 export class PostController {
   constructor(
-    private readonly listPostUseCase: listPostUseCase,
+    private readonly listPostUseCase: ListPostUseCase,
     private readonly createPostUseCase: CreatePostUseCase,
     private readonly updatePostUseCase: UpdatePostUseCase,
     private readonly getPostUseCase: GetPostUseCase,
   ) {}
 
   @Get()
-  // @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
-  async listPosts(@Query() query: ListPostDTO) {
+  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
+  async listPosts(@Query() query: ListPostDTO): Promise<ReturnListPost> {
     return this.listPostUseCase.execute(query);
   }
 
   @Get(':id')
-  // @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
-  async getById(@Param('id') id: string): Promise<any> {
+  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
+  async getById(@Param('id') id: string): Promise<ReturnListPost> {
     return await this.getPostUseCase.getPostUseCaseById(id);
   }
 
-  @Post('create')
-  // @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
+  @Post()
+  @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   async CreatePost(@Body() createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const createPost: ReturnMessageDTO =
       await this.createPostUseCase.createPostUseCase(createPostData);
     return createPost;
   }
 
-  @Put('update')
+  @Put()
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   async UpdatePost(@Body() updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     const updatedPost: ReturnMessageDTO =

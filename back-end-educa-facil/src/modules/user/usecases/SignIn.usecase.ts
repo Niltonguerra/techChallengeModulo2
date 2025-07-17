@@ -1,5 +1,11 @@
 import { UserService } from '@modules/user/service/user.service';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/AuthUser.dto';
@@ -8,28 +14,38 @@ import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 @Injectable()
 export class SignInUseCase {
+  private readonly logger = new Logger(SignInUseCase.name);
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
 
   async UserAuthentication(authUserDTO: AuthUserDTO): Promise<object | null> {
-    const { email, password } = authUserDTO;
+    try {
+      const { email, password } = authUserDTO;
 
-    const validatedUser = await this.validateUser(email, password);
+      const validatedUser = await this.validateUser(email, password);
 
-    if (!validatedUser) {
-      throw new UnauthorizedException(systemMessage.ReturnMessage.errorlogin);
+      if (!validatedUser) {
+        throw new UnauthorizedException(systemMessage.ReturnMessage.errorlogin);
+      }
+
+      const payload: JwtPayload = {
+        email: validatedUser.email,
+        permission: validatedUser.permission,
+      };
+
+      return {
+        token: this.jwtService.sign(payload).toString(),
+      };
+    } catch (error) {
+      const message =
+        error instanceof HttpException ? error.message : systemMessage.ReturnMessage.errorlogin;
+      const status =
+        error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
     }
-
-    const payload: JwtPayload = {
-      email: validatedUser.email,
-      permission: validatedUser.permission,
-    };
-
-    return {
-      token: this.jwtService.sign(payload).toString(),
-    };
   }
 
   private async validateUser(

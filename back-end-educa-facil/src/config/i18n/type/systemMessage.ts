@@ -12,8 +12,12 @@ export type SystemMessageType = {
     isObject: string;
     isBoolean: string;
     isNumberString: string;
+    isEnum: string;
   };
   ReturnMessage: {
+    errorGetPostByField: string;
+    sucessGetPostByField: string;
+    sucessFindOneUser: string;
     FailedToProcessPassword: string;
     isObject: string;
     isnotEmptyPassword: string;

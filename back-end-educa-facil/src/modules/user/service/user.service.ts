@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import { IUser } from '../entities/interfaces/user.interface';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -18,7 +19,7 @@ export class UserService {
 
   async createUpdateUser(createUserData: Partial<IUser>): Promise<ReturnMessageDTO> {
     const createUser: Partial<IUser> = {
-      id: createUserData.id ? createUserData.id : uuidv4(),
+      id: createUserData.id ?? uuidv4(),
       ...createUserData,
     };
     await this.userRepository.save(createUser);
@@ -36,19 +37,24 @@ export class UserService {
     });
 
     if (!user) {
-      throw new HttpException(systemMessage.ReturnMessage.errorUserNotFound, 404);
+      const returnMessage: FindOneUserReturnMessageDTO = {
+        statusCode: 400,
+        message: systemMessage.ReturnMessage.errorUserNotFound,
+      };
+      this.logger.log(`data not found with the field: ${field} and value: ${value}`);
+      return returnMessage;
     }
 
     const returnMessage: FindOneUserReturnMessageDTO = {
-      statusCode: 300,
-      message: systemMessage.ReturnMessage.sucessGetPostById,
+      statusCode: 200,
+      message: systemMessage.ReturnMessage.sucessFindOneUser,
       user: {
-        id: user?.id ?? '',
-        name: user?.name ?? '',
-        photo: user?.photo ?? '',
-        email: user?.email ?? '',
-        social_midia: user?.social_midia ?? { platform: '', link: '' },
-        notification: user?.notification ?? false,
+        id: user?.id,
+        name: user?.name,
+        photo: user?.photo,
+        email: user?.email,
+        social_midia: user?.social_midia ?? undefined,
+        notification: user?.notification,
       },
     };
     return returnMessage;
@@ -60,6 +66,7 @@ export class UserService {
     });
 
     if (!user) {
+      this.logger.log('User not found for login', { email: value });
       return null;
     }
 

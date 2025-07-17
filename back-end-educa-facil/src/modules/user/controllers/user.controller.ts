@@ -8,6 +8,7 @@ import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
 
 @Controller('user')
 export class UserController {
@@ -31,14 +32,11 @@ export class UserController {
   }
 
   @Get('findOne')
-  @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
+  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   async FindOne(
     @Query() queryParams: FindOneUserQueryParamsDTO,
-  ): Promise<FindOneUserReturnMessageDTO | ReturnMessageDTO> {
-    const findOneUser = await this.findOneUserUseCase.findOneUserUseCase(
-      queryParams.field,
-      queryParams.value,
-    );
+  ): Promise<FindOneUserReturnMessageDTO> {
+    const findOneUser = await this.findOneUserUseCase.findOneUserUseCase(queryParams);
     return findOneUser;
   }
 }
