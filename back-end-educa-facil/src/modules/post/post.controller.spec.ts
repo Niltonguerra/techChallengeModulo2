@@ -3,10 +3,11 @@ import { PostController } from './post.controller';
 import { CreatePostUseCase } from './usecases/createPost.usecase';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
-import { CreatePostDTO } from './dtos/createPost.DTO';
+import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { UpdatePostDTO } from './DTOs/updatePost.DTO';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { GetPostDTO } from './DTOs/getPost.DTO';
+import { JwtService } from '@nestjs/jwt';
 
 describe('PostController', () => {
   let controller: PostController;
@@ -25,6 +26,14 @@ describe('PostController', () => {
         { provide: CreatePostUseCase, useValue: createPostUseCase },
         { provide: UpdatePostUseCase, useValue: updatePostUseCase },
         { provide: GetPostUseCase, useValue: getPostUseCase },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn(),
+            verify: jest.fn(),
+            decode: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -35,7 +44,7 @@ describe('PostController', () => {
     const dto: CreatePostDTO = {
       title: 'Título',
       description: 'Desc',
-      author_id: '1',
+      user_id: ['1'],
       image: '',
       search_field: [],
       scheduled_publication: '',
