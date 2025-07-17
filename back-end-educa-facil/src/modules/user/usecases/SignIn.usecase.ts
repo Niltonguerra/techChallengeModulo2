@@ -11,7 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/AuthUser.dto';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { UserStatus } from '../entities/enum/status.enum';
+import { UserStatusEnum } from '../enum/status.enum';
 
 @Injectable()
 export class SignInUseCase {
@@ -59,7 +59,7 @@ export class SignInUseCase {
       throw new UnauthorizedException(systemMessage.ReturnMessage.errorlogin);
     }
 
-    if (user.isActive === UserStatus.PENDING) {
+    if (user.isActive === UserStatusEnum.PENDING) {
       return false;
     }
 
