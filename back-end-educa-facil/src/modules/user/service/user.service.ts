@@ -60,14 +60,13 @@ export class UserService {
     return returnMessage;
   }
 
-  async findOneUserLogin(value: string): Promise<LoginUsuarioInternoDTO | null> {
+  async findOneUserLogin(value: string): Promise<LoginUsuarioInternoDTO | false> {
     const user = await this.userRepository.findOne({
       where: { email: value },
     });
 
     if (!user) {
-      this.logger.log('User not found for login', { email: value });
-      return null;
+      return false;
     }
 
     return {
@@ -76,6 +75,7 @@ export class UserService {
       name: user.name,
       email: user.email,
       permission: user.permission,
+      isActive: user.is_active,
     };
   }
 }

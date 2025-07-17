@@ -1,5 +1,5 @@
 import { CreatePostUseCase } from './createPost.usecase';
-import { CreatePostDTO } from '../dtos/createPost.DTO';
+import { CreatePostDTO } from '../DTOs/createPost.DTO';
 import { HttpException } from '@nestjs/common';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
@@ -26,6 +26,7 @@ describe('createPostUseCase', () => {
       scheduled_publication: '',
       content_hashtags: [],
       style_id: '',
+      user_id: [],
     };
 
     const returnMessage: ReturnMessageDTO = {
@@ -51,6 +52,7 @@ describe('createPostUseCase', () => {
       scheduled_publication: '',
       content_hashtags: [],
       style_id: '',
+      user_id: [],
     };
 
     mockPostService.createPostService.mockRejectedValue(new Error('Erro no service'));

@@ -3,17 +3,18 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserService } from './user.service';
 import { User } from '../entities/user.entity';
 import { IUser } from '../entities/interfaces/user.interface';
+<<<<<<< HEAD
 import { UserPermissionEnum } from '../enum/permission.enum';
 import { UserStatusEnum } from '../enum/status.enum';
+=======
+>>>>>>> main
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
-// Mock do uuid
-jest.mock('uuid', () => ({
-  v4: jest.fn(() => 'mocked-uuid-123'),
-}));
+jest.mock('uuid', () => ({ v4: () => 'mocked-uuid-123' }));
 
 describe('UserService', () => {
   let service: UserService;
+<<<<<<< HEAD
   let mockRepository: {
     save: jest.Mock;
     findOne: jest.Mock;
@@ -37,26 +38,18 @@ describe('UserService', () => {
     updated_at: new Date('2024-01-01'),
     posts: [],
   };
+=======
+  let mockRepository: { save: jest.Mock; findOne: jest.Mock };
+>>>>>>> main
 
   beforeEach(async () => {
-    // Mock do repository
     mockRepository = {
       save: jest.fn(),
       findOne: jest.fn(),
-      find: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        UserService,
-        {
-          provide: getRepositoryToken(User),
-          useValue: mockRepository,
-        },
-      ],
+      providers: [UserService, { provide: getRepositoryToken(User), useValue: mockRepository }],
     }).compile();
 
     service = module.get<UserService>(UserService);
@@ -66,13 +59,8 @@ describe('UserService', () => {
     jest.clearAllMocks();
   });
 
-  describe('Inicialização', () => {
-    it('should be defined', () => {
-      expect(service).toBeDefined();
-    });
-  });
-
   describe('createUpdateUser', () => {
+<<<<<<< HEAD
     it('should create a new user with generated ID', async () => {
       // Arrange
       const createUserData: Partial<IUser> = {
@@ -92,239 +80,72 @@ describe('UserService', () => {
       const result = await service.createUpdateUser(createUserData);
 
       // Assert
+=======
+    it('deve criar um novo usuário com id gerado', async () => {
+      mockRepository.save.mockResolvedValue({} as User);
+      const data: Partial<IUser> = { name: 'Fulano', email: 'fulano@email.com' };
+      const result = await service.createUpdateUser(data);
+      expect(mockRepository.save).toHaveBeenCalledWith({ id: 'mocked-uuid-123', ...data });
+>>>>>>> main
       expect(result).toEqual({
         message: systemMessage.ReturnMessage.sucessCreateUser,
         statusCode: 200,
       });
-
-      expect(mockRepository.save).toHaveBeenCalledWith({
-        id: 'mocked-uuid-123',
-        ...createUserData,
-      });
-      expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
 
-    it('should update existing user with provided ID', async () => {
-      // Arrange
-      const existingUserId = '123e4567-e89b-12d3-a456-426614174000';
-      const updateUserData: Partial<IUser> = {
-        id: existingUserId,
-        name: 'Updated User',
-        email: 'updated@example.com',
-        notification: false,
-      };
-
-      mockRepository.save.mockResolvedValue(mockUser);
-
-      // Act
-      const result = await service.createUpdateUser(updateUserData);
-
-      // Assert
+    it('deve atualizar usuário com id fornecido', async () => {
+      mockRepository.save.mockResolvedValue({} as User);
+      const data: Partial<IUser> = { id: '123', name: 'Fulano' };
+      const result = await service.createUpdateUser(data);
+      expect(mockRepository.save).toHaveBeenCalledWith({ id: '123', ...data });
       expect(result).toEqual({
         message: systemMessage.ReturnMessage.sucessCreateUser,
         statusCode: 200,
       });
-
-      expect(mockRepository.save).toHaveBeenCalledWith({
-        id: existingUserId,
-        ...updateUserData,
-      });
-      expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle partial user data', async () => {
-      // Arrange
-      const partialUserData: Partial<IUser> = {
-        name: 'Partial User',
-        email: 'partial@example.com',
-      };
-
-      mockRepository.save.mockResolvedValue(mockUser);
-
-      // Act
-      const result = await service.createUpdateUser(partialUserData);
-
-      // Assert
-      expect(result).toEqual({
-        message: systemMessage.ReturnMessage.sucessCreateUser,
-        statusCode: 200,
-      });
-
-      expect(mockRepository.save).toHaveBeenCalledWith({
-        id: 'mocked-uuid-123',
-        ...partialUserData,
-      });
-    });
-
-    it('should handle database save errors', async () => {
-      // Arrange
-      const createUserData: Partial<IUser> = {
-        name: 'Error User',
-        email: 'error@example.com',
-      };
-
-      const dbError = new Error('Database connection failed');
-      mockRepository.save.mockRejectedValue(dbError);
-
-      // Act & Assert
-      await expect(service.createUpdateUser(createUserData)).rejects.toThrow(dbError);
-      expect(mockRepository.save).toHaveBeenCalledWith({
-        id: 'mocked-uuid-123',
-        ...createUserData,
-      });
+    it('deve lançar erro se o save falhar', async () => {
+      mockRepository.save.mockRejectedValue(new Error('erro'));
+      await expect(service.createUpdateUser({ name: 'X' })).rejects.toThrow('erro');
     });
   });
 
   describe('findOneUser', () => {
-    it('should find user by email successfully', async () => {
-      // Arrange
-      const field = 'email';
-      const value = 'test@example.com';
-
-      mockRepository.findOne.mockResolvedValue(mockUser);
-
-      // Act
-      const result = await service.findOneUser(field, value);
-
-      // Assert
-      expect(result).toEqual({
-        statusCode: 200,
-        message: systemMessage.ReturnMessage.sucessGetPostById,
-        user: {
-          id: mockUser.id,
-          name: mockUser.name,
-          photo: mockUser.photo,
-          email: mockUser.email,
-          social_midia: mockUser.social_midia,
-          notification: mockUser.notification,
-        },
-      });
-
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { [field]: value },
-      });
-      expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
-    });
-
-    it('should find user by id successfully', async () => {
-      // Arrange
-      const field = 'id';
-      const value = '123e4567-e89b-12d3-a456-426614174000';
-
-      mockRepository.findOne.mockResolvedValue(mockUser);
-
-      // Act
-      const result = await service.findOneUser(field, value);
-
-      // Assert
-      expect(result).toEqual({
-        statusCode: 200,
-        message: systemMessage.ReturnMessage.sucessGetPostById,
-        user: {
-          id: mockUser.id,
-          name: mockUser.name,
-          photo: mockUser.photo,
-          email: mockUser.email,
-          social_midia: mockUser.social_midia,
-          notification: mockUser.notification,
-        },
-      });
-
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { id: value },
-      });
-    });
-
-    it('should return error when user not found', async () => {
-      // Arrange
-      const field = 'email';
-      const value = 'notfound@example.com';
-
+    it('deve retornar mensagem de erro se usuário não encontrado', async () => {
       mockRepository.findOne.mockResolvedValue(null);
-
-      // Act
-      const result = await service.findOneUser(field, value);
-
-      // Assert
+      const result = await service.findOneUser('email', 'naoexiste@email.com');
       expect(result).toEqual({
         statusCode: 400,
         message: systemMessage.ReturnMessage.errorUserNotFound,
       });
-
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { [field]: value },
-      });
     });
 
-    it('should handle different field types', async () => {
-      // Arrange
-      const field = 'name';
-      const value = 'Test User';
-
-      mockRepository.findOne.mockResolvedValue(mockUser);
-
-      // Act
-      const result = await service.findOneUser(field, value);
-
-      // Assert
+    it('deve retornar usuário se encontrado', async () => {
+      const user = {
+        id: '1',
+        name: 'Fulano',
+        photo: 'foto.png',
+        email: 'fulano@email.com',
+        social_midia: 'twitter',
+        notification: true,
+      };
+      mockRepository.findOne.mockResolvedValue(user);
+      const result = await service.findOneUser('email', 'fulano@email.com');
       expect(result).toEqual({
         statusCode: 200,
         message: systemMessage.ReturnMessage.sucessGetPostById,
-        user: {
-          id: mockUser.id,
-          name: mockUser.name,
-          photo: mockUser.photo,
-          email: mockUser.email,
-          social_midia: mockUser.social_midia,
-          notification: mockUser.notification,
-        },
-      });
-
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { name: value },
-      });
-    });
-
-    it('should handle database query errors', async () => {
-      // Arrange
-      const field = 'email';
-      const value = 'test@example.com';
-      const dbError = new Error('Database query failed');
-
-      mockRepository.findOne.mockRejectedValue(dbError);
-
-      // Act & Assert
-      await expect(service.findOneUser(field, value)).rejects.toThrow(dbError);
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { [field]: value },
+        user,
       });
     });
   });
 
   describe('findOneUserLogin', () => {
-    it('should find user for login successfully', async () => {
-      // Arrange
-      const email = 'test@example.com';
-
-      mockRepository.findOne.mockResolvedValue(mockUser);
-
-      // Act
-      const result = await service.findOneUserLogin(email);
-
-      // Assert
-      expect(result).toEqual({
-        id: mockUser.id,
-        password: mockUser.password,
-        name: mockUser.name,
-        email: mockUser.email,
-        permission: mockUser.permission,
-      });
-
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { email },
-      });
-      expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
+    it('deve retornar false se usuário não encontrado', async () => {
+      mockRepository.findOne.mockResolvedValue(false);
+      const result = await service.findOneUserLogin('naoexiste@email.com');
+      expect(result).toBe(false);
     });
+<<<<<<< HEAD
 
     it('should return null when user not found for login', async () => {
       // Arrange
@@ -388,69 +209,26 @@ describe('UserService', () => {
         email,
         permission: UserPermissionEnum.ADMIN,
         isActive: UserStatusEnum.ACTIVE,
+=======
+    it('deve retornar dados do usuário para login', async () => {
+      const user = {
+        id: '1',
+        password: 'senha',
+        name: 'Fulano',
+        email: 'fulano@email.com',
+        permission: 'admin',
+        isActive: 'active',
+>>>>>>> main
       };
-
-      mockRepository.findOne.mockResolvedValue(adminUser);
-
-      // Act
-      const result = await service.findOneUserLogin(email);
-
-      // Assert
+      mockRepository.findOne.mockResolvedValue(user);
+      const result = await service.findOneUserLogin('fulano@email.com');
       expect(result).toEqual({
-        id: adminUser.id,
-        password: adminUser.password,
-        name: adminUser.name,
-        email: adminUser.email,
-        permission: adminUser.permission,
-      });
-    });
-  });
-
-  describe('Integration scenarios', () => {
-    it('should handle empty string values gracefully', async () => {
-      // Arrange
-      const field = 'email';
-      const value = '';
-
-      mockRepository.findOne.mockResolvedValue(null);
-
-      // Act
-      const result = await service.findOneUser(field, value);
-
-      // Assert
-      expect(result).toEqual({
-        statusCode: 400,
-        message: systemMessage.ReturnMessage.errorUserNotFound,
-      });
-
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { email: '' },
-      });
-    });
-
-    it('should handle user with empty social_midia', async () => {
-      // Arrange
-      const userWithEmptySocial = { ...mockUser, social_midia: {} };
-      const field = 'email';
-      const value = 'test@example.com';
-
-      mockRepository.findOne.mockResolvedValue(userWithEmptySocial);
-
-      // Act
-      const result = await service.findOneUser(field, value);
-
-      // Assert
-      expect(result).toEqual({
-        statusCode: 200,
-        message: systemMessage.ReturnMessage.sucessGetPostById,
-        user: {
-          id: userWithEmptySocial.id,
-          name: userWithEmptySocial.name,
-          photo: userWithEmptySocial.photo,
-          email: userWithEmptySocial.email,
-          social_midia: {},
-          notification: userWithEmptySocial.notification,
-        },
+        id: '1',
+        password: 'senha',
+        name: 'Fulano',
+        email: 'fulano@email.com',
+        permission: 'admin',
+        isActive: 'active',
       });
     });
   });

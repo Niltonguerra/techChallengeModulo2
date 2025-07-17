@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreatePostDTO } from './dtos/createPost.DTO';
+=======
+import { Injectable } from '@nestjs/common';
+
+import { CreatePostDTO } from './DTOs/createPost.DTO';
+>>>>>>> main
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdatePostDTO } from './dtos/updatePost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
@@ -131,6 +137,7 @@ export class PostService {
     return postDataReturn;
   }
 
+<<<<<<< HEAD
   async getByField(field: searchByFieldPostEnum, value: string): Promise<ReturnListPost> {
     const post: Post | null = await this.postRepository
       .createQueryBuilder('p')
@@ -170,5 +177,14 @@ export class PostService {
       },
     };
     return postDataReturn;
+=======
+  async deletePostService(id: string): Promise<DeleteResult> {
+    return  await this.postRepository.delete(+id);
+  
+  }
+
+  async getById(id: string): Promise<GetPostDTO[]> {
+    return this.postRepository.find({ where: { id: id } });
+>>>>>>> main
   }
 }

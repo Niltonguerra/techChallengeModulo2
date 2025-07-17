@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/AuthUser.dto';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { UserStatus } from '../entities/enum/status.enum';
 
 @Injectable()
 export class SignInUseCase {
@@ -51,17 +52,21 @@ export class SignInUseCase {
   private async validateUser(
     email: string,
     password: string,
-  ): Promise<LoginUsuarioInternoDTO | null> {
+  ): Promise<LoginUsuarioInternoDTO | false> {
     const user = await this.userService.findOneUserLogin(email);
 
     if (!user) {
-      return null;
+      throw new UnauthorizedException(systemMessage.ReturnMessage.errorlogin);
+    }
+
+    if (user.isActive === UserStatus.PENDING) {
+      return false;
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return null;
+      return false;
     }
     return user;
   }

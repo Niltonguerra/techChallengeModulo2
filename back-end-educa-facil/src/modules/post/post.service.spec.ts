@@ -3,7 +3,7 @@ import { PostService } from './post.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDTO } from './dtos/createPost.DTO';
+import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { GetPostDTO } from './dtos/getPostService.DTO';
 
@@ -40,7 +40,7 @@ describe('PostService', () => {
     const dto: CreatePostDTO = {
       title: 'Título',
       description: 'Descrição',
-      authorId: 'autor123',
+      user_id: ['autor123'],
       image: 'imagem.jpg',
       search_field: [],
       scheduled_publication: '',

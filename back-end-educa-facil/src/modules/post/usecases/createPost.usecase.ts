@@ -1,5 +1,9 @@
 import { Body, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PostService } from '../post.service';
+<<<<<<< HEAD
+=======
+import { CreatePostDTO } from '../DTOs/createPost.DTO';
+>>>>>>> main
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { CreatePostDTO } from '../dtos/createPost.DTO';
