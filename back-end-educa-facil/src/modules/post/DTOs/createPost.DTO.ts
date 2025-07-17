@@ -59,7 +59,6 @@ export class CreatePostDTO {
   @Length(1, 2048, { message: systemMessage.validation.Length })
   image?: string;
 
-  @IsOptional()
   @IsUUID('4', { message: systemMessage.validation.isUUID })
-  author_id?: string;
+  user_id: string[];
 }

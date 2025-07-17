@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { UserStatus } from '../entities/enum/status.enum';
 
 export class AuthUserDTO {
   @IsEmail({}, { message: 'O email informado é inválido' })
@@ -16,4 +17,5 @@ export class LoginUsuarioInternoDTO {
   name: string;
   email: string;
   permission: string;
+  isActive: UserStatus;
 }

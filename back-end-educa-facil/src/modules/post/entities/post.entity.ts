@@ -87,5 +87,5 @@ export class Post {
     nullable: true,
   })
   @JoinColumn({ name: 'user_id' })
-  user_id: User;
+  user_id: string[];
 }
