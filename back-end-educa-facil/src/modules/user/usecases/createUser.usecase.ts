@@ -20,7 +20,10 @@ export class CreateUserUseCase {
       const existingUser = await this.userService.findOneUser('email', createUserData.email);
 
       if (existingUser.statusCode === 200) {
-        throw new HttpException(systemMessage.ReturnMessage.errorCreateUser, HttpStatus.CONFLICT);
+        const message = systemMessage.ReturnMessage.errorCreateUser;
+        const status = HttpStatus.CONFLICT;
+        this.logger.error(`${message}: ${status}`);
+        throw new HttpException(`${message}: ${status}`, status);
       }
 
       const emailStatus = this.emailService.EnviaVerificacaoEmail(
@@ -29,6 +32,7 @@ export class CreateUserUseCase {
       );
 
       if (emailStatus !== 200) {
+        this.logger.error(systemMessage.ReturnMessage.errorSendEmail);
         throw new HttpException(systemMessage.ReturnMessage.errorSendEmail, HttpStatus.BAD_GATEWAY);
       }
 
@@ -60,6 +64,7 @@ export class CreateUserUseCase {
       const userData = await this.userService.findOneUser('email', token);
 
       if (userData.statusCode !== 200 || !userData.user) {
+        this.logger.error(systemMessage.ReturnMessage.errorUserNotFound);
         throw new HttpException(
           systemMessage.ReturnMessage.errorUserNotFound,
           HttpStatus.NOT_FOUND,

@@ -15,6 +15,7 @@ export type SystemMessageType = {
     isEnum: string;
   };
   ReturnMessage: {
+    existePostWithThisTitle: string;
     errorGetPostByField: string;
     sucessGetPostByField: string;
     sucessFindOneUser: string;

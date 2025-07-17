@@ -17,8 +17,8 @@ export class CreatePostUseCase {
         createPostData.title,
       );
 
-      if (validadeName.statusCode !== 200) {
-        const message = systemMessage.ReturnMessage.errorGetPostByField;
+      if (validadeName.statusCode === 200) {
+        const message = systemMessage.ReturnMessage.existePostWithThisTitle;
         const status = HttpStatus.NOT_FOUND;
         this.logger.error(`${message}: ${status}`);
         throw new HttpException(`${message}: ${status}`, status);

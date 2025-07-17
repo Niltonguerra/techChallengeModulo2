@@ -20,7 +20,6 @@ export class PostService {
 
   async createPostService(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const post = this.postRepository.create({ id: uuidv4(), ...createPostData });
-
     await this.postRepository.save(post);
     const returnService: ReturnMessageDTO = {
       message: systemMessage.ReturnMessage.sucessCreatePost,
@@ -45,18 +44,6 @@ export class PostService {
     }
 
     const [posts, total_post] = await query.getManyAndCount();
-
-    // const where = search ? [{ title: Like(`%${search}%`) }, { description: Like(`%${search}%`) }] : {};
-
-    // const [posts, total_post] = await this.postRepository
-    //   .createQueryBuilder('p')
-    //   .leftJoinAndSelect('p.user', 'u')
-    //   .select(['p', 'u'])
-    //   .where(where)
-    //   .orderBy('p.created_at', 'DESC')
-    //   .skip(offset)
-    //   .take(limit)
-    //   .getManyAndCount();
 
     const postDataReturn: ReturnListPost = {
       message: systemMessage.ReturnMessage.sucessGetPosts,

@@ -18,6 +18,7 @@ export const systemMessage: SystemMessageType = {
       'O campo $property deve ser um dos seguintes valores: id,name,email,permission,is_active,created_at,updated_at,social_midia.',
   },
   ReturnMessage: {
+    existePostWithThisTitle: 'Já existe um post com este título.',
     errorGetPostByField: 'Erro ao encontrar o post pelo campo.',
     sucessGetPostByField: 'Post encontrado com sucesso pelo campo.',
     sucessFindOneUser: 'Usuário encontrado com sucesso.',

@@ -3,6 +3,7 @@ import { PostService } from '../post.service';
 import { UpdatePostDTO } from '../dtos/updatePost.DTO';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { searchByFieldPostEnum } from '../enum/searchByFieldPost.enum';
 
 @Injectable()
 export class UpdatePostUseCase {
@@ -11,6 +12,18 @@ export class UpdatePostUseCase {
 
   async UpdatePostUseCase(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     try {
+      const validadeName = await this.postService.getByField(
+        searchByFieldPostEnum.TITLE,
+        updatePostData.title,
+      );
+
+      if (validadeName.statusCode === 200) {
+        const message = systemMessage.ReturnMessage.existePostWithThisTitle;
+        const status = HttpStatus.NOT_FOUND;
+        this.logger.error(`${message}: ${status}`);
+        throw new HttpException(`${message}: ${status}`, status);
+      }
+
       const post = await this.postService.UpdatePostService(updatePostData);
       return post;
     } catch (error) {
