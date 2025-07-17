@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PostService } from '../post.service';
-import { ListPostDTO } from '../dtos/listPost.DTO';
+import { ListPostDTO } from '../dtos/listPost.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { ReturnListPost } from '../dtos/returnlistPost.DTO';
+import { ReturnListPost } from '../dtos/returnlistPost.dto';
 
 @Injectable()
 export class ListPostUseCase {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { listPostUseCase } from './listPost.usecase';
 import { PostService } from '../post.service';
-import { ReturnListPostDTO } from '../dtos/returnlistPost.DTO';
+import { ReturnListPostDTO } from '../dtos/returnlistPost.dto';
 
 describe('listPostUseCase', () => {
   let useCase: listPostUseCase;

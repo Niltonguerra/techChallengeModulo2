@@ -1,17 +1,14 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { CreatePostDTO } from './dtos/createPost.DTO';
-import { Injectable } from '@nestjs/common';
-
-import { CreatePostDTO } from './DTOs/createPost.DTO';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { UpdatePostDTO } from './dtos/updatePost.DTO';
+import { UpdatePostDTO } from './dtos/updatePost.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { ReturnListPost } from './dtos/returnlistPost.DTO';
+import { ReturnListPost } from './dtos/returnlistPost.dto';
 import { searchByFieldPostEnum } from './enum/searchByFieldPost.enum';
+import { CreatePostDTO } from './dtos/createPost.dto';
 
 @Injectable()
 export class PostService {
@@ -22,12 +19,23 @@ export class PostService {
   ) {}
 
   async createPostService(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
+    const validadeName = await this.postRepository.findOneBy({ title: createPostData.title });
+
+    if (validadeName) {
+      const message = systemMessage.ReturnMessage.existePostWithThisTitle;
+      const status = HttpStatus.NOT_FOUND;
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
+    }
+
     const post = this.postRepository.create({ id: uuidv4(), ...createPostData });
     await this.postRepository.save(post);
+
     const returnService: ReturnMessageDTO = {
       message: systemMessage.ReturnMessage.sucessCreatePost,
       statusCode: 200,
     };
+
     return returnService;
   }
 
@@ -91,6 +99,7 @@ export class PostService {
       message: systemMessage.ReturnMessage.sucessUpdatePost,
       statusCode: 200,
     };
+
     return returnService;
   }
 
@@ -173,12 +182,19 @@ export class PostService {
       },
     };
     return postDataReturn;
-  async deletePostService(id: string): Promise<DeleteResult> {
-    return  await this.postRepository.delete(+id);
-  
   }
 
-  async getById(id: string): Promise<GetPostDTO[]> {
-    return this.postRepository.find({ where: { id: id } });
+  async deletePostService(id: string): Promise<ReturnMessageDTO> {
+    const result = await this.postRepository.delete(id);
+    if (result.affected === 0) {
+      const message = systemMessage.ReturnMessage.errorDeletePost;
+      const status = HttpStatus.NOT_FOUND;
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
+    }
+    return {
+      message: systemMessage.ReturnMessage.sucessDeletePost,
+      statusCode: 200,
+    };
   }
 }

@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Get,
-  Param,
-  Put,
-  Query,
-  Headers,
-  UseGuards,
-  Delete,
-} from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, Put, Query, UseGuards, Delete } from '@nestjs/common';
 import { CreatePostUseCase } from './usecases/createPost.usecase';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
@@ -17,7 +6,12 @@ import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
+import { ReturnListPost } from './dtos/returnlistPost.dto';
+import { ListPostUseCase } from './usecases/listPost.usecase';
 import { DeletePostUseCase } from './usecases/deletePost.usecase';
+import { CreatePostDTO } from './dtos/createPost.dto';
+import { ListPostDTO } from './dtos/listPost.dto';
+import { UpdatePostDTO } from './dtos/updatePost.dto';
 @Controller('post')
 export class PostController {
   constructor(
@@ -49,17 +43,18 @@ export class PostController {
     return createPost;
   }
 
-  @Delete(':id')
-  async deletePost(@Param('id') id: string): Promise<ReturnMessageDTO> {
-    const deletePost: ReturnMessageDTO = await this.deletePostUseCase.deletePostUseCase(id);
-    return deletePost;
-  }
-
   @Put('update')
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   async UpdatePost(@Body() updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     const updatedPost: ReturnMessageDTO =
       await this.updatePostUseCase.UpdatePostUseCase(updatePostData);
     return updatedPost;
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
+  async deletePost(@Param('id') id: string): Promise<ReturnMessageDTO> {
+    const deletePost: ReturnMessageDTO = await this.deletePostUseCase.deletePostUseCase(id);
+    return deletePost;
   }
 }

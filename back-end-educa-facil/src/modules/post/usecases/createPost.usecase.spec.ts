@@ -1,5 +1,5 @@
 import { CreatePostUseCase } from './createPost.usecase';
-import { CreatePostDTO } from '../DTOs/createPost.DTO';
+import { CreatePostDTO } from '../dtos/createPost.dto';
 import { HttpException } from '@nestjs/common';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
