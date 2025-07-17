@@ -11,16 +11,13 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CreatePostUseCase } from './usecases/createPost.usecase';
-import { ListPostDTO } from './dtos/listPost.DTO';
 import { UpdatePostUseCase } from './usecases/updatePost.usecase';
 import { GetPostUseCase } from './usecases/getPost.usecase';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { UpdatePostDTO } from './dtos/updatePost.DTO';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
-import { ReturnListPost } from './dtos/returnlistPost.DTO';
-import { ListPostUseCase } from './usecases/listPost.usecase';
+import { DeletePostUseCase } from './usecases/deletePost.usecase';
 @Controller('post')
 export class PostController {
   constructor(
@@ -64,11 +61,5 @@ export class PostController {
     const updatedPost: ReturnMessageDTO =
       await this.updatePostUseCase.UpdatePostUseCase(updatePostData);
     return updatedPost;
-  }
-
-  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
-  @Get('id/:id')
-  async getById(@Param('id') id: string): Promise<GetPostDTO[]> {
-    return await this.getPostUseCase.getPostUseCaseById(id);
   }
 }
