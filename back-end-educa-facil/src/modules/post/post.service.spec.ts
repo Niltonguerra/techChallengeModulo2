@@ -3,8 +3,9 @@ import { PostService } from './post.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDTO } from './DTOs/createPost.DTO';
+import { CreatePostDTO } from './dtos/createPost.DTO';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { GetPostDTO } from './dtos/getPostService.DTO';
 
 describe('PostService', () => {
   let service: PostService;
@@ -16,6 +17,7 @@ describe('PostService', () => {
     save: jest.fn(),
     find: jest.fn(),
     findOneBy: jest.fn(),
+    findOne: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -95,9 +97,24 @@ describe('PostService', () => {
   });
 
   it('deve buscar post por id', async () => {
-    mockRepository.find.mockResolvedValue([{ id: '1' }]);
+    const fakePost: GetPostDTO[] = [
+      {
+        id: '1',
+        title: 'Post 1',
+        description: 'Desc 1',
+        image: 'imagem.jpg',
+        created_at: new Date('2025-07-15T17:49:03.107Z'),
+        updated_at: new Date('2025-07-15T17:49:03.107Z'),
+        external_link: { undefined: 'http://example.com' },
+        content_hashtags: [],
+        style_id: '',
+        introduction: undefined,
+        search: '',
+      },
+    ];
+    mockRepository.find.mockResolvedValue(fakePost);
     const result = await service.getById('1');
-    expect(result).toEqual([{ id: '1' }]);
     expect(mockRepository.find).toHaveBeenCalledWith({ where: { id: '1' } });
+    expect(result).toEqual(fakePost);
   });
 });

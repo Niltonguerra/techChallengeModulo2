@@ -9,7 +9,7 @@ import {
   IsUrl,
   Length,
 } from 'class-validator';
-import { UserPermission } from '../entities/enum/permission.enum';
+import { UserPermissionEnum } from '../enum/permission.enum';
 
 export class CreateUserDTO {
   @IsString({ message: systemMessage.validation.isString })
@@ -37,7 +37,7 @@ export class CreateUserDTO {
 
   @IsString({ message: systemMessage.validation.isString })
   @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
-  permission: UserPermission;
+  permission: UserPermissionEnum;
 
   @IsBoolean({ message: systemMessage.validation.isBoolean })
   notification: boolean;

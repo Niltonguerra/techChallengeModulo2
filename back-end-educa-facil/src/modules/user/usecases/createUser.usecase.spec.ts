@@ -4,8 +4,8 @@ import { CreateUserUseCase } from './createUser.usecase';
 import { UserService } from '../service/user.service';
 import { EmailService } from '@modules/email/email.service';
 import { CreateUserDTO } from '../dtos/createUser.dto';
-import { UserStatus } from '../entities/enum/status.enum';
-import { UserPermission } from '../entities/enum/permission.enum';
+import { UserStatusEnum } from '../enum/status.enum';
+import { UserPermissionEnum } from '../enum/permission.enum';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
@@ -71,7 +71,7 @@ describe('CreateUserUseCase', () => {
       password: 'password123',
       photo: 'https://example.com/photo.jpg',
       social_midia: { twitter: '@testuser' },
-      permission: UserPermission.USER,
+      permission: UserPermissionEnum.USER,
       notification: true,
     };
 
@@ -107,7 +107,7 @@ describe('CreateUserUseCase', () => {
       );
       expect(mockUserService.createUpdateUser).toHaveBeenCalledWith({
         ...mockCreateUserDTO,
-        isActive: UserStatus.PENDING,
+        isActive: UserStatusEnum.PENDING,
       });
     });
 
@@ -226,7 +226,7 @@ describe('CreateUserUseCase', () => {
       );
       expect(mockUserService.createUpdateUser).toHaveBeenCalledWith({
         ...mockCreateUserDTO,
-        isActive: UserStatus.PENDING,
+        isActive: UserStatusEnum.PENDING,
       });
     });
 
@@ -281,7 +281,7 @@ describe('CreateUserUseCase', () => {
       expect(mockUserService.findOneUser).toHaveBeenCalledWith('email', testToken);
       expect(mockUserService.createUpdateUser).toHaveBeenCalledWith({
         id: foundUserResponse.user.id,
-        isActive: UserStatus.ACTIVE,
+        isActive: UserStatusEnum.ACTIVE,
       });
     });
 
@@ -401,7 +401,7 @@ describe('CreateUserUseCase', () => {
       expect(mockUserService.findOneUser).toHaveBeenCalledWith('email', testToken);
       expect(mockUserService.createUpdateUser).toHaveBeenCalledWith({
         id: foundUserResponse.user.id,
-        isActive: UserStatus.ACTIVE,
+        isActive: UserStatusEnum.ACTIVE,
       });
     });
 
@@ -445,7 +445,7 @@ describe('CreateUserUseCase', () => {
           password: 'password123',
           photo: 'https://example.com/photo.jpg',
           social_midia: { twitter: '@testuser' },
-          permission: UserPermission.USER,
+          permission: UserPermissionEnum.USER,
           notification: true,
         },
       };
@@ -484,7 +484,7 @@ describe('CreateUserUseCase', () => {
         password: 'password123',
         photo: 'https://example.com/photo.jpg',
         social_midia: {},
-        permission: UserPermission.USER,
+        permission: UserPermissionEnum.USER,
         notification: false,
       };
 
@@ -513,7 +513,7 @@ describe('CreateUserUseCase', () => {
 
       expect(mockUserService.createUpdateUser).toHaveBeenCalledWith({
         ...userWithEmptySocial,
-        isActive: UserStatus.PENDING,
+        isActive: UserStatusEnum.PENDING,
       });
     });
   });

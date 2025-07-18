@@ -4,6 +4,6 @@ export class ReturnMessageDTO {
 }
 
 export class UpdateReturnMessageDTO {
-  statusCode: string;
+  statusCode: number;
   message: string;
 }

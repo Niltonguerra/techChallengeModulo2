@@ -13,8 +13,15 @@ export const systemMessage: SystemMessageType = {
     isArray: 'O campo $property deve ser um array.',
     isObject: 'O campo $property deve ser um objeto.',
     isBoolean: 'O campo $property deve ser um valor booleano.',
+    isNumberString: 'O campo $property deve ser um número.',
+    isEnum:
+      'O campo $property deve ser um dos seguintes valores: id,name,email,permission,is_active,created_at,updated_at,social_midia.',
   },
   ReturnMessage: {
+    existePostWithThisTitle: 'Já existe um post com este título.',
+    errorGetPostByField: 'Erro ao encontrar o post pelo campo.',
+    sucessGetPostByField: 'Post encontrado com sucesso pelo campo.',
+    sucessFindOneUser: 'Usuário encontrado com sucesso.',
     FailedToProcessPassword: 'Falha ao processar a senha.',
     isObject: 'O valor deve ser um objeto.',
     isnotEmptyPassword: 'A senha não pode estar vazia.',

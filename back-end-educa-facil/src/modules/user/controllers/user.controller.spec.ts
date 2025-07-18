@@ -7,7 +7,7 @@ import { CreateUserDTO } from '../dtos/createUser.dto';
 import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
-import { UserPermission } from '../entities/enum/permission.enum';
+import { UserPermissionEnum } from '../enum/permission.enum';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
@@ -77,7 +77,7 @@ describe('UserController', () => {
         password: 'hashedPassword123',
         photo: 'https://example.com/photo.jpg',
         social_midia: { twitter: '@testuser' },
-        permission: UserPermission.USER,
+        permission: UserPermissionEnum.USER,
         notification: true,
       };
 
@@ -105,7 +105,7 @@ describe('UserController', () => {
         password: 'hashedPassword123',
         photo: 'https://example.com/photo.jpg',
         social_midia: { twitter: '@testuser' },
-        permission: UserPermission.USER,
+        permission: UserPermissionEnum.USER,
         notification: true,
       };
 
@@ -132,7 +132,7 @@ describe('UserController', () => {
         password: 'hashedPassword123',
         photo: 'https://example.com/photo.jpg',
         social_midia: { twitter: '@testuser' },
-        permission: UserPermission.USER,
+        permission: UserPermissionEnum.USER,
         notification: true,
       };
 

@@ -4,15 +4,15 @@ services:
       file: docker-compose.db.yml
       service: db
   
-  pgadmin:
-    extends:
-      file: docker-compose.db.yml
-      service: pgadmin
+  # pgadmin:
+  #   extends:
+  #     file: docker-compose.db.yml
+  #     service: pgadmin
 
-  rabbitmq:
-    extends:
-      file: docker-compose.rabbitmq.yml
-      service: rabbitmq
+  # rabbitmq:
+  #   extends:
+  #     file: docker-compose.rabbitmq.yml
+  #     service: rabbitmq
 
 volumes:
     pgdata:

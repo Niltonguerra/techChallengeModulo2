@@ -25,8 +25,13 @@ export class EmailService {
 
   EnviaVerificacaoEmail(email: string, url: string): number {
     try {
+      const urlServer =
+        this.configService.get<string>('AMBIENTE') === 'PROD'
+          ? this.configService.get<string>('URL_SERVER_PROD')
+          : this.configService.get<string>('URL_SERVER_DEV');
+
       const tituloMensagem = 'Verificação de e-mail do aplicativo MoveSmart';
-      const corpoMensagem = `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${url}?token=${email}`;
+      const corpoMensagem = `Clique no link a seguir para verificar seu e-mail: ${urlServer}${url}?token=${email}`;
 
       const mailOptions: SendEmailDTO = {
         from: this.configService.get<string>('EMAIL_USER', ''),

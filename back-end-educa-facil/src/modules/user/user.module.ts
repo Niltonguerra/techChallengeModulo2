@@ -9,9 +9,10 @@ import { AuthController } from './controllers/SignIn.controller';
 import { SignInUseCase } from './usecases/SignIn.usecase';
 import { AuthModule } from '@modules/auth/auth.module';
 import { EmailModule } from '@modules/email/email.module';
+import { Post } from '@modules/post/entities/post.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), AuthModule, EmailModule],
+  imports: [TypeOrmModule.forFeature([Post, User]), AuthModule, EmailModule],
   providers: [UserService, CreateUserUseCase, FindOneUserUseCase, SignInUseCase],
   controllers: [UserController, AuthController],
   exports: [UserService],
