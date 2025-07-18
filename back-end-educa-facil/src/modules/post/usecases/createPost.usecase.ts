@@ -11,6 +11,7 @@ export class CreatePostUseCase {
 
   async createPostUseCase(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     try {
+      if(!createPostData) throw new HttpException(`${systemMessage.validation.isUUID}`, 404);
       const post = await this.postService.createPostService(createPostData);
       return post;
     } catch (error) {

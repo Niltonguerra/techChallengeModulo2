@@ -9,6 +9,7 @@ import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { ReturnListPost } from './dtos/returnlistPost.dto';
 import { searchByFieldPostEnum } from './enum/searchByFieldPost.enum';
 import { CreatePostDTO } from './dtos/createPost.dto';
+import { User } from '@modules/user/entities/user.entity';
 
 @Injectable()
 export class PostService {
@@ -28,7 +29,11 @@ export class PostService {
       throw new HttpException(`${message}: ${status}`, status);
     }
 
-    const post = this.postRepository.create({ id: uuidv4(), ...createPostData });
+    const post = this.postRepository.create({
+      id: uuidv4(),
+      ...createPostData,
+      user: { id: createPostData.user_id } as User
+    });
     await this.postRepository.save(post);
 
     const returnService: ReturnMessageDTO = {
@@ -48,14 +53,24 @@ export class PostService {
       .skip(offset)
       .take(limit);
 
-    if (search) {
-      query.where('p.title ILIKE :search OR p.description ILIKE :search', {
-        search: `%${search}%`,
-      });
+    if (search?.trim()) {
+      const terms = search.split(',')
+        .map(term => term.trim())
+        .filter(term => term.length > 0);
+
+      if (terms.length > 0) {
+        const conditions: string[] = [];
+        const parameters = {};
+        terms.forEach((term, index) => {
+          conditions.push(`p.search ILIKE :term${index}`);
+          parameters[`term${index}`] = `%${term}%`;
+        });
+        const whereClause = conditions.join(' OR ');
+        query.where(whereClause, parameters);
+      }
     }
-
     const [posts, total_post] = await query.getManyAndCount();
-
+    
     const postDataReturn: ReturnListPost = {
       message: systemMessage.ReturnMessage.sucessGetPosts,
       statusCode: 200,
@@ -73,12 +88,11 @@ export class PostService {
         external_link: p.external_link ?? { url: '' },
         created_at: p.created_at,
         updated_at: p.updated_at,
-        user_name: p.user.name,
-        user_email: p.user.email,
-        user_social_media: p.user.social_midia,
+        user_name: p.user?.name,
+        user_email: p.user?.email,
+        user_social_media: p.user?.social_midia,
       })),
     };
-
     return postDataReturn;
   }
 

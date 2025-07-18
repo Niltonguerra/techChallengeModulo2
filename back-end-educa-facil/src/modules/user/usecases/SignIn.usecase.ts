@@ -32,6 +32,7 @@ export class SignInUseCase {
       }
 
       const payload: JwtPayload = {
+        id: validatedUser.id,
         email: validatedUser.email,
         permission: validatedUser.permission,
       };

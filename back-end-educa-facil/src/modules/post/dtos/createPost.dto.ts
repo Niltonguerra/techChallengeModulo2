@@ -30,10 +30,6 @@ export class CreatePostDTO {
   @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   scheduled_publication: string;
 
-  @IsOptional()
-  @IsString({ message: systemMessage.validation.isString })
-  @Length(1, 100, { message: systemMessage.validation.Length })
-  authorId?: string;
 
   @IsString({ message: systemMessage.validation.isString })
   @Length(50, 500, { message: systemMessage.validation.Length })
@@ -59,6 +55,8 @@ export class CreatePostDTO {
   @Length(1, 2048, { message: systemMessage.validation.Length })
   image?: string;
 
+  @IsOptional()
+  @IsString({ message: systemMessage.validation.isString })
   @IsUUID('4', { message: systemMessage.validation.isUUID })
-  author_id: string;
+  user_id: string;
 }

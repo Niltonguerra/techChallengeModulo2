@@ -12,6 +12,9 @@ import { DeletePostUseCase } from './usecases/deletePost.usecase';
 import { CreatePostDTO } from './dtos/createPost.dto';
 import { ListPostDTO } from './dtos/listPost.dto';
 import { UpdatePostDTO } from './dtos/updatePost.dto';
+import { GetTokenValues } from '../auth/decorators/token.decorator';
+import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
+
 @Controller('post')
 export class PostController {
   constructor(
@@ -33,11 +36,11 @@ export class PostController {
   async getById(@Param('id') id: string): Promise<ReturnListPost> {
     return await this.getPostUseCase.getPostUseCaseById(id);
   }
-
+ 
   @Post()
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
-  @Post('create')
-  async CreatePost(@Body() createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
+  async CreatePost(@Body() createPostData: CreatePostDTO, @GetTokenValues() rawToken: JwtPayload): Promise<ReturnMessageDTO> {
+    createPostData.user_id = rawToken.id
     const createPost: ReturnMessageDTO =
       await this.createPostUseCase.createPostUseCase(createPostData);
     return createPost;
