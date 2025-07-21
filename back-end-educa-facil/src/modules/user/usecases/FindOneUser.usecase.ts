@@ -17,7 +17,9 @@ export class FindOneUserUseCase {
       return user;
     } catch (error) {
       const message =
-        error instanceof HttpException ? error.message : systemMessage.ReturnMessage.errorFindUser;
+        error instanceof HttpException
+          ? error.message
+          : systemMessage.ReturnMessage.errorUserNotFound;
       const status =
         error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
       this.logger.error(`${message}: ${status}`);
