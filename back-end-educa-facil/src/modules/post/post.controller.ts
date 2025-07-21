@@ -36,11 +36,14 @@ export class PostController {
   async getById(@Param('id') id: string): Promise<ReturnListPost> {
     return await this.getPostUseCase.getPostUseCaseById(id);
   }
- 
+
   @Post()
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
-  async CreatePost(@Body() createPostData: CreatePostDTO, @GetTokenValues() rawToken: JwtPayload): Promise<ReturnMessageDTO> {
-    createPostData.user_id = rawToken.id
+  async CreatePost(
+    @Body() createPostData: CreatePostDTO,
+    @GetTokenValues() rawToken: JwtPayload,
+  ): Promise<ReturnMessageDTO> {
+    createPostData.user_id = rawToken.id;
     const createPost: ReturnMessageDTO =
       await this.createPostUseCase.createPostUseCase(createPostData);
     return createPost;

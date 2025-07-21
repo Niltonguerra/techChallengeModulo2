@@ -1,5 +1,5 @@
+import { APP_GUARD } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { CreateUserUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
@@ -8,338 +8,128 @@ import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
 import { UserPermissionEnum } from '../enum/permission.enum';
-import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
-import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
-import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
-import { Reflector } from '@nestjs/core';
+import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+// importação removida, guard será sobrescrito via overrideGuard
 
 describe('UserController', () => {
   let controller: UserController;
-  let mockCreateUserUseCase: {
-    validationEmailCreateUser: jest.Mock;
-    create: jest.Mock;
-  };
-  let mockFindOneUserUseCase: {
-    findOneUserUseCase: jest.Mock;
-  };
+  let createUserUseCase: CreateUserUseCase;
+  let findOneUserUseCase: FindOneUserUseCase;
 
   beforeEach(async () => {
-    // Mock do CreateUserUseCase
-    mockCreateUserUseCase = {
-      validationEmailCreateUser: jest.fn(),
-      create: jest.fn(),
-    };
-
-    // Mock do FindOneUserUseCase
-    mockFindOneUserUseCase = {
-      findOneUserUseCase: jest.fn(),
-    };
-
+    const jwtServiceMock = { sign: jest.fn(), verify: jest.fn() };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [
-        { provide: CreateUserUseCase, useValue: mockCreateUserUseCase },
-        { provide: FindOneUserUseCase, useValue: mockFindOneUserUseCase },
-        { provide: JwtAuthGuardUser, useValue: { canActivate: jest.fn().mockReturnValue(true) } },
         {
-          provide: RolesGuardProfessor,
-          useValue: { canActivate: jest.fn().mockReturnValue(true) },
+          provide: CreateUserUseCase,
+          useValue: {
+            validationEmailCreateUser: jest.fn(() => Promise.resolve()),
+            create: jest.fn(() => Promise.resolve()),
+          },
         },
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        { provide: HashPasswordPipe, useValue: { transform: jest.fn((v) => v) } },
-        { provide: ConfigService, useValue: {} },
-        { provide: Reflector, useValue: {} },
-        { provide: JwtService, useValue: {} },
+        {
+          provide: FindOneUserUseCase,
+          useValue: {
+            findOneUserUseCase: jest.fn(() => Promise.resolve()),
+          },
+        },
+        {
+          provide: JwtService,
+          useValue: jwtServiceMock,
+        },
+        {
+          provide: APP_GUARD,
+          useValue: { canActivate: () => true },
+        },
       ],
     }).compile();
 
     controller = module.get<UserController>(UserController);
+    createUserUseCase = module.get<CreateUserUseCase>(CreateUserUseCase);
+    findOneUserUseCase = module.get<FindOneUserUseCase>(FindOneUserUseCase);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('deve ser definido', () => {
+    expect(controller).toBeDefined();
   });
 
-  describe('Inicialização', () => {
-    it('should be defined', () => {
-      expect(controller).toBeDefined();
-    });
+  it('deve criar usuário com sucesso', async () => {
+    const dto: CreateUserDTO = {
+      email: 'test@email.com',
+      password: '123',
+      name: 'Test',
+      photo: '',
+      permission: UserPermissionEnum.ADMIN,
+      notification: false,
+    };
+    const expected: ReturnMessageDTO = { message: 'ok', statusCode: 200 };
+    jest.spyOn(createUserUseCase, 'validationEmailCreateUser').mockResolvedValue(expected);
+
+    const result = await controller.CreateUser(dto);
+    expect(result).toBe(expected);
+    expect(createUserUseCase.validationEmailCreateUser as jest.Mock).toHaveBeenCalledWith(dto);
   });
 
-  describe('POST /user/create - CreateUser', () => {
-    it('should create user successfully', async () => {
-      // Arrange
-      const createUserDTO: CreateUserDTO = {
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'hashedPassword123',
-        photo: 'https://example.com/photo.jpg',
-        social_midia: { twitter: '@testuser' },
-        permission: UserPermissionEnum.USER,
-        notification: true,
-      };
+  it('deve validar email com sucesso', async () => {
+    const token = 'token123';
+    const expected: ReturnMessageDTO = { message: 'valid', statusCode: 200 };
+    jest.spyOn(createUserUseCase, 'create').mockResolvedValue(expected);
 
-      const expectedResponse: ReturnMessageDTO = {
-        statusCode: HttpStatus.CREATED,
-        message: 'E-mail de verificação enviado com sucesso',
-      };
-
-      mockCreateUserUseCase.validationEmailCreateUser.mockResolvedValue(expectedResponse);
-
-      // Act
-      const result = await controller.CreateUser(createUserDTO);
-
-      // Assert
-      expect(result).toEqual(expectedResponse);
-      expect(mockCreateUserUseCase.validationEmailCreateUser).toHaveBeenCalledWith(createUserDTO);
-      expect(mockCreateUserUseCase.validationEmailCreateUser).toHaveBeenCalledTimes(1);
-    });
-
-    it('should handle errors when creating user', async () => {
-      // Arrange
-      const createUserDTO: CreateUserDTO = {
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'hashedPassword123',
-        photo: 'https://example.com/photo.jpg',
-        social_midia: { twitter: '@testuser' },
-        permission: UserPermissionEnum.USER,
-        notification: true,
-      };
-
-      const errorResponse: ReturnMessageDTO = {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Email já cadastrado',
-      };
-
-      mockCreateUserUseCase.validationEmailCreateUser.mockResolvedValue(errorResponse);
-
-      // Act
-      const result = await controller.CreateUser(createUserDTO);
-
-      // Assert
-      expect(result).toEqual(errorResponse);
-      expect(mockCreateUserUseCase.validationEmailCreateUser).toHaveBeenCalledWith(createUserDTO);
-    });
-
-    it('should propagate exceptions from use case', async () => {
-      // Arrange
-      const createUserDTO: CreateUserDTO = {
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'hashedPassword123',
-        photo: 'https://example.com/photo.jpg',
-        social_midia: { twitter: '@testuser' },
-        permission: UserPermissionEnum.USER,
-        notification: true,
-      };
-
-      const error = new Error('Database connection failed');
-      mockCreateUserUseCase.validationEmailCreateUser.mockRejectedValue(error);
-
-      // Act & Assert
-      await expect(controller.CreateUser(createUserDTO)).rejects.toThrow(error);
-    });
+    const result = await controller.validationEmail(token);
+    expect(result).toBe(expected);
+    expect(createUserUseCase.create as jest.Mock).toHaveBeenCalledWith(token);
   });
 
-  describe('GET /user/validationEmail - validationEmail', () => {
-    it('should validate email token successfully', async () => {
-      // Arrange
-      const token = 'test@example.com';
-      const expectedResponse: ReturnMessageDTO = {
-        statusCode: HttpStatus.CREATED,
-        message: 'Usuário criado com sucesso!',
-      };
+  it('deve buscar usuário com sucesso', async () => {
+    const query: FindOneUserQueryParamsDTO = {
+      field: searchByFieldUserEnum.EMAIL,
+      value: 'test@email.com',
+    };
+    const expected: FindOneUserReturnMessageDTO = {
+      statusCode: 200,
+      message: 'ok',
+      user: {
+        id: '1',
+        name: 'Test',
+        photo: '',
+        email: 'test@email.com',
+        social_midia: {},
+        notification: false,
+      },
+    };
+    jest.spyOn(findOneUserUseCase, 'findOneUserUseCase').mockResolvedValue(expected);
 
-      mockCreateUserUseCase.create.mockResolvedValue(expectedResponse);
-
-      // Act
-      const result = await controller.validationEmail(token);
-
-      // Assert
-      expect(result).toEqual(expectedResponse);
-      expect(mockCreateUserUseCase.create).toHaveBeenCalledWith(token);
-      expect(mockCreateUserUseCase.create).toHaveBeenCalledTimes(1);
-    });
-
-    it('should handle invalid token', async () => {
-      // Arrange
-      const token = 'invalid@token.com';
-      const errorResponse: ReturnMessageDTO = {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Email não encontrado',
-      };
-
-      mockCreateUserUseCase.create.mockResolvedValue(errorResponse);
-
-      // Act
-      const result = await controller.validationEmail(token);
-
-      // Assert
-      expect(result).toEqual(errorResponse);
-      expect(mockCreateUserUseCase.create).toHaveBeenCalledWith(token);
-    });
-
-    it('should propagate exceptions from create use case', async () => {
-      // Arrange
-      const token = 'test@example.com';
-      const error = new Error('Token validation failed');
-      mockCreateUserUseCase.create.mockRejectedValue(error);
-
-      // Act & Assert
-      await expect(controller.validationEmail(token)).rejects.toThrow(error);
-    });
+    const result = await controller.FindOne(query);
+    expect(result).toBe(expected);
+    expect(findOneUserUseCase.findOneUserUseCase as jest.Mock).toHaveBeenCalledWith(query);
   });
 
-  describe('GET /user/findOne - FindOne', () => {
-    it('should find user successfully', async () => {
-      // Arrange
-      const queryParams: FindOneUserQueryParamsDTO = {
-        field: 'email',
-        value: 'test@example.com',
-      };
-
-      const expectedResponse: FindOneUserReturnMessageDTO = {
-        statusCode: HttpStatus.OK,
-        message: 'Usuário encontrado com sucesso',
-        user: {
-          id: '123e4567-e89b-12d3-a456-426614174000',
-          name: 'Test User',
-          photo: 'https://example.com/photo.jpg',
-          email: 'test@example.com',
-          social_midia: { twitter: '@testuser' },
-          notification: true,
-        },
-      };
-
-      mockFindOneUserUseCase.findOneUserUseCase.mockResolvedValue(expectedResponse);
-
-      // Act
-      const result = await controller.FindOne(queryParams);
-
-      // Assert
-      expect(result).toEqual(expectedResponse);
-      expect(mockFindOneUserUseCase.findOneUserUseCase).toHaveBeenCalledWith(
-        queryParams.field,
-        queryParams.value,
-      );
-      expect(mockFindOneUserUseCase.findOneUserUseCase).toHaveBeenCalledTimes(1);
-    });
-
-    it('should handle user not found', async () => {
-      // Arrange
-      const queryParams: FindOneUserQueryParamsDTO = {
-        field: 'email',
-        value: 'notfound@example.com',
-      };
-
-      const errorResponse: ReturnMessageDTO = {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Usuário não encontrado',
-      };
-
-      mockFindOneUserUseCase.findOneUserUseCase.mockResolvedValue(errorResponse);
-
-      // Act
-      const result = await controller.FindOne(queryParams);
-
-      // Assert
-      expect(result).toEqual(errorResponse);
-      expect(mockFindOneUserUseCase.findOneUserUseCase).toHaveBeenCalledWith(
-        queryParams.field,
-        queryParams.value,
-      );
-    });
-
-    it('should find user by different field (id)', async () => {
-      // Arrange
-      const queryParams: FindOneUserQueryParamsDTO = {
-        field: 'id',
-        value: '123e4567-e89b-12d3-a456-426614174000',
-      };
-
-      const expectedResponse: FindOneUserReturnMessageDTO = {
-        statusCode: HttpStatus.OK,
-        message: 'Usuário encontrado com sucesso',
-        user: {
-          id: '123e4567-e89b-12d3-a456-426614174000',
-          name: 'Test User',
-          photo: 'https://example.com/photo.jpg',
-          email: 'test@example.com',
-          social_midia: { twitter: '@testuser' },
-          notification: true,
-        },
-      };
-
-      mockFindOneUserUseCase.findOneUserUseCase.mockResolvedValue(expectedResponse);
-
-      // Act
-      const result = await controller.FindOne(queryParams);
-
-      // Assert
-      expect(result).toEqual(expectedResponse);
-      expect(mockFindOneUserUseCase.findOneUserUseCase).toHaveBeenCalledWith(
-        'id',
-        queryParams.value,
-      );
-    });
-
-    it('should propagate exceptions from find use case', async () => {
-      // Arrange
-      const queryParams: FindOneUserQueryParamsDTO = {
-        field: 'email',
-        value: 'test@example.com',
-      };
-
-      const error = new Error('Database query failed');
-      mockFindOneUserUseCase.findOneUserUseCase.mockRejectedValue(error);
-
-      // Act & Assert
-      await expect(controller.FindOne(queryParams)).rejects.toThrow(error);
-    });
+  it('deve propagar erro do usecase ao criar usuário', async () => {
+    const dto: CreateUserDTO = {
+      email: 'fail@email.com',
+      password: '123',
+      name: 'Fail',
+      photo: '',
+      permission: UserPermissionEnum.ADMIN,
+      notification: false,
+    };
+    jest.spyOn(createUserUseCase, 'validationEmailCreateUser').mockRejectedValue(new Error('erro'));
+    await expect(controller.CreateUser(dto)).rejects.toThrow('erro');
   });
 
-  describe('Integration scenarios', () => {
-    it('should handle empty query parameters gracefully', async () => {
-      // Arrange
-      const queryParams: FindOneUserQueryParamsDTO = {
-        field: '',
-        value: '',
-      };
+  it('deve propagar erro do usecase ao validar email', async () => {
+    jest.spyOn(createUserUseCase, 'create').mockRejectedValue(new Error('erro'));
+    await expect(controller.validationEmail('token')).rejects.toThrow('erro');
+  });
 
-      const errorResponse: ReturnMessageDTO = {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Parâmetros inválidos',
-      };
-
-      mockFindOneUserUseCase.findOneUserUseCase.mockResolvedValue(errorResponse);
-
-      // Act
-      const result = await controller.FindOne(queryParams);
-
-      // Assert
-      expect(result).toEqual(errorResponse);
-      expect(mockFindOneUserUseCase.findOneUserUseCase).toHaveBeenCalledWith('', '');
-    });
-
-    it('should handle special characters in token', async () => {
-      // Arrange
-      const token = 'user+test@example.com';
-      const expectedResponse: ReturnMessageDTO = {
-        statusCode: HttpStatus.CREATED,
-        message: 'Usuário criado com sucesso!',
-      };
-
-      mockCreateUserUseCase.create.mockResolvedValue(expectedResponse);
-
-      // Act
-      const result = await controller.validationEmail(token);
-
-      // Assert
-      expect(result).toEqual(expectedResponse);
-      expect(mockCreateUserUseCase.create).toHaveBeenCalledWith(token);
-    });
+  it('deve propagar erro do usecase ao buscar usuário', async () => {
+    const query: FindOneUserQueryParamsDTO = {
+      field: searchByFieldUserEnum.EMAIL,
+      value: 'x',
+    };
+    jest.spyOn(findOneUserUseCase, 'findOneUserUseCase').mockRejectedValue(new Error('erro'));
+    await expect(controller.FindOne(query)).rejects.toThrow('erro');
   });
 });

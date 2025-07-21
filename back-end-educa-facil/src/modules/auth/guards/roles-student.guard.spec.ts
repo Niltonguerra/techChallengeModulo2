@@ -28,6 +28,7 @@ describe('RolesGuardStudent', () => {
       user: {
         email: 'test@example.com',
         permission: 'student',
+        id: '123',
       },
     };
 
@@ -83,6 +84,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'student@example.com',
         permission: 'student',
+        id: '123',
       };
 
       // Act
@@ -98,6 +100,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'admin@example.com',
         permission: 'admin',
+        id: '123',
       };
 
       // Act
@@ -121,12 +124,9 @@ describe('RolesGuardStudent', () => {
         mockRequest.user = {
           email,
           permission: 'student',
+          id: '123',
         };
-
-        // Act
         const result = guard.canActivate(mockExecutionContext as ExecutionContext);
-
-        // Assert
         expect(result).toBe(true);
       });
     });
@@ -139,12 +139,9 @@ describe('RolesGuardStudent', () => {
         mockRequest.user = {
           email,
           permission: 'admin',
+          id: '123',
         };
-
-        // Act
         const result = guard.canActivate(mockExecutionContext as ExecutionContext);
-
-        // Assert
         expect(result).toBe(true);
       });
     });
@@ -156,6 +153,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'user@example.com',
         permission: 'user',
+        id: '123',
       };
 
       // Act & Assert
@@ -172,6 +170,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'teacher@example.com',
         permission: 'teacher',
+        id: '123',
       };
 
       // Act & Assert
@@ -188,6 +187,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'invalid@example.com',
         permission: 'invalid_permission',
+        id: '123',
       };
 
       // Act & Assert
@@ -204,6 +204,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'empty@example.com',
         permission: '',
+        id: '123',
       };
 
       // Act & Assert
@@ -220,6 +221,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'null@example.com',
         permission: '',
+        id: '123',
       };
 
       // Act & Assert
@@ -236,6 +238,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'undefined@example.com',
         permission: '',
+        id: '123',
       };
 
       // Act & Assert
@@ -251,13 +254,12 @@ describe('RolesGuardStudent', () => {
       // Arrange - testing uppercase permissions should fail
       const invalidPermissions = ['STUDENT', 'ADMIN', 'Student', 'Admin'];
 
-      invalidPermissions.forEach(() => {
+      invalidPermissions.forEach((permission) => {
         mockRequest.user = {
           email: 'case@example.com',
-          permission: '',
+          permission,
+          id: '123',
         };
-
-        // Act & Assert
         expect(() => guard.canActivate(mockExecutionContext as ExecutionContext)).toThrow(
           ForbiddenException,
         );
@@ -279,6 +281,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'context@example.com',
         permission: 'student',
+        id: '123',
       };
 
       // Act
@@ -295,6 +298,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'multiple@example.com',
         permission: 'admin',
+        id: '123',
       };
 
       // Act
@@ -316,6 +320,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'message@example.com',
         permission: 'unauthorized',
+        id: '123',
       };
 
       // Act & Assert
@@ -336,6 +341,7 @@ describe('RolesGuardStudent', () => {
       mockRequest.user = {
         email: 'performance@example.com',
         permission: 'student',
+        id: '123',
       };
       const startTime = Date.now();
 
@@ -357,6 +363,7 @@ describe('RolesGuardStudent', () => {
             user: {
               email: 'concurrent@example.com',
               permission: 'student',
+              id: '123',
             },
           }),
         }),
@@ -375,15 +382,15 @@ describe('RolesGuardStudent', () => {
     it('should maintain state independence between calls', () => {
       // Arrange & Act
       // First call with student
-      mockRequest.user = { email: 'test1@example.com', permission: 'student' };
+      mockRequest.user = { email: 'test1@example.com', permission: 'student', id: '123' };
       const result1 = guard.canActivate(mockExecutionContext as ExecutionContext);
 
       // Second call with admin
-      mockRequest.user = { email: 'test2@example.com', permission: 'admin' };
+      mockRequest.user = { email: 'test2@example.com', permission: 'admin', id: '123' };
       const result2 = guard.canActivate(mockExecutionContext as ExecutionContext);
 
       // Third call with invalid permission (should throw)
-      mockRequest.user = { email: 'test3@example.com', permission: 'invalid' };
+      mockRequest.user = { email: 'test3@example.com', permission: 'invalid', id: '123' };
 
       // Assert
       expect(result1).toBe(true);
@@ -400,6 +407,7 @@ describe('RolesGuardStudent', () => {
       const typedUser: JwtPayload = {
         email: 'typed@example.com',
         permission: 'student',
+        id: '123',
       };
       mockRequest.user = typedUser;
 

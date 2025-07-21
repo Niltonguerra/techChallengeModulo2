@@ -20,9 +20,9 @@ describe('JwtStrategyUser', () => {
   });
 
   it('deve validar e retornar o payload corretamente', async () => {
-    const payload: JwtPayload = { email: 'user@test.com', permission: 'admin' };
+    const payload: JwtPayload = { email: 'user@test.com', permission: 'admin', id: '123' };
     const result = await strategy.validate(payload);
-    expect(result).toEqual({ email: 'user@test.com', permission: 'admin' });
+    expect(result).toEqual({ email: 'user@test.com', permission: 'admin', id: '123' });
   });
 
   it('deve funcionar com payload parcial', async () => {

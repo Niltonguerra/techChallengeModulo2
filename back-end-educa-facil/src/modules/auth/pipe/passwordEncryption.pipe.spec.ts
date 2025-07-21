@@ -6,6 +6,12 @@ import * as bcrypt from 'bcrypt';
 jest.mock('bcrypt');
 
 describe('HashPasswordPipe', () => {
+  it('deve lançar erro se password for apenas espaços em branco', async () => {
+    await expect(pipe.transform({ password: '    ' })).rejects.toThrow(BadRequestException);
+    await expect(pipe.transform({ password: '    ' })).rejects.toThrow(
+      systemMessage.ReturnMessage.isnotEmptyPassword,
+    );
+  });
   let pipe: HashPasswordPipe;
 
   beforeEach(() => {
