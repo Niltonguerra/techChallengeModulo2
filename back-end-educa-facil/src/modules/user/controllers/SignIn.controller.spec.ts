@@ -20,7 +20,7 @@ import {
   expectedMalformedResponseMock,
   expectedServerErrorResponseMock,
   expectedPlusResponseMock,
-} from '../__mocks__/auth.mock';
+} from './__mocks__/auth.mock';
 
 describe('AuthController', () => {
   let controller: AuthController;

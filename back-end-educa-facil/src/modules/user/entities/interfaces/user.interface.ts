@@ -1,6 +1,6 @@
 import { Post } from '@modules/post/entities/post.entity';
 import { UserStatusEnum } from '../../enum/status.enum';
-import { UserPermissionEnum } from '../../enum/permission.enum';
+import { UserPermissionEnum } from '../../../auth/Enum/permission.enum';
 
 export interface IUser {
   id: string;

@@ -9,7 +9,7 @@ import {
   IsUrl,
   Length,
 } from 'class-validator';
-import { UserPermissionEnum } from '../enum/permission.enum';
+import { UserPermissionEnum } from '../../auth/Enum/permission.enum';
 
 export class CreateUserDTO {
   @IsString({ message: systemMessage.validation.isString })

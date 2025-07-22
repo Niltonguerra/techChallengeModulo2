@@ -2,8 +2,8 @@ export const successResponse = {
   statusCode: 200,
   message: 'Usuário criado com sucesso',
 };
-import { CreateUserDTO } from '../dtos/createUser.dto';
-import { UserPermissionEnum } from '../enum/permission.enum';
+import { CreateUserDTO } from '../../dtos/createUser.dto';
+import { UserPermissionEnum } from '../../../auth/Enum/permission.enum';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 export const mockCreateUserDTO: CreateUserDTO = {
@@ -59,7 +59,7 @@ export const responseWithoutUser = {
   message: 'Some message',
 };
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
+import { FindOneUserReturnMessageDTO } from '../../dtos/returnMessageCRUD.dto';
 
 export const existingUserReturnMock: FindOneUserReturnMessageDTO = {
   statusCode: 200,

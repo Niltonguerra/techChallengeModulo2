@@ -22,7 +22,7 @@ export class RolesGuardStudent implements CanActivate {
     const request = context.switchToHttp().getRequest<{ user: JwtPayload }>();
     const user: JwtPayload = request.user;
 
-    if (user.permission !== 'student' && user.permission !== 'admin') {
+    if (user.permission !== 'user' && user.permission !== 'admin') {
       throw new ForbiddenException(systemMessage.ReturnMessage.NotAcess);
     }
 

@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { UserStatusEnum } from '../enum/status.enum';
-import { UserPermissionEnum } from '../enum/permission.enum';
+import { UserPermissionEnum } from '../../auth/Enum/permission.enum';
 
 export class AuthUserDTO {
   @IsEmail({}, { message: 'O email informado é inválido' })

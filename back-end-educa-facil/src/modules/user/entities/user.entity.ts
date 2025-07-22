@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserStatusEnum } from '../enum/status.enum';
-import { UserPermissionEnum } from '../enum/permission.enum';
+import { UserPermissionEnum } from '../../auth/Enum/permission.enum';
 import { IUser } from './interfaces/user.interface';
 
 @Entity({

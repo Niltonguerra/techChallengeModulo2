@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { PostService } from '../post.service';
+import { PostService } from '../service/post.service';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ReturnListPost } from '../dtos/returnlistPost.dto';
 

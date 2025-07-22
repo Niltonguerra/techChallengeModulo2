@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserService } from '../service/user.service';
 import { CreateUserDTO } from '../dtos/createUser.dto';
-import { EmailService } from '@modules/email/email.service';
+import { EmailService } from '@modules/email/service/email.service';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { UserStatusEnum } from '../enum/status.enum';
 import { IUser } from '../entities/interfaces/user.interface';

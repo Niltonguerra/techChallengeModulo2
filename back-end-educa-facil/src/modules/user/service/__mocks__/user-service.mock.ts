@@ -1,9 +1,9 @@
-import { IUser } from '../entities/interfaces/user.interface';
+import { IUser } from '../../entities/interfaces/user.interface';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
+import { FindOneUserReturnMessageDTO } from '../../dtos/returnMessageCRUD.dto';
 import { LoginUsuarioInternoDTO } from '@modules/user/dtos/AuthUser.dto';
-import { UserPermissionEnum } from '../enum/permission.enum';
-import { UserStatusEnum } from '../enum/status.enum';
+import { UserPermissionEnum } from '../../../auth/Enum/permission.enum';
+import { UserStatusEnum } from '../../enum/status.enum';
 
 export const userMock: IUser = {
   id: '1',

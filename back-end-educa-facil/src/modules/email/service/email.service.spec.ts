@@ -86,8 +86,15 @@ describe('EmailService', () => {
     const testUrl = 'user/validationEmail';
 
     beforeEach(() => {
-      // Mock do ConfigService.get para o método
-      configService.get.mockReturnValue('test@gmail.com');
+      // Mock do ConfigService.get para simular ambiente DEV e URL_SERVER_DEV
+      configService.get.mockImplementation((key: string) => {
+        if (key === 'EMAIL_USER') return 'test@gmail.com';
+        if (key === 'EMAIL_PASSWORD') return 'testpassword';
+        if (key === 'AMBIENTE') return 'DEV';
+        if (key === 'URL_SERVER_DEV') return 'http://localhost:3000/';
+        if (key === 'URL_SERVER_PROD') return 'https://meusite.com/';
+        return '';
+      });
     });
 
     it('should send verification email successfully', () => {
@@ -161,7 +168,14 @@ describe('EmailService', () => {
     it('should use EMAIL_USER from config as sender', () => {
       // Arrange
       const expectedSender = 'configured@email.com';
-      configService.get.mockReturnValue(expectedSender);
+      configService.get.mockImplementation((key: string) => {
+        if (key === 'EMAIL_USER') return expectedSender;
+        if (key === 'EMAIL_PASSWORD') return 'testpassword';
+        if (key === 'AMBIENTE') return 'DEV';
+        if (key === 'URL_SERVER_DEV') return 'http://localhost:3000/';
+        if (key === 'URL_SERVER_PROD') return 'https://meusite.com/';
+        return '';
+      });
 
       // Act
       service.EnviaVerificacaoEmail(testEmail, testUrl);

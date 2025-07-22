@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { SendEmailDTO } from './dtos/sendemail.dto';
+import { SendEmailDTO } from '../dtos/sendemail.dto';
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
 import { systemMessage } from '@config/i18n/pt/systemMessage';

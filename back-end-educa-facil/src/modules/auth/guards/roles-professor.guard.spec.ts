@@ -1,45 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+import {
+  mockReflector,
+  mockJwtService,
+  mockExecutionContext,
+  mockRequest,
+} from './__mocks__/roles-professor.guard.mock';
 import { RolesGuardProfessor } from './roles-professor.guard';
 import { JwtPayload } from '../dtos/JwtPayload.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 describe('RolesGuardProfessor', () => {
   let guard: RolesGuardProfessor;
-  let mockReflector: Partial<Reflector>;
-  let mockJwtService: Partial<JwtService>;
-  let mockExecutionContext: Partial<ExecutionContext>;
-  let mockRequest: { user: JwtPayload };
 
   beforeEach(async () => {
-    mockReflector = {
-      get: jest.fn(),
-      getAllAndOverride: jest.fn(),
-    };
-
-    mockJwtService = {
-      verify: jest.fn(),
-      sign: jest.fn(),
-    };
-
-    mockRequest = {
-      user: {
-        email: 'admin@example.com',
-        permission: 'admin',
-        id: '123',
-      },
-    };
-
-    mockExecutionContext = {
-      switchToHttp: jest.fn().mockReturnValue({
-        getRequest: jest.fn().mockReturnValue(mockRequest),
-        getResponse: jest.fn(),
-      }),
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
-    };
+    const { RolesGuardProfessor } = await import('./roles-professor.guard');
+    const { Reflector } = await import('@nestjs/core');
+    const { JwtService } = await import('@nestjs/jwt');
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

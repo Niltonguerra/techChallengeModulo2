@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserUseCase } from './createUser.usecase';
 import { UserService } from '../service/user.service';
-import { EmailService } from '@modules/email/email.service';
+import { EmailService } from '@modules/email/service/email.service';
 import {
   mockCreateUserDTO,
   notFoundResponse,
@@ -11,7 +11,7 @@ import {
   foundUserResponse,
   responseWithoutUser,
   successResponse,
-} from '../__mocks__/create-user-usecase.mock';
+} from './__mocks__/create-user-usecase.mock';
 import { UserStatusEnum } from '../enum/status.enum';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 

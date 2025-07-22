@@ -1,18 +1,18 @@
 import { Body, Controller, Post, Get, Param, Put, Query, UseGuards, Delete } from '@nestjs/common';
-import { CreatePostUseCase } from './usecases/createPost.usecase';
-import { UpdatePostUseCase } from './usecases/updatePost.usecase';
-import { GetPostUseCase } from './usecases/getPost.usecase';
+import { CreatePostUseCase } from '../usecases/createPost.usecase';
+import { UpdatePostUseCase } from '../usecases/updatePost.usecase';
+import { GetPostUseCase } from '../usecases/getPost.usecase';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
-import { ReturnListPost } from './dtos/returnlistPost.dto';
-import { ListPostUseCase } from './usecases/listPost.usecase';
-import { DeletePostUseCase } from './usecases/deletePost.usecase';
-import { CreatePostDTO } from './dtos/createPost.dto';
-import { ListPostDTO } from './dtos/listPost.dto';
-import { UpdatePostDTO } from './dtos/updatePost.dto';
-import { GetTokenValues } from '../auth/decorators/token.decorator';
+import { ReturnListPost } from '../dtos/returnlistPost.dto';
+import { ListPostUseCase } from '../usecases/listPost.usecase';
+import { DeletePostUseCase } from '../usecases/deletePost.usecase';
+import { CreatePostDTO } from '../dtos/createPost.dto';
+import { ListPostDTO } from '../dtos/listPost.dto';
+import { UpdatePostDTO } from '../dtos/updatePost.dto';
+import { GetTokenValues } from '../../auth/decorators/token.decorator';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 
 @Controller('post')

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { PostService } from '../post.service';
+import { PostService } from '../service/post.service';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { CreatePostDTO } from '../dtos/createPost.dto';
@@ -11,7 +11,7 @@ export class CreatePostUseCase {
 
   async createPostUseCase(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     try {
-      if(!createPostData) throw new HttpException(`${systemMessage.validation.isUUID}`, 404);
+      if (!createPostData) throw new HttpException(`${systemMessage.validation.isUUID}`, 404);
       const post = await this.postService.createPostService(createPostData);
       return post;
     } catch (error) {

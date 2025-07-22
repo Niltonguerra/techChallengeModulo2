@@ -1,4 +1,4 @@
-import { AuthUserDTO } from '../dtos/AuthUser.dto';
+import { AuthUserDTO } from '../../dtos/AuthUser.dto';
 import { HttpStatus } from '@nestjs/common';
 
 export const authUserDTOMock: AuthUserDTO = {
