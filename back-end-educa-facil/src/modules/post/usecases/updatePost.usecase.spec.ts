@@ -1,54 +1,48 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { UpdatePostUseCase } from './updatePost.usecase';
-import { PostService } from '../post.service';
-import { UpdatePostDTO } from '../DTOs/updatePost.DTO';
-import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { HttpException } from '@nestjs/common';
+import {
+  mockPostService,
+  mockUpdatePostDto,
+  mockReturnMessage,
+} from './__mocks__/updatePost.usecase.mock';
+import { HttpException, Logger } from '@nestjs/common';
+import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 describe('UpdatePostUseCase', () => {
   let useCase: UpdatePostUseCase;
-  let postService: { UpdatePostService: jest.Mock };
 
-  beforeEach(async () => {
-    postService = {
-      UpdatePostService: jest.fn(),
-    };
-
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [UpdatePostUseCase, { provide: PostService, useValue: postService }],
-    }).compile();
-
-    useCase = module.get(UpdatePostUseCase);
+  beforeEach(() => {
+    mockPostService.UpdatePostService.mockReset();
+    useCase = new UpdatePostUseCase(mockPostService as any);
+    jest.clearAllMocks();
   });
 
   it('deve atualizar um post e retornar a mensagem de sucesso', async () => {
-    const dto: UpdatePostDTO = {
-      id: '1',
-      title: 'Novo título',
-      description: '',
-    };
-    const returnMessage: ReturnMessageDTO = {
-      message: 'Post atualizado com sucesso',
-      statusCode: 200,
-    };
-    postService.UpdatePostService.mockResolvedValue(returnMessage);
-
-    const result = await useCase.UpdatePostUseCase(dto);
-    expect(postService.UpdatePostService).toHaveBeenCalledWith(dto);
-    expect(result).toEqual(returnMessage);
+    mockPostService.UpdatePostService.mockResolvedValue(mockReturnMessage);
+    const result = await useCase.UpdatePostUseCase(mockUpdatePostDto);
+    expect(mockPostService.UpdatePostService).toHaveBeenCalledWith(mockUpdatePostDto);
+    expect(result).toEqual(mockReturnMessage);
   });
 
-  it('deve lançar HttpException em caso de erro', async () => {
-    const dto: UpdatePostDTO = {
-      id: '1',
-      title: 'Novo título',
-      description: '',
-    };
-    postService.UpdatePostService.mockRejectedValue(new Error('Falha ao atualizar'));
-
-    await expect(useCase.UpdatePostUseCase(dto)).rejects.toThrow(HttpException);
-    await expect(useCase.UpdatePostUseCase(dto)).rejects.toThrow(
-      'Erro ao criar o post: Falha ao atualizar',
+  it('deve lançar HttpException e logar erro se o service lançar HttpException', async () => {
+    const loggerSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation();
+    const customError = new HttpException('Erro customizado', 404);
+    mockPostService.UpdatePostService.mockRejectedValue(customError);
+    await expect(useCase.UpdatePostUseCase(mockUpdatePostDto)).rejects.toThrow(HttpException);
+    await expect(useCase.UpdatePostUseCase(mockUpdatePostDto)).rejects.toThrow(
+      'Erro customizado: 404',
     );
+    expect(loggerSpy).toHaveBeenCalledWith('Erro customizado: 404');
+    loggerSpy.mockRestore();
+  });
+
+  it('deve lançar HttpException e logar erro se o service lançar erro genérico', async () => {
+    const loggerSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation();
+    mockPostService.UpdatePostService.mockRejectedValue(new Error('Falha ao atualizar'));
+    await expect(useCase.UpdatePostUseCase(mockUpdatePostDto)).rejects.toThrow(HttpException);
+    await expect(useCase.UpdatePostUseCase(mockUpdatePostDto)).rejects.toThrow(
+      `${systemMessage.ReturnMessage.errorUpdatePost}: 500`,
+    );
+    expect(loggerSpy).toHaveBeenCalledWith(`${systemMessage.ReturnMessage.errorUpdatePost}: 500`);
+    loggerSpy.mockRestore();
   });
 });

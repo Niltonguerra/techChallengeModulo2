@@ -1,6 +1,6 @@
 import { Post } from '@modules/post/entities/post.entity';
-import { UserStatus } from '../enum/status.enum';
-import { UserPermission } from '../enum/permission.enum';
+import { UserStatusEnum } from '../../enum/status.enum';
+import { UserPermissionEnum } from '../../../auth/Enum/permission.enum';
 
 export interface IUser {
   id: string;
@@ -9,8 +9,8 @@ export interface IUser {
   photo: string;
   email: string;
   social_midia?: Record<string, string> | undefined;
-  permission: UserPermission;
-  isActive: UserStatus;
+  permission: UserPermissionEnum;
+  is_active: UserStatusEnum;
   notification: boolean;
   created_at?: Date;
   updated_at?: Date;

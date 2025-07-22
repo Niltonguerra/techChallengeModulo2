@@ -34,11 +34,8 @@ export class UserController {
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   async FindOne(
     @Query() queryParams: FindOneUserQueryParamsDTO,
-  ): Promise<FindOneUserReturnMessageDTO | ReturnMessageDTO> {
-    const findOneUser = await this.findOneUserUseCase.findOneUserUseCase(
-      queryParams.field,
-      queryParams.value,
-    );
+  ): Promise<FindOneUserReturnMessageDTO> {
+    const findOneUser = await this.findOneUserUseCase.findOneUserUseCase(queryParams);
     return findOneUser;
   }
 }

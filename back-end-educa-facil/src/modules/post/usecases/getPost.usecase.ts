@@ -1,17 +1,26 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { PostService } from '../post.service';
-import { GetPostDTO } from '../DTOs/getPost.DTO';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { PostService } from '../service/post.service';
+import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { ReturnListPost } from '../dtos/returnlistPost.dto';
 
 @Injectable()
 export class GetPostUseCase {
+  private readonly logger = new Logger(GetPostUseCase.name);
   constructor(private readonly postService: PostService) {}
 
-  async getPostUseCaseById(id: string): Promise<GetPostDTO[]> {
+  async getPostUseCaseById(id: string): Promise<ReturnListPost> {
     try {
-      return await this.postService.getById(id);
+      const post = await this.postService.getById(id);
+      return post;
     } catch (error) {
-      const mensagemErro = error instanceof Error ? error.message : 'Erro desconhecido';
-      throw new HttpException(`Erro ao buscar o post: ${mensagemErro}`, 500);
+      const message =
+        error instanceof HttpException
+          ? error.message
+          : systemMessage.ReturnMessage.errorGetPostById;
+      const status =
+        error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
     }
   }
 }

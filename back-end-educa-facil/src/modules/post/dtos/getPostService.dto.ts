@@ -1,14 +1,14 @@
-export class GetPostDTO {
+export interface GetPostService {
+  id: string;
   title: string;
   description: string;
-  search_field: string[];
-  introduction?: string;
+  search: string;
+  introduction: string;
   external_link: Record<string, string>;
   content_hashtags: string[];
   style_id: string;
-  image?: string;
+  image: string;
   created_at: Date;
   updated_at: Date;
-  author_name?: string;
-  author_email?: string;
+  user_id: string;
 }

@@ -17,6 +17,7 @@ export class JwtStrategyUser extends PassportStrategy(Strategy, 'jwt-user') {
 
   validate(payload: JwtPayload): Promise<JwtPayload> {
     return Promise.resolve({
+      id: payload.id,
       permission: payload.permission,
       email: payload.email,
     });

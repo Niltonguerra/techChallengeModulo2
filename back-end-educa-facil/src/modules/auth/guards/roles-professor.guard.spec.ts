@@ -1,44 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+import {
+  mockReflector,
+  mockJwtService,
+  mockExecutionContext,
+  mockRequest,
+} from './__mocks__/roles-professor.guard.mock';
 import { RolesGuardProfessor } from './roles-professor.guard';
 import { JwtPayload } from '../dtos/JwtPayload.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 describe('RolesGuardProfessor', () => {
   let guard: RolesGuardProfessor;
-  let mockReflector: Partial<Reflector>;
-  let mockJwtService: Partial<JwtService>;
-  let mockExecutionContext: Partial<ExecutionContext>;
-  let mockRequest: { user: JwtPayload };
 
   beforeEach(async () => {
-    mockReflector = {
-      get: jest.fn(),
-      getAllAndOverride: jest.fn(),
-    };
-
-    mockJwtService = {
-      verify: jest.fn(),
-      sign: jest.fn(),
-    };
-
-    mockRequest = {
-      user: {
-        email: 'admin@example.com',
-        permission: 'admin',
-      },
-    };
-
-    mockExecutionContext = {
-      switchToHttp: jest.fn().mockReturnValue({
-        getRequest: jest.fn().mockReturnValue(mockRequest),
-        getResponse: jest.fn(),
-      }),
-      getHandler: jest.fn(),
-      getClass: jest.fn(),
-    };
+    const { RolesGuardProfessor } = await import('./roles-professor.guard');
+    const { Reflector } = await import('@nestjs/core');
+    const { JwtService } = await import('@nestjs/jwt');
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -83,6 +61,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'admin@example.com',
         permission: 'admin',
+        id: '123',
       };
 
       // Act
@@ -106,6 +85,7 @@ describe('RolesGuardProfessor', () => {
         mockRequest.user = {
           email,
           permission: 'admin',
+          id: '123',
         };
 
         // Act
@@ -119,9 +99,9 @@ describe('RolesGuardProfessor', () => {
     it('should work with different admin user scenarios', () => {
       // Arrange
       const testCases = [
-        { email: 'head.professor@university.edu', permission: 'admin' },
-        { email: 'dean@academic.institution.org', permission: 'admin' },
-        { email: 'coordinator@education.gov', permission: 'admin' },
+        { email: 'head.professor@university.edu', permission: 'admin', id: '123' },
+        { email: 'dean@academic.institution.org', permission: 'admin', id: '123' },
+        { email: 'coordinator@education.gov', permission: 'admin', id: '123' },
       ];
 
       testCases.forEach((userCase) => {
@@ -142,6 +122,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'student@example.com',
         permission: 'student',
+        id: '123',
       };
 
       // Act & Assert
@@ -159,6 +140,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'regular.user@example.com',
         permission: 'user',
+        id: '123',
       };
 
       // Act & Assert
@@ -176,6 +158,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'teacher@example.com',
         permission: 'teacher',
+        id: '123',
       };
 
       // Act & Assert
@@ -193,6 +176,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'invalid@example.com',
         permission: 'invalid_role',
+        id: '123',
       };
 
       // Act & Assert
@@ -210,6 +194,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'empty@example.com',
         permission: '',
+        id: '123',
       };
 
       // Act & Assert
@@ -230,6 +215,7 @@ describe('RolesGuardProfessor', () => {
         mockRequest.user = {
           email: 'case.test@example.com',
           permission,
+          id: '123',
         };
 
         // Act & Assert
@@ -244,6 +230,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'null@example.com',
         permission: null as unknown as string,
+        id: '123',
       };
 
       // Act & Assert
@@ -261,6 +248,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'undefined@example.com',
         permission: undefined as unknown as string,
+        id: '123',
       };
 
       // Act & Assert
@@ -288,6 +276,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'context.admin@example.com',
         permission: 'admin',
+        id: '123',
       };
 
       // Act
@@ -304,6 +293,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'multiple.admin@example.com',
         permission: 'admin',
+        id: '123',
       };
 
       // Act
@@ -325,6 +315,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'message.test@example.com',
         permission: 'unauthorized',
+        id: '123',
       };
 
       // Act & Assert
@@ -344,6 +335,7 @@ describe('RolesGuardProfessor', () => {
       mockRequest.user = {
         email: 'performance.admin@example.com',
         permission: 'admin',
+        id: '123',
       };
       const startTime = Date.now();
 
@@ -382,20 +374,20 @@ describe('RolesGuardProfessor', () => {
 
     it('should maintain state independence between calls', () => {
       // First call with admin (should pass)
-      mockRequest.user = { email: 'admin1@example.com', permission: 'admin' };
+      mockRequest.user = { email: 'admin1@example.com', permission: 'admin', id: '123' };
       const result1 = guard.canActivate(mockExecutionContext as ExecutionContext);
 
       // Second call with student (should fail)
-      mockRequest.user = { email: 'student@example.com', permission: 'student' };
+      mockRequest.user = { email: 'student@example.com', permission: 'student', id: '123' };
 
       // Third call with admin again (should pass)
-      mockRequest.user = { email: 'admin2@example.com', permission: 'admin' };
+      mockRequest.user = { email: 'admin2@example.com', permission: 'admin', id: '123' };
       const result3 = guard.canActivate(mockExecutionContext as ExecutionContext);
 
       // Assert
       expect(result1).toBe(true);
       expect(() => {
-        mockRequest.user = { email: 'student@example.com', permission: 'student' };
+        mockRequest.user = { email: 'student@example.com', permission: 'student', id: '123' };
         guard.canActivate(mockExecutionContext as ExecutionContext);
       }).toThrow(ForbiddenException);
       expect(result3).toBe(true);
@@ -408,6 +400,7 @@ describe('RolesGuardProfessor', () => {
       const typedUser: JwtPayload = {
         email: 'typed.admin@example.com',
         permission: 'admin',
+        id: '123',
       };
       mockRequest.user = typedUser;
 
@@ -430,6 +423,7 @@ describe('RolesGuardProfessor', () => {
         mockRequest.user = {
           email: `${permission}@example.com`,
           permission,
+          id: '123',
         };
         const result = guard.canActivate(mockExecutionContext as ExecutionContext);
         expect(result).toBe(true);
@@ -440,6 +434,7 @@ describe('RolesGuardProfessor', () => {
         mockRequest.user = {
           email: `${permission}@example.com`,
           permission,
+          id: '123',
         };
         expect(() => {
           guard.canActivate(mockExecutionContext as ExecutionContext);

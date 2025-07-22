@@ -1,28 +1,29 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserService } from '../service/user.service';
 import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
-import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
 
 @Injectable()
 export class FindOneUserUseCase {
+  private readonly logger = new Logger(FindOneUserUseCase.name);
   constructor(private readonly userService: UserService) {}
 
   async findOneUserUseCase(
-    field: string,
-    value: string,
-  ): Promise<FindOneUserReturnMessageDTO | ReturnMessageDTO> {
+    params: FindOneUserQueryParamsDTO,
+  ): Promise<FindOneUserReturnMessageDTO> {
     try {
-      const user = await this.userService.findOneUser(field, value);
+      const user = await this.userService.findOneUser(params.field, params.value);
       return user;
     } catch (error) {
-      console.error(error);
-      const errorMessage =
-        error instanceof Error ? error.message : systemMessage.ReturnMessage.errorUserNotFound;
-      throw new HttpException(
-        `${systemMessage.ReturnMessage.errorFindUser}: ${errorMessage}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      const message =
+        error instanceof HttpException
+          ? error.message
+          : systemMessage.ReturnMessage.errorUserNotFound;
+      const status =
+        error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+      this.logger.error(`${message}: ${status}`);
+      throw new HttpException(`${message}: ${status}`, status);
     }
   }
 }

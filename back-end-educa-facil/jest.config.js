@@ -17,6 +17,10 @@ module.exports = {
     '**/*.service.ts',
     '**/*.controller.ts',
     '**/*.usecase.ts',
+    '**/*.guard.ts',
+    '**/*.repository.ts',
+    '**/*.pipe.ts',
+    '**/*.strategy.ts',
   ],
   coveragePathIgnorePatterns: [
     '/node_modules/',

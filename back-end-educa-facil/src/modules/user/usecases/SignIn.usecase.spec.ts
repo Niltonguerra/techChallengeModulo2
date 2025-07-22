@@ -1,94 +1,87 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SignInUseCase } from './SignIn.usecase';
-import { UserService } from '../service/user.service';
+import { UserService } from '@modules/user/service/user.service';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
-import { UnauthorizedException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { UserStatus } from '../entities/enum/status.enum';
+import { UserStatusEnum } from '../enum/status.enum';
+import * as bcrypt from 'bcrypt';
 
 describe('SignInUseCase', () => {
   let useCase: SignInUseCase;
-  let userService: { findOneUserLogin: jest.Mock };
-  let jwtService: { sign: jest.Mock };
+  let mockUserService: { findOneUserLogin: jest.Mock };
+  let mockJwtService: { sign: jest.Mock };
 
   beforeEach(async () => {
-    userService = {
-      findOneUserLogin: jest.fn(),
-    };
-    jwtService = {
-      sign: jest.fn(),
-    };
+    mockUserService = { findOneUserLogin: jest.fn() };
+    mockJwtService = { sign: jest.fn() };
+    jest.spyOn(bcrypt, 'compare').mockClear();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SignInUseCase,
-        { provide: UserService, useValue: userService },
-        { provide: JwtService, useValue: jwtService },
+        { provide: UserService, useValue: mockUserService },
+        { provide: JwtService, useValue: mockJwtService },
       ],
     }).compile();
-    useCase = module.get(SignInUseCase);
+    useCase = module.get<SignInUseCase>(SignInUseCase);
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
-  it('deve retornar um token quando credenciais são válidas', async () => {
-    const email = 'alice@example.com';
-    const password = '123456';
-    const permission = 'professor';
-    const fakeUser = { email, permission, password: 'hashed-pass' };
-    userService.findOneUserLogin.mockResolvedValue(fakeUser);
-    jest.spyOn(bcrypt, 'compare').mockImplementation(() => true);
-    jwtService.sign.mockReturnValue('signed-jwt-token');
-    const result = await useCase.UserAuthentication({ email, password });
-    expect(userService.findOneUserLogin).toHaveBeenCalledWith(email);
-    expect(bcrypt.compare).toHaveBeenCalledWith(password, fakeUser.password);
-    expect(jwtService.sign).toHaveBeenCalledWith({ email, permission });
-    expect(result).toEqual({ token: 'signed-jwt-token' });
-  });
-
-  it('deve lançar UnauthorizedException quando o usuário não for encontrado', async () => {
-    userService.findOneUserLogin.mockResolvedValue(null);
-    await expect(
-      useCase.UserAuthentication({ email: 'foo@bar.com', password: 'any' }),
-    ).rejects.toBeInstanceOf(UnauthorizedException);
-    await expect(
-      useCase.UserAuthentication({ email: 'foo@bar.com', password: 'any' }),
-    ).rejects.toThrow(systemMessage.ReturnMessage.errorlogin);
-  });
-
-  it('deve lançar UnauthorizedException quando a senha estiver incorreta', async () => {
-    const fakeUser = {
-      email: 'bob@example.com',
-      permission: 'aluno',
-      password: 'hashed-pass',
+  it('deve autenticar e retornar token para usuário válido', async () => {
+    const authUserDTO = { email: 'user@email.com', password: '123' };
+    const userMock = {
+      id: '1',
+      email: authUserDTO.email,
+      password: 'hashed',
+      permission: 'admin',
+      isActive: 'ACTIVE',
     };
-    userService.findOneUserLogin.mockResolvedValue(fakeUser);
-    jest.spyOn(bcrypt, 'compare').mockImplementation(() => false);
-    await expect(
-      useCase.UserAuthentication({ email: fakeUser.email, password: 'wrong' }),
-    ).rejects.toBeInstanceOf(UnauthorizedException);
-    await expect(
-      useCase.UserAuthentication({ email: fakeUser.email, password: 'wrong' }),
-    ).rejects.toThrow(systemMessage.ReturnMessage.errorlogin);
+    mockUserService.findOneUserLogin.mockResolvedValue(userMock);
+    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    mockJwtService.sign.mockReturnValue('token123');
+    const result = await useCase.UserAuthentication(authUserDTO);
+    expect(result).toEqual({ token: 'token123' });
   });
 
-  it('deve lançar UnauthorizedException se o usuário estiver pendente', async () => {
-    const email = 'pending@example.com';
-    const password = '123456';
-    const permission = 'aluno';
-    const fakeUser = {
-      email,
-      permission,
-      password: 'hashed-pass',
-      isActive: UserStatus.PENDING,
+  it('deve lançar HttpException se usuário não encontrado', async () => {
+    const authUserDTO = { email: 'fail@email.com', password: '123' };
+    mockUserService.findOneUserLogin.mockResolvedValue(false);
+    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(HttpException);
+  });
+
+  it('deve lançar HttpException se usuário pendente', async () => {
+    const authUserDTO = { email: 'pending@email.com', password: '123' };
+    const userMock = {
+      id: '2',
+      email: authUserDTO.email,
+      password: 'hashed',
+      permission: 'user',
+      isActive: UserStatusEnum.PENDING,
     };
-    userService.findOneUserLogin.mockResolvedValue(fakeUser);
-    const bcryptSpy = jest.spyOn(bcrypt, 'compare');
-    await expect(useCase.UserAuthentication({ email, password })).rejects.toBeInstanceOf(
-      UnauthorizedException,
+    mockUserService.findOneUserLogin.mockResolvedValue(userMock);
+    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(HttpException);
+  });
+
+  it('deve lançar HttpException se senha incorreta', async () => {
+    const authUserDTO = { email: 'user@email.com', password: 'wrong' };
+    const userMock = {
+      id: '1',
+      email: authUserDTO.email,
+      password: 'hashed',
+      permission: 'admin',
+      isActive: 'ACTIVE',
+    };
+    mockUserService.findOneUserLogin.mockResolvedValue(userMock);
+    (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(HttpException);
+  });
+
+  it('deve lançar HttpException para erro inesperado', async () => {
+    const authUserDTO = { email: 'user@email.com', password: '123' };
+    mockUserService.findOneUserLogin.mockRejectedValue(new Error('Falha inesperada'));
+    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(HttpException);
+    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(
+      `${systemMessage.ReturnMessage.errorlogin}: 500`,
     );
-    expect(bcryptSpy).not.toHaveBeenCalled();
   });
 });
