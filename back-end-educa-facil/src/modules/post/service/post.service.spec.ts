@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { UpdatePostDTO } from '../dtos/updatePost.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { mockPost, mockPostRepository } from './__mocks__/post.service.mock';
+import { ListPost } from '../dtos/returnlistPost.dto';
 
 describe('PostService', () => {
   let service: PostService;
@@ -181,7 +182,7 @@ describe('PostService', () => {
       const result = await service.getById('1');
       expect(result.statusCode).toBe(200);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      expect((result.ListPost as any).id).toBe('1');
+      expect((result.ListPost as ListPost[])[0].id).toBe('1');
     });
     it('deve lançar exceção se post não existir', async () => {
       const mockQueryBuilder: any = {
@@ -220,7 +221,7 @@ describe('PostService', () => {
       const result = await service.getByField('title' as any, 'titulo');
       expect(result.statusCode).toBe(200);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      expect((result.ListPost as any).id).toBe('1');
+      expect((result.ListPost as ListPost[])[0].id).toBe('1');
     });
     it('deve retornar erro se não encontrar post', async () => {
       const mockQueryBuilder: any = {
