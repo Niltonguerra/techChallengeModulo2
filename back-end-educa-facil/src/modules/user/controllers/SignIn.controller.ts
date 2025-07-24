@@ -7,7 +7,7 @@ export class AuthController {
   constructor(private readonly signInUseCase: SignInUseCase) {}
 
   @Post('login')
-  async loginUser(@Body() authUserDTO: AuthUserDTO) {
-    return this.signInUseCase.UserAuthentication(authUserDTO);
+  loginUser(@Body() authUserDTO: AuthUserDTO) {
+    return this.signInUseCase.userAuthentication(authUserDTO);
   }
 }

@@ -81,7 +81,7 @@ describe('EmailService', () => {
     });
   });
 
-  describe('EnviaVerificacaoEmail', () => {
+  describe('enviaVerificacaoEmail', () => {
     const testEmail = 'user@test.com';
     const testUrl = 'user/validationEmail';
 
@@ -102,7 +102,7 @@ describe('EmailService', () => {
       mockTransporter.sendMail.mockImplementation(() => {});
 
       // Act
-      const result = service.EnviaVerificacaoEmail(testEmail, testUrl);
+      const result = service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
       expect(result).toBe(200);
@@ -122,7 +122,7 @@ describe('EmailService', () => {
       });
 
       // Act
-      const result = service.EnviaVerificacaoEmail(testEmail, testUrl);
+      const result = service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
       expect(result).toBe(400);
@@ -138,7 +138,7 @@ describe('EmailService', () => {
       });
 
       // Act
-      const result = service.EnviaVerificacaoEmail(testEmail, testUrl);
+      const result = service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
       expect(result).toBe(400);
@@ -153,7 +153,7 @@ describe('EmailService', () => {
       const expectedText = `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${testUrl}?token=${testEmail}`;
 
       // Act
-      service.EnviaVerificacaoEmail(testEmail, testUrl);
+      service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
       expect(mockTransporter.sendMail).toHaveBeenCalledWith(
@@ -178,7 +178,7 @@ describe('EmailService', () => {
       });
 
       // Act
-      service.EnviaVerificacaoEmail(testEmail, testUrl);
+      service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
       expect(mockTransporter.sendMail).toHaveBeenCalledWith(

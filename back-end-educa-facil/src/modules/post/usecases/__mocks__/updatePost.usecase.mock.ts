@@ -3,7 +3,7 @@ import { UpdatePostDTO } from '@modules/post/dtos/updatePost.dto';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 
 export const mockPostService = {
-  UpdatePostService: jest.fn(),
+  updatePostService: jest.fn(),
 };
 
 export const mockUpdatePostDto: UpdatePostDTO = {

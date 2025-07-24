@@ -18,7 +18,7 @@ export class UserController {
 
   @Post('create')
   @UsePipes(HashPasswordPipe)
-  async CreateUser(@Body() createPostData: CreateUserDTO): Promise<ReturnMessageDTO> {
+  async createUser(@Body() createPostData: CreateUserDTO): Promise<ReturnMessageDTO> {
     const createPost: ReturnMessageDTO =
       await this.createPostUseCase.validationEmailCreateUser(createPostData);
     return createPost;
@@ -32,7 +32,7 @@ export class UserController {
 
   @Get('findOne')
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
-  async FindOne(
+  async findOne(
     @Query() queryParams: FindOneUserQueryParamsDTO,
   ): Promise<FindOneUserReturnMessageDTO> {
     const findOneUser = await this.findOneUserUseCase.findOneUserUseCase(queryParams);

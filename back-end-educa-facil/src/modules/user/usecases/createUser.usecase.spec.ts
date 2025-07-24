@@ -22,7 +22,7 @@ describe('CreateUserUseCase', () => {
     createUpdateUser: jest.Mock;
   };
   let mockEmailService: {
-    EnviaVerificacaoEmail: jest.Mock;
+    enviaVerificacaoEmail: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -31,7 +31,7 @@ describe('CreateUserUseCase', () => {
       createUpdateUser: jest.fn(),
     };
     mockEmailService = {
-      EnviaVerificacaoEmail: jest.fn(),
+      enviaVerificacaoEmail: jest.fn(),
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -45,12 +45,12 @@ describe('CreateUserUseCase', () => {
 
   it('deve criar usuário e enviar email com sucesso', async () => {
     mockUserService.findOneUser.mockResolvedValue(notFoundResponse);
-    mockEmailService.EnviaVerificacaoEmail.mockReturnValue(200);
+    mockEmailService.enviaVerificacaoEmail.mockReturnValue(200);
     mockUserService.createUpdateUser.mockResolvedValue(successResponse);
     const result = await useCase.validationEmailCreateUser(mockCreateUserDTO);
     expect(result).toEqual(successValidationEmailResponse);
     expect(mockUserService.findOneUser).toHaveBeenCalledWith('email', mockCreateUserDTO.email);
-    expect(mockEmailService.EnviaVerificacaoEmail).toHaveBeenCalledWith(
+    expect(mockEmailService.enviaVerificacaoEmail).toHaveBeenCalledWith(
       mockCreateUserDTO.email,
       'user/validationEmail',
     );
@@ -69,7 +69,7 @@ describe('CreateUserUseCase', () => {
 
   it('deve lançar erro se emailService retorna erro', async () => {
     mockUserService.findOneUser.mockResolvedValue(notFoundResponse);
-    mockEmailService.EnviaVerificacaoEmail.mockReturnValue(500);
+    mockEmailService.enviaVerificacaoEmail.mockReturnValue(500);
     await expect(useCase.validationEmailCreateUser(mockCreateUserDTO)).rejects.toThrow(
       HttpException,
     );

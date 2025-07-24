@@ -39,7 +39,7 @@ export class PostController {
 
   @Post()
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
-  async CreatePost(
+  async createPost(
     @Body() createPostData: CreatePostDTO,
     @GetTokenValues() rawToken: JwtPayload,
   ): Promise<ReturnMessageDTO> {
@@ -51,9 +51,8 @@ export class PostController {
 
   @Put()
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
-  async UpdatePost(@Body() updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
-    const updatedPost: ReturnMessageDTO =
-      await this.updatePostUseCase.UpdatePostUseCase(updatePostData);
+  async updatePost(@Body() updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
+    const updatedPost: ReturnMessageDTO = await this.updatePostUseCase.execute(updatePostData);
     return updatedPost;
   }
 
