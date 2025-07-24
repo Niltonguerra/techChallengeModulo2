@@ -77,8 +77,7 @@ export class PostController {
   @ApiOperation({ summary: 'Update existing post by id' })
   @ApiOkResponse({ type: ReturnMessageDTO })
   async updatePost(@Body() updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
-    const updatedPost: ReturnMessageDTO =
-      await this.updatePostUseCase.UpdatePostUseCase(updatePostData);
+    const updatedPost: ReturnMessageDTO = await this.updatePostUseCase.execute(updatePostData);
     return updatedPost;
   }
 
