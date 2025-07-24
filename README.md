@@ -65,9 +65,20 @@ comando para criar um modulo em nest com todas as dependências:
 ## Credenciais:
 
 
-### predenciais de acesso da conta do google:
+### credenciais de acesso da conta do google:
 email: educacaofacilfiap@gmail.com
 senha: 4c5WG1gW8hxC
+
+
+## Documentação de API:
+
+### credenciais de acesso Swagger e docs:
+usuario: admin 
+senha: admin123
+
+### Links:
+Swagger: http://localhost:3000/swagger-ui
+Docs: http://localhost:3000/docs
 
 
 ### envs:
@@ -103,3 +114,6 @@ JWT_EMAIL_EXPIRES_IN=1h
 JWT_EXPIRES_IN=24h
 EMAIL_USER=educacaofacilfiap@gmail.com
 EMAIL_PASSWORD=svjkqhfvifjqryde
+
+SWAGGER_USER='admin'
+SWAGGER_PASS='admin123'
