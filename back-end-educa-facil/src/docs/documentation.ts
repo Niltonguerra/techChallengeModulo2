@@ -1,4 +1,3 @@
-// src/docs/documentation.ts
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import redoc from 'redoc-express';
@@ -7,7 +6,6 @@ import { Request, Response } from 'express';
 
 export function setupDocumentation(app: INestApplication) {
   const protectedPaths = ['/swagger-ui', '/docs', '/api-json'];
-  // const basicAuth: typeof import('express-basic-auth') = require('express-basic-auth');
 
   if (!process.env.SWAGGER_USER || !process.env.SWAGGER_PASS) {
     throw new Error('As variáveis SWAGGER_USER e SWAGGER_PASS devem estar definidas');

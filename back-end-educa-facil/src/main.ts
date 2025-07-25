@@ -3,7 +3,7 @@ import { webcrypto } from 'crypto';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { setupDocumentation } from '@config/documentation';
+import { setupDocumentation } from 'docs/documentation';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

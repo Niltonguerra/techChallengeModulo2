@@ -2,9 +2,9 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthUserDTO, ResponseAuthUserDTO } from '../dtos/AuthUser.dto';
 import { SignInUseCase } from '../usecases/SignIn.usecase';
 import {
+  ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -19,8 +19,8 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Authenticate user' })
-  @ApiOkResponse({ type: ResponseAuthUserDTO })
-  loginUser(@Body() authUserDTO: AuthUserDTO) {
+  @ApiCreatedResponse({ type: ResponseAuthUserDTO })
+  loginUser(@Body() authUserDTO: AuthUserDTO): Promise<ResponseAuthUserDTO> {
     return this.signInUseCase.userAuthentication(authUserDTO);
   }
 }
