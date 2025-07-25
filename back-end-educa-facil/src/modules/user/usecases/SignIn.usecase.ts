@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { AuthUserDTO, LoginUsuarioInternoDTO } from '../dtos/AuthUser.dto';
+import { AuthUserDTO, LoginUsuarioInternoDTO, ResponseAuthUserDTO } from '../dtos/AuthUser.dto';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserStatusEnum } from '../enum/status.enum';
@@ -21,7 +21,7 @@ export class SignInUseCase {
     private readonly jwtService: JwtService,
   ) {}
 
-  async userAuthentication(authUserDTO: AuthUserDTO): Promise<object> {
+  async userAuthentication(authUserDTO: AuthUserDTO): Promise<ResponseAuthUserDTO> {
     try {
       const { email, password } = authUserDTO;
 
