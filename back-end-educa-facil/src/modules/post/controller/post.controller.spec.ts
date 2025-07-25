@@ -21,14 +21,14 @@ describe('PostController', () => {
   let controller: PostController;
   let mockListPostUseCase: { execute: jest.Mock };
   let mockCreatePostUseCase: { createPostUseCase: jest.Mock };
-  let mockUpdatePostUseCase: { UpdatePostUseCase: jest.Mock };
+  let mockUpdatePostUseCase: { execute: jest.Mock };
   let mockGetPostUseCase: { getPostUseCaseById: jest.Mock };
   let mockDeletePostUseCase: { deletePostUseCase: jest.Mock };
 
   beforeEach(async () => {
     mockListPostUseCase = { execute: jest.fn() };
     mockCreatePostUseCase = { createPostUseCase: jest.fn() };
-    mockUpdatePostUseCase = { UpdatePostUseCase: jest.fn() };
+    mockUpdatePostUseCase = { execute: jest.fn() };
     mockGetPostUseCase = { getPostUseCaseById: jest.fn() };
     mockDeletePostUseCase = { deletePostUseCase: jest.fn() };
 
@@ -67,20 +67,20 @@ describe('PostController', () => {
 
   it('deve criar um post', async () => {
     mockCreatePostUseCase.createPostUseCase.mockResolvedValue(returnMessageCreateMock);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const postData = { ...createPostDTOMock };
-    const result = await controller.CreatePost(postData, jwtPayloadMock);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const result = await controller.createPost(postData, jwtPayloadMock);
+
     expect(postData.user_id).toEqual(jwtPayloadMock.id);
     expect(result).toBe(returnMessageCreateMock);
     expect(mockCreatePostUseCase.createPostUseCase).toHaveBeenCalledWith(postData);
   });
 
   it('deve atualizar um post', async () => {
-    mockUpdatePostUseCase.UpdatePostUseCase.mockResolvedValue(returnMessageUpdateMock);
-    const result = await controller.UpdatePost(updatePostDTOMock);
+    mockUpdatePostUseCase.execute.mockResolvedValue(returnMessageUpdateMock);
+    const result = await controller.updatePost(updatePostDTOMock);
     expect(result).toBe(returnMessageUpdateMock);
-    expect(mockUpdatePostUseCase.UpdatePostUseCase).toHaveBeenCalledWith(updatePostDTOMock);
+    expect(mockUpdatePostUseCase.execute).toHaveBeenCalledWith(updatePostDTOMock);
   });
 
   it('deve deletar um post', async () => {

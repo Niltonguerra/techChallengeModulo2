@@ -51,7 +51,7 @@ describe('UserController', () => {
     jest
       .spyOn(createUserUseCase, 'validationEmailCreateUser')
       .mockResolvedValue(mockReturnMessageDTO);
-    const result = await controller.CreateUser(mockCreateUserDTO);
+    const result = await controller.createUser(mockCreateUserDTO);
     expect(result).toBe(mockReturnMessageDTO);
     expect(createUserUseCase.validationEmailCreateUser as jest.Mock).toHaveBeenCalledWith(
       mockCreateUserDTO,
@@ -67,7 +67,7 @@ describe('UserController', () => {
 
   it('deve buscar usuário com sucesso', async () => {
     jest.spyOn(findOneUserUseCase, 'findOneUserUseCase').mockResolvedValue(mockFindOneUserReturn);
-    const result = await controller.FindOne(mockFindOneUserQuery);
+    const result = await controller.findOne(mockFindOneUserQuery);
     expect(result).toBe(mockFindOneUserReturn);
     expect(findOneUserUseCase.findOneUserUseCase as jest.Mock).toHaveBeenCalledWith(
       mockFindOneUserQuery,
@@ -84,7 +84,7 @@ describe('UserController', () => {
       notification: false,
     };
     jest.spyOn(createUserUseCase, 'validationEmailCreateUser').mockRejectedValue(new Error('erro'));
-    await expect(controller.CreateUser(dto)).rejects.toThrow('erro');
+    await expect(controller.createUser(dto)).rejects.toThrow('erro');
   });
 
   it('deve propagar erro do usecase ao validar email', async () => {
@@ -98,6 +98,6 @@ describe('UserController', () => {
       value: 'x',
     };
     jest.spyOn(findOneUserUseCase, 'findOneUserUseCase').mockRejectedValue(new Error('erro'));
-    await expect(controller.FindOne(query)).rejects.toThrow('erro');
+    await expect(controller.findOne(query)).rejects.toThrow('erro');
   });
 });

@@ -7,7 +7,6 @@ import { UpdatePostDTO } from '../dtos/updatePost.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { ReturnListPost } from '../dtos/returnlistPost.dto';
-import { searchByFieldPostEnum } from '../enum/searchByFieldPost.enum';
 import { CreatePostDTO } from '../dtos/createPost.dto';
 import { User } from '@modules/user/entities/user.entity';
 
@@ -97,7 +96,7 @@ export class PostService {
     return postDataReturn;
   }
 
-  async UpdatePostService(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
+  async updatePostService(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     const post = await this.postRepository.findOneBy({ id: updatePostData.id });
 
     if (!post) {
@@ -135,49 +134,6 @@ export class PostService {
 
     const postDataReturn: ReturnListPost = {
       message: systemMessage.ReturnMessage.sucessGetPostById,
-      statusCode: 200,
-      limit: 10,
-      offset: 0,
-      total: 1,
-      ListPost: [
-        {
-          id: post.id,
-          title: post.title,
-          description: post.description,
-          image: post.image,
-          introduction: post.introduction ?? (post.description?.substring(0, 100) || ''),
-          content_hashtags: post.content_hashtags,
-          style_id: post.style_id ?? '',
-          external_link: post.external_link ?? { url: '' },
-          created_at: post.created_at,
-          updated_at: post.updated_at,
-          user_name: post.user.name,
-          user_email: post.user.email,
-          user_social_media: post.user.social_midia,
-        },
-      ],
-    };
-    return postDataReturn;
-  }
-
-  async getByField(field: searchByFieldPostEnum, value: string): Promise<ReturnListPost> {
-    const post: Post | null = await this.postRepository
-      .createQueryBuilder('p')
-      .leftJoinAndSelect('p.user', 'u')
-      .select(['p', 'u'])
-      .where(`p.${field} = :value`, { value })
-      .getOne();
-
-    if (!post) {
-      const postDataReturn: ReturnListPost = {
-        message: systemMessage.ReturnMessage.errorGetPostByField,
-        statusCode: 404,
-      };
-      return postDataReturn;
-    }
-
-    const postDataReturn: ReturnListPost = {
-      message: systemMessage.ReturnMessage.sucessGetPostByField,
       statusCode: 200,
       limit: 10,
       offset: 0,

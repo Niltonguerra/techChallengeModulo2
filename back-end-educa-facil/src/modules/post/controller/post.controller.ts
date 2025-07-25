@@ -62,7 +62,7 @@ export class PostController {
   @ApiOperation({ summary: 'Register new post from the current user' })
   @ApiCreatedResponse({ type: ReturnMessageDTO })
   @ApiConflictResponse({ description: 'Conflit', type: ReturnMessageDTO })
-  async CreatePost(
+  async createPost(
     @Body() createPostData: CreatePostDTO,
     @GetTokenValues() rawToken: JwtPayload,
   ): Promise<ReturnMessageDTO> {
@@ -76,9 +76,8 @@ export class PostController {
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   @ApiOperation({ summary: 'Update existing post by id' })
   @ApiOkResponse({ type: ReturnMessageDTO })
-  async UpdatePost(@Body() updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
-    const updatedPost: ReturnMessageDTO =
-      await this.updatePostUseCase.UpdatePostUseCase(updatePostData);
+  async updatePost(@Body() updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
+    const updatedPost: ReturnMessageDTO = await this.updatePostUseCase.execute(updatePostData);
     return updatedPost;
   }
 

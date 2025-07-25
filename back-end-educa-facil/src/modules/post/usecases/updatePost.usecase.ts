@@ -9,9 +9,9 @@ export class UpdatePostUseCase {
   private readonly logger = new Logger(UpdatePostUseCase.name);
   constructor(private readonly postService: PostService) {}
 
-  async UpdatePostUseCase(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
+  async execute(updatePostData: UpdatePostDTO): Promise<ReturnMessageDTO> {
     try {
-      const post = await this.postService.UpdatePostService(updatePostData);
+      const post = await this.postService.updatePostService(updatePostData);
       return post;
     } catch (error) {
       const message =

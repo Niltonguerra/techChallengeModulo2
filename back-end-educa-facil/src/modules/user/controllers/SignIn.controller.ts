@@ -20,7 +20,7 @@ export class AuthController {
   @Post('login')
   @ApiOperation({ summary: 'Authenticate user' })
   @ApiOkResponse({ type: ResponseAuthUserDTO })
-  async loginUser(@Body() authUserDTO: AuthUserDTO) {
-    return this.signInUseCase.UserAuthentication(authUserDTO);
+  loginUser(@Body() authUserDTO: AuthUserDTO) {
+    return this.signInUseCase.userAuthentication(authUserDTO);
   }
 }

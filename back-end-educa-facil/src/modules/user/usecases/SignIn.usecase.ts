@@ -21,7 +21,7 @@ export class SignInUseCase {
     private readonly jwtService: JwtService,
   ) {}
 
-  async UserAuthentication(authUserDTO: AuthUserDTO): Promise<object> {
+  async userAuthentication(authUserDTO: AuthUserDTO): Promise<object> {
     try {
       const { email, password } = authUserDTO;
 

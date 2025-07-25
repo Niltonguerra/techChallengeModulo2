@@ -33,7 +33,7 @@ export class UserController {
   @ApiOperation({ summary: 'Register new user' })
   @ApiCreatedResponse({ type: ReturnMessageDTO })
   @ApiConflictResponse({ description: 'Conflit', type: ReturnMessageDTO })
-  async CreateUser(@Body() createPostData: CreateUserDTO): Promise<ReturnMessageDTO> {
+  async createUser(@Body() createPostData: CreateUserDTO): Promise<ReturnMessageDTO> {
     const createPost: ReturnMessageDTO =
       await this.createPostUseCase.validationEmailCreateUser(createPostData);
     return createPost;
@@ -53,7 +53,7 @@ export class UserController {
   @ApiOperation({ summary: 'Search user by id' })
   @ApiOkResponse({ type: FindOneUserReturnMessageDTO })
   @ApiUnauthorizedResponse({ description: 'Unauthorized', type: ReturnMessageDTO })
-  async FindOne(
+  async findOne(
     @Query() queryParams: FindOneUserQueryParamsDTO,
   ): Promise<FindOneUserReturnMessageDTO> {
     const findOneUser = await this.findOneUserUseCase.findOneUserUseCase(queryParams);

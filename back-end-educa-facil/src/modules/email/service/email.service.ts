@@ -23,7 +23,7 @@ export class EmailService {
   private transporter: Transporter;
   private readonly logger = new Logger(EmailService.name);
 
-  EnviaVerificacaoEmail(email: string, url: string): number {
+  enviaVerificacaoEmail(email: string, url: string): number {
     try {
       const urlServer =
         this.configService.get<string>('AMBIENTE') === 'PROD'

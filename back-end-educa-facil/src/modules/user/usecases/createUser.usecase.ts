@@ -26,7 +26,7 @@ export class CreateUserUseCase {
         throw new HttpException(`${message}: ${status}`, status);
       }
 
-      const emailStatus = this.emailService.EnviaVerificacaoEmail(
+      const emailStatus = this.emailService.enviaVerificacaoEmail(
         createUserData.email,
         'user/validationEmail',
       );

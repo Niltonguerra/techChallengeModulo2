@@ -38,14 +38,14 @@ describe('SignInUseCase', () => {
     mockUserService.findOneUserLogin.mockResolvedValue(userMock);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
     mockJwtService.sign.mockReturnValue('token123');
-    const result = await useCase.UserAuthentication(authUserDTO);
+    const result = await useCase.userAuthentication(authUserDTO);
     expect(result).toEqual({ token: 'token123' });
   });
 
   it('deve lançar HttpException se usuário não encontrado', async () => {
     const authUserDTO = { email: 'fail@email.com', password: '123' };
     mockUserService.findOneUserLogin.mockResolvedValue(false);
-    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(HttpException);
+    await expect(useCase.userAuthentication(authUserDTO)).rejects.toThrow(HttpException);
   });
 
   it('deve lançar HttpException se usuário pendente', async () => {
@@ -59,7 +59,7 @@ describe('SignInUseCase', () => {
     };
     mockUserService.findOneUserLogin.mockResolvedValue(userMock);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(HttpException);
+    await expect(useCase.userAuthentication(authUserDTO)).rejects.toThrow(HttpException);
   });
 
   it('deve lançar HttpException se senha incorreta', async () => {
@@ -73,14 +73,14 @@ describe('SignInUseCase', () => {
     };
     mockUserService.findOneUserLogin.mockResolvedValue(userMock);
     (bcrypt.compare as jest.Mock).mockResolvedValue(false);
-    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(HttpException);
+    await expect(useCase.userAuthentication(authUserDTO)).rejects.toThrow(HttpException);
   });
 
   it('deve lançar HttpException para erro inesperado', async () => {
     const authUserDTO = { email: 'user@email.com', password: '123' };
     mockUserService.findOneUserLogin.mockRejectedValue(new Error('Falha inesperada'));
-    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(HttpException);
-    await expect(useCase.UserAuthentication(authUserDTO)).rejects.toThrow(
+    await expect(useCase.userAuthentication(authUserDTO)).rejects.toThrow(HttpException);
+    await expect(useCase.userAuthentication(authUserDTO)).rejects.toThrow(
       `${systemMessage.ReturnMessage.errorlogin}: 500`,
     );
   });

@@ -101,19 +101,19 @@ describe('PostService', () => {
     });
   });
 
-  describe('UpdatePostService', () => {
+  describe('updatePostService', () => {
     it('deve atualizar um post', async () => {
       postRepository.findOneBy.mockResolvedValue(mockPost);
       postRepository.save.mockResolvedValue(mockPost);
       const dto: UpdatePostDTO = { id: '1', title: 'novo' } as UpdatePostDTO;
-      const result = await service.UpdatePostService(dto);
+      const result = await service.updatePostService(dto);
       expect(result.message).toBe(systemMessage.ReturnMessage.sucessUpdatePost);
       expect(result.statusCode).toBe(200);
     });
     it('deve lançar exceção se post não existir', async () => {
       postRepository.findOneBy.mockResolvedValue(null);
       const dto: UpdatePostDTO = { id: '1', title: 'novo' } as UpdatePostDTO;
-      await expect(service.UpdatePostService(dto)).rejects.toThrow();
+      await expect(service.updatePostService(dto)).rejects.toThrow();
     });
 
     it('deve atualizar apenas campos fornecidos', async () => {
@@ -129,7 +129,7 @@ describe('PostService', () => {
         updateSearchField: jest.fn(),
       });
       const dto: UpdatePostDTO = { id: '1', title: 'novo' } as UpdatePostDTO;
-      await service.UpdatePostService(dto);
+      await service.updatePostService(dto);
       expect(postClone.title).toBe('novo');
     });
   });
@@ -181,7 +181,7 @@ describe('PostService', () => {
       postRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
       const result = await service.getById('1');
       expect(result.statusCode).toBe(200);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect((result.ListPost as ListPost[])[0].id).toBe('1');
     });
     it('deve lançar exceção se post não existir', async () => {
@@ -206,49 +206,6 @@ describe('PostService', () => {
       postRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
       await expect(service.getById('1')).rejects.toThrow();
       expect(loggerErrorSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe('getByField', () => {
-    it('deve retornar post por campo', async () => {
-      const mockQueryBuilder: any = {
-        leftJoinAndSelect: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getOne: jest.fn().mockResolvedValue(mockPost),
-      };
-      postRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
-      const result = await service.getByField('title' as any, 'titulo');
-      expect(result.statusCode).toBe(200);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      expect((result.ListPost as ListPost[])[0].id).toBe('1');
-    });
-    it('deve retornar erro se não encontrar post', async () => {
-      const mockQueryBuilder: any = {
-        leftJoinAndSelect: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getOne: jest.fn().mockResolvedValue(null),
-      };
-      postRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
-      const result = await service.getByField('title' as any, 'titulo');
-      expect(result.statusCode).toBe(404);
-    });
-
-    it('deve retornar erro se campo for inválido', async () => {
-      // Simula um erro de query
-      const mockQueryBuilder: any = {
-        leftJoinAndSelect: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockImplementation(() => {
-          throw new Error('Campo inválido');
-        }),
-        getOne: jest.fn(),
-      };
-      postRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
-      await expect(service.getByField('campo_invalido' as any, 'valor')).rejects.toThrow(
-        'Campo inválido',
-      );
     });
   });
 
