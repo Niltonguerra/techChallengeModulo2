@@ -79,7 +79,7 @@ export class CreateUserUseCase {
       await this.userService.createUpdateUser(ChangeStatusUser);
 
       return {
-        statusCode: HttpStatus.OK,
+        statusCode: HttpStatus.CREATED,
         message: systemMessage.ReturnMessage.sucessCreateUser,
       };
     } catch (error) {
