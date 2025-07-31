@@ -88,7 +88,7 @@ export class Post {
   @BeforeInsert()
   @BeforeUpdate()
   updateSearchField() {
-    const fields = [this.title, this.description, this.user ? this.user.name : ''];
+    const fields = [this.title, this.description];
     this.search = fields.filter(Boolean).join(' ').toLowerCase();
   }
 }
