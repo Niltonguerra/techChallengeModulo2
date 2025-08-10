@@ -1,4 +1,4 @@
-# 🚀 Configuração do Ambiente Docker para NestJS
+# 🚀 Configuração do Backend
 
 Este projeto utiliza Docker e Docker Compose para gerenciar os contêineres do banco de dados, servidor e pgAdmin.
 
@@ -117,3 +117,78 @@ EMAIL_PASSWORD=svjkqhfvifjqryde
 
 SWAGGER_USER='admin'
 SWAGGER_PASS='admin123'
+
+
+
+
+# Configurações do front-end:
+
+## 🚀 Tecnologias
+
+- **React 18** - Biblioteca principal
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool e dev server ultra-rápido
+- **React Router DOM** - Roteamento
+- **Redux Toolkit** - Gerenciamento de estado
+- **ESLint** - Linting e análise de código
+- **Prettier** - Formatação de código
+
+## 📦 Scripts Disponíveis
+
+```bash
+# Desenvolvimento
+npm run dev
+
+# Build para produção
+npm run build
+
+# Preview do build
+npm run preview
+
+# Linting
+npm run lint
+npm run lint:fix
+
+# Formatação
+npm run format
+npm run format:check
+
+# Type checking
+npm run type-check
+```
+
+## 🏗️ Estrutura do Projeto
+
+```
+src/
+├── components/          # Componentes reutilizáveis
+│   └── Navbar.tsx
+├── pages/              # Páginas da aplicação
+│   ├── Home.tsx
+│   └── About.tsx
+├── store/              # Redux store
+│   ├── index.ts        # Configuração da store
+│   ├── hooks.ts        # Hooks tipados do Redux
+│   └── slices/         # Slices do Redux Toolkit
+│       └── counterSlice.ts
+├── App.tsx             # Componente principal
+├── App.css             # Estilos globais
+└── main.tsx            # Entry point
+```
+
+## 🔧 Como usar
+
+1. **Clonar e instalar dependências:**
+   ```bash
+   npm install
+   ```
+
+2. **Iniciar o servidor de desenvolvimento:**
+   ```bash
+   npm run dev
+   ```
+
+3. **Acessar no navegador:**
+   ```
+   http://localhost:5173
+   ```

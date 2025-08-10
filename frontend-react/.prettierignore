@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+.vite
+coverage
+.nyc_output
+*.log
+.DS_Store
