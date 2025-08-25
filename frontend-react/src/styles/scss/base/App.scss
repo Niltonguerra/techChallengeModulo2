@@ -1,0 +1,27 @@
+// Global App Styles
+.app {
+  min-height: 100vh;
+}
+
+// Layout para header fixo
+.main-content {
+  margin-top: 64px; // Altura do header
+  min-height: calc(100vh - 64px);
+  
+  // Responsivo para mobile
+  @media (max-width: 768px) {
+    margin-top: 56px; // Header menor em mobile
+    min-height: calc(100vh - 56px);
+  }
+}
+
+// Smooth scroll quando navegação usar âncoras
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; // Compensa o header fixo
+}
+
+// Remove o scroll horizontal desnecessário
+body {
+  overflow-x: hidden;
+}
