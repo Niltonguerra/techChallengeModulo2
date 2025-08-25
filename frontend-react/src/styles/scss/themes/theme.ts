@@ -14,18 +14,17 @@ declare module '@mui/material/styles' {
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#4953B8', // Azul primário
+      main: '#4953B8',
       light: '#6B73E6',
       dark: '#373E8C',
       contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#F57005', // Laranja secundário
+      main: '#F57005', 
       light: '#FF9833',
       dark: '#C75A00',
       contrastText: '#FFFFFF',
     },
-    // Cores customizadas adicionais
     tertiary: {
       main: '#2B264D',
       light: '#3D3669',
@@ -109,7 +108,6 @@ export const theme = createTheme({
     },
   },
   components: {
-    // Customizações de componentes
     MuiButton: {
       styleOverrides: {
         root: {
@@ -147,7 +145,6 @@ export const theme = createTheme({
   },
 });
 
-// Utilitários customizados para casos específicos
 export const customStyles = {
   // Gradientes
   gradients: {
@@ -155,8 +152,6 @@ export const customStyles = {
     secondary: 'linear-gradient(135deg, #F57005 0%, #FF9833 100%)',
     tertiary: 'linear-gradient(135deg, #2B264D 0%, #3D3669 100%)',
   },
-  
-  // Estilos para estatísticas
   statBox: {
     fontFamily: 'Inter, sans-serif',
     fontWeight: 700,
@@ -168,8 +163,6 @@ export const customStyles = {
     border: '1px solid rgba(73, 83, 184, 0.1)',
     textAlign: 'center' as const,
   },
-  
-  // Estilos para tags
   techChip: {
     fontFamily: 'Inter, sans-serif',
     fontWeight: 400,
@@ -181,8 +174,6 @@ export const customStyles = {
     margin: '2px',
     display: 'inline-block',
   },
-
-  // Estilos para cards com sombra
   cardShadow: {
     borderRadius: '12px',
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
@@ -192,8 +183,6 @@ export const customStyles = {
       transition: 'all 0.3s ease-in-out',
     },
   },
-
-  // Estilos para gradiente primário
   primaryGradient: {
     background: 'linear-gradient(135deg, #4953B8 0%, #6B73E6 100%)',
     color: '#FFFFFF',
@@ -203,7 +192,6 @@ export const customStyles = {
   },
 };
 
-// Hook para usar estilos customizados
 export const useCustomStyles = () => customStyles;
 
 export default theme;

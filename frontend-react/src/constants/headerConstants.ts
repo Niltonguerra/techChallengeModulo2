@@ -12,7 +12,7 @@ import {
   Person,
   Settings,
 } from '@mui/icons-material';
-import type { NavigationItem, UserMenuItem } from '../types/header';
+import type { NavigationItem, UserMenuItem } from '../types/header-types';
 
 export const NAVIGATION_ITEMS: NavigationItem[] = [
   { label: 'Português', icon: React.createElement(MenuBook), path: '/portugues' },

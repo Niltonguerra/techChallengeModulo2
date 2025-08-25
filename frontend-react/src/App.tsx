@@ -9,7 +9,7 @@ import Header from './components/Header/Header';
 import { theme } from './styles/scss/themes/theme';
 import './App.scss'; // Importar estilos globais
 import TypographyShowcase from './components/TypographyShowcase';
-import type { User } from './types/header';
+import type { User } from './types/header-types';
 
 function App() {
   //isso vai ser removido, é só um mock substituto enquanto o sistema de autenticação não fica pronto

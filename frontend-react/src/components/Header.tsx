@@ -17,23 +17,20 @@ import {
   Search,
 } from '@mui/icons-material';
 import './Header.scss';
-import type { HeaderProps } from '../../types/header-types';
+import type { HeaderProps } from '../types/header-types';
 import {
   NAVIGATION_ITEMS,
   HEADER_TEXTS
-} from '../../constants/headerConstants';
+} from '../constants/headerConstants';
 
 const Header: React.FC<HeaderProps> = ({ 
   isLoggedIn = false, 
   user,
   onLogin,
-  onLogout,
-  onSearch,
-  onNavigate
+  onLogout
 }) => {
   const [navigationAnchor, setNavigationAnchor] = useState<null | HTMLElement>(null);
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
-  const [logoError, setLogoError] = useState(false);
   const navigationOpen = Boolean(navigationAnchor);
   const userMenuOpen = Boolean(userMenuAnchor);
 
@@ -44,11 +41,6 @@ const Header: React.FC<HeaderProps> = ({
   const handleNavigationClose = useCallback(() => {
     setNavigationAnchor(null);
   }, []);
-
-  const handleNavigationItemClick = useCallback((path: string) => {
-    handleNavigationClose();
-    onNavigate?.(path);
-  }, [handleNavigationClose, onNavigate]);
 
   const handleUserMenuClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setUserMenuAnchor(event.currentTarget);
@@ -67,38 +59,19 @@ const Header: React.FC<HeaderProps> = ({
     onLogin?.();
   }, [onLogin]);
 
-  const handleSearch = useCallback(() => {
-    onSearch?.('');
-  }, [onSearch]);
-
-  const handleLogoError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    setLogoError(true);
-    e.currentTarget.style.display = 'none';
-  }, []);
-
   return (
-    <AppBar 
-      position="fixed" 
-      className="header"
-    >
+    <AppBar position="static" className="header">
       <Toolbar className="header__toolbar">
         <Box className="header__logo">
-          {!logoError ? (
-            <img
-              src="/logo.png"
-              alt={HEADER_TEXTS.logoAlt}
-              className="header__logo-image"
-              onError={handleLogoError}
-            />
-          ) : (
-            <Box className="header__logo-fallback">
-              E
-            </Box>
-          )}
-          <Typography 
-            variant="h1" 
-            className="header__logo-text"
-          >
+          <img
+            src="/logo.png"
+            alt={HEADER_TEXTS.logoAlt}
+            className="header__logo-image"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+          <Typography variant="h6" className="header__logo-text">
             {HEADER_TEXTS.logoText}
           </Typography>
         </Box>
@@ -135,7 +108,7 @@ const Header: React.FC<HeaderProps> = ({
             {NAVIGATION_ITEMS.map((item) => (
               <MenuItem
                 key={item.label}
-                onClick={() => handleNavigationItemClick(item.path)}
+                onClick={handleNavigationClose}
                 className="header__navigation-item"
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
@@ -149,9 +122,8 @@ const Header: React.FC<HeaderProps> = ({
           <Button
             id="search"
             className="header__search-button"
-            onClick={handleSearch}
+            onClick={() => console.log('Buscar')}
             aria-label={HEADER_TEXTS.searchButton}
-            title={HEADER_TEXTS.searchButton}
           >
             <Search />
           </Button>
@@ -166,29 +138,22 @@ const Header: React.FC<HeaderProps> = ({
                 startIcon={
                   <Avatar
                     src={user?.avatar}
-                    alt={`Avatar de ${user?.name || 'usuário'}`}
+                    alt={user?.name}
                     className="header__user-avatar"
                   >
-                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                    {user?.name.charAt(0).toUpperCase()}
                   </Avatar>
                 }
                 endIcon={<KeyboardArrowDown />}
                 aria-controls={userMenuOpen ? 'user-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={userMenuOpen ? 'true' : undefined}
-                aria-label={`Menu do usuário ${user?.name || ''}`}
               >
                 <Box className="header__user-info">
-                  <Typography 
-                    variant="body2" 
-                    className="header__user-name"
-                  >
+                  <Typography variant="body2" className="header__user-name">
                     {user?.name}
                   </Typography>
-                  <Typography 
-                    variant="caption" 
-                    className="header__user-email"
-                  >
+                  <Typography variant="caption" className="header__user-email">
                     {user?.email}
                   </Typography>
                 </Box>
@@ -209,10 +174,7 @@ const Header: React.FC<HeaderProps> = ({
                   horizontal: 'right',
                 }}
               >
-                <MenuItem 
-                  onClick={handleLogout} 
-                  className="header__logout-item"
-                >
+                <MenuItem onClick={handleLogout} className="header__logout-item">
                   <ListItemIcon>
                     <Logout />
                   </ListItemIcon>
@@ -226,7 +188,6 @@ const Header: React.FC<HeaderProps> = ({
                 variant="outlined"
                 onClick={handleLogin}
                 className="header__login-button"
-                aria-label="Fazer login na plataforma"
               >
                 {HEADER_TEXTS.loginButton}
               </Button>
