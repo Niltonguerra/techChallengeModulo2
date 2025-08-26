@@ -21,12 +21,12 @@ html, body, #root {
 
 /* probably temporary */
 body {
-  background: #f5f5f5; /* same as your .App */
+  background: #f5f5f5;
 }
 
 /* probably temporary */
 #root {
-  max-width: none;   /* remove the 1280px cap */
+  max-width: none;
 }
 
 .App {
