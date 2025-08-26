@@ -1,14 +1,15 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { store } from './pages/store';
-import Home from './pages/Home';
+import { ThemeProvider } from '@mui/material/styles';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
-import { theme } from './styles/scss/themes/theme';
-import './App.scss'; // Importar estilos globais
 import TypographyShowcase from './components/TypographyShowcase';
+import Home from './pages/Home';
+import { store } from './pages/store';
+import './styles/scss/base/App.scss'; // Importar estilos globais
+import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
 
 function App() {
@@ -35,18 +36,19 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
-            <Header 
-              isLoggedIn={isLoggedIn} 
-              user={user} 
-              onLogout={handleLogout}
-              onLogin={handleLogin}
-            />  
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/styleGuide" element={<TypographyShowcase />} />
-              </Routes>
-            </main>
+          <Header
+            isLoggedIn={isLoggedIn}
+            user={user}
+            onLogout={handleLogout}
+            onLogin={handleLogin}
+          />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/styleGuide" element={<TypographyShowcase />} />
+            </Routes>
+          </main>
+          <Footer />
         </Router>
       </ThemeProvider>
     </Provider>
