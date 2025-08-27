@@ -7,7 +7,7 @@ import { store } from './pages/store';
 import Home from './pages/Home';
 import Header from './components/Header/Header';
 import { theme } from './styles/scss/themes/theme';
-import './App.scss'; // Importar estilos globais
+import './styles/scss/base/App.scss'; // Importar estilos globais
 import TypographyShowcase from './components/TypographyShowcase';
 import type { User } from './types/header-types';
 
