@@ -1,10 +1,17 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.tsx';
+import { ThemeProvider } from '@mui/material/styles';
+import './styles/scss/main.scss';
+import { theme } from './styles/scss/themes/theme';
+import { ThemeVariablesProvider } from './providers/ThemeVariablesProvider';
+import App from './App';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <ThemeVariablesProvider>
+        <App />
+      </ThemeVariablesProvider>
+    </ThemeProvider>
   </StrictMode>
 );
