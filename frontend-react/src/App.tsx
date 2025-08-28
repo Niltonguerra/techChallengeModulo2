@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { store } from './pages/store';
 import Home from './pages/Home';
+import SearchPost from './components/SearchPost'; //<< temporary
 import Header from './components/Header/Header';
 import { theme } from './styles/scss/themes/theme';
 import './styles/scss/base/App.scss'; // Importar estilos globais
@@ -45,6 +46,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/styleGuide" element={<TypographyShowcase />} />
+                <Route path="/search" element={<SearchPost />} />
               </Routes>
             </main>
         </Router>
