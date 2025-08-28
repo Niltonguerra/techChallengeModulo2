@@ -131,7 +131,7 @@ export default function SearchPost() {
 							</Box>
 
 							<Typography id="filters-desc" sx={{ marginBottom: 2, color: "text.secondary" }}>
-								Ajuste os critérios abaixo e clique em Aplicar.
+								Preencha os filtros abaixo para refinar sua busca
 							</Typography>
 
 							{/** filters: when it was created, which teacher created it, 'search' (description, introduction, title, etc), 'content_hashtags'(?) */}
