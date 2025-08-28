@@ -16,3 +16,5 @@ export type Post = {
         social_media: string[];
     };
 }
+}
+
