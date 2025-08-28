@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import redoc from 'redoc-express';
-import * as basicAuth from 'express-basic-auth';
 import { Request, Response } from 'express';
+import * as basicAuth from 'express-basic-auth';
+import redoc from 'redoc-express';
 
 export function setupDocumentation(app: INestApplication) {
   const protectedPaths = ['/swagger-ui', '/docs', '/api-json'];
@@ -20,7 +20,7 @@ export function setupDocumentation(app: INestApplication) {
       },
     }),
   );
-
+  console.log('teste')
   const config = new DocumentBuilder()
     .setTitle('Educa Facil')
     .setDescription('Documentação da API com Swagger e ReDoc')
