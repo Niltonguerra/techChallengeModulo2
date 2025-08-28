@@ -1,4 +1,6 @@
+import { Typography } from "@mui/material";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 import "./Footer.scss";
 
 export default function Footer() {
@@ -27,7 +29,10 @@ export default function Footer() {
                 <div className="categories">
                     <h3>Categorias</h3>
                     <div className="list">
-                        <a href="#">Matemática</a>
+                        <Link to="#">
+                            <Typography variant="h4" className="header__logo-text">Matemática</Typography>
+                        </Link>
+
                         <a href="#">Educação Física</a>
                         <a href="#">Português</a>
                         <a href="#">Inglês</a>

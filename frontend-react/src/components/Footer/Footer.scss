@@ -1,9 +1,6 @@
-$primary: var(--primary-main);
-$text-light: var(--secondary-contrast);
-
 .footer {
-  background-color: $primary;
-  color: $text-light;
+  background-color: var(--primary-main);
+  color: var(--secondary-contrast);
   padding: 3rem 2rem 1rem;
   display: flex;
   flex-direction: column;
@@ -54,13 +51,13 @@ $text-light: var(--secondary-contrast);
         }
 
         a {
-          color: $text-light;
+          color: var(--secondary-contrast);
           font-size: 0.9rem;
           text-decoration: none;
           transition: color 0.2s ease;
 
           &:hover {
-            color: $text-light;
+            color: var(--secondary-contrast);
           }
         }
       }
@@ -72,7 +69,7 @@ $text-light: var(--secondary-contrast);
     margin-top: 2rem;
     padding-top: 1rem;
     font-size: 0.8rem;
-    color: $text-light;
+    color: var(--secondary-contrast);
     border-top: 1px solid var(--text-secondary);
   }
 
