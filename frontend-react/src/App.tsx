@@ -4,7 +4,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Footer from './components/Footer/Footer';
+
 import Header from './components/Header/Header';
+import SearchPost from './components/SearchPost'; //<< temporary
 import TypographyShowcase from './components/TypographyShowcase';
 import Home from './pages/Home';
 import { store } from './pages/store';
@@ -49,9 +51,22 @@ function App() {
             </Routes>
           </main>
           <Footer />
-        </Router>
-      </ThemeProvider>
-    </Provider>
+          <Header
+            isLoggedIn={isLoggedIn}
+            user={user}
+            onLogout={handleLogout}
+            onLogin={handleLogin}
+          />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/styleGuide" element={<TypographyShowcase />} />
+              <Route path="/search" element={<SearchPost />} />
+            </Routes>
+          </main>
+        </Router >
+      </ThemeProvider >
+    </Provider >
   );
 }
 
