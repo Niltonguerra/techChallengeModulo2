@@ -99,12 +99,12 @@ DB_USERNAME_DEV=nest_user
 DB_PASSWORD_DEV=nest_password
 
 
-DB_HOST_PROD=dpg-d1pue3ruibrs73e5n0qg-a.oregon-postgres.render.com
+DB_HOST_PROD=aws-1-sa-east-1.pooler.supabase.com
 DB_PORT_PROD=5432
 URL_SERVER_PROD=https://techchallengemodulo2.onrender.com/
-DB_DATABASE_PROD=educa_facil
-DB_USERNAME_PROD=educa_facil_user
-DB_PASSWORD_PROD=D53q0bvcJlYdA3BECrNW5IHuoeZin9fT
+DB_DATABASE_PROD=postgres
+DB_USERNAME_PROD=postgres.lvonfxuhdykgviwqcmyw
+DB_PASSWORD_PROD=VxoVH8ReYuqsB3N1
 
 
 BCRYPT_SALT_ROUNDS=10
