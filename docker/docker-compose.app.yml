@@ -9,6 +9,5 @@ services:
     restart: always
     depends_on:
       - db
-      - rabbitmq
     ports:
       - "3000:3000"

@@ -29,6 +29,7 @@ import { User } from '@modules/user/entities/user.entity';
             synchronize: true,
             ssl: true,
             extra: { ssl: { rejectUnauthorized: false } },
+            family: 4,
             entities: [Post, User],
           };
         } else {
