@@ -1,19 +1,9 @@
-import { Body, Controller, Post, Get, Param, Put, Query, UseGuards, Delete } from '@nestjs/common';
-import { CreatePostUseCase } from '../usecases/createPost.usecase';
-import { UpdatePostUseCase } from '../usecases/updatePost.usecase';
-import { GetPostUseCase } from '../usecases/getPost.usecase';
-import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
-import { ReturnListPost } from '../dtos/returnlistPost.dto';
-import { ListPostUseCase } from '../usecases/listPost.usecase';
-import { DeletePostUseCase } from '../usecases/deletePost.usecase';
-import { CreatePostDTO } from '../dtos/createPost.dto';
-import { ListPostDTO } from '../dtos/listPost.dto';
-import { UpdatePostDTO } from '../dtos/updatePost.dto';
-import { GetTokenValues } from '../../auth/decorators/token.decorator';
-import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
@@ -25,8 +15,18 @@ import {
   ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { GetTokenValues } from '../../auth/decorators/token.decorator';
+import { CreatePostDTO } from '../dtos/createPost.dto';
+import { ListPostDTO } from '../dtos/listPost.dto';
+import { ReturnListPost } from '../dtos/returnlistPost.dto';
+import { UpdatePostDTO } from '../dtos/updatePost.dto';
+import { CreatePostUseCase } from '../usecases/createPost.usecase';
+import { DeletePostUseCase } from '../usecases/deletePost.usecase';
+import { GetPostUseCase } from '../usecases/getPost.usecase';
+import { GetUniqueHashtagsUseCase } from '../usecases/getUniqueHashtags.usecase';
+import { ListPostUseCase } from '../usecases/listPost.usecase';
+import { UpdatePostUseCase } from '../usecases/updatePost.usecase';
 
-@ApiBearerAuth('JWT-Auth')
 @ApiUnauthorizedResponse({ description: 'Unauthorized', type: ReturnMessageDTO })
 @ApiNotFoundResponse({ description: 'Not found', type: ReturnMessageDTO })
 @ApiForbiddenResponse({ description: 'Forbidden', type: ReturnMessageDTO })
@@ -39,9 +39,11 @@ export class PostController {
     private readonly updatePostUseCase: UpdatePostUseCase,
     private readonly getPostUseCase: GetPostUseCase,
     private readonly deletePostUseCase: DeletePostUseCase,
-  ) {}
+    private readonly getUniqueHashtagUseCase: GetUniqueHashtagsUseCase,
+  ) { }
 
   @Get()
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   @ApiOperation({ summary: 'Return posts according to the search criteria' })
   @ApiOkResponse({ type: ReturnListPost })
@@ -49,7 +51,15 @@ export class PostController {
     return this.listPostUseCase.execute(query);
   }
 
+  @Get('/hashtags')
+  @ApiOperation({ summary: 'Return hashtags from posts' })
+  @ApiOkResponse({ type: String, isArray: true })
+  async hashtags(): Promise<string[]> {
+    return this.getUniqueHashtagUseCase.execute();
+  }
+
   @Get(':id')
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   @ApiOperation({ summary: 'Fetch post by ID' })
   @ApiOkResponse({ type: ReturnListPost })
@@ -58,6 +68,7 @@ export class PostController {
   }
 
   @Post()
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   @ApiOperation({ summary: 'Register new post from the current user' })
   @ApiCreatedResponse({ type: ReturnMessageDTO })
@@ -73,6 +84,7 @@ export class PostController {
   }
 
   @Put()
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   @ApiOperation({ summary: 'Update existing post by id' })
   @ApiOkResponse({ type: ReturnMessageDTO })
@@ -82,6 +94,7 @@ export class PostController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth('JWT-Auth')
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   @ApiOperation({ summary: 'Delete post by ID' })
   @ApiOkResponse({ type: ReturnMessageDTO })

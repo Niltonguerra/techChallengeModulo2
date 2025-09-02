@@ -1,11 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PostController } from './post.controller';
-import { ListPostUseCase } from '../usecases/listPost.usecase';
-import { CreatePostUseCase } from '../usecases/createPost.usecase';
-import { UpdatePostUseCase } from '../usecases/updatePost.usecase';
-import { GetPostUseCase } from '../usecases/getPost.usecase';
-import { DeletePostUseCase } from '../usecases/deletePost.usecase';
 import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
+import { CreatePostUseCase } from '../usecases/createPost.usecase';
+import { DeletePostUseCase } from '../usecases/deletePost.usecase';
+import { GetPostUseCase } from '../usecases/getPost.usecase';
+import { ListPostUseCase } from '../usecases/listPost.usecase';
+import { UpdatePostUseCase } from '../usecases/updatePost.usecase';
 import {
   createPostDTOMock,
   jwtPayloadMock,
@@ -16,6 +15,7 @@ import {
   returnMessageUpdateMock,
   updatePostDTOMock,
 } from './__mocks__/post-controller.mock';
+import { PostController } from './post.controller';
 
 describe('PostController', () => {
   let controller: PostController;

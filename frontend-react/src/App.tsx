@@ -1,15 +1,17 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { store } from './pages/store';
-import Home from './pages/Home';
-import SearchPost from './components/SearchPost'; //<< temporary
+import { ThemeProvider } from '@mui/material/styles';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Footer from './components/Footer/Footer';
+
 import Header from './components/Header/Header';
-import { theme } from './styles/scss/themes/theme';
-import './styles/scss/base/App.scss'; // Importar estilos globais
+import SearchPost from './components/SearchPost'; //<< temporary
 import TypographyShowcase from './components/TypographyShowcase';
+import Home from './pages/Home';
+import { store } from './pages/store';
+import './styles/scss/base/App.scss'; // Importar estilos globais
+import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
 import LoginPage from './pages/LoginPage';
 
@@ -37,7 +39,7 @@ function App() {
             isLoggedIn={isLoggedIn}
             user={user}
             onLogout={handleLogout}
-            onLogin={() => handleLogin({} as User)}
+            onLogin={handleLogin}
           />
           <main className="main-content">
             <Routes>
@@ -49,6 +51,7 @@ function App() {
                 element={<LoginPage onLogin={handleLogin} />}
               />
             </Routes>
+            <Footer></Footer>
           </main>
         </Router>
       </ThemeProvider>

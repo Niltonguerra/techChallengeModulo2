@@ -1,14 +1,14 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Post } from '../entities/post.entity';
-import { Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
-import { UpdatePostDTO } from '../dtos/updatePost.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { ReturnListPost } from '../dtos/returnlistPost.dto';
-import { CreatePostDTO } from '../dtos/createPost.dto';
 import { User } from '@modules/user/entities/user.entity';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import { CreatePostDTO } from '../dtos/createPost.dto';
+import { ReturnListPost } from '../dtos/returnlistPost.dto';
+import { UpdatePostDTO } from '../dtos/updatePost.dto';
+import { Post } from '../entities/post.entity';
 
 @Injectable()
 export class PostService {
@@ -16,7 +16,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) {}
+  ) { }
 
   async createPostService(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const validadeName = await this.postRepository.findOneBy({ title: createPostData.title });
@@ -171,5 +171,16 @@ export class PostService {
       message: systemMessage.ReturnMessage.sucessDeletePost,
       statusCode: 200,
     };
+  }
+
+  async getUniqueHashtags(): Promise<string[]> {
+    // TODO ordernar pelo mais acessados depois
+    const result: { hashtag: string }[] = await this.postRepository
+      .createQueryBuilder('p')
+      .select('DISTINCT unnest(p.content_hashtags)', 'hashtag')
+      .where('p.content_hashtags IS NOT NULL')
+      .limit(10)
+      .getRawMany();
+    return result.map((row) => row.hashtag);
   }
 }
