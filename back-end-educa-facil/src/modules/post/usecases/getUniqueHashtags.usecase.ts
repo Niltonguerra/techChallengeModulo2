@@ -11,7 +11,6 @@ export class GetUniqueHashtagsUseCase {
       const post = await this.postService.getUniqueHashtags();
       return post;
     } catch (error) {
-      console.log(error);
       const message = `${error}`;
       const status =
         error instanceof HttpException ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;

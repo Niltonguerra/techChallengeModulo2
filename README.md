@@ -118,7 +118,8 @@ EMAIL_PASSWORD=svjkqhfvifjqryde
 SWAGGER_USER='admin'
 SWAGGER_PASS='admin123'
 
-FRONTEND_URL =http://localhost:5173
+FRONTEND_URL_LOCAL =http://localhost:5173
+FRONTEND_URL_PROD =http://localhost:5173
 
 
 
