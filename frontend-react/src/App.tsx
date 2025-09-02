@@ -48,22 +48,10 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/styleGuide" element={<TypographyShowcase />} />
-            </Routes>
-          </main>
-          <Footer />
-          <Header
-            isLoggedIn={isLoggedIn}
-            user={user}
-            onLogout={handleLogout}
-            onLogin={handleLogin}
-          />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/styleGuide" element={<TypographyShowcase />} />
               <Route path="/search" element={<SearchPost />} />
             </Routes>
           </main>
+          <Footer />
         </Router >
       </ThemeProvider >
     </Provider >

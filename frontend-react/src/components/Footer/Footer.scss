@@ -28,9 +28,7 @@
         opacity: 0.8;
       }
     }
-
-    .contact,
-    .categories {
+    .hashtags {
       h3 {
         font-size: 1.1rem;
         font-weight: 600;
@@ -74,7 +72,35 @@
   }
 
   .image-footer {
-        max-height: 250px;
-        max-width: 250px;
+      max-height: 250px;
+      max-width: 250px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
       }
+}
+
+.contact ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; // espaço entre ícone e texto
+}
+
+.contact li a {
+  color: var(--secondary-contrast);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.contact .icon {
+  flex-shrink: 0; // mantém o tamanho do ícone
 }
