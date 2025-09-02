@@ -20,7 +20,6 @@ export function setupDocumentation(app: INestApplication) {
       },
     }),
   );
-  console.log('teste')
   const config = new DocumentBuilder()
     .setTitle('Educa Facil')
     .setDescription('Documentação da API com Swagger e ReDoc')
