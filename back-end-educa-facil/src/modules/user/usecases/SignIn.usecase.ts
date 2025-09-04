@@ -39,6 +39,11 @@ export class SignInUseCase {
 
       return {
         token: this.jwtService.sign(payload).toString(),
+        user: {
+          photo: validatedUser.photo,
+          name: validatedUser.name,
+          email: validatedUser.email,
+        },
       };
     } catch (error) {
       const message =
