@@ -1,0 +1,34 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md); // distância entre os botões
+  margin: var(--spacing-lg) 0; // distância do footer
+  font-weight: var(--font-weight-bold);
+
+  .pagination-btn {
+    padding: var(--spacing-sm) var(--spacing-xl); // botões maiores
+    border-radius: var(--border-radius-sm);
+    border: none;
+    background-color: #FF6F00; // laranja principal
+    color: var(--primary-contrast);
+    cursor: pointer;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-md);
+    transition: background 0.2s ease-in-out;
+
+    &:hover:not(:disabled) {
+      background-color: #E65C00; // laranja mais escuro no hover
+    }
+
+    &:disabled {
+      background-color: var(--action-disabled);
+      cursor: not-allowed;
+    }
+  }
+
+  .pagination-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+}
