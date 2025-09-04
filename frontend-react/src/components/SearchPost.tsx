@@ -57,7 +57,6 @@ export default function SearchPost() {
 	const limit = 20;
 
 	const fetchPosts = useCallback(async (props: PostSearch) => {
-		console.log('fetching posts: ', props);
 		const {
 			advanced = false,
 			signal,
@@ -94,7 +93,6 @@ export default function SearchPost() {
 
 	// search field search
 	useEffect(() => {
-		console.log('initiating search...', debouncedSearch);
 
 		const controller = new AbortController();
 		fetchPosts({
@@ -156,7 +154,7 @@ export default function SearchPost() {
 
 				
 			} catch (err: Error | unknown) {
-				console.log('error while getting filter options: ', err);
+				console.error('error while getting filter options: ', err);
 			}
 		};
 
