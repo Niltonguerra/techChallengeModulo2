@@ -2,22 +2,25 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
 import type { Post } from "../types/post";
 
 const TOKEN = "e9d58f1d-a3ad-4d1e-a6a7-d84cefaa303ceyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM4MmQxY2EzLWVjNDEtNDZmMy05MDdjLThkZGMyOTIwZWI3NyIsImVtYWlsIjoibHVpczUwODI1QGdtYWlsLmNvbSIsInBlcm1pc3Npb24iOiJhZG1pbiIsImlhdCI6MTc1MjgwODgxMSwiZXhwIjoxNzUyODk1MjExfQ.mIgtA4OekN_baE_YddfO-9HjmeYVHDIctG-dWcU8iik";
-const apiUrl = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
-export const createApi = (token?: string): AxiosInstance => {
-  const config: AxiosRequestConfig = {
-    baseURL: apiUrl,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }), // só adiciona se token existir
-    },
-  };
+let api: AxiosInstance | null = null;
 
-  return axios.create(config);
-};
+// todo: expired token, logout, etc
+export function getApi(): AxiosInstance {
+  if (!api) {
+    const token = localStorage.getItem("token") || TOKEN;
 
-export const getListTodos = async (token?: string): Promise<Post[]> => {
-  const api = createApi(TOKEN);
+    api = axios.create({
+      baseURL: API_URL,
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    });
+  }
+  return api;
+}
+
+export const getListTodos = async (): Promise<Post[]> => {
+  const api = getApi();
 
   const body = {
     id: "8b084b80-1083-410b-bd02-d6074dd82cfb",
@@ -49,7 +52,7 @@ export const getListTodos = async (token?: string): Promise<Post[]> => {
 
 
 export const getHashtags = async () => {
-  const api = createApi();
+  const api = getApi();
   try {
     const response = await api.get("/post/hashtags");
     return response.data;

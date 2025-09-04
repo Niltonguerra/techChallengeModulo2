@@ -13,6 +13,10 @@ import { store } from './pages/store';
 import './styles/scss/base/App.scss'; // Importar estilos globais
 import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+import "dayjs/locale/pt-br"
 
 function App() {
   //isso vai ser removido, é só um mock substituto enquanto o sistema de autenticação não fica pronto
@@ -35,26 +39,27 @@ function App() {
 
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-          <Header
-            isLoggedIn={isLoggedIn}
-            user={user}
-            onLogout={handleLogout}
-            onLogin={handleLogin}
-          />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/styleGuide" element={<TypographyShowcase />} />
-              <Route path="/search" element={<SearchPost />} />
-            </Routes>
-          </main>
-          <Footer />
-        </Router >
-      </ThemeProvider >
-    </Provider >
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Router>
+              <Header 
+                isLoggedIn={isLoggedIn} 
+                user={user} 
+                onLogout={handleLogout}
+                onLogin={handleLogin}
+              />  
+              <main className="main-content">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/styleGuide" element={<TypographyShowcase />} />
+                  <Route path="/search" element={<SearchPost />} />
+                </Routes>
+              </main>
+          </Router>
+        </ThemeProvider>
+      </LocalizationProvider>
+    </Provider>
   );
 }
 
