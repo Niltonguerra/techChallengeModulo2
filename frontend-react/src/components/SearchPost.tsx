@@ -1,8 +1,9 @@
 // general imports
-import { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
-import { Box, Button, Fade, IconButton, InputAdornment, Menu, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
-import axios from "axios";
+import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
+import dayjs, { Dayjs } from 'dayjs';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 // icons
 import CloseIcon from '@mui/icons-material/Close';
@@ -10,10 +11,11 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 
 // types
-import type { Post } from '../types/post';
+import type { Post, PostSearch } from '../types/post';
+import { getApi } from '../service/api';
 
 export default function SearchPost() {
-	const modalStyle = { //<< todo: make it the standard for other modals
+	const modalStyle = { //<< todo: make it the standard for other modals (?)
 		position: "absolute" as const,
 		top: "50%",
 		left: "50%",
@@ -26,44 +28,140 @@ export default function SearchPost() {
 		outline: "none",
 	};
 
-  const [postList, setPostList] = useState<Post[]>([]); //<< todo: change it for the redux.
+	const isDevMode = true; //<< remove this later (?)
+	const api = getApi(); // one stable instance
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [postList, setPostList] = useState<Post[]>([]); //<< todo: change it for the redux.
+
+	// advanced filters inputs
   const [postSearch, setPostSearch] = useState('');
-  const [debouncedSearch] = useDebounce(postSearch, 400); // espera 400ms
+	const [postAuthor, setPostAuthor] = useState<string | null>(null);
+	const [postContent, setPostContent] = useState<string | null>(null);
+	const [createdAtBefore, setCreatedAtBefore] = useState<Dayjs | null>(null);
+	const [createdAtAfter, setCreatedAtAfter] = useState<Dayjs | null>(null);
+
+	// dynamic search bar input
+  const [debouncedSearch] = useDebounce(postSearch || '', 400); // 400ms delay
+
+	// advanced filters select options
+  const [contentOptions, setContentOptions] = useState<string[]>([]);
+	const [authorPostsOptions, setAuthorPostsOptions] = useState<{_id: string; name: string}[]>([]);
 
 	const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
-	const api = axios.create({ baseURL: "http://localhost:3000" });
+	// const api = axios.create({ baseURL: "http://localhost:3000" });
 
 	//<< obs/todo: if we implement pagination or infinite scroll, these gonna have to be in redux too
 	const offset = 0;
 	const limit = 20;
 
-  useEffect(() => {
-	// used to cancel out of date requests (ex: as the user types, only sends the request for the most recent one)
-	const controller = new AbortController();
+	const fetchPosts = useCallback(async (props: PostSearch) => {
+		console.log('fetching posts: ', props);
+		const {
+			advanced = false,
+			signal,
+			search,
+			userId,
+			content,
+			createdAt,
+			offset,
+			limit,
+		} = props;
 
-	const fetchPosts = async () => {
-	  try {
-			const { data } = await api.get('/posts', { //<< todo: replace with redux dispatch
-				signal: controller.signal,
-				params: {
-				search: debouncedSearch || undefined,
-				offset: 0,
-				limit: 20,
-				},
-			});
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		let params: Record<string, any> = {
+			search: advanced ? search : search ?? null,
+			offset,
+			limit,
+		};
 
-			setPostList(data);
+		if (advanced) {
+			params = {
+				...params,
+				userId: userId ?? null,
+				content: content ?? null,
+				createdAt: createdAt ?? null,
+			};
+		}
 
-	  } catch (err: Error | unknown) {
-			console.log('error while getting posts in search: ', err);
-	  }
+		const { data } = await api.get<Post[]>('/posts/search', {
+			params,
+			signal,
+		});
+		setPostList(data);
+	}, [api]);
+
+	// search field search
+	useEffect(() => {
+		console.log('initiating search...', debouncedSearch);
+
+		const controller = new AbortController();
+		fetchPosts({
+			advanced: false,
+			search: debouncedSearch || null,
+			offset,
+			limit,
+			signal: controller.signal,
+		});
+
+		return () => controller.abort();
+	}, [debouncedSearch, offset, limit, fetchPosts]);
+
+	const handleFetchAdvanced = () => {
+		const controller = new AbortController();
+		fetchPosts({
+			advanced: true,
+			search: postSearch || null,
+			userId: postAuthor || null,
+			content: postContent || null,
+			createdAt: {
+				before: createdAtBefore ? createdAtBefore.toDate() : null,
+				after: createdAtAfter ? createdAtAfter.toDate() : null,
+			},
+			offset,
+			limit,
+			signal: controller.signal,
+		});
 	};
 
-	fetchPosts();
+	// getting the options for advanced filters
+	useEffect(() => {
+		const fetchFilterOptions = async () => {
+			try {
+				let contentResponse, authorResponse;
 
-	return () => controller.abort();
-  }, [debouncedSearch, offset, limit, api]);
+				if(!isDevMode) {
+					[contentResponse, authorResponse] = await Promise.all([
+						api.get('/posts/content-options'),
+						api.get('/posts/author-options'),
+					]);
+
+					setContentOptions(contentResponse.data);
+					setAuthorPostsOptions(authorResponse.data);
+					// if we are in dev, just get a mock
+				} else {
+					contentResponse = ['Matemática', 'Português', 'Química', 'Biologia', 'História', 'Educação Física', 'Inglês', 'Artes', 'Física', 'Geografia'];
+					authorResponse = [
+						{_id: '1', name: 'Ana Beatriz'}, 
+						{_id: '2', name: 'Carlos Eduardo'}, 
+						{_id: '3', name: 'Mariana Silva'}, 
+						{_id: '4', name: 'Pedro Henrique'}, 
+						{_id: '5', name: 'Juliana Costa'}
+					];
+
+					setContentOptions(contentResponse);
+					setAuthorPostsOptions(authorResponse);
+				}
+
+				
+			} catch (err: Error | unknown) {
+				console.log('error while getting filter options: ', err);
+			}
+		};
+
+		fetchFilterOptions();
+	}, [api, isDevMode]);
 
   return (
 		<>
@@ -134,19 +232,95 @@ export default function SearchPost() {
 								Preencha os filtros abaixo para refinar sua busca
 							</Typography>
 
-							{/** filters: when it was created, which teacher created it, 'search' (description, introduction, title, etc), 'content_hashtags'(?) */}
+							{/** filters: 
+							 * 'search' (description, introduction, title, etc), 
+							 * which teacher created it, 
+							 * when it was created, 
+							 * 'content_hashtags' 
+							 * */}
 							<Stack spacing={2}>
-								<TextField size="small" fullWidth label="Busca (Título, descrição, etc.)" />
-								<Select>
-									<MenuItem value="1">1</MenuItem>
-									<MenuItem value="2">2</MenuItem>
-									<MenuItem value="3">3</MenuItem>
+								<TextField 
+									size="small" 
+									fullWidth 
+									label="Busca (Título, descrição, etc.)" 
+									onChange={(e) => setPostSearch(e.target.value)}
+								/>
+								<Select 
+								 	onChange={(e) => setPostContent(e.target.value)} 
+								 	value={postContent || ''}
+									displayEmpty={true}
+									renderValue={(selected) => {
+										if (!selected) {
+											return <span style={{ color: "#888" }}>Matéria</span>;
+										}
+										return selected;
+									}}
+								>
+									{/* empty option */}
+									<MenuItem value="">
+										Selecione
+									</MenuItem>
+									{contentOptions.map((option) => (
+										<MenuItem key={option} value={option}>
+											{option}
+										</MenuItem>
+									))}
 								</Select>
+								<Select 
+								 onChange={(e) => setPostAuthor(e.target.value)} 
+								 value={postAuthor || ''}
+								 displayEmpty={true}
+								 renderValue={(selected) => {
+									if (!selected) {
+										return <span style={{ color: "#888" }}>Autor</span>;
+									}
+										const author = authorPostsOptions.find((opt) => opt._id === selected);
+										return author ? author.name : selected;
+									}}
+								>
+									{/* empty option */}
+									<MenuItem value="">
+										Selecione
+									</MenuItem>
+									{authorPostsOptions.map((option) => (
+										<MenuItem key={option._id} value={option._id}>
+											{option.name}
+										</MenuItem>
+									))}
+								</Select>
+								<Stack direction="row" spacing={2} justifyContent="space-between">
+									<DatePicker
+										label="De: "
+										value={createdAtBefore}
+										onChange={(newValue: React.SetStateAction<dayjs.Dayjs | null>) => setCreatedAtBefore(newValue)}
+										format='DD/MM/YYYY'
+									/>
+									<DatePicker
+										label="Até: "
+										value={createdAtAfter}
+										onChange={(newValue: React.SetStateAction<dayjs.Dayjs | null>) => setCreatedAtAfter(newValue)}
+										format='DD/MM/YYYY'
+									/>
+								</Stack>
+								<Button
+									variant="text"
+									style={{
+										fontSize: '0.8rem',
+										padding: '4px 8px',
+										marginRight: 'auto',
+									}}
+									onClick={() => {
+										setCreatedAtBefore(null);
+										setCreatedAtAfter(null);
+									}}
+								>
+									Limpar datas
+								</Button>
 							</Stack>
 
 							<Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ marginTop: 3 }}>
 								<Button onClick={() => setAdvancedFiltersOpen(false)}>Cancelar</Button>
-								<Button variant="contained" onClick={() => console.log('todo submit filters')}>Aplicar</Button>
+								<Button variant="contained" onClick={handleFetchAdvanced}>Aplicar</Button>
 							</Stack>
 						</Box>
 					</Fade>

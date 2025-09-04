@@ -16,5 +16,17 @@ export type Post = {
         social_media: string[];
     };
 }
-}
 
+export type PostSearch = {
+    advanced?: boolean;
+    signal?: AbortSignal;
+    search?: string | null;
+    userId?: string | null;
+    content?: string | null;
+    createdAt? : {
+        before?: Date | null;
+        after?: Date | null;
+    },
+    offset?: number;
+    limit?: number;
+}
