@@ -1,7 +1,7 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
-import type { Post } from "../types/post";
+import axios, { type AxiosInstance } from "axios";
+import type { Post, ResutApi } from "../types/post";
 
-const TOKEN = "e9d58f1d-a3ad-4d1e-a6a7-d84cefaa303ceyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM4MmQxY2EzLWVjNDEtNDZmMy05MDdjLThkZGMyOTIwZWI3NyIsImVtYWlsIjoibHVpczUwODI1QGdtYWlsLmNvbSIsInBlcm1pc3Npb24iOiJhZG1pbiIsImlhdCI6MTc1MjgwODgxMSwiZXhwIjoxNzUyODk1MjExfQ.mIgtA4OekN_baE_YddfO-9HjmeYVHDIctG-dWcU8iik";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhjM2Q5YzY1LTdhOWEtNDUxNC04ZWRmLTdlMmUxY2I1M2QwZSIsImVtYWlsIjoibHVpczUwODI0QGdtYWlsLmNvbSIsInBlcm1pc3Npb24iOiJhZG1pbiIsImlhdCI6MTc1NzAzMTg3NiwiZXhwIjoxNzU3MTE4Mjc2fQ.H6rFxi19qc0fHOE97CswZ8QSDP3mZD5-KcZU4uvy-PA";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 let api: AxiosInstance | null = null;
@@ -23,10 +23,10 @@ export const getListTodos = async (): Promise<Post[]> => {
   const api = getApi();
 
   try {
-    const response = await api.get<Post[]>("/post");
-    return response.data;
-  } catch (error: any) {
-    console.error("Erro ao chamar getListTodos:", error.response?.data || error);
+    const response = await api.get<ResutApi>("/post");
+    return response.data.ListPost;
+  } catch (error) {
+    console.error("Erro ao chamar getListTodos:", error);
     throw error;
   }
 };

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getListTodos } from "../service/api";
-import type { Post } from "../types/post";
 import Carousel from "../components/Carousel/Carousel";
 import PostList from "../components/PostList/PostList";
+import { getListTodos } from "../service/api";
+import type { Post } from "../types/post";
 
 function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
