@@ -1,16 +1,16 @@
-import {
-  IsString,
-  IsOptional,
-  Length,
-  IsNotEmpty,
-  IsArray,
-  IsUUID,
-  IsObject,
-  ArrayNotEmpty,
-  IsUrl,
-} from 'class-validator';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUrl,
+  IsUUID,
+  Length,
+} from 'class-validator';
 
 export class CreatePostDTO {
   @ApiProperty()
@@ -23,17 +23,6 @@ export class CreatePostDTO {
   @IsString({ message: systemMessage.validation.isString })
   @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   description: string;
-
-  @ApiProperty()
-  @IsArray({ message: systemMessage.validation.isArray })
-  @ArrayNotEmpty({ message: systemMessage.validation.isNotEmpty })
-  @IsString({ each: true, message: systemMessage.validation.isString })
-  search_field: string[];
-
-  @ApiProperty()
-  @IsString({ message: systemMessage.validation.isString })
-  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
-  scheduled_publication: string;
 
   @ApiProperty()
   @IsString({ message: systemMessage.validation.isString })

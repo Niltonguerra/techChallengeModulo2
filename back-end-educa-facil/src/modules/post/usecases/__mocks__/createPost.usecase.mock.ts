@@ -10,8 +10,6 @@ export const validDto: CreatePostDTO = {
   description: 'Descrição',
   user_id: 'autor123',
   image: 'imagem.jpg',
-  search_field: [],
-  scheduled_publication: '',
   content_hashtags: [],
   style_id: '',
 };

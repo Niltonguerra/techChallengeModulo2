@@ -5,6 +5,8 @@ import { Provider } from 'react-redux';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Footer from './components/Footer/Footer';
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Header from './components/Header/Header';
 import SearchPost from './components/SearchPost'; //<< temporary
 import TypographyShowcase from './components/TypographyShowcase';
@@ -13,10 +15,8 @@ import { store } from './pages/store';
 import './styles/scss/base/App.scss'; // Importar estilos globais
 import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import "dayjs/locale/pt-br"
+import "dayjs/locale/pt-br";
 
 function App() {
   //isso vai ser removido, é só um mock substituto enquanto o sistema de autenticação não fica pronto
@@ -43,19 +43,20 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Router>
-              <Header 
-                isLoggedIn={isLoggedIn} 
-                user={user} 
-                onLogout={handleLogout}
-                onLogin={handleLogin}
-              />  
-              <main className="main-content">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/styleGuide" element={<TypographyShowcase />} />
-                  <Route path="/search" element={<SearchPost />} />
-                </Routes>
-              </main>
+            <Header
+              isLoggedIn={isLoggedIn}
+              user={user}
+              onLogout={handleLogout}
+              onLogin={handleLogin}
+            />
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/styleGuide" element={<TypographyShowcase />} />
+                <Route path="/search" element={<SearchPost />} />
+              </Routes>
+            </main>
+            <Footer />
           </Router>
         </ThemeProvider>
       </LocalizationProvider>
