@@ -24,13 +24,13 @@ export default function Carrosel({ posts }: CarroselProps) {
         modules={[Navigation, Pagination, Mousewheel, Keyboard, Autoplay]}
         className="mySwiper"
       >
-        {posts.map((post) => (
+        {posts.slice(0,5).map((post) => (
           <SwiperSlide key={post.id}>
             <div
               className="slide-content"
               style={{ backgroundImage: `url("${post.image}")` }}
             >
-              <div className="slide-content" style={{ backgroundImage: `url("${post.image}")` }}>
+              <div className="slide-overlay">
                 <div className="slide-title">
                   <h2>{post.title}</h2>
                   <p>{post.description}</p>

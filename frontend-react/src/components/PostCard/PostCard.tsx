@@ -11,35 +11,35 @@ export default function PostCard({ post }: PostCardProps) {
 
   return (
     <div className="post-card">
-  <img src={post.image} alt={post.title} className="post-image" />
-  <div className="post-content">
-    <div className="post-content-main">
-      <h3>{post.title}</h3>
-      <div className="post-categories">
-        {visibleCategories.map((cat, idx) => (
-          <span key={idx} className="category">{cat}</span>
-        ))}
-        {hiddenCategories.length > 0 && (
-          <span
-            className="category more"
-            title={hiddenCategories.join(", ")}
-          >
-            ...
-          </span>
-        )}
+      <img src={post.image} alt={post.title} className="post-image" />
+      <div className="post-content">
+        <div className="post-content-main">
+          <h3>{post.title}</h3>
+          <div className="post-categories">
+            {visibleCategories.map((cat, idx) => (
+              <span key={idx} className="category">{cat}</span>
+            ))}
+            {hiddenCategories.length > 0 && (
+              <span
+                className="category more"
+                title={hiddenCategories.join(", ")}
+              >
+                ...
+              </span>
+            )}
+          </div>
+          <p className="post-description">{post.description}</p>
+        </div>
+        <div className="post-content-footer">
+          <p className="post-author">Por: {post.user_name}</p>
+          <p className="post-date">
+            Atualizado em {new Date(post.updated_at).toLocaleDateString()}
+          </p>
+          <a href={`/post/${post.id}`} className="post-btn">
+            Ver mais
+          </a>
+        </div>
       </div>
-      <p className="post-description">{post.description}</p>
     </div>
-    <div className="post-content-footer">
-      <p className="post-author">Por: {post.user.name}</p>
-      <p className="post-date">
-        Atualizado em {new Date(post.updated_at).toLocaleDateString()}
-      </p>
-      <a href={`/post/${post.id}`} className="post-btn">
-        Ver mais
-      </a>
-    </div>
-  </div>
-</div>
   );
 }
