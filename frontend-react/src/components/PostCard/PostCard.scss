@@ -1,5 +1,6 @@
 .post-card {
   width: 100%;
+  max-width: 600px;
   background: var(--background-paper);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-1);
@@ -44,15 +45,16 @@
       margin-bottom: 8%;
 
       .category {
-        background: var(--secondary-light);
+        background: var(--primary-light);
         padding: var(--spacing-xs) var(--spacing-sm);
         border-radius: var(--border-radius-sm);
         font-size: var(--font-size-xs);
         font-family: 'Inter', sans-serif;
         font-weight: var(--font-weight-normal);
+        color: var(--secondary-contrast);
 
         &.more {
-          background: var(--secondary-main);
+          background: var(--primary-main);
           color: var(--secondary-contrast);
           cursor: pointer;
         }
@@ -60,10 +62,10 @@
     }
 
     .post-content-footer {
-      margin-top: var(--spacing-sm);
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-xs);
+      justify-content: flex-end;
+      margin-top: auto;
 
       .post-author,
       .post-date {
@@ -71,7 +73,6 @@
         font-weight: var(--font-weight-normal);
         font-size: var(--font-size-xs);
         color: var(--text-secondary);
-        margin-bottom: var(--spacing-xs);
       }
 
       .post-btn {
@@ -79,16 +80,16 @@
         font-weight: var(--font-weight-semibold);
         font-size: var(--font-size-md);
         display: inline-block;
-        background: var(--primary-main);
+        background: var(--secondary-main);
         color: var(--primary-contrast);
         text-align: center;
         padding: var(--spacing-sm) var(--spacing-lg);
         border-radius: var(--border-radius-sm);
         text-decoration: none;
-        margin-top: var(--spacing-md);
+        margin-top: var(--spacing-xs);
 
         &:hover {
-          background: var(--primary-dark);
+          background: var(--secondary-dark);
         }
       }
     }

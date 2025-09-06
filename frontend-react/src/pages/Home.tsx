@@ -27,10 +27,27 @@ function Home() {
     return <div className="page-container"><p>Carregando posts...</p></div>;
   }
 
+  console.log("Posts recebidos no Home:", posts);
+
+
+    // 🔹 Carousel -> 5 mais recentes
+  const carouselPosts = [...posts]
+    .sort(
+      (a, b) =>
+        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+    )
+    .slice(0, 5);
+
+  // 🔹 Lista -> ordem alfabética pelo título
+  const listPosts = [...posts].sort((a, b) =>
+    a.title.localeCompare(b.title, "pt-BR")
+  );
+
+  
   return (
     <div className="page-container">
-      <Carousel posts={posts} />
-      <PostList posts={posts} />
+      <Carousel posts={carouselPosts} />
+      <PostList posts={listPosts} />
     </div>
   );
 }
