@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
 import type { Post, ResutApi } from "../types/post";
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTcwODc0NDMsImV4cCI6MTc1NzE3Mzg0M30.uyl1JGawLsTt3b1-bQdhGmw-luvYtYfoZdPn3Fytieo";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTcyNjkwMTQsImV4cCI6MTc1NzM1NTQxNH0.AWVJk9LEz5dIESCwr8IPPjaiPXrS0jI9ZQ1GeJziIBc";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 let api: AxiosInstance | null = null;
@@ -39,6 +39,41 @@ export const getHashtags = async () => {
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar hashtags:", error);
+    throw error;
+  }
+};
+
+// 🔹 Criar post
+export const createPost = async (data: Omit<Post, "id" | "created_at" | "updated_at">): Promise<Post> => {
+  const api = getApi();
+  try {
+    const response = await api.post<Post>("/post", data);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao criar post:", error);
+    throw error;
+  }
+};
+
+// 🔹 Atualizar post
+export const updatePost = async (id: string, data: Partial<Post>): Promise<Post> => {
+  const api = getApi();
+  try {
+    const response = await api.put<Post>(`/post/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(`Erro ao atualizar post ${id}:`, error);
+    throw error;
+  }
+};
+
+// 🔹 Deletar post
+export const deletePost = async (id: string): Promise<void> => {
+  const api = getApi();
+  try {
+    await api.delete(`/post/${id}`);
+  } catch (error) {
+    console.error(`Erro ao deletar post ${id}:`, error);
     throw error;
   }
 };
