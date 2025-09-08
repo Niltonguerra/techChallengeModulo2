@@ -16,7 +16,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) { }
+  ) {}
 
   async createPostService(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const validadeName = await this.postRepository.findOneBy({ title: createPostData.title });

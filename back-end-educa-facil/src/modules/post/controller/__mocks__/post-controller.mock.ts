@@ -21,8 +21,13 @@ export const returnMessageCreateMock = { statusCode: 201, message: 'Criado' };
 
 export const updatePostDTOMock: UpdatePostDTO = {
   id: 'abc123',
-  title: 'Atualizado',
-  description: 'Descrição atualizada',
+  title: 'abc123',
+  description: '',
+  content_hashtags: [],
+  style_id: '',
+  introduction: '',
+  external_link: {},
+  image: '',
 };
 export const returnMessageUpdateMock = { statusCode: 200, message: 'Atualizado' };
 
