@@ -4,19 +4,19 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Footer from './components/Footer/Footer';
-
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Header from './components/Header/Header';
-import SearchPost from './components/SearchPost'; //<< temporary
-import TypographyShowcase from './components/TypographyShowcase';
-import Home from './pages/Home';
-import { store } from './pages/store';
+import SearchPost from './components/searchPost/SearchPost'; //<< temporary
+import TypographyShowcase from './pages/styleGuide/TypographyShowcase';
+import Home from './pages/home/Home';
 import './styles/scss/base/App.scss'; // Importar estilos globais
 import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
-
 import "dayjs/locale/pt-br";
+import { store } from './store';
+import { CreateEditFormPage } from './pages/create_post_form/CreatePostForm';
+
 
 function App() {
   //isso vai ser removido, é só um mock substituto enquanto o sistema de autenticação não fica pronto
@@ -52,6 +52,8 @@ function App() {
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/create_post" element={<CreateEditFormPage />} />
+                <Route path="/edit_post/:id" element={<CreateEditFormPage />} />
                 <Route path="/styleGuide" element={<TypographyShowcase />} />
                 <Route path="/search" element={<SearchPost />} />
               </Routes>

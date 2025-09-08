@@ -1,0 +1,48 @@
+.form-post-container {
+  max-width: 600px;
+  margin: 32px auto 0 auto;
+  padding: 50px 0;
+}
+
+.form-post-paper {
+  padding: 32px;
+}
+
+.form-post-title {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.form-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-post-submit {
+  margin-top: 16px;
+}
+
+.form-post-keywords, .form-post-hashtags {
+  margin-bottom: 16px;
+}
+
+.form-post-label {
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-post-keyword-row, .form-post-hashtag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.form-post-add-btn {
+  margin-top: 4px;
+}
+
+.form-post-remove-btn {
+  min-width: 100px;
+}

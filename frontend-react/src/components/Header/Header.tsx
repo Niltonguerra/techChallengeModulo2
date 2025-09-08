@@ -26,7 +26,6 @@ import {
 const Header: React.FC<HeaderProps> = ({ 
   isLoggedIn = false, 
   user,
-  onLogin,
   onLogout,
   onSearch,
   onNavigate
@@ -63,9 +62,6 @@ const Header: React.FC<HeaderProps> = ({
     onLogout?.();
   }, [handleUserMenuClose, onLogout]);
 
-  const handleLogin = useCallback(() => {
-    onLogin?.();
-  }, [onLogin]);
 
   const handleSearch = useCallback(() => {
     onSearch?.('');
@@ -103,6 +99,7 @@ const Header: React.FC<HeaderProps> = ({
           </Typography>
         </Box>
 
+      {isLoggedIn ? (
         <Box className="header__navigation">
           <Button
             className="header__nav-button"
@@ -114,6 +111,7 @@ const Header: React.FC<HeaderProps> = ({
           >
             {HEADER_TEXTS.navigationButton}
           </Button>
+
           <Menu
             id="navigation-menu"
             anchorEl={navigationAnchor}
@@ -144,7 +142,9 @@ const Header: React.FC<HeaderProps> = ({
             ))}
           </Menu>
         </Box>
-
+      ):(<></>)}
+        
+      {isLoggedIn ? (
         <Box className="header__search">
           <Button
             id="search"
@@ -156,83 +156,73 @@ const Header: React.FC<HeaderProps> = ({
             <Search />
           </Button>
         </Box>
+      ):(<></>)}
 
-        <Box className="header__user-section">
-          {isLoggedIn ? (
-            <Box className="header__user-logged">
-              <Button
-                className="header__user-button"
-                onClick={handleUserMenuClick}
-                startIcon={
-                  <Avatar
-                    src={user?.avatar}
-                    alt={`Avatar de ${user?.name || 'usuário'}`}
-                    className="header__user-avatar"
-                  >
-                    {user?.name?.charAt(0).toUpperCase() || 'U'}
-                  </Avatar>
-                }
-                endIcon={<KeyboardArrowDown />}
-                aria-controls={userMenuOpen ? 'user-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={userMenuOpen ? 'true' : undefined}
-                aria-label={`Menu do usuário ${user?.name || ''}`}
-              >
-                <Box className="header__user-info">
-                  <Typography 
-                    variant="body2" 
-                    className="header__user-name"
-                  >
-                    {user?.name}
-                  </Typography>
-                  <Typography 
-                    variant="caption" 
-                    className="header__user-email"
-                  >
-                    {user?.email}
-                  </Typography>
-                </Box>
-              </Button>
-
-              <Menu
-                id="user-menu"
-                anchorEl={userMenuAnchor}
-                open={userMenuOpen}
-                onClose={handleUserMenuClose}
-                className="header__user-menu"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-              >
-                <MenuItem 
-                  onClick={handleLogout} 
-                  className="header__logout-item"
+      <Box className="header__user-section">
+        {isLoggedIn ? (
+          <Box className="header__user-logged">
+            <Button
+              className="header__user-button"
+              onClick={handleUserMenuClick}
+              startIcon={
+                <Avatar
+                  src={user?.avatar}
+                  alt={`Avatar de ${user?.name || 'usuário'}`}
+                  className="header__user-avatar"
                 >
-                  <ListItemIcon>
-                    <Logout />
-                  </ListItemIcon>
-                  <ListItemText primary={HEADER_TEXTS.logoutButton} />
-                </MenuItem>
-              </Menu>
-            </Box>
-          ) : (
-            <Box className="header__user-not-logged">
-              <Button
-                variant="outlined"
-                onClick={handleLogin}
-                className="header__login-button"
-                aria-label="Fazer login na plataforma"
+                  {user?.name?.charAt(0).toUpperCase() || 'U'}
+                </Avatar>
+              }
+              endIcon={<KeyboardArrowDown />}
+              aria-controls={userMenuOpen ? 'user-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={userMenuOpen ? 'true' : undefined}
+              aria-label={`Menu do usuário ${user?.name || ''}`}
+            >
+              <Box className="header__user-info">
+                <Typography 
+                  variant="body2" 
+                  className="header__user-name"
+                >
+                  {user?.name}
+                </Typography>
+                <Typography 
+                  variant="caption" 
+                  className="header__user-email"
+                >
+                  {user?.email}
+                </Typography>
+              </Box>
+            </Button>
+
+            <Menu
+              id="user-menu"
+              anchorEl={userMenuAnchor}
+              open={userMenuOpen}
+              onClose={handleUserMenuClose}
+              className="header__user-menu"
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MenuItem 
+                onClick={handleLogout} 
+                className="header__logout-item"
               >
-                {HEADER_TEXTS.loginButton}
-              </Button>
-            </Box>
-          )}
-        </Box>
+                <ListItemIcon>
+                  <Logout />
+                </ListItemIcon>
+                <ListItemText primary={HEADER_TEXTS.logoutButton} />
+              </MenuItem>
+            </Menu>
+          </Box>
+        ) : (<></>)}
+      </Box>
       </Toolbar>
     </AppBar>
   );
