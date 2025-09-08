@@ -1,39 +1,35 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import type { User } from '../../types/header-types'; // Verifique se o caminho para seus tipos está correto
+import type { User } from '../../types/header-types';
 
-// 1. O componente agora espera receber a função onLogin
 interface LoginFormProps {
-  onLogin: (userData: User) => void;
+  onLogin: (userData: User, token: string) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
-  const [usuario, setUsuario] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [senha, setSenha] = useState<string>('');
-  const [error, setError] = useState<string>(''); // 2. Estado para guardar mensagens de erro
-  const navigate = useNavigate(); // 3. Hook para redirecionar o usuário
+  const [error, setError] = useState<string>('');
+  const navigate = useNavigate();
 
-  // 4. A função de envio foi reescrita para ser assíncrona e se comunicar com a API
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(''); // Limpa erros anteriores
+    setError('');
 
     try {
-      // ATENÇÃO: Substitua a URL abaixo pela URL real do seu backend
-      const response = await axios.post('http://api.seuservidor.com/login', {
-        username: usuario,
+      const response = await axios.post('http://localhost:3000/user/login', {
+        email: email,
         password: senha,
       });
 
-      // Se o login der certo, chame a função onLogin com os dados do usuário
-      const userData: User = response.data.user; // Ajuste isso conforme a resposta da sua API
-      onLogin(userData);
+      const userData: User = response.data.user;
+      const token: string = response.data.token;
 
-      // Redirecione para a página inicial
+      onLogin(userData, token);
+
       navigate('/');
     } catch (err) {
-      // Se a API retornar um erro, mostre uma mensagem para o usuário
       setError('Usuário ou senha inválidos. Tente novamente.');
       console.error('Erro de login:', err);
     }
@@ -43,15 +39,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     <form className="login" onSubmit={handleSubmit}>
       <h1>Login</h1>
 
-      {/* 5. Exibe a mensagem de erro na tela, caso exista */}
       {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
 
       <input
-        type="text"
+        type="email"
         className="dados"
-        placeholder="Digite aqui seu usuário"
-        value={usuario}
-        onChange={e => setUsuario(e.target.value)}
+        placeholder="Digite aqui seu e-mail"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
         required
       />
       <input
@@ -63,10 +58,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
         required
       />
       <input type="submit" className="botao" value="Entrar" />
-
-      {/* <a className="cadastro-dados" href="#">
-        Esqueceu a sua senha?
-      </a> */}
     </form>
   );
 };

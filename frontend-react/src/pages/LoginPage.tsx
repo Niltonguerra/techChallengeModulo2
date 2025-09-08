@@ -5,14 +5,13 @@ import type { User } from '../types/header-types';
 import '../components/Login/_LoginPage.scss';
 
 interface LoginPageProps {
-  onLogin: (userData: User) => void;
+  onLogin: (userData: User, token: string) => void;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   return (
     <main className="bg">
       <div className="autentificacao">
-        {}
         <LoginForm onLogin={onLogin} />
         <RegisterBox />
       </div>
