@@ -9,8 +9,6 @@ export const createPostDTOMock: CreatePostDTO = {
   title: 'Novo post',
   user_id: '',
   description: '',
-  search_field: [],
-  scheduled_publication: '',
   content_hashtags: [],
   style_id: '',
 };

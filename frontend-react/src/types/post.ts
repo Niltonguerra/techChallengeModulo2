@@ -9,11 +9,12 @@ export type Post = {
     external_link: { url: string };
     created_at: Date;
     updated_at: Date;
-    user: {
-        id: string;
-        name: string;
-        email: string;
-        social_media: string[];
+    user_name: string;
+    user_email: string;
+    user_social_media: {
+        twitter?: string;
+        linkedin?: string;
+        [key: string]: string | undefined;
     };
 }
 
@@ -23,10 +24,50 @@ export type PostSearch = {
     search?: string | null;
     userId?: string | null;
     content?: string | null;
-    createdAt? : {
+    createdAt?: {
         before?: Date | null;
         after?: Date | null;
-    },
+    }
     offset?: number;
     limit?: number;
 }
+
+export type ResutApi = {
+
+    message: string;
+    statusCode: number;
+    limit: number;
+    offset: number;
+    total: number;
+    ListPost: Post[];
+}
+
+export type DeleteResponse = {
+    message: string;
+    statusCode: number;
+    deletedId?: string;
+}
+
+/*
+export type CreatePostData = {
+    title: string;
+    description: string;
+    introduction: string;
+    image: string;
+    content_hashtags: string[];
+    style_id: string;
+    external_link: { url: string };
+    user_id: string;
+}
+
+export type UpdatePostData = {
+    id: string;
+    title?: string;
+    description?: string;
+    introduction?: string;
+    image?: string;
+    content_hashtags?: string[];
+    style_id?: string;
+    external_link?: { url: string };
+} 
+    */

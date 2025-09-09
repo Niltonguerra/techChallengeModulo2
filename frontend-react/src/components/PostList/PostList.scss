@@ -1,4 +1,5 @@
 .post-list-wrapper {
+  padding-top: 60px;
   padding-left: 120px;
   padding-right: 120px;
   box-sizing: border-box;
@@ -7,38 +8,62 @@
   .post-list {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 80px;
-    padding-bottom: 100px;
-    margin-top: 80px;
-    margin-bottom: 80px;
+    gap: var(--spacing-2xl);
+    margin-top: var(--spacing-2xl);
+    margin-bottom: var(--spacing-2xl);
     box-sizing: border-box;
 
     h2,
     .section-title {
       font-family: 'Montserrat', sans-serif;
-      font-weight: 700;
-      font-size: 32px;
-      margin-bottom: 32px;
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-2xl);
+      margin-bottom: var(--spacing-xl);
+      color: var(--text-primary);
     }
   }
 
   .section-title {
-    padding-top: 80px;
-    padding-left: 120px;
-    color: #111;
+    padding-top: var(--spacing-2xl);
+    padding-left: var(--spacing-2xl);
+    color: var(--text-primary);
     font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
 }
+
+.post-list-header {
+  display: flex;
+  justify-content: flex-end; // joga o botão para a direita
+  margin-bottom: 20px;
+
+.create-btn {
+        font-family: 'Inter', sans-serif;
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-md);
+        display: flex;
+        background: var(--secondary-main);
+        color: var(--primary-contrast);
+        text-align: center;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        margin-top: var(--spacing-xs);  
+        
+        &:hover {
+          background: var(--secondary-dark);
+        }
+      }
+    }
 
 /* Tablet */
 @media (max-width: 1024px) {
   .post-list-wrapper {
     .post-list {
       grid-template-columns: repeat(2, 1fr);
-      gap: 48px;
-      margin-top: 48px;
-      margin-bottom: 48px;
+      gap: var(--spacing-xl);
+      margin-top: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
     }
   }
 }
@@ -48,9 +73,9 @@
   .post-list-wrapper {
     .post-list {
       grid-template-columns: 1fr;
-      gap: 32px;
-      margin-top: 32px;
-      margin-bottom: 32px;
+      gap: var(--spacing-lg);
+      margin-top: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
     }
   }
 }
