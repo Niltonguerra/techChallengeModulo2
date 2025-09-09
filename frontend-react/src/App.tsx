@@ -17,6 +17,7 @@ import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
 
 import "dayjs/locale/pt-br";
+import Admin from "./pages/Admin";
 
 function App() {
   //isso vai ser removido, é só um mock substituto enquanto o sistema de autenticação não fica pronto
@@ -52,6 +53,7 @@ function App() {
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/admin" element={<Admin />} /> 
                 <Route path="/styleGuide" element={<TypographyShowcase />} />
                 <Route path="/search" element={<SearchPost />} />
               </Routes>
