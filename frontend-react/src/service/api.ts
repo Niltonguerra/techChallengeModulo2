@@ -42,3 +42,38 @@ export const getHashtags = async () => {
     throw error;
   }
 };
+
+// 🔹 Criar post
+export const createPost = async (data: Omit<Post, "id" | "created_at" | "updated_at">): Promise<Post> => {
+  const api = getApi();
+  try {
+    const response = await api.post<Post>("/post", data);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao criar post:", error);
+    throw error;
+  }
+};
+
+// 🔹 Atualizar post
+export const updatePost = async (id: string, data: Partial<Post>): Promise<Post> => {
+  const api = getApi();
+  try {
+    const response = await api.put<Post>(`/post/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(`Erro ao atualizar post ${id}:`, error);
+    throw error;
+  }
+};
+
+// 🔹 Deletar post
+export const deletePost = async (id: string): Promise<void> => {
+  const api = getApi();
+  try {
+    await api.delete(`/post/${id}`);
+  } catch (error) {
+    console.error(`Erro ao deletar post ${id}:`, error);
+    throw error;
+  }
+};
