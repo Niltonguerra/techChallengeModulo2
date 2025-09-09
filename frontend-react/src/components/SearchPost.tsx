@@ -4,6 +4,7 @@ import { useDebounce } from 'use-debounce';
 import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { getApi } from '../service/api';
 
 // icons
 import CloseIcon from '@mui/icons-material/Close';
@@ -12,7 +13,6 @@ import SearchIcon from '@mui/icons-material/Search';
 
 // types
 import type { Post, PostSearch } from '../types/post';
-import { getApi } from '../service/api';
 
 export default function SearchPost() {
 	const modalStyle = { //<< todo: make it the standard for other modals (?)

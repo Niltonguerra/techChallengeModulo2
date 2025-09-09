@@ -11,7 +11,7 @@ export class ListPostUseCase {
 
   async execute(query: ListPostDTO): Promise<ReturnListPost> {
     try {
-      const posts = await this.postService.listPosts(query.search, query.offset, query.limit);
+      const posts = await this.postService.listPosts(query); //<<
       return posts;
     } catch (error) {
       const message =

@@ -47,7 +47,7 @@ export class PostController {
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   @ApiOperation({ summary: 'Return posts according to the search criteria' })
   @ApiOkResponse({ type: ReturnListPost })
-  async listPosts(@Query() query: ListPostDTO): Promise<ReturnListPost> {
+  async listPosts(@Query() query: ListPostDTO): Promise<ReturnListPost> { //<<
     return this.listPostUseCase.execute(query);
   }
 
