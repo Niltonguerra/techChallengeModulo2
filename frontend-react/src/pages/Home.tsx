@@ -27,10 +27,7 @@ function Home() {
     return <div className="page-container"><p>Carregando posts...</p></div>;
   }
 
-  console.log("Posts recebidos no Home:", posts);
-
-
-    // 🔹 Carousel -> 5 mais recentes
+  // 🔹 Carousel -> 5 mais recentes
   const carouselPosts = [...posts]
     .sort(
       (a, b) =>
@@ -43,7 +40,7 @@ function Home() {
     a.title.localeCompare(b.title, "pt-BR")
   );
 
-  
+
   return (
     <div className="page-container">
       <Carousel posts={carouselPosts} />
