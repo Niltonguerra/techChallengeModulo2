@@ -20,7 +20,7 @@ export const theme = createTheme({
       contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#F57005', 
+      main: '#F57005',
       light: '#FF9833',
       dark: '#C75A00',
       contrastText: '#FFFFFF',
@@ -103,6 +103,7 @@ export const theme = createTheme({
       fontFamily: 'Inter, sans-serif',
       fontWeight: 600,
       fontSize: '16px',
+      color: '#fff',
       textTransform: 'none',
       letterSpacing: '0.02em',
     },
