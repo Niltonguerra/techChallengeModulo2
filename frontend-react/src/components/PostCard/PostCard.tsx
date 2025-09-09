@@ -50,7 +50,7 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
               className="post-btn"
               onClick={() => setOpen(true)}
             >
-
+              Ver mais
             </button>
 
             {isAdmin && (
