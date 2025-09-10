@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { deletePost, /*updatePost*/ } from "../../service/api";
 import type { Post } from "../../types/post";
 import PostModal from "../PostModal/PostModal";
@@ -9,8 +10,10 @@ interface PostCardProps {
   isAdmin?: boolean;
 }
 
+
 export default function PostCard({ post, isAdmin = false }: PostCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const visibleCategories = post.content_hashtags.slice(0, 3);
   const hiddenCategories = post.content_hashtags.slice(3);
@@ -60,8 +63,23 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
                 </button>
                 {menuOpen && (
                   <ul className="menu">
-                    <li onClick={() => console.log("editar", post.id)}>Editar</li>
-                    <li onClick={() => deletePost(post.id)}>Excluir</li>
+                    <li onClick={() => navigate(`/admin/post/${post.id}/edit`)}>Editar</li>
+                    <li
+                      onClick={async () => {
+                        if (confirm("Tem certeza que deseja excluir esta postagem?")) {
+                          try {
+                            await deletePost(post.id);
+                            // dispara evento customizado para o PostList atualizar
+                            window.dispatchEvent(new CustomEvent("postDeleted", { detail: post.id }));
+                          } catch (err) {
+                            console.error("Erro ao excluir:", err);
+                            alert("Erro ao excluir postagem");
+                          }
+                        }
+                      }}
+                    >
+                      Excluir
+                    </li>
                   </ul>
                 )}
               </div>

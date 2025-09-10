@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
-import type { Post, ResutApi } from "../types/post";
+import type { Post, ResutApi, DeleteResponse } from "../types/post";
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhjM2Q5YzY1LTdhOWEtNDUxNC04ZWRmLTdlMmUxY2I1M2QwZSIsImVtYWlsIjoibHVpczUwODI0QGdtYWlsLmNvbSIsInBlcm1pc3Npb24iOiJhZG1pbiIsImlhdCI6MTc1NzM1MDY5NSwiZXhwIjoxNzU3NDM3MDk1fQ.eFvKnnxhfuJSv09NHTVW7w1RSLCiwQ94Exw5Pk1WGqE";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTc1MjA5MDMsImV4cCI6MTc1NzYwNzMwM30.QzzEXrvNowxvAiyTzeHTwrsmuA_QGCh7BwKZKlfliD4";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 let api: AxiosInstance | null = null;
@@ -12,7 +12,7 @@ export function getApi(): AxiosInstance {
     const token = localStorage.getItem("token") || TOKEN;
 
     api = axios.create({
-      baseURL: API_URL, //API_URL// ,
+      baseURL:  '/', //API_URL// ,
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     });
   }
@@ -43,6 +43,18 @@ export const getHashtags = async () => {
   }
 };
 
+export const deletePost = async (id: string): Promise<DeleteResponse> => {
+  const api = getApi();
+  try {
+    const response = await api.delete<DeleteResponse>(`/post/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Erro ao deletar post ${id}:`, error);
+    throw error;
+  }
+};
+
+/*
 // 🔹 Criar post
 export const createPost = async (data: Omit<Post, "id" | "created_at" | "updated_at">): Promise<Post> => {
   const api = getApi();
@@ -67,13 +79,4 @@ export const updatePost = async (id: string, data: Partial<Post>): Promise<Post>
   }
 };
 
-// 🔹 Deletar post
-export const deletePost = async (id: string): Promise<void> => {
-  const api = getApi();
-  try {
-    await api.delete(`/post/${id}`);
-  } catch (error) {
-    console.error(`Erro ao deletar post ${id}:`, error);
-    throw error;
-  }
-};
+*/
