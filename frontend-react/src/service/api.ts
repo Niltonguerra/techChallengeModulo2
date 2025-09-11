@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
 import type { Post, ResutApi, DeleteResponse } from "../types/post";
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTc1MjA5MDMsImV4cCI6MTc1NzYwNzMwM30.QzzEXrvNowxvAiyTzeHTwrsmuA_QGCh7BwKZKlfliD4";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTc1NTI3NTQsImV4cCI6MTc1NzYzOTE1NH0.jCom0d0THHoS46sBDQEhnoth3C_1H_psWMC2W6BC63g";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 let api: AxiosInstance | null = null;
@@ -12,7 +12,7 @@ export function getApi(): AxiosInstance {
     const token = localStorage.getItem("token") || TOKEN;
 
     api = axios.create({
-      baseURL:  '/', //API_URL// ,
+      baseURL:  API_URL,
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     });
   }

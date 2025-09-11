@@ -7,7 +7,6 @@ import Pagination from "../Pagination/Pagination"; // ajuste o caminho se necess
 import { usePosts } from "../../pages/store/post";
 
 interface PostListProps {
-  posts: Post[];
   isAdmin?: boolean; // 🔹 NOVO
 }
 
