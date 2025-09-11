@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import PostList from "../components/PostList/PostList";
 import { getListTodos } from "../service/api";
-import type { Post } from "../types/post";
+import { usePosts } from "./store/post";
 
 function Admin() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const {setPosts} = usePosts();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ function Admin() {
 
   return (
     <div className="page-container">
-      <PostList posts={posts} isAdmin />
+      <PostList isAdmin />
     </div>
   );
 }

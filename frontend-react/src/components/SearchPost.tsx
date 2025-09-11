@@ -12,7 +12,7 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 
 // types
-import type { Post, PostSearch } from '../types/post';
+import type { Post, PostSearch, ResutApi } from '../types/post';
 import { usePosts } from '../pages/store/post';
 import { useSnackbar } from '../pages/store/snackbar/useSnackbar';
 
@@ -89,11 +89,11 @@ export default function SearchPost() {
 			};
 		}
 
-		const { data } = await api.get<Post[]>('/posts/search', {
+		const { data } = await api.get<ResutApi>('/post', {
 			params,
 			signal,
 		});
-		setPosts(data);
+		setPosts(data.ListPost);
 	}, [api, setPosts]);
 
 	// search field search
@@ -140,8 +140,8 @@ export default function SearchPost() {
 		const fetchFilterOptions = async () => {
 			try {
 				const [contentResponse, authorResponse] = await Promise.all([
-					api.get('/posts/content-options'),
-					api.get('/posts/author-options'),
+					api.get('/post/hashtags'),
+					api.get('/post/author-options').catch(() => ({ data: [] })), // in case the endpoint doesn't exist yet
 				]);
 
 				setContentOptions(contentResponse.data);

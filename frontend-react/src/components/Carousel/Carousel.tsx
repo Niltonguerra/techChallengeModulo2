@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePosts } from "../../pages/store/post";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -12,10 +13,12 @@ interface CarroselProps {
   posts: Post[];
 }
 
-export default function Carrosel({ posts }: CarroselProps) {
+
+export default function Carrosel () {
+  const { posts, setPosts } = usePosts();
   const [open, setOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
+  console.log(posts);
   const handleOpen = (post: Post) => {
     setSelectedPost(post);
     setOpen(true);

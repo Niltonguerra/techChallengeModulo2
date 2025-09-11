@@ -83,7 +83,6 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
                       onClick={async () => {
                         if (confirm("Tem certeza que deseja excluir esta postagem?")) {
                           try {
-                            await deletePost(post.id);
                             handleDeletePost(post.id);
                           } catch (err) {
                             console.error("Erro ao excluir:", err);

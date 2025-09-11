@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Carousel from "../components/Carousel/Carousel";
 import PostList from "../components/PostList/PostList";
+import SearchPost from "../components/SearchPost";
 import { getListTodos } from "../service/api";
 // import type { Post } from "../types/post";
 import { usePosts } from "./store/post";
@@ -30,6 +31,8 @@ function Home() {
     return <div className="page-container"><p>Carregando posts...</p></div>;
   }
 
+  /*
+
   // 🔹 Carousel -> 5 mais recentes
   const carouselPosts = [...posts]
     .sort(
@@ -38,16 +41,21 @@ function Home() {
     )
     .slice(0, 5);
 
+   
+
   // 🔹 Lista -> ordem alfabética pelo título
   const listPosts = [...posts].sort((a, b) =>
     a.title.localeCompare(b.title, "pt-BR")
   );
 
+*/
 
   return (
     <div className="page-container">
-      <Carousel posts={carouselPosts} />
-      <PostList posts={listPosts} />
+      <Carousel />
+      <div style={{paddingBlock:80, paddingInline:120}}><SearchPost/></div>
+  
+      <PostList />
     </div>
   );
 }
