@@ -18,6 +18,7 @@ import type { User } from './types/header-types';
 
 import "dayjs/locale/pt-br";
 import Admin from "./pages/Admin";
+import SnackBarComponent from './components/Snackbar';
 
 function App() {
   //isso vai ser removido, é só um mock substituto enquanto o sistema de autenticação não fica pronto
@@ -50,6 +51,7 @@ function App() {
               onLogout={handleLogout}
               onLogin={handleLogin}
             />
+            <SnackBarComponent />
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<Home />} />
