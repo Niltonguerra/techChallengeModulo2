@@ -1,14 +1,14 @@
 import { User } from '@modules/user/entities/user.entity';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
   BeforeInsert,
   BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({
@@ -52,12 +52,6 @@ export class Post {
     name: 'content_hashtags',
   })
   content_hashtags: string[];
-
-  @Column({
-    type: 'varchar',
-    name: 'style_id',
-  })
-  style_id: string;
 
   @Column({
     nullable: true,

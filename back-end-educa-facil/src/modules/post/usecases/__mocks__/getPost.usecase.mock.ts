@@ -18,7 +18,6 @@ export const postMock: ReturnListPost = {
       image: 'img',
       introduction: 'intro',
       content_hashtags: ['#supera'],
-      style_id: 'style',
       external_link: { instagram: 'insta' },
       created_at: new Date(),
       updated_at: new Date(),

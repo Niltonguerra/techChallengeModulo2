@@ -1,8 +1,8 @@
 // Mocks para post.service.spec.ts
-import { User } from '@modules/user/entities/user.entity';
-import { UserStatusEnum } from '@modules/user/enum/status.enum';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 import { Post } from '@modules/post/entities/post.entity';
+import { User } from '@modules/user/entities/user.entity';
+import { UserStatusEnum } from '@modules/user/enum/status.enum';
 
 export const mockUser: User = {
   id: 'user_id',
@@ -26,7 +26,6 @@ export const mockPost: Post = {
   image: '',
   introduction: '',
   content_hashtags: [],
-  style_id: '',
   external_link: { url: '' },
   created_at: new Date(),
   updated_at: new Date(),
