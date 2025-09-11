@@ -1,36 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Post } from "../../types/post";
 import PostCard from "../PostCard/PostCard";
 import "./PostList.scss";
 import Pagination from "../Pagination/Pagination"; // ajuste o caminho se necessário
+import { usePosts } from "../../pages/store/post";
 
 interface PostListProps {
   posts: Post[];
   isAdmin?: boolean; // 🔹 NOVO
 }
 
-export default function PostList({ posts, isAdmin = false }: PostListProps) {
+export default function PostList({ isAdmin = false }: PostListProps) {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [localPosts, setLocalPosts] = useState<Post[]>(posts);
+  // const [localPosts, setLocalPosts] = useState<Post[]>(posts);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { posts, setPosts } = usePosts();
   const postsPerPage = 8;
 
-   useEffect(() => {
-    setLocalPosts(posts); // 🔹 atualiza caso posts vindo do pai mudem
-  }, [posts]);
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const customEvent = e as CustomEvent<string>;
-      setLocalPosts(prev => prev.filter(p => p.id !== customEvent.detail));
-    };
-
-    window.addEventListener("postDeleted", handler);
-    return () => window.removeEventListener("postDeleted", handler);
-  }, []);
-
-  const sortedPosts = [...localPosts].sort((a, b) =>
+  const sortedPosts = [...posts].sort((a, b) =>
   a.title.localeCompare(b.title, "pt-BR", { sensitivity: "base" })
 );
 
