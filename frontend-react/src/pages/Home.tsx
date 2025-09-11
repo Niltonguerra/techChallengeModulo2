@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import Carousel from "../components/Carousel/Carousel";
 import PostList from "../components/PostList/PostList";
 import { getListTodos } from "../service/api";
-import type { Post } from "../types/post";
+// import type { Post } from "../types/post";
+import { usePosts } from "./store/post";
 
 function Home() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  const { posts, setPosts } = usePosts();
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +24,7 @@ function Home() {
     };
 
     fetchPosts();
-  }, []);
+  }, [setPosts]);
 
   if (loading) {
     return <div className="page-container"><p>Carregando posts...</p></div>;

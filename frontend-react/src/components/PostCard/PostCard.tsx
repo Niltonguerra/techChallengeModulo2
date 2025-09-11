@@ -3,6 +3,7 @@ import { deletePost, /*updatePost*/ } from "../../service/api";
 import type { Post } from "../../types/post";
 import PostModal from "../PostModal/PostModal";
 import "./PostCard.scss";
+import { usePosts } from "../../pages/store/post";
 
 interface PostCardProps {
   post: Post;
@@ -15,6 +16,20 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
   const visibleCategories = post.content_hashtags.slice(0, 3);
   const hiddenCategories = post.content_hashtags.slice(3);
   const [open, setOpen] = useState(false);
+
+  const { posts, setPosts } = usePosts();
+
+  const handleDeletePost = async (postId: string) => {
+    try {
+      await deletePost(postId)
+        .then(() => {
+          // then remove it from the list
+          setPosts(posts.filter((p) => p.id !== postId));
+        });
+    } catch (error) {
+      console.error("Erro ao deletar post:", error);
+    }
+  }
 
   return (
     <>
@@ -61,7 +76,7 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
                 {menuOpen && (
                   <ul className="menu">
                     <li onClick={() => console.log("editar", post.id)}>Editar</li>
-                    <li onClick={() => deletePost(post.id)}>Excluir</li>
+                    <li onClick={() => handleDeletePost(post.id)}>Excluir</li>
                   </ul>
                 )}
               </div>
