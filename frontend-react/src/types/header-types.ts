@@ -19,7 +19,7 @@ export interface UserMenuItem {
 
 export interface HeaderProps {
   isLoggedIn?: boolean;
-  user?: User;
+  user: User | null;
   onLogout?: () => void;
   onLogin?: () => void;
   onSearch?: (query: string) => void;

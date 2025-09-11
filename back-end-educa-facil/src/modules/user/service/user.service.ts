@@ -76,6 +76,7 @@ export class UserService {
       email: user.email,
       permission: user.permission,
       isActive: user.is_active,
+      photo: user.photo,
     };
   }
 }

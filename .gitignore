@@ -1,2 +1,7 @@
 data/
 node_modules
+
+# Ignore Windows Folder Customization Files and google drive files
+desktop.ini
+.tmp.drivedownload
+.tmp.driveupload

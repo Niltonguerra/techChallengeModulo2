@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { ThemeVariablesProvider } from './providers/ThemeVariablesProvider';
 import './styles/scss/main.scss';
+import './pages/LoginPage';
 import { theme } from './styles/scss/themes/theme';
 
 createRoot(document.getElementById('root')!).render(

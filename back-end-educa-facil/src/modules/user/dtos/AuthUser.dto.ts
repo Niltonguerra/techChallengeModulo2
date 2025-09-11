@@ -22,9 +22,16 @@ export class LoginUsuarioInternoDTO {
   email: string;
   permission: UserPermissionEnum;
   isActive: UserStatusEnum;
+  photo: string;
 }
 
 export class ResponseAuthUserDTO {
   @ApiProperty()
   token: string;
+  user: {
+    name: string;
+    email: string;
+    photo: string;
+    id: string;
+  };
 }
