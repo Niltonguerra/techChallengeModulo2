@@ -19,7 +19,6 @@ export const mockListPostData: ReturnListPost = {
       image: 'img.jpg',
       introduction: 'Descrição 1',
       content_hashtags: [],
-      style_id: '',
       external_link: {},
       created_at: new Date(),
       updated_at: new Date(),

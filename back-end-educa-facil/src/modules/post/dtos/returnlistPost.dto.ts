@@ -20,9 +20,6 @@ export class ListPost {
   content_hashtags: string[];
 
   @ApiProperty()
-  style_id: string;
-
-  @ApiProperty()
   image?: string;
 
   @ApiProperty()

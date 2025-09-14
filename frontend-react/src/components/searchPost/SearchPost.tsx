@@ -4,16 +4,13 @@ import { useDebounce } from 'use-debounce';
 import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
-// icons
+import { getApi } from '../service/api';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import type { Post, PostSearch } from '../../types/post';
-import { getApi } from '../../service/api';
-
-// types
-
+import type { Post, PostSearch, ResutApi } from '../types/post';
+import { usePosts } from '../pages/store/post';
+import { useSnackbar } from '../pages/store/snackbar/useSnackbar';
 
 export default function SearchPost() {
 	const modalStyle = { //<< todo: make it the standard for other modals (?)
@@ -29,11 +26,13 @@ export default function SearchPost() {
 		outline: "none",
 	};
 
-	const isDevMode = true; //<< remove this later (?)
+	// const isDevMode = true;
 	const api = getApi(); // one stable instance
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [postList, setPostList] = useState<Post[]>([]); //<< todo: change it for the redux.
+	const { posts, setPosts } = usePosts();
+
+	// const [postList, setPostList] = useState<Post[]>([]);
 
 	// advanced filters inputs
   const [postSearch, setPostSearch] = useState('');
@@ -51,9 +50,10 @@ export default function SearchPost() {
 
 	const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
+	const { showSnackbar } = useSnackbar();
+
 	// const api = axios.create({ baseURL: "http://localhost:3000" });
 
-	//<< obs/todo: if we implement pagination or infinite scroll, these gonna have to be in redux too
 	const offset = 0;
 	const limit = 20;
 
@@ -85,12 +85,12 @@ export default function SearchPost() {
 			};
 		}
 
-		const { data } = await api.get<Post[]>('/posts/search', {
+		const { data } = await api.get<ResutApi>('/post', {
 			params,
 			signal,
 		});
-		setPostList(data);
-	}, [api]);
+		setPosts(data.ListPost);
+	}, [api, setPosts]);
 
 	// search field search
 	useEffect(() => {
@@ -121,38 +121,27 @@ export default function SearchPost() {
 			offset,
 			limit,
 			signal: controller.signal,
-		});
+		}).then(() => {
+			showSnackbar({ message: 'Filtros aplicados com sucesso!', severity: 'success' });
+			setAdvancedFiltersOpen(false);
+		}).catch((err) => {
+			if (err.name === 'CanceledError') return; // ignore abort errors
+			showSnackbar({ message: 'Erro ao aplicar filtros. Tente novamente.', severity: 'error' });
+			console.error('error while applying advanced filters: ', err);
+		})
 	};
 
 	// getting the options for advanced filters
 	useEffect(() => {
 		const fetchFilterOptions = async () => {
 			try {
-				let contentResponse, authorResponse;
+				const [contentResponse, authorResponse] = await Promise.all([
+					api.get('/post/hashtags'),
+					api.get('/post/author-options').catch(() => ({ data: [] })), // in case the endpoint doesn't exist yet
+				]);
 
-				if(!isDevMode) {
-					[contentResponse, authorResponse] = await Promise.all([
-						api.get('/posts/content-options'),
-						api.get('/posts/author-options'),
-					]);
-
-					setContentOptions(contentResponse.data);
-					setAuthorPostsOptions(authorResponse.data);
-					// if we are in dev, just get a mock
-				} else {
-					contentResponse = ['Matemática', 'Português', 'Química', 'Biologia', 'História', 'Educação Física', 'Inglês', 'Artes', 'Física', 'Geografia'];
-					authorResponse = [
-						{_id: '1', name: 'Ana Beatriz'}, 
-						{_id: '2', name: 'Carlos Eduardo'}, 
-						{_id: '3', name: 'Mariana Silva'}, 
-						{_id: '4', name: 'Pedro Henrique'}, 
-						{_id: '5', name: 'Juliana Costa'}
-					];
-
-					setContentOptions(contentResponse);
-					setAuthorPostsOptions(authorResponse);
-				}
-
+				setContentOptions(contentResponse.data);
+				setAuthorPostsOptions(authorResponse.data);
 				
 			} catch (err: Error | unknown) {
 				console.error('error while getting filter options: ', err);
@@ -160,7 +149,7 @@ export default function SearchPost() {
 		};
 
 		fetchFilterOptions();
-	}, [api, isDevMode]);
+	}, [api]);
 
   return (
 		<>

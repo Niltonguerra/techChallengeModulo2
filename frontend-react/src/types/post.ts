@@ -36,3 +36,33 @@ export type ResutApi = {
     total: number;
     ListPost: Post[];
 }
+
+export type DeleteResponse = {
+    message: string;
+    statusCode: number;
+    deletedId?: string;
+}
+
+/*
+export type CreatePostData = {
+    title: string;
+    description: string;
+    introduction: string;
+    image: string;
+    content_hashtags: string[];
+    style_id: string;
+    external_link: { url: string };
+    user_id: string;
+}
+
+export type UpdatePostData = {
+    id: string;
+    title?: string;
+    description?: string;
+    introduction?: string;
+    image?: string;
+    content_hashtags?: string[];
+    style_id?: string;
+    external_link?: { url: string };
+} 
+    */

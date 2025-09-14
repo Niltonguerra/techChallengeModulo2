@@ -47,7 +47,7 @@ export class PostController {
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   @ApiOperation({ summary: 'Return posts according to the search criteria' })
   @ApiOkResponse({ type: ReturnListPost })
-  async listPosts(@Query() query: ListPostDTO): Promise<ReturnListPost> {
+  async listPosts(@Query() query: ListPostDTO): Promise<ReturnListPost> { //<<
     return this.listPostUseCase.execute(query);
   }
 
@@ -58,6 +58,7 @@ export class PostController {
     return this.getUniqueHashtagUseCase.execute();
   }
 
+  /*
   @Get(':id')
   @ApiBearerAuth('JWT-Auth')
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
@@ -66,6 +67,7 @@ export class PostController {
   async getById(@Param('id') id: string): Promise<ReturnListPost> {
     return await this.getPostUseCase.getPostUseCaseById(id);
   }
+    */
 
   @Post()
   @ApiBearerAuth('JWT-Auth')
@@ -93,7 +95,7 @@ export class PostController {
     return updatedPost;
   }
 
-  @Delete(':id')
+  @Delete('/:id')
   @ApiBearerAuth('JWT-Auth')
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   @ApiOperation({ summary: 'Delete post by ID' })

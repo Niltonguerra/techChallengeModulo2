@@ -9,6 +9,7 @@ import { CreatePostDTO } from '../dtos/createPost.dto';
 import { ReturnListPost } from '../dtos/returnlistPost.dto';
 import { UpdatePostDTO } from '../dtos/updatePost.dto';
 import { Post } from '../entities/post.entity';
+import { ListPostDTO } from '../dtos/listPost.dto';
 
 @Injectable()
 export class PostService {
@@ -43,7 +44,16 @@ export class PostService {
     return returnService;
   }
 
-  async listPosts(search?: string, offset = 0, limit = 10): Promise<ReturnListPost> {
+  async listPosts(listPostData: ListPostDTO): Promise<ReturnListPost> {
+    const {
+      search,
+      content: contentHashtags,
+      createdAt,
+      userId,
+      offset = 0,
+      limit = 10,
+    } = listPostData; //<<
+
     const query = this.postRepository
       .createQueryBuilder('p')
       .leftJoinAndSelect('p.user', 'u')
@@ -69,6 +79,21 @@ export class PostService {
         query.where(whereClause, parameters);
       }
     }
+
+    if (userId) {
+      query.andWhere('p.user_id = :userId', { userId });
+    }
+
+    // content_hashtags
+    if (contentHashtags) {
+      const tags = Array.isArray(contentHashtags) ? contentHashtags : [contentHashtags];
+      query.andWhere('p.content_hashtags && ARRAY[:...tags]', { tags });
+    }
+
+    // createdAt range
+    if (createdAt?.after) query.andWhere('p.created_at >= :after', { after: createdAt.after });
+    if (createdAt?.before) query.andWhere('p.created_at <= :before', { before: createdAt.before });
+
     const [posts, total_post] = await query.getManyAndCount();
 
     const postDataReturn: ReturnListPost = {
@@ -84,7 +109,6 @@ export class PostService {
         image: p.image,
         introduction: p.introduction ?? (p.description?.substring(0, 100) || ''),
         content_hashtags: p.content_hashtags,
-        style_id: p.style_id ?? '',
         external_link: p.external_link ?? { url: '' },
         created_at: p.created_at,
         updated_at: p.updated_at,
@@ -146,7 +170,6 @@ export class PostService {
           image: post.image,
           introduction: post.introduction ?? (post.description?.substring(0, 100) || ''),
           content_hashtags: post.content_hashtags,
-          style_id: post.style_id ?? '',
           external_link: post.external_link ?? { url: '' },
           created_at: post.created_at,
           updated_at: post.updated_at,
