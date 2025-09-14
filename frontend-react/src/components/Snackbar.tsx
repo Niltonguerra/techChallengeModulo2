@@ -1,7 +1,7 @@
 import * as React from "react";
 import Snackbar, { type SnackbarCloseReason } from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { useSnackbar } from "../pages/store/snackbar/useSnackbar";
+import { useSnackbar } from "../store/snackbar/useSnackbar";
 
 export default function GlobalComponent() {
   const { closeSnackbar, isOpen, message, severity, autoHideDuration, key } = useSnackbar();

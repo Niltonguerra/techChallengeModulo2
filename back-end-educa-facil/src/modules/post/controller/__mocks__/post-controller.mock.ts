@@ -10,7 +10,6 @@ export const createPostDTOMock: CreatePostDTO = {
   user_id: '',
   description: '',
   content_hashtags: [],
-  style_id: '',
 };
 export const jwtPayloadMock: JwtPayload = {
   id: 'user1',
@@ -24,7 +23,6 @@ export const updatePostDTOMock: UpdatePostDTO = {
   title: 'abc123',
   description: '',
   content_hashtags: [],
-  style_id: '',
   introduction: '',
   external_link: {},
   image: '',

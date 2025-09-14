@@ -14,19 +14,23 @@ export function useFormPostSubmit({ form, links, author_id, setErrors }: UseForm
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    // Monta external_link a partir dos pares key/value
     const external_link = links.reduce((acc, { key, value }) => {
       if (key && value) acc[key] = value;
       return acc;
     }, {} as Record<string, string>);
 
     let dataParaEnvio: FormPostData = {
-      ...form,
+      content_hashtags: form.content_hashtags,
+      description: form.description,
+      image: form.image,
+      id: form.id,
+      introduction: form.introduction,
+      title: form.title,
       external_link,
       author_id,
     };
 
-    // Validação com Zod
+
     const result = formPostSchema.safeParse(dataParaEnvio);
     const newErrors: Record<string, string> = {};
     if (!result.success) {
@@ -36,7 +40,7 @@ export function useFormPostSubmit({ form, links, author_id, setErrors }: UseForm
         }
       }
     }
-    // Validação manual da imagem
+
     if (
       form.image &&
       typeof form.image !== 'string' &&
@@ -59,7 +63,7 @@ export function useFormPostSubmit({ form, links, author_id, setErrors }: UseForm
       };
     }
 
-    // Decide entre update e create
+    console.log('Dados para envio:', dataParaEnvio);
     if (dataParaEnvio.id) {
       await updatePost(dataParaEnvio);
     } else {

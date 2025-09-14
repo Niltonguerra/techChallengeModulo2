@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import PostList from "../components/PostList/PostList";
 import { getListTodos } from "../service/api";
-import { usePosts } from "./store/post";
+import { usePosts } from "../store/post";
 
 function Admin() {
   const {setPosts} = usePosts();

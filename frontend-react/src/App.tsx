@@ -7,10 +7,10 @@ import Footer from './components/Footer/Footer';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Header from './components/Header/Header';
-import SearchPost from './components/searchPost/SearchPost'; //<< temporary
+import SearchPost from './components/searchPost/SearchPost'; 
 import TypographyShowcase from './pages/styleGuide/TypographyShowcase';
 import Home from './pages/home/Home';
-import './styles/scss/base/App.scss'; // Importar estilos globais
+import './styles/scss/base/App.scss';
 import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
 import "dayjs/locale/pt-br";

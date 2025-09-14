@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../index";
 import { getPosts, setPosts as setPostsAction } from "./postSlice";
-import type { Post } from "../../../types/post";
+import type { Post } from "../../types/post";
 
 export function usePosts() {
   const dispatch = useAppDispatch();

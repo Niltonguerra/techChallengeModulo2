@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react';
 import { Box, Paper, TextField, Button, Typography } from '@mui/material';
 import { useFormPostSubmit } from '../../hooks/useFormPostSubmit';
@@ -34,7 +32,6 @@ const FormPost: React.FC<Partial<FormPostData>> = (props) => {
 	const [imagePreview, setImagePreview] = useState<string | null>(typeof props.image === 'string' ? props.image : null);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 
-	// Atualiza form ao receber novas props
 	useEffect(() => {
 		setForm(prev => ({
 			...prev,
@@ -46,13 +43,11 @@ const FormPost: React.FC<Partial<FormPostData>> = (props) => {
 		setHashtags(getInitialHashtags(props.content_hashtags));
 	}, [props]);
 
-	// Atualiza form ao editar campos simples
 	const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value } = e.target;
 		setForm(prev => ({ ...prev, [name]: value }));
 	}, []);
 
-	// Sincroniza hashtags e links dinâmicos com o form
 	useEffect(() => {
 		setForm(prev => ({
 			...prev,

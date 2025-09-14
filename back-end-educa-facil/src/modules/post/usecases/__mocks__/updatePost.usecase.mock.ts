@@ -11,7 +11,6 @@ export const mockUpdatePostDto: UpdatePostDTO = {
   title: 'Novo título',
   description: '',
   content_hashtags: [],
-  style_id: '',
   introduction: '',
   external_link: {},
   image: '',

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Stack, TextField, Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { DynamicFieldsInputProps } from '../../types/form-post';

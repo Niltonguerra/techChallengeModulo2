@@ -1,12 +1,9 @@
 import axios, { type AxiosInstance } from "axios";
-import type { Post, ResutApi } from "../types/post";
 import Swal from 'sweetalert2';
 import type { FormPostData } from "../types/form-post";
-
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4MjZkOWJmLTdkNDAtNDI1Yi1hOGI5LWMwMTUwOWMyMmY3ZiIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzU3ODc3MTM2LCJleHAiOjE3NTc5NjM1MzZ9.xsIOsaLSirfBBFCZvUToty4vWlKG3zxtMJ8j7fdwzv4';
 import type { Post, ResutApi, DeleteResponse } from "../types/post";
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTc1NTI3NTQsImV4cCI6MTc1NzYzOTE1NH0.jCom0d0THHoS46sBDQEhnoth3C_1H_psWMC2W6BC63g";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4MjZkOWJmLTdkNDAtNDI1Yi1hOGI5LWMwMTUwOWMyMmY3ZiIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzU3ODc3MTM2LCJleHAiOjE3NTc5NjM1MzZ9.xsIOsaLSirfBBFCZvUToty4vWlKG3zxtMJ8j7fdwzv4";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 let api: AxiosInstance | null = null;
@@ -137,30 +134,3 @@ export const deletePost = async (id: string): Promise<DeleteResponse> => {
     throw error;
   }
 };
-
-/*
-// 🔹 Criar post
-export const createPost = async (data: Omit<Post, "id" | "created_at" | "updated_at">): Promise<Post> => {
-  const api = getApi();
-  try {
-    const response = await api.post<Post>("/post", data);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao criar post:", error);
-    throw error;
-  }
-};
-
-// 🔹 Atualizar post
-export const updatePost = async (id: string, data: Partial<Post>): Promise<Post> => {
-  const api = getApi();
-  try {
-    const response = await api.put<Post>(`/post/${id}`, data);
-    return response.data;
-  } catch (error) {
-    console.error(`Erro ao atualizar post ${id}:`, error);
-    throw error;
-  }
-};
-
-*/

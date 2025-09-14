@@ -11,7 +11,6 @@ export const validDto: CreatePostDTO = {
   user_id: 'autor123',
   image: 'imagem.jpg',
   content_hashtags: [],
-  style_id: '',
 };
 
 export const mockReturnMessage: ReturnMessageDTO = {

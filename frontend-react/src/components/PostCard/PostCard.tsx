@@ -4,7 +4,7 @@ import { deletePost, /*updatePost*/ } from "../../service/api";
 import type { Post } from "../../types/post";
 import PostModal from "../PostModal/PostModal";
 import "./PostCard.scss";
-import { usePosts } from "../../pages/store/post";
+import { usePosts } from "../../store/post";
 
 interface PostCardProps {
   post: Post;

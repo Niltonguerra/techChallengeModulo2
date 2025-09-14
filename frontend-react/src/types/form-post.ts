@@ -7,7 +7,6 @@ export interface FormPostData {
 	introduction: string;
 	external_link: Record<string, string>;
 	content_hashtags: string[];
-	style_id: string;
 	image: File | null | string;
 	author_id: string;
 }

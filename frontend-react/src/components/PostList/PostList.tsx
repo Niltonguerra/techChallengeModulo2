@@ -4,7 +4,7 @@ import type { Post } from "../../types/post";
 import PostCard from "../PostCard/PostCard";
 import "./PostList.scss";
 import Pagination from "../Pagination/Pagination"; // ajuste o caminho se necessário
-import { usePosts } from "../../pages/store/post";
+import { usePosts } from "../../store/post";
 
 interface PostListProps {
   isAdmin?: boolean; // 🔹 NOVO

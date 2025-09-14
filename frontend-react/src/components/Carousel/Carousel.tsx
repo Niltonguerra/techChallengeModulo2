@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { usePosts } from "../../pages/store/post";
+import { usePosts } from "../../store/post";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

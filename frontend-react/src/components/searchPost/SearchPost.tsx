@@ -4,13 +4,13 @@ import { useDebounce } from 'use-debounce';
 import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { getApi } from '../service/api';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import type { Post, PostSearch, ResutApi } from '../types/post';
-import { usePosts } from '../pages/store/post';
-import { useSnackbar } from '../pages/store/snackbar/useSnackbar';
+import type { PostSearch, ResutApi } from '../../types/post';
+import { getApi } from '../../service/api';
+import { useSnackbar } from '../../store/snackbar/useSnackbar';
+import { usePosts } from '../../store/post';
 
 export default function SearchPost() {
 	const modalStyle = { //<< todo: make it the standard for other modals (?)
@@ -33,7 +33,6 @@ export default function SearchPost() {
 	const { posts, setPosts } = usePosts();
 
 	// const [postList, setPostList] = useState<Post[]>([]);
-
 	// advanced filters inputs
   const [postSearch, setPostSearch] = useState('');
 	const [postAuthor, setPostAuthor] = useState<string | null>(null);
