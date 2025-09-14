@@ -53,4 +53,5 @@ export const loginUsuarioInternoMock: LoginUsuarioInternoDTO = {
   email: userMock.email,
   permission: userMock.permission,
   isActive: userMock.is_active,
+  photo: userMock.photo,
 };
