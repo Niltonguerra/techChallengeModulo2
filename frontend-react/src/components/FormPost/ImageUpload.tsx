@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import type { ImageUploadProps } from '../../types/form-post-components';
+import type { ImageUploadProps } from '../../types/form-post';
+
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ onChange, preview, setPreview, error }) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

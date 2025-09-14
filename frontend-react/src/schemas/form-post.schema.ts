@@ -13,6 +13,6 @@ export const formPostSchema = z.object({
   ).optional(),
   content_hashtags: z.array(z.string().min(1, 'Hashtag não pode ser vazia')).min(1, 'Pelo menos uma hashtag é obrigatória'),
   style_id: z.string().min(1, 'Estilo é obrigatório').max(10, 'Estilo deve ter no máximo 10 caracteres'),
-  image: z.any().optional(), // Validação de imagem pode ser feita manualmente
+  image: z.any().optional(),
   author_id: z.string().uuid('ID do autor deve ser um UUID válido'),
 });

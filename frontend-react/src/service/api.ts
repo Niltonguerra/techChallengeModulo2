@@ -3,7 +3,7 @@ import type { Post, ResutApi } from "../types/post";
 import Swal from 'sweetalert2';
 import type { FormPostData } from "../types/form-post";
 
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4MjZkOWJmLTdkNDAtNDI1Yi1hOGI5LWMwMTUwOWMyMmY3ZiIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzU3MjY0NTgxLCJleHAiOjE3NTczNTA5ODF9._HrdkRHQjYpLyOI_kPWFEH5hJ6zZqAqVtubiWVMcl_c';
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4MjZkOWJmLTdkNDAtNDI1Yi1hOGI5LWMwMTUwOWMyMmY3ZiIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzU3ODc3MTM2LCJleHAiOjE3NTc5NjM1MzZ9.xsIOsaLSirfBBFCZvUToty4vWlKG3zxtMJ8j7fdwzv4';
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 let api: AxiosInstance | null = null;

@@ -1,9 +1,8 @@
 import axios from 'axios';
-import type { Foto } from '../types/form-post';
 
 
 export async function imgbbUmaImagem(file: Blob) {
-    return new Promise<Foto>((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       const url = import.meta.env.VITE_URL_IMGBB;
       const apiKey = import.meta.env.VITE_KEY_IMGBB;
 

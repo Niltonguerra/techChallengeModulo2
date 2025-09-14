@@ -11,6 +11,7 @@ export interface FormPostData {
 	image: File | null | string;
 	author_id: string;
 }
+export type LinkItem = { key: string; value: string };
 
 export interface Foto{
   imagem_grande: string;
@@ -33,4 +34,23 @@ export interface ImageUploadProps {
   preview: string | null;
   setPreview: (url: string | null) => void;
   error?: string;
+}
+
+
+export interface DynamicFieldItem {
+  key: string;
+  value: string;
+}
+
+export interface DynamicFieldsInputProps<T = DynamicFieldItem> {
+  items: T[];
+  onChange: (items: T[]) => void;
+  keyLabel?: string;
+  valueLabel?: string;
+  error?: string;
+  allowKeyEdit?: boolean;
+  addButtonLabel?: string;
+  keyPlaceholder?: string;
+  valuePlaceholder?: string;
+  renderExtraFields?: (item: T, idx: number, items: T[], onChange: (items: T[]) => void) => React.ReactNode;
 }
