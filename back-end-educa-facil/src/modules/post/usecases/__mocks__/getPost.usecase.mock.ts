@@ -23,7 +23,6 @@ export const postMock: ReturnListPost = {
       updated_at: new Date(),
       user_name: 'Lira',
       user_email: 'ls@gmail.com',
-      user_social_media: {},
     },
   ],
 };

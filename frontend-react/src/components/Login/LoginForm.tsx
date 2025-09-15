@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import type { User } from '../../types/header-types';
-
+import './_LoginPage.scss';
 interface LoginFormProps {
   onLogin: (userData: User, token: string) => void;
 }

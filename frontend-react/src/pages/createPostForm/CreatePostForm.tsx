@@ -1,15 +1,15 @@
 
 import { useEffect, useState } from "react";
 import FormPost from "../../components/FormPost/FormPost";
-import { getListById } from "../../service/api";
+import { getListById } from "../../service/post";
 import { useParams } from 'react-router-dom';
 import type { FormPostData } from "../../types/form-post";
 import type { ResultApi } from "../../types/post";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
-import { initialState } from "../../constants/formConstants";
+import { initialFormPostState } from "../../constants/formConstants";
 
-export function CreateEditFormPage() {
+export function CreateEditPostFormPage() {
   const [postData, setPostData] = useState<FormPostData>();
   const [loading, setLoading] = useState(true);
   const params = useParams();
@@ -20,7 +20,7 @@ export function CreateEditFormPage() {
 
     const fetchPost = async () => {
       if (!postId) {
-        setPostData(initialState)
+        setPostData(initialFormPostState)
         setLoading(false);
         return;
       }

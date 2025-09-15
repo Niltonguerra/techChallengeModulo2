@@ -1,82 +1,55 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Box, Paper, TextField, Button, Typography } from '@mui/material';
-import DynamicFieldsInput from '../../components/FormPost/DynamicFieldsInput';
-import './CreateUserForm.scss';
+import React, { useState } from 'react';
+import { Box, Paper, TextField, Button, Typography, InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import type { FormUserData } from '../../types/form-post';
+import ImageUpload from '../ImageUpload/ImageUpload';
+import './FormUser.scss';
+import { initialFormUserState } from '../../constants/formConstants';
+import { useFormUserSubmit } from '../../hooks/useFormUserSubmit';
 
-interface SocialMidia {
-  key: string;
-  value: string;
-}
-
-interface CreateUserFormData {
-  name: string;
-  password: string;
-  photo: string;
-  email: string;
-  social_midia: Record<string, string>;
-}
-
-const getInitialSocialMidia = (social_midia?: Record<string, string>) =>
-  social_midia && Object.keys(social_midia).length > 0
-    ? Object.entries(social_midia).map(([key, value]) => ({ key, value }))
-    : [{ key: '', value: '' }];
-
-const CreateUserForm: React.FC<Partial<CreateUserFormData>> = (props) => {
-  const [form, setForm] = useState<CreateUserFormData>({
-    name: props.name ?? '',
-    password: props.password ?? '',
-    photo: props.photo ?? '',
-    email: props.email ?? '',
-    social_midia: props.social_midia ?? {},
-  });
-
-  const [socialMidia, setSocialMidia] = useState<SocialMidia[]>(getInitialSocialMidia(props.social_midia));
+const CreateUserForm = (props:{ permission: string }) => {
+  const { permission } = props;
+  const [form, setForm] = useState<FormUserData>({...initialFormUserState,});
+  const navigate = useNavigate();
+  const formTitle =  'Criar Usuário';
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    setForm(prev => ({
-      ...prev,
-      ...props,
-    }));
-    setSocialMidia(getInitialSocialMidia(props.social_midia));
-  }, [props]);
-
-  useEffect(() => {
-    setForm(prev => ({
-      ...prev,
-      social_midia: socialMidia.reduce((acc, { key, value }) => {
-        if (key && value) acc[key] = value;
-        return acc;
-      }, {} as Record<string, string>),
-    }));
-  }, [socialMidia]);
-
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleSocialMidiaChange = useCallback((newLinks: SocialMidia[]) => setSocialMidia(newLinks), []);
+  const handleImage = React.useCallback((file: File | null) => setForm(prev => ({ ...prev, photo: file })), []);
+  const { handleSubmit } = useFormUserSubmit({ form, permission, setErrors });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Aqui você pode adicionar validação e chamada de API
-    // Exemplo: console.log(form);
-    if (!form.name) setErrors(err => ({ ...err, name: 'Nome obrigatório' }));
-    if (!form.email) setErrors(err => ({ ...err, email: 'Email obrigatório' }));
-    if (!form.password) setErrors(err => ({ ...err, password: 'Senha obrigatória' }));
-    // ...
-    // Se tudo ok, enviar form
-    // console.log(form);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
   };
 
   return (
-    <Box className="form-user-container">
-      <Paper elevation={3} className="form-user-paper">
-        <Typography variant="h4" component="h2" className="form-user-title">
-          Criar Usuário
+    <Box className="form-post-container">
+      <Button type="button" onClick={() => navigate(-1)} style={{ marginBottom: 16 }} variant="outlined">
+        Voltar
+      </Button>
+      <Paper elevation={3} className="form-post-paper">
+        <Typography variant="h4" component="h2" className="form-post-title">
+          {formTitle}
         </Typography>
-        <form onSubmit={handleSubmit} className="form-user-form">
+        <form 
+          onSubmit={handleSubmit} 
+          className="form-post-form"
+        >
+          <ImageUpload
+            image={form.photo}
+            onChange={handleImage}
+            preview={imagePreview}
+            setPreview={setImagePreview}
+            error={errors.photo}
+          />
           <TextField
             label="Nome"
             name="name"
@@ -88,7 +61,7 @@ const CreateUserForm: React.FC<Partial<CreateUserFormData>> = (props) => {
             helperText={errors.name}
           />
           <TextField
-            label="Email"
+            label="email"
             name="email"
             value={form.email}
             onChange={handleChange}
@@ -100,36 +73,30 @@ const CreateUserForm: React.FC<Partial<CreateUserFormData>> = (props) => {
           <TextField
             label="Senha"
             name="password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             value={form.password}
             onChange={handleChange}
             required
             fullWidth
             error={!!errors.password}
             helperText={errors.password}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
-          <TextField
-            label="Foto (URL)"
-            name="photo"
-            value={form.photo}
-            onChange={handleChange}
-            fullWidth
-            error={!!errors.photo}
-            helperText={errors.photo}
-          />
-          <Typography variant="subtitle1" className="form-user-label">Redes Sociais</Typography>
-          <DynamicFieldsInput
-            items={socialMidia}
-            onChange={handleSocialMidiaChange}
-            keyLabel="Nome da rede (ex: instagram, linkedin)"
-            valueLabel="URL"
-            addButtonLabel="Adicionar rede social"
-            keyPlaceholder="instagram, linkedin, twitter..."
-            valuePlaceholder="https://..."
-            error={errors.social_midia}
-          />
-          <Button type="submit" variant="contained" color="primary" size="large" className="form-user-submit">
-            Criar usuário
+          <Button type="submit" variant="contained" color="primary" size="large" className="form-post-submit">
+            Enviar
           </Button>
         </form>
       </Paper>

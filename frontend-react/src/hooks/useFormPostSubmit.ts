@@ -1,7 +1,7 @@
 import { formPostSchema } from '../schemas/form-post.schema';
 import type { FormPostData, LinkItem } from '../types/form-post';
 import { imgbbUmaImagem } from '../service/imgbb';
-import { createPost, updatePost } from '../service/api';
+import { createPost, updatePost } from '../service/post';
 import { useNavigate } from 'react-router-dom';
 
 interface UseFormPostSubmitParams {
@@ -51,9 +51,8 @@ export function useFormPostSubmit({ form, links, setErrors }: UseFormPostSubmitP
       newErrors['image'] = 'O arquivo deve ser uma imagem válida';
     }
     setErrors(newErrors);
-
-
     if (Object.keys(newErrors).length > 0) return;
+
     if (dataParaEnvio.image && typeof dataParaEnvio.image !== 'string') {
       const foto = await imgbbUmaImagem(dataParaEnvio.image as Blob);
       dataParaEnvio = {
@@ -64,7 +63,6 @@ export function useFormPostSubmit({ form, links, setErrors }: UseFormPostSubmitP
 
     if (dataParaEnvio.id) {
       const returnData = await updatePost(dataParaEnvio);
-      console.log('teste 123r');
       if (returnData.statusCode === 200) navigate('/admin');
     } else {
       const returnData = await createPost(dataParaEnvio);

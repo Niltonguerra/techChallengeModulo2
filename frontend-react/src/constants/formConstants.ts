@@ -1,6 +1,6 @@
-import type { FormPostData } from "../types/form-post";
+import type { FormPostData, FormUserData } from "../types/form-post";
 
-export const initialState: FormPostData = {
+export const initialFormPostState: FormPostData = {
   title: '',
   description: '',
   introduction: '',
@@ -8,4 +8,11 @@ export const initialState: FormPostData = {
   content_hashtags: [],
   image: null,
   author_id: '',
+};
+
+export const initialFormUserState: FormUserData = {
+  name: '',
+  email: '',
+  password: '',
+  photo: null,
 };

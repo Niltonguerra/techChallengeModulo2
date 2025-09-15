@@ -1,8 +1,7 @@
 import React from 'react';
-import LoginForm from '../components/Login/LoginForm';
-import RegisterBox from '../components/Login/RegisterBox';
-import type { User } from '../types/header-types';
-import '../components/Login/_LoginPage.scss';
+import LoginForm from '../../components/Login/LoginForm';
+import RegisterBox from '../../components/Login/RegisterBox';
+import type { User } from '../../types/header-types';
 
 interface LoginPageProps {
   onLogin: (userData: User, token: string) => void;

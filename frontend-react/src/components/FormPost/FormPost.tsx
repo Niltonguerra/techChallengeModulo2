@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Paper, TextField, Button, Typography } from '@mui/material';
 import { useFormPostSubmit } from '../../hooks/useFormPostSubmit';
+import { useNavigate } from 'react-router-dom';
 import type { FormPostData} from '../../types/form-post';
-import DynamicFieldsInput from './DynamicFieldsInput';
-import ImageUpload from './ImageUpload';
+import DynamicFieldsInput from '../DynamicFieldsInput/DynamicFieldsInput';
+import ImageUpload from '../ImageUpload/ImageUpload';
 import './FormPost.scss';
-import { initialState } from '../../constants/formConstants';
+import { initialFormPostState } from '../../constants/formConstants';
 
 
 const getInitialLinks = (external_link?: Record<string, string>) =>
@@ -20,10 +21,11 @@ const getInitialHashtags = (content_hashtags?: string[]) =>
 
 const FormPost: React.FC<Partial<FormPostData>> = (props) => {
 	const [form, setForm] = useState<FormPostData>({
-		...initialState,
+		...initialFormPostState,
 		...props,
 		content_hashtags: props.content_hashtags ?? [],
 	});
+	const navigate = useNavigate();
 
 	const isEdit = Boolean(props.id);
 	const formTitle = isEdit ? 'Editar Post' : 'Criar Post';
@@ -71,6 +73,9 @@ const FormPost: React.FC<Partial<FormPostData>> = (props) => {
 
 	return (
 		<Box className="form-post-container">
+			<Button type="button" onClick={() => navigate(-1)} style={{ marginBottom: 16 }} variant="outlined">
+				Voltar
+			</Button>
 			<Paper elevation={3} className="form-post-paper">
 				<Typography variant="h4" component="h2" className="form-post-title">
 					{formTitle}

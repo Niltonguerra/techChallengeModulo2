@@ -29,7 +29,6 @@ export const mockCreateUserDTO: CreateUserDTO = {
   name: 'Test',
   photo: '',
   permission: UserPermissionEnum.ADMIN,
-  notification: false,
 };
 
 export const mockReturnMessageDTO: ReturnMessageDTO = {
@@ -57,7 +56,5 @@ export const mockFindOneUserReturn: FindOneUserReturnMessageDTO = {
     name: 'Test',
     photo: '',
     email: 'test@email.com',
-    social_midia: {},
-    notification: false,
   },
 };

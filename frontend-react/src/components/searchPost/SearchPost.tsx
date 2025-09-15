@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import type { PostSearch, ResultApi } from '../../types/post';
-import { getApi } from '../../service/api';
+import { getApi } from '../../service/post';
 import { useSnackbar } from '../../store/snackbar/useSnackbar';
 import { usePosts } from '../../store/post';
 

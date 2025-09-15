@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { deletePost, /*updatePost*/ } from "../../service/api";
+import { deletePost, /*updatePost*/ } from "../../service/post";
 import type { Post } from "../../types/post";
 import PostModal from "../PostModal/PostModal";
 import "./PostCard.scss";

@@ -10,6 +10,16 @@ export interface FormPostData {
 	image: File | null | string;
 	author_id: string;
 }
+
+export interface FormUserData {
+  id?: string;
+  name: string;
+  email: string;
+  password?: string;
+  photo: File | null | string;
+  permission?: string;
+}
+
 export type LinkItem = { key: string; value: string };
 
 export interface Foto{

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Carousel from "../../components/Carousel/Carousel";
-import { getListTodos } from "../../service/api";
+import { getListTodos } from "../../service/post";
 import type { Post } from "../../types/post";
 import PostList from "../../components/PostList/PostList";
 

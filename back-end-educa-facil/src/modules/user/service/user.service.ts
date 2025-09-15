@@ -41,7 +41,7 @@ export class UserService {
         statusCode: 400,
         message: systemMessage.ReturnMessage.errorUserNotFound,
       };
-      this.logger.log(`data not found with the field: ${field} and value: ${value}`);
+      this.logger.debug(`data not found with the field: ${field} and value: ${value}`);
       return returnMessage;
     }
 
@@ -53,8 +53,6 @@ export class UserService {
         name: user?.name,
         photo: user?.photo,
         email: user?.email,
-        social_midia: user?.social_midia ?? undefined,
-        notification: user?.notification,
       },
     };
     return returnMessage;

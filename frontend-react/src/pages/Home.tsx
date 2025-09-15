@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Carousel from "../components/Carousel/Carousel";
 import PostList from "../components/PostList/PostList";
 import SearchPost from "../components/searchPost/SearchPost"; 
-import { getListTodos } from "../service/api";
+import { getListTodos } from "../service/post";
 // import type { Post } from "../types/post";
 import { usePosts } from "../store/post";
 

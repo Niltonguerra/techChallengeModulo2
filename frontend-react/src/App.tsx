@@ -9,20 +9,20 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Header from './components/Header/Header';
 import SearchPost from './components/searchPost/SearchPost'; 
 import TypographyShowcase from './pages/styleGuide/TypographyShowcase';
-import Home from './pages/home/Home';
 import './styles/scss/base/App.scss';
 import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
 import "dayjs/locale/pt-br";
 import { store, type RootState } from './store';
-import { CreateEditFormPage } from './pages/createPostForm/CreatePostForm';
-import LoginPage from './pages/LoginPage';
-
+import { CreateEditPostFormPage } from './pages/createPostForm/CreatePostForm';
+import LoginPage from './pages/Login/LoginPage';
 import './styles/scss/base/App.scss';
 import 'dayjs/locale/pt-br';
-import Admin from './pages/Admin';
-import SnackBarComponent from './components/Snackbar';
+import Admin from './pages/Admin/Admin';
+import SnackBarComponent from './components/Snackbar/Snackbar';
 import { loginSuccess, logout } from './store/userSlice';
+import { CreateEditUserFormPage } from './pages/createUserForm/CreateUserForm';
+import Home from './pages/home/Home';
 
 function App() {
   const dispatch = useDispatch();
@@ -54,10 +54,18 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/admin">
                   <Route path="post">
-                    <Route path="create" element={<CreateEditFormPage />} />
-                    <Route path="edit/:id" element={<CreateEditFormPage />} />
+                    <Route path="create" element={<CreateEditPostFormPage />} />
+                    <Route path="edit/:id" element={<CreateEditPostFormPage />} />
                   </Route>
                   <Route index element={<Admin />} />
+                </Route>
+                <Route path="aluno">
+                  <Route path="create/:permission" element={<CreateEditUserFormPage />} />
+                  {/* <Route path="edit/:id" element={<CreateEditUserFormPage />} /> */}
+                </Route>
+                <Route path="professor">
+                  <Route path="create/:permission" element={<CreateEditUserFormPage />} />
+                  {/* <Route path="edit/:id" element={<CreateEditUserFormPage />} /> */}
                 </Route>
                 <Route path="/styleGuide" element={<TypographyShowcase />} />
                 <Route path="/search" element={<SearchPost />} />
