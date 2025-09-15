@@ -2,7 +2,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import 'dayjs/locale/pt-br';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import React from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Footer from './components/Footer/Footer';
@@ -15,14 +14,15 @@ import './styles/scss/base/App.scss';
 import { theme } from './styles/scss/themes/theme';
 import type { User } from './types/header-types';
 import "dayjs/locale/pt-br";
-import { store } from './store';
-import { CreateEditFormPage } from './pages/create_post_form/CreatePostForm';
+import { store, type RootState } from './store';
+import { CreateEditFormPage } from './pages/createPostForm/CreatePostForm';
 import LoginPage from './pages/LoginPage';
-import { loginSuccess, logout } from './pages/store/userSlice';
+
 import './styles/scss/base/App.scss';
 import 'dayjs/locale/pt-br';
 import Admin from './pages/Admin';
 import SnackBarComponent from './components/Snackbar';
+import { loginSuccess, logout } from './store/userSlice';
 
 function App() {
   const dispatch = useDispatch();
@@ -52,12 +52,16 @@ function App() {
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/create_post" element={<CreateEditFormPage />} />
-                <Route path="/edit_post/:id" element={<CreateEditFormPage />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin">
+                  <Route path="post">
+                    <Route path="create" element={<CreateEditFormPage />} />
+                    <Route path="edit/:id" element={<CreateEditFormPage />} />
+                  </Route>
+                  <Route index element={<Admin />} />
+                </Route>
                 <Route path="/styleGuide" element={<TypographyShowcase />} />
                 <Route path="/search" element={<SearchPost />} />
-                <Route path="/login" element={<LoginPage />} />
+                <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
               </Routes>
             </main>
             <Footer />

@@ -67,7 +67,7 @@ const FormPost: React.FC<Partial<FormPostData>> = (props) => {
 
 	const handleLinksChange = React.useCallback((newLinks: { key: string; value: string }[]) => setLinks(newLinks), []);
 	const handleImage = React.useCallback((file: File | null) => setForm(prev => ({ ...prev, image: file })), []);
-	const { handleSubmit } = useFormPostSubmit({ form, author_id: 'c2d5d52a-e8d4-4db2-9100-647b0ef515f6', links, setErrors });
+	const { handleSubmit } = useFormPostSubmit({ form, links, setErrors });
 
 	return (
 		<Box className="form-post-container">

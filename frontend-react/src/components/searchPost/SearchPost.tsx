@@ -7,7 +7,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import type { PostSearch, ResutApi } from '../../types/post';
+import type { PostSearch, ResultApi } from '../../types/post';
 import { getApi } from '../../service/api';
 import { useSnackbar } from '../../store/snackbar/useSnackbar';
 import { usePosts } from '../../store/post';
@@ -84,7 +84,7 @@ export default function SearchPost() {
 			};
 		}
 
-		const { data } = await api.get<ResutApi>('/post', {
+		const { data } = await api.get<ResultApi>('/post', {
 			params,
 			signal,
 		});

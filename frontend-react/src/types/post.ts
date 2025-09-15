@@ -28,7 +28,7 @@ export type PostSearch = {
     limit?: number;
 }
 
-export type ResutApi = {
+export type ResultApi = {
     message: string;
     statusCode: number;
     limit: number;
@@ -42,27 +42,3 @@ export type DeleteResponse = {
     statusCode: number;
     deletedId?: string;
 }
-
-/*
-export type CreatePostData = {
-    title: string;
-    description: string;
-    introduction: string;
-    image: string;
-    content_hashtags: string[];
-    style_id: string;
-    external_link: { url: string };
-    user_id: string;
-}
-
-export type UpdatePostData = {
-    id: string;
-    title?: string;
-    description?: string;
-    introduction?: string;
-    image?: string;
-    content_hashtags?: string[];
-    style_id?: string;
-    external_link?: { url: string };
-} 
-    */

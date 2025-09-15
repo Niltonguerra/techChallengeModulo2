@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import type { User } from '../../types/header-types';
+import type { User } from '../types/header-types';
 
 interface UserState {
   isLoggedIn: boolean;

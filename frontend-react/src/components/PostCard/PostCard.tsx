@@ -78,7 +78,7 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
                 </button>
                 {menuOpen && (
                   <ul className="menu">
-                    <li onClick={() => navigate(`/admin/post/${post.id}/edit`)}>Editar</li>
+                    <li onClick={() => navigate(`/admin/post/edit/${post.id}`)}>Editar</li>
                     <li
                       onClick={async () => {
                         if (confirm("Tem certeza que deseja excluir esta postagem?")) {

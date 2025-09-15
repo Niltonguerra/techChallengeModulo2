@@ -2,15 +2,16 @@ import { formPostSchema } from '../schemas/form-post.schema';
 import type { FormPostData, LinkItem } from '../types/form-post';
 import { imgbbUmaImagem } from '../service/imgbb';
 import { createPost, updatePost } from '../service/api';
+import { useNavigate } from 'react-router-dom';
 
 interface UseFormPostSubmitParams {
   form: FormPostData;
   links: LinkItem[];
-  author_id: string;
   setErrors: (errors: Record<string, string>) => void;
 }
 
-export function useFormPostSubmit({ form, links, author_id, setErrors }: UseFormPostSubmitParams) {
+export function useFormPostSubmit({ form, links, setErrors }: UseFormPostSubmitParams) {
+  const navigate = useNavigate();
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -27,9 +28,8 @@ export function useFormPostSubmit({ form, links, author_id, setErrors }: UseForm
       introduction: form.introduction,
       title: form.title,
       external_link,
-      author_id,
+      author_id: form.author_id,
     };
-
 
     const result = formPostSchema.safeParse(dataParaEnvio);
     const newErrors: Record<string, string> = {};
@@ -50,11 +50,10 @@ export function useFormPostSubmit({ form, links, author_id, setErrors }: UseForm
     ) {
       newErrors['image'] = 'O arquivo deve ser uma imagem válida';
     }
-
     setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
 
-    // Upload da imagem se necessário
+
+    if (Object.keys(newErrors).length > 0) return;
     if (dataParaEnvio.image && typeof dataParaEnvio.image !== 'string') {
       const foto = await imgbbUmaImagem(dataParaEnvio.image as Blob);
       dataParaEnvio = {
@@ -63,11 +62,13 @@ export function useFormPostSubmit({ form, links, author_id, setErrors }: UseForm
       };
     }
 
-    console.log('Dados para envio:', dataParaEnvio);
     if (dataParaEnvio.id) {
-      await updatePost(dataParaEnvio);
+      const returnData = await updatePost(dataParaEnvio);
+      console.log('teste 123r');
+      if (returnData.statusCode === 200) navigate('/admin');
     } else {
-      await createPost(dataParaEnvio);
+      const returnData = await createPost(dataParaEnvio);
+      if (returnData.statusCode === 200) navigate('/admin');
     }
   }
 

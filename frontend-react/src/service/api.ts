@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
 import Swal from 'sweetalert2';
 import type { FormPostData } from "../types/form-post";
-import type { Post, ResutApi, DeleteResponse } from "../types/post";
+import type { Post, ResultApi, DeleteResponse } from "../types/post";
 
 const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4MjZkOWJmLTdkNDAtNDI1Yi1hOGI5LWMwMTUwOWMyMmY3ZiIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzU3ODc3MTM2LCJleHAiOjE3NTc5NjM1MzZ9.xsIOsaLSirfBBFCZvUToty4vWlKG3zxtMJ8j7fdwzv4";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
@@ -25,7 +25,7 @@ export const getListTodos = async (): Promise<Post[]> => {
   const api = getApi();
 
   try {
-    const response = await api.get<ResutApi>("/post");
+    const response = await api.get<ResultApi>("/post");
     return response.data.ListPost;
   } catch (error) {
     console.error("Erro ao chamar getListTodos:", error);
@@ -46,10 +46,10 @@ export const getHashtags = async () => {
 };
 
 
-export const getListById = async (id: string): Promise<ResutApi | null> => {
+export const getListById = async (id: string): Promise<ResultApi> => {
   try {
     const api = getApi();
-    const response = await api.get<ResutApi>(`/post/${id}`);
+    const response = await api.get<ResultApi>(`/post/${id}`);
     if (response.data.statusCode === 200) {
       return response.data;
     }
@@ -65,26 +65,19 @@ export const getListById = async (id: string): Promise<ResutApi | null> => {
 };
 
 export const updatePost = async (data: Partial<FormPostData>)
-  :Promise<{statusCode: number,message: string}> => {
+  : Promise<{ statusCode: number, message: string }> => {
   try {
     const api = getApi();
-    api.put("/post", data)
-    .then(response => {
-      console.log(response.data);
-          if (response.data.statusCode === 200) {
+    const response = await api.put("/post", data);
+    if (response.data.statusCode === 200) {
       Swal.fire({
         title: "sucesso!",
         icon: "success",
         text: "a postagem foi atualizada com sucesso!",
         draggable: true
       });
-      return response.data;
     }
-    })
-    .catch(error => {
-      console.error(error);
-    });
-   throw new Error(`problemas para atualizar a postagem com o id: ${data.id}.`);
+    return response.data;
   } catch (error) {
     Swal.fire({
       icon: "error",
@@ -95,26 +88,20 @@ export const updatePost = async (data: Partial<FormPostData>)
   }
 };
 
-export const createPost = async (data: FormPostData) => {
+export const createPost = async (data: FormPostData)
+  : Promise<{ statusCode: number; message: string }> => {
   try {
     const api = getApi();
-    api.post("/post", data)
-    .then(response => {
-      console.log(response.data);
-          if (response.data.statusCode === 200) {
+    const response = await api.post("/post", data);
+    if (response.data.statusCode === 200) {
       Swal.fire({
         title: "sucesso!",
         icon: "success",
         text: "a postagem foi criada com sucesso!",
         draggable: true
       });
-      return response.data;
     }
-    })
-    .catch(error => {
-      console.error(error);
-    });
-   throw new Error(`problemas para criar a postagem com o id: ${data.id}.`);
+    return response.data;
   } catch (error) {
     Swal.fire({
       icon: "error",

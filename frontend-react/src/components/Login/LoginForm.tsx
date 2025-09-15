@@ -28,7 +28,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
       onLogin(userData, token);
 
-      navigate('/');
+      navigate('/admin');
     } catch (err) {
       setError('Usuário ou senha inválidos. Tente novamente.');
       console.error('Erro de login:', err);
