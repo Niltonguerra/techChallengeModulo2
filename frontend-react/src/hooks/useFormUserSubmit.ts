@@ -43,11 +43,20 @@ export function useFormUserSubmit({ form, permission, setErrors }: UseFormUserSu
 
     let dataParaEnvio: FormUserData = { ...form };
     if (dataParaEnvio.photo && typeof dataParaEnvio.photo !== 'string') {
-      const foto = await imgbbUmaImagem(dataParaEnvio.photo as Blob);
-      dataParaEnvio = {
-        ...dataParaEnvio,
-        photo: foto ?? undefined,
-      };
+      try {
+        const foto = await imgbbUmaImagem(dataParaEnvio.photo as Blob);
+        dataParaEnvio = {
+          ...dataParaEnvio,
+          photo: foto ?? undefined,
+        };
+      }  catch {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "erro ao fazer upload da imagem!"
+        });
+        return;
+      }
     }
     
     dataParaEnvio = {

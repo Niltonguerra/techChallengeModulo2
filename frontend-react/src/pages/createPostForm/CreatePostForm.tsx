@@ -8,6 +8,7 @@ import type { ResultApi } from "../../types/post";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { initialFormPostState } from "../../constants/formConstants";
+import Swal from "sweetalert2";
 
 export function CreateEditPostFormPage() {
   const [postData, setPostData] = useState<FormPostData>();
@@ -19,13 +20,14 @@ export function CreateEditPostFormPage() {
   useEffect(() => {
 
     const fetchPost = async () => {
-      if (!postId) {
-        setPostData(initialFormPostState)
-        setLoading(false);
-        return;
-      }
-      const result: ResultApi = await getListById(postId!);
-      if (result && result.ListPost && result.ListPost.length > 0) {
+      try {
+        if (!postId) {
+          setPostData(initialFormPostState)
+          setLoading(false);
+          return;
+        }
+        const result: ResultApi = await getListById(postId!);
+        if (result && result.ListPost && result.ListPost.length > 0) {
         const post = result.ListPost[0];
         const external_link: Record<string, string> = {};
         if (post.external_link) {
@@ -44,6 +46,13 @@ export function CreateEditPostFormPage() {
           external_link 
           });
         setLoading(false);
+        }
+      } catch {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "alguma coisa deu errado!"
+        });  
       }
     };
     fetchPost();

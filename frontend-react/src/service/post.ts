@@ -1,5 +1,4 @@
 import axios, { type AxiosInstance } from "axios";
-import Swal from 'sweetalert2';
 import type { FormPostData } from "../types/form-post";
 import type { Post, ResultApi, DeleteResponse } from "../types/post";
 
@@ -47,69 +46,26 @@ export const getHashtags = async () => {
 
 
 export const getListById = async (id: string): Promise<ResultApi> => {
-  try {
     const api = getApi();
     const response = await api.get<ResultApi>(`/post/${id}`);
     if (response.data.statusCode === 200) {
       return response.data;
     }
    throw new Error(`problemas para buscar os dados para o id ${id}.`);
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "alguma coisa deu errado!"
-    });
-    throw new Error(`Post with id ${id} not found., error: ${error}`);
-  }
 };
 
 export const updatePost = async (data: Partial<FormPostData>)
   : Promise<{ statusCode: number, message: string }> => {
-  try {
     const api = getApi();
     const response = await api.put("/post", data);
-    if (response.data.statusCode === 200) {
-      Swal.fire({
-        title: "sucesso!",
-        icon: "success",
-        text: "a postagem foi atualizada com sucesso!",
-        draggable: true
-      });
-    }
     return response.data;
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "alguma coisa deu errado!"
-    });
-    throw new Error(`Post with id ${data.id} can't be updated, error: ${error}`);
-  }
 };
 
 export const createPost = async (data: FormPostData)
   : Promise<{ statusCode: number; message: string }> => {
-  try {
     const api = getApi();
     const response = await api.post("/post", data);
-    if (response.data.statusCode === 200) {
-      Swal.fire({
-        title: "sucesso!",
-        icon: "success",
-        text: "a postagem foi criada com sucesso!",
-        draggable: true
-      });
-    }
     return response.data;
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "alguma coisa deu errado!"
-    });
-    throw new Error(`Post with id ${data.id} can't be created, error: ${error}`);
-  }
 };
 export const deletePost = async (id: string): Promise<DeleteResponse> => {
   const api = getApi();

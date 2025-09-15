@@ -3,6 +3,7 @@ import type { FormPostData, LinkItem } from '../types/form-post';
 import { imgbbUmaImagem } from '../service/imgbb';
 import { createPost, updatePost } from '../service/post';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 interface UseFormPostSubmitParams {
   form: FormPostData;
@@ -54,19 +55,61 @@ export function useFormPostSubmit({ form, links, setErrors }: UseFormPostSubmitP
     if (Object.keys(newErrors).length > 0) return;
 
     if (dataParaEnvio.image && typeof dataParaEnvio.image !== 'string') {
+      try {
       const foto = await imgbbUmaImagem(dataParaEnvio.image as Blob);
+      
       dataParaEnvio = {
         ...dataParaEnvio,
         image: foto ?? undefined,
       };
+      }  catch {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "erro ao fazer upload da imagem!"
+        });
+        return;
+      }
     }
 
     if (dataParaEnvio.id) {
+      try {
       const returnData = await updatePost(dataParaEnvio);
-      if (returnData.statusCode === 200) navigate('/admin');
+      if (returnData.statusCode === 200) {
+        Swal.fire({
+          title: "sucesso!",
+          icon: "success",
+          text: "a postagem foi criada com sucesso!",
+          draggable: true
+        });
+        navigate('/admin')
+      }
+      } catch {   
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Algo deu errado ao atualizar a postagem!"
+        });
+      }
     } else {
-      const returnData = await createPost(dataParaEnvio);
-      if (returnData.statusCode === 200) navigate('/admin');
+      try {
+        const returnData = await createPost(dataParaEnvio);
+        if (returnData.statusCode === 200) {
+          Swal.fire({
+            title: "sucesso!",
+            icon: "success",
+            text: "a postagem foi criada com sucesso!",
+            draggable: true
+          });
+          navigate('/admin')
+        };
+      }  catch {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Algo deu errado ao criar o postagem!"
+        });
+      }
     }
   }
 
