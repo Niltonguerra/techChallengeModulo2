@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import Carousel from "../../components/Carousel/Carousel";
+import { usePosts } from "../../store/post";
 import { getListTodos } from "../../service/post";
-import type { Post } from "../../types/post";
 import PostList from "../../components/PostList/PostList";
+import SearchPost from "../../components/searchPost/SearchPost";
+import Carrosel from "../../components/Carousel/Carousel";
 
 function Home() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const { setPosts } = usePosts();
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,33 +23,17 @@ function Home() {
     };
 
     fetchPosts();
-  }, []);
+  }, [setPosts]);
 
   if (loading) {
     return <div className="page-container"><p>Carregando posts...</p></div>;
   }
-
-  console.log("Posts recebidos no Home:", posts);
-
-
-    // 🔹 Carousel -> 5 mais recentes
-  const carouselPosts = [...posts]
-    .sort(
-      (a, b) =>
-        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-    )
-    .slice(0, 5);
-
-  // 🔹 Lista -> ordem alfabética pelo título
-  const listPosts = [...posts].sort((a, b) =>
-    a.title.localeCompare(b.title, "pt-BR")
-  );
-
-  
   return (
     <div className="page-container">
-      <Carousel posts={carouselPosts} />
-      <PostList posts={listPosts} />
+      <Carrosel />
+      <div style={{paddingBlock:80, paddingInline:120}}><SearchPost/></div>
+  
+      <PostList />
     </div>
   );
 }

@@ -15,20 +15,12 @@ const Header: React.FC<HeaderProps> = ({
   user,
   onLogout
 }) => {
- 
-  const [navigationAnchor, setNavigationAnchor] = useState<null | HTMLElement>(null);
+
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
-  const navigationOpen = Boolean(navigationAnchor);
   const userMenuOpen = Boolean(userMenuAnchor);
 
   
-  const handleNavigationClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    setNavigationAnchor(event.currentTarget);
-  }, []);
 
-  const handleNavigationClose = useCallback(() => {
-    setNavigationAnchor(null);
-  }, []);
 
   const handleUserMenuClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setUserMenuAnchor(event.currentTarget);
@@ -54,25 +46,12 @@ const Header: React.FC<HeaderProps> = ({
           <Typography variant="h6" className="header__logo-text">{HEADER_TEXTS.logoText}</Typography>
         </Box>
 
-        <Box className="header__navigation">
-          <Button className="header__nav-button" onClick={handleNavigationClick} endIcon={<KeyboardArrowDown />}>
-            {HEADER_TEXTS.navigationButton}
-          </Button>
-          <Menu id="navigation-menu" anchorEl={navigationAnchor} open={navigationOpen} onClose={handleNavigationClose}>
-            {NAVIGATION_ITEMS.map((item) => (
-              <MenuItem key={item.label} onClick={handleNavigationClose}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} />
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
-
+{/* 
         <Box className="header__search">
           <Button id="search" className="header__search-button" onClick={() => console.log('Buscar')} aria-label={HEADER_TEXTS.searchButton}>
             <Search />
           </Button>
-        </Box>
+        </Box> */}
 
        
         <Box className="header__user-section">

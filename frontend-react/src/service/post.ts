@@ -2,7 +2,7 @@ import axios, { type AxiosInstance } from "axios";
 import type { FormPostData } from "../types/form-post";
 import type { Post, ResultApi, DeleteResponse } from "../types/post";
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4MjZkOWJmLTdkNDAtNDI1Yi1hOGI5LWMwMTUwOWMyMmY3ZiIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzU3ODc3MTM2LCJleHAiOjE3NTc5NjM1MzZ9.xsIOsaLSirfBBFCZvUToty4vWlKG3zxtMJ8j7fdwzv4";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4MjZkOWJmLTdkNDAtNDI1Yi1hOGI5LWMwMTUwOWMyMmY3ZiIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzU3OTgzNjYwLCJleHAiOjE3NTgwNzAwNjB9.i1HuAVJpcNDhN4oNLt3Hbk35YB6AxRMk56lz2JeMQL4";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 let api: AxiosInstance | null = null;

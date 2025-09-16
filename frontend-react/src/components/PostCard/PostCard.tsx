@@ -37,7 +37,7 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
   return (
     <>
       <div className="post-card">
-        <img src={post.image} alt={post.title} className="post-image" />
+        <img src={post.image as string} alt={post.title} className="post-image" />
         <div className="post-content">
           <div className="post-content-main">
             <h3>{post.title}</h3>

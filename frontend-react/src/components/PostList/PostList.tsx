@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Post } from "../../types/post";
 import PostCard from "../PostCard/PostCard";
 import "./PostList.scss";
 import Pagination from "../Pagination/Pagination"; // ajuste o caminho se necessário
@@ -14,8 +13,8 @@ export default function PostList({ isAdmin = false }: PostListProps) {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   // const [localPosts, setLocalPosts] = useState<Post[]>(posts);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { posts, setPosts } = usePosts();
+   
+  const { posts } = usePosts();
   const postsPerPage = 8;
 
   const sortedPosts = [...posts].sort((a, b) =>

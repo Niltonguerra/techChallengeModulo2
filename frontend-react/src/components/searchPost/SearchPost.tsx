@@ -29,8 +29,8 @@ export default function SearchPost() {
 	// const isDevMode = true;
 	const api = getApi(); // one stable instance
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { posts, setPosts } = usePosts();
+	 
+	const { setPosts } = usePosts();
 
 	// const [postList, setPostList] = useState<Post[]>([]);
 	// advanced filters inputs
