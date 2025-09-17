@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import PostList from "../../components/PostList/PostList";
 import { getListTodos } from "../../service/post";
 import { usePosts } from "../../store/post";
+import { Button } from "@mui/material";
 
 function Admin() {
   const {setPosts} = usePosts();

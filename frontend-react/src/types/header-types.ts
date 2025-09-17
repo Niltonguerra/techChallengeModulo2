@@ -5,6 +5,14 @@ export interface User {
   id: string;
 }
 
+export interface UserDataReceived {
+  name: string;
+  email: string;
+  photo: string;
+  id: string;
+  permission: string;
+}
+
 export interface NavigationItem {
   label: string;
   icon: React.ReactNode;

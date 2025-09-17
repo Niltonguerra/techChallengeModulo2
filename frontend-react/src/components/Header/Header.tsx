@@ -2,10 +2,10 @@ import React, { useState, useCallback } from 'react';
 import {
   AppBar, Toolbar, Button, Menu, MenuItem, Avatar, Box, Typography, ListItemIcon, ListItemText,
 } from '@mui/material';
-import { KeyboardArrowDown, Logout, Search } from '@mui/icons-material';
+import { KeyboardArrowDown, Logout } from '@mui/icons-material';
 import './Header.scss';
 import type { HeaderProps } from '../../types/header-types';
-import { HEADER_TEXTS, NAVIGATION_ITEMS } from '../../constants/headerConstants';
+import { HEADER_TEXTS } from '../../constants/headerConstants';
 import { Link } from 'react-router-dom';
 
 
