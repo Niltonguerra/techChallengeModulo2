@@ -39,18 +39,18 @@ export default function SearchPost() {
 	// const [postList, setPostList] = useState<Post[]>([]);
 
 	// advanced filters inputs
-  const [postSearch, setPostSearch] = useState('');
+	const [postSearch, setPostSearch] = useState('');
 	const [postAuthor, setPostAuthor] = useState<string | null>(null);
 	const [postContent, setPostContent] = useState<string | null>(null);
 	const [createdAtBefore, setCreatedAtBefore] = useState<Dayjs | null>(null);
 	const [createdAtAfter, setCreatedAtAfter] = useState<Dayjs | null>(null);
 
 	// dynamic search bar input
-  const [debouncedSearch] = useDebounce(postSearch || '', 400); // 400ms delay
+	const [debouncedSearch] = useDebounce(postSearch || '', 400); // 400ms delay
 
 	// advanced filters select options
-  const [contentOptions, setContentOptions] = useState<string[]>([]);
-	const [authorPostsOptions, setAuthorPostsOptions] = useState<{_id: string; name: string}[]>([]);
+	const [contentOptions, setContentOptions] = useState<string[]>([]);
+	const [authorPostsOptions, setAuthorPostsOptions] = useState<{ _id: string; name: string }[]>([]);
 
 	const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
@@ -146,7 +146,7 @@ export default function SearchPost() {
 
 				setContentOptions(contentResponse.data);
 				setAuthorPostsOptions(authorResponse.data);
-				
+
 			} catch (err: Error | unknown) {
 				console.error('error while getting filter options: ', err);
 			}
@@ -155,15 +155,15 @@ export default function SearchPost() {
 		fetchFilterOptions();
 	}, [api]);
 
-  return (
+	return (
 		<>
 			<Box
 				sx={{
 					display: "grid",
-					gridTemplateColumns: "1fr auto",
+					gridTemplateColumns: { xs: "1fr", sm: "1fr auto" }, // 🔹 empilha no mobile, lado a lado no desktop
 					gap: 1.5,
 					alignItems: "center",
-					width: 720,  
+					width: { xs: "100%", sm: 720 },
 				}}
 			>
 				<OutlinedInput
@@ -179,7 +179,7 @@ export default function SearchPost() {
 					}
 					sx={{
 						bgcolor: "#fff",
-						borderRadius: '4px',
+						borderRadius: "4px",
 						"input": { paddingTop: 1.25, paddingX: 1.5 },
 					}}
 				/>
@@ -191,17 +191,19 @@ export default function SearchPost() {
 					sx={{
 						bgcolor: "#f47b20",
 						"&:hover": { bgcolor: "#dd6d1d" },
-						borderRadius: '4px',
+						borderRadius: "4px",
 						textTransform: "uppercase",
 						fontWeight: 700,
 						paddingX: 2.5,
 						height: 40,
-						width: 200
+						width: { xs: "100%", sm: 200 }, // 🔹 botão ocupa toda a linha no mobile
 					}}
 				>
 					Filtros
 				</Button>
 			</Box>
+
+
 			{advancedFiltersOpen && (
 				<Modal
 					open={advancedFiltersOpen}
@@ -231,15 +233,15 @@ export default function SearchPost() {
 							 * 'content_hashtags' 
 							 * */}
 							<Stack spacing={2}>
-								<TextField 
-									size="small" 
-									fullWidth 
-									label="Busca (Título, descrição, etc.)" 
+								<TextField
+									size="small"
+									fullWidth
+									label="Busca (Título, descrição, etc.)"
 									onChange={(e) => setPostSearch(e.target.value)}
 								/>
-								<Select 
-								 	onChange={(e) => setPostContent(e.target.value)} 
-								 	value={postContent || ''}
+								<Select
+									onChange={(e) => setPostContent(e.target.value)}
+									value={postContent || ''}
 									displayEmpty={true}
 									renderValue={(selected) => {
 										if (!selected) {
@@ -258,14 +260,14 @@ export default function SearchPost() {
 										</MenuItem>
 									))}
 								</Select>
-								<Select 
-								 onChange={(e) => setPostAuthor(e.target.value)} 
-								 value={postAuthor || ''}
-								 displayEmpty={true}
-								 renderValue={(selected) => {
-									if (!selected) {
-										return <span style={{ color: "#888" }}>Autor</span>;
-									}
+								<Select
+									onChange={(e) => setPostAuthor(e.target.value)}
+									value={postAuthor || ''}
+									displayEmpty={true}
+									renderValue={(selected) => {
+										if (!selected) {
+											return <span style={{ color: "#888" }}>Autor</span>;
+										}
 										const author = authorPostsOptions.find((opt) => opt._id === selected);
 										return author ? author.name : selected;
 									}}
@@ -319,5 +321,5 @@ export default function SearchPost() {
 				</Modal>
 			)}
 		</>
-  );
+	);
 }

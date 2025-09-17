@@ -58,12 +58,15 @@
 
     .search-post {
       padding-left: 120px;
+      padding-right: 120px;
       padding-top: 80px;
     }
 
 /* Tablet */
 @media (max-width: 1024px) {
   .post-list-wrapper {
+    padding-left: 80px;
+    padding-right: 80px;
     .post-list {
       grid-template-columns: repeat(2, 1fr);
       gap: var(--spacing-xl);
@@ -75,7 +78,15 @@
 
 /* Mobile */
 @media (max-width: 700px) {
+  .search-post {
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 40px;
+  }
   .post-list-wrapper {
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 20px;
     .post-list {
       grid-template-columns: 1fr;
       gap: var(--spacing-lg);

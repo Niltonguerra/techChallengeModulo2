@@ -53,7 +53,7 @@ function Home() {
   return (
     <div className="page-container">
       <Carousel />
-      <div style={{paddingBlock:80, paddingInline:120}}><SearchPost/></div>
+      <div className="search-post"><SearchPost/></div>
   
       <PostList />
     </div>
