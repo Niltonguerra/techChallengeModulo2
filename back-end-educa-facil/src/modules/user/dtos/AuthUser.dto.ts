@@ -33,5 +33,6 @@ export class ResponseAuthUserDTO {
     email: string;
     photo: string;
     id: string;
+    permission: UserPermissionEnum;
   };
 }
