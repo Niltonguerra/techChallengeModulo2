@@ -11,9 +11,7 @@ export const mockCreateUserDTO: CreateUserDTO = {
   email: 'test@example.com',
   password: 'password123',
   photo: 'https://example.com/photo.jpg',
-  social_midia: { twitter: '@testuser' },
   permission: UserPermissionEnum.USER,
-  notification: true,
 };
 
 export const notFoundResponse = {
@@ -69,8 +67,6 @@ export const existingUserReturnMock: FindOneUserReturnMessageDTO = {
     name: 'Novo Usuário',
     photo: '',
     email: 'new@email.com',
-    social_midia: {},
-    notification: true,
   },
 };
 

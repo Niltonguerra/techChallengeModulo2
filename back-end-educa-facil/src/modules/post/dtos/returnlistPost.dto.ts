@@ -33,9 +33,6 @@ export class ListPost {
 
   @ApiProperty()
   user_email: string;
-
-  @ApiProperty()
-  user_social_media: Record<string, string>;
 }
 export class ReturnListPost {
   @ApiProperty()

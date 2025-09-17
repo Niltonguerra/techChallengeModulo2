@@ -44,6 +44,7 @@ export class SignInUseCase {
           name: validatedUser.name,
           email: validatedUser.email,
           id: validatedUser.id,
+          permission: validatedUser.permission,
         },
       };
     } catch (error) {

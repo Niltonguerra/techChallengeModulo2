@@ -7,9 +7,13 @@ export const mockPostService = {
 };
 
 export const mockUpdatePostDto: UpdatePostDTO = {
-  id: '1',
+  id: 'post123',
   title: 'Novo título',
   description: '',
+  content_hashtags: [],
+  introduction: '',
+  external_link: {},
+  image: '',
 };
 
 export const mockReturnMessage: ReturnMessageDTO = {

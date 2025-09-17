@@ -1,16 +1,18 @@
 import React from 'react';
 import phoneIcon from '../assets/img/chamada-telefonica.svg';
 import emailIcon from '../assets/img/o-email.svg';
+import { Link } from 'react-router-dom';
+import './_LoginPage.scss';
 
 const RegisterBox: React.FC = () => {
   return (
     <div className="cadastro">
       <h1>Faça seu cadastro</h1>
-      <a href="#">
+      <Link to="/aluno/create/user">
         <p className="txt-sec cadastro-dados">
           Não possui cadastro? Cadastre-se aqui
         </p>
-      </a>
+      </Link>
       <div></div>
       <p className="txt-sec">Dúvidas ou precisa de alguma ajuda?</p>
 

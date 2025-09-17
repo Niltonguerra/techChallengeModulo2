@@ -2,7 +2,7 @@ import { Typography, useTheme } from "@mui/material";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getHashtags } from "../../service/api";
+import { getHashtags } from "../../service/post";
 import "./Footer.scss";
 export default function Footer() {
     const theme = useTheme();

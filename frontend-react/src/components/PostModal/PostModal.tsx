@@ -13,9 +13,9 @@ export type PostFormValues = {
     title: string;
     description: string;
     introduction?: string;
-    external_link?: Record<string, string>;
+    external_link?: {[key: string]: string | undefined;};
     content_hashtags: string[];
-    image?: string;
+    image?: string | null | File;
     updated_at: Date;
     user_name: string;
 };

@@ -8,10 +8,8 @@ export interface IUser {
   password: string;
   photo: string;
   email: string;
-  social_midia?: Record<string, string> | undefined;
   permission: UserPermissionEnum;
   is_active: UserStatusEnum;
-  notification: boolean;
   created_at?: Date;
   updated_at?: Date;
   posts?: Post[] | undefined;

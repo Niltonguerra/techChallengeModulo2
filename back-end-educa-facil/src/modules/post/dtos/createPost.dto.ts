@@ -40,12 +40,6 @@ export class CreatePostDTO {
   @IsString({ each: true, message: systemMessage.validation.isString })
   content_hashtags: string[];
 
-  @ApiProperty()
-  @IsString({ message: systemMessage.validation.isString })
-  @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
-  @Length(1, 10, { message: systemMessage.validation.Length })
-  style_id: string;
-
   @ApiPropertyOptional()
   @IsOptional()
   @IsString({ message: systemMessage.validation.isString })
