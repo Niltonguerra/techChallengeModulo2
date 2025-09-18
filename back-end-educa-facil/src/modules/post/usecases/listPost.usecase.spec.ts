@@ -1,7 +1,7 @@
-import { ListPostUseCase } from './listPost.usecase';
-import { HttpException, Logger } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { mockPostService, mockListPostData } from './__mocks__/listPost.usecase.mock';
+import { HttpException, Logger } from '@nestjs/common';
+import { mockListPostData, mockPostService } from './__mocks__/listPost.usecase.mock';
+import { ListPostUseCase } from './listPost.usecase';
 
 describe('ListPostUseCase', () => {
   let useCase: ListPostUseCase;
@@ -15,7 +15,7 @@ describe('ListPostUseCase', () => {
   it('deve retornar a lista de posts com os campos esperados', async () => {
     mockPostService.listPosts.mockResolvedValue(mockListPostData);
     const result = await useCase.execute({ offset: 0, limit: 10 });
-    expect(mockPostService.listPosts).toHaveBeenCalledWith(undefined, 0, 10);
+    expect(mockPostService.listPosts).toHaveBeenCalledWith({ offset: 0, limit: 10 });
     expect(result).toEqual(mockListPostData);
     expect(Array.isArray(result.ListPost)).toBe(true);
     if (Array.isArray(result.ListPost)) {

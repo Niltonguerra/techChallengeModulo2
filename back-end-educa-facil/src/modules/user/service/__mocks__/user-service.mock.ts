@@ -1,8 +1,8 @@
-import { IUser } from '../../entities/interfaces/user.interface';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { FindOneUserReturnMessageDTO } from '../../dtos/returnMessageCRUD.dto';
 import { LoginUsuarioInternoDTO } from '@modules/user/dtos/AuthUser.dto';
 import { UserPermissionEnum } from '../../../auth/Enum/permission.enum';
+import { FindOneUserReturnMessageDTO } from '../../dtos/returnMessageCRUD.dto';
+import { IUser } from '../../entities/interfaces/user.interface';
 import { UserStatusEnum } from '../../enum/status.enum';
 
 export const userMock: IUser = {

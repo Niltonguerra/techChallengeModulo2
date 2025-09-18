@@ -1,25 +1,25 @@
+import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 import { APP_GUARD } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
+import { CreateUserDTO } from '../dtos/createUser.dto';
+import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
+import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
 import { CreateUserUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
 import {
-  mockJwtService,
-  mockCreateUserUseCase,
-  mockFindOneUserUseCase,
   mockAppGuard,
   mockCreateUserDTO,
-  mockReturnMessageDTO,
-  mockToken,
-  mockReturnMessageDTOValid,
+  mockCreateUserUseCase,
   mockFindOneUserQuery,
   mockFindOneUserReturn,
+  mockFindOneUserUseCase,
+  mockJwtService,
+  mockReturnMessageDTO,
+  mockReturnMessageDTOValid,
+  mockToken,
 } from './__mocks__/user.controller.mock';
-import { JwtService } from '@nestjs/jwt';
-import { CreateUserDTO } from '../dtos/createUser.dto';
-import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
-import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
-import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
+import { UserController } from './user.controller';
 // importação removida, guard será sobrescrito via overrideGuard
 
 describe('UserController', () => {
@@ -81,7 +81,6 @@ describe('UserController', () => {
       name: 'Fail',
       photo: '',
       permission: UserPermissionEnum.ADMIN,
-      notification: false,
     };
     jest.spyOn(createUserUseCase, 'validationEmailCreateUser').mockRejectedValue(new Error('erro'));
     await expect(controller.createUser(dto)).rejects.toThrow('erro');
