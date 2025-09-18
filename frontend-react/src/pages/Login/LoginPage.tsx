@@ -37,11 +37,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           justifyContent="center"
           spacing={{ xs: 4, md: 2 }}
         >
-          <Grid item xs={12} md={6}>
+          <Grid container spacing={{ xs: 12, md: 6 }}>
             <LoginForm onLogin={onLogin} />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid container spacing={{ xs: 12, md: 6 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
               <Divider
                 orientation="vertical"

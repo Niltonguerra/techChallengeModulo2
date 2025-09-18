@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import type { User, UserDataReceived } from '../../types/header-types';
 
 import {
   Box,
@@ -10,8 +11,6 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-import type { User, UserDataReceived } from '../../types/header-types';
-import './_LoginPage.scss';
 interface LoginFormProps {
   onLogin: (userData: User, token: string) => void;
 }
@@ -44,7 +43,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
         navigate('/');
       }
     } catch (err) {
-      setError('Utilizador ou senha inválidos. Tente novamente.');
+      setError('Email ou senha inválidos. Tente novamente.');
       console.error('Erro de login:', err);
     } finally {
       setLoading(false);
