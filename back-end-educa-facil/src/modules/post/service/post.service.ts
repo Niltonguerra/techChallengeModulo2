@@ -114,7 +114,6 @@ export class PostService {
         updated_at: p.updated_at,
         user_name: p.user?.name,
         user_email: p.user?.email,
-        user_social_media: p.user?.social_midia,
       })),
     };
     return postDataReturn;
@@ -175,7 +174,6 @@ export class PostService {
           updated_at: post.updated_at,
           user_name: post.user.name,
           user_email: post.user.email,
-          user_social_media: post.user.social_midia,
         },
       ],
     };

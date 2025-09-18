@@ -1,16 +1,7 @@
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import {
-  IsString,
-  IsEmail,
-  IsBoolean,
-  IsOptional,
-  IsObject,
-  IsNotEmpty,
-  IsUrl,
-  Length,
-} from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, IsUrl, Length } from 'class-validator';
 import { UserPermissionEnum } from '../../auth/Enum/permission.enum';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDTO {
   @ApiProperty()
@@ -36,17 +27,8 @@ export class CreateUserDTO {
   @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   email: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsObject({ message: systemMessage.validation.isObject })
-  social_midia?: Record<string, string>;
-
   @ApiProperty()
   @IsString({ message: systemMessage.validation.isString })
   @IsNotEmpty({ message: systemMessage.validation.isNotEmpty })
   permission: UserPermissionEnum;
-
-  @ApiProperty()
-  @IsBoolean({ message: systemMessage.validation.isBoolean })
-  notification: boolean;
 }

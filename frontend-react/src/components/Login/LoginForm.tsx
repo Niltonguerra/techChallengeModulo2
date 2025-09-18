@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import type { User } from '../../types/header-types';
 
 import {
   Box,
@@ -11,6 +10,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 
+import type { User, UserDataReceived } from '../../types/header-types';
+import './_LoginPage.scss';
 interface LoginFormProps {
   onLogin: (userData: User, token: string) => void;
 }
@@ -32,10 +33,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
         email: email,
         password: senha,
       });
-      const userData: User = response.data.user;
+
+      const userData: UserDataReceived = response.data.user;
       const token: string = response.data.token;
       onLogin(userData, token);
-      navigate('/');
+
+      if (userData.permission === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError('Utilizador ou senha inválidos. Tente novamente.');
       console.error('Erro de login:', err);

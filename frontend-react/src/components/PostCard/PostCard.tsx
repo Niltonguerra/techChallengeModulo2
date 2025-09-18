@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { deletePost, /*updatePost*/ } from "../../service/api";
+import { deletePost, /*updatePost*/ } from "../../service/post";
 import type { Post } from "../../types/post";
 import PostModal from "../PostModal/PostModal";
 import "./PostCard.scss";
-import { usePosts } from "../../pages/store/post";
+import { usePosts } from "../../store/post";
 
 interface PostCardProps {
   post: Post;
@@ -37,7 +37,7 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
   return (
     <>
       <div className="post-card">
-        <img src={post.image} alt={post.title} className="post-image" />
+        <img src={post.image as string} alt={post.title} className="post-image" />
         <div className="post-content">
           <div className="post-content-main">
             <h3>{post.title}</h3>
@@ -78,7 +78,7 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
                 </button>
                 {menuOpen && (
                   <ul className="menu">
-                    <li onClick={() => navigate(`/admin/post/${post.id}/edit`)}>Editar</li>
+                    <li onClick={() => navigate(`/admin/post/edit/${post.id}`)}>Editar</li>
                     <li
                       onClick={async () => {
                         if (confirm("Tem certeza que deseja excluir esta postagem?")) {

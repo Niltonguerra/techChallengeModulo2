@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link as RouterLink } from 'react-router-dom';
 import { Box, Typography, Link } from '@mui/material';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -16,7 +16,12 @@ const RegisterBox: React.FC = () => {
         Faça o seu registo
       </Typography>
 
-      <Link href="#" underline="hover" sx={{ display: 'block', mb: 2 }}>
+      <Link
+        component={RouterLink}
+        to="/aluno/create/user"
+        underline="hover"
+        sx={{ display: 'block', mb: 2 }}
+      >
         <Typography color="primary">
           Não possui registo? Registe-se aqui
         </Typography>

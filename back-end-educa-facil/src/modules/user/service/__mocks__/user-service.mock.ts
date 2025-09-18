@@ -12,9 +12,7 @@ export const userMock: IUser = {
   email: 'test@email.com',
   password: 'hashedpassword',
   permission: UserPermissionEnum.USER,
-  notification: true,
   is_active: UserStatusEnum.ACTIVE,
-  social_midia: { facebook: 'fb.com/test' },
 };
 
 export const userCreateMock: Partial<IUser> = {
@@ -36,8 +34,6 @@ export const returnMessageFindOneMock: FindOneUserReturnMessageDTO = {
     name: userMock.name,
     photo: userMock.photo,
     email: userMock.email,
-    social_midia: userMock.social_midia!,
-    notification: userMock.notification,
   },
 };
 

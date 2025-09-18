@@ -3,19 +3,15 @@ export type Post = {
     title: string;
     description: string;
     introduction: string;
-    image: string;
+    image: string | null | File;
     content_hashtags: string[];
     style_id: string;
-    external_link: { url: string };
+    external_link: {[key: string]: string | undefined;};
     created_at: Date;
     updated_at: Date;
     user_name: string;
     user_email: string;
-    user_social_media: {
-        twitter?: string;
-        linkedin?: string;
-        [key: string]: string | undefined;
-    };
+    user_social_media: {[key: string]: string | undefined;};
 }
 
 export type PostSearch = {
@@ -32,8 +28,7 @@ export type PostSearch = {
     limit?: number;
 }
 
-export type ResutApi = {
-
+export type ResultApi = {
     message: string;
     statusCode: number;
     limit: number;
@@ -47,27 +42,3 @@ export type DeleteResponse = {
     statusCode: number;
     deletedId?: string;
 }
-
-/*
-export type CreatePostData = {
-    title: string;
-    description: string;
-    introduction: string;
-    image: string;
-    content_hashtags: string[];
-    style_id: string;
-    external_link: { url: string };
-    user_id: string;
-}
-
-export type UpdatePostData = {
-    id: string;
-    title?: string;
-    description?: string;
-    introduction?: string;
-    image?: string;
-    content_hashtags?: string[];
-    style_id?: string;
-    external_link?: { url: string };
-} 
-    */

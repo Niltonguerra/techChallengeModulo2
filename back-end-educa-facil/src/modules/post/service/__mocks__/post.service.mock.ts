@@ -10,12 +10,10 @@ export const mockUser: User = {
   password: 'senha',
   photo: '',
   email: 'email@email.com',
-  social_midia: {},
   created_at: new Date(),
   updated_at: new Date(),
   is_active: UserStatusEnum.PENDING,
   permission: UserPermissionEnum.USER,
-  notification: false,
   posts: [],
 };
 
