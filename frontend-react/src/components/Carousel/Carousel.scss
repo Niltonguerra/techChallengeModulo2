@@ -40,7 +40,7 @@
     .slide-overlay {
       border-radius: var(--border-radius-md);
       margin: 80px 120px;
-       color: #fff;
+      color: #fff;
       max-width: 500px;
       position: absolute;
       left: 0;
@@ -117,7 +117,7 @@
 
     .slide-overlay {
       padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md) var(--spacing-lg);
-      margin: 0 0 var(--spacing-lg) var(--spacing-lg);
+      margin: 40px auto !important;
       max-width: 90vw;
 
       h2 {
@@ -146,7 +146,8 @@
     .slide-overlay {
       padding: 0px 40px 20px 40px; 
       margin: 0 auto;        
-      text-align: center;      
+      text-align: center;
+      
 
       h2 {
         font-size: var(--font-size-md);

@@ -9,10 +9,6 @@ export class User {
   photo: string;
   @ApiProperty()
   email: string;
-  @ApiProperty()
-  social_midia: Record<string, string>;
-  @ApiProperty()
-  notification: boolean;
 }
 export class FindOneUserReturnMessageDTO {
   @ApiProperty()

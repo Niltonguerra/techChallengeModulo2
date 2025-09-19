@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { usePosts } from "../../pages/store/post";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -8,14 +7,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Post } from "../../types/post";
 import PostModal from "../PostModal/PostModal";
 import "./Carousel.scss";
-
-interface CarroselProps {
-  posts: Post[];
-}
+import { usePosts } from "../../store/post";
 
 
 export default function Carrosel () {
-  const { posts, setPosts } = usePosts();
+  const { posts } = usePosts();
   const [open, setOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   console.log(posts);
@@ -51,7 +47,7 @@ export default function Carrosel () {
                       className="btn-slide"
                       onClick={() => handleOpen(post)}
                     >
-                      Ir para Atividade →
+                      Ir para Atividade
                     </button>
                   </div>
                 </div>

@@ -45,13 +45,6 @@ export class User implements IUser {
   email: string;
 
   @Column({
-    nullable: true,
-    type: 'jsonb',
-    name: 'social_midia',
-  })
-  social_midia: Record<string, string>;
-
-  @Column({
     type: 'varchar',
     name: 'permission',
   })
@@ -62,12 +55,6 @@ export class User implements IUser {
     name: 'is_active',
   })
   is_active: UserStatusEnum;
-
-  @Column({
-    type: 'boolean',
-    name: 'notification',
-  })
-  notification: boolean;
 
   @CreateDateColumn({
     name: 'created_at',

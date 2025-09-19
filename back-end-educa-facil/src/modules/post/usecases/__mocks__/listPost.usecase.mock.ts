@@ -24,7 +24,6 @@ export const mockListPostData: ReturnListPost = {
       updated_at: new Date(),
       user_name: '',
       user_email: '',
-      user_social_media: {},
     },
   ],
 };

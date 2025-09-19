@@ -1,8 +1,16 @@
 export interface User {
   name: string;
   email: string;
-  avatar?: string;
-  role?: string;
+  photo: string;
+  id: string;
+}
+
+export interface UserDataReceived {
+  name: string;
+  email: string;
+  photo: string;
+  id: string;
+  permission: string;
 }
 
 export interface NavigationItem {
@@ -19,9 +27,9 @@ export interface UserMenuItem {
 
 export interface HeaderProps {
   isLoggedIn?: boolean;
-  user?: User;
+  user: User | null;
   onLogout?: () => void;
-  onLogin?: () => void;
+  onLogin?: (userData: User, token: string) => void;
   onSearch?: (query: string) => void;
   onNavigate?: (path: string) => void;
 }

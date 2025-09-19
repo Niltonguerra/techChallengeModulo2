@@ -1,10 +1,20 @@
 .post-list-wrapper {
-  padding-top: 60px;
+  padding-top: 40px;
   padding-left: 120px;
   padding-right: 120px;
   box-sizing: border-box;
   width: 100%;
+  position: relative;
 
+  
+  .back-actions{
+    justify-content: start;
+    align-items: center;
+    display: flex;
+    width: 100%;
+  }
+  
+  
   .post-list {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -34,8 +44,10 @@
 
 .post-list-header {
   display: flex;
-  justify-content: flex-end; // joga o botão para a direita
+  justify-content: space-between; // joga o botão para a direita
   margin-bottom: 20px;
+  gap: 20px;
+  align-items: center;
 
 .create-btn {
         font-family: 'Inter', sans-serif;
