@@ -69,7 +69,7 @@ export default function PostModal({
                 </Grid>
             </DialogTitle>
 
-            <DialogContent dividers>
+            <DialogContent dividers sx={{ overflow: "hidden" }}>
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={16}>
                     <Grid size={16}>
                         <Typography variant="h4">

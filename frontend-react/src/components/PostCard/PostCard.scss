@@ -67,6 +67,7 @@
       flex-direction: column;
       justify-content: flex-end;
       margin-top: auto;
+      padding-top: 8px;
 
       .post-author,
       .post-date {
@@ -74,6 +75,10 @@
         font-weight: var(--font-weight-normal);
         font-size: var(--font-size-xs);
         color: var(--text-secondary);
+      }
+
+      .post-date {
+        padding-bottom: 8px;
       }
 
       .post-btn {
