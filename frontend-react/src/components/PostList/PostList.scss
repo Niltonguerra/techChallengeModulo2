@@ -6,15 +6,14 @@
   width: 100%;
   position: relative;
 
-  
-  .back-actions{
-    justify-content: start;
+  .admin-actions{
+    justify-content: space-between;
     align-items: center;
     display: flex;
     width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
   }
-  
-  
   .post-list {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
