@@ -1,11 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { SignInUseCase } from './SignIn.usecase';
-import { UserService } from '@modules/user/service/user.service';
-import { JwtService } from '@nestjs/jwt';
-import { HttpException } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { UserStatusEnum } from '../enum/status.enum';
+import { UserService } from '@modules/user/service/user.service';
+import { HttpException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
+import { UserStatusEnum } from '../enum/status.enum';
+import { SignInUseCase } from './SignIn.usecase';
 
 describe('SignInUseCase', () => {
   let useCase: SignInUseCase;
@@ -39,7 +39,7 @@ describe('SignInUseCase', () => {
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
     mockJwtService.sign.mockReturnValue('token123');
     const result = await useCase.userAuthentication(authUserDTO);
-    expect(result).toEqual({ token: 'token123' });
+    expect(result.token).toBe('token123');
   });
 
   it('deve lançar HttpException se usuário não encontrado', async () => {

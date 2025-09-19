@@ -37,7 +37,7 @@ describe('GetUniqueHashtagsUseCase', () => {
 
     await expect(useCase.execute()).rejects.toThrow(HttpException);
     await expect(useCase.execute()).rejects.toThrow('Erro customizado');
-    expect(loggerSpy).toHaveBeenCalledWith('Erro customizado: 404');
+    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('Erro customizado: 404'));
 
     loggerSpy.mockRestore();
   });

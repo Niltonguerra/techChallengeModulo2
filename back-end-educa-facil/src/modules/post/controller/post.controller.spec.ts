@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CreatePostUseCase } from '../usecases/createPost.usecase';
 import { DeletePostUseCase } from '../usecases/deletePost.usecase';
 import { GetPostUseCase } from '../usecases/getPost.usecase';
+import { GetUniqueHashtagsUseCase } from '../usecases/getUniqueHashtags.usecase';
 import { ListPostUseCase } from '../usecases/listPost.usecase';
 import { UpdatePostUseCase } from '../usecases/updatePost.usecase';
 import {
@@ -24,6 +25,7 @@ describe('PostController', () => {
   let mockUpdatePostUseCase: { execute: jest.Mock };
   let mockGetPostUseCase: { getPostUseCaseById: jest.Mock };
   let mockDeletePostUseCase: { deletePostUseCase: jest.Mock };
+  let mockGetUniqueHashtagsUseCase: { GetUniqueHashtagsUseCase: jest.Mock };
 
   beforeEach(async () => {
     mockListPostUseCase = { execute: jest.fn() };
@@ -31,6 +33,7 @@ describe('PostController', () => {
     mockUpdatePostUseCase = { execute: jest.fn() };
     mockGetPostUseCase = { getPostUseCaseById: jest.fn() };
     mockDeletePostUseCase = { deletePostUseCase: jest.fn() };
+    mockGetUniqueHashtagsUseCase = { GetUniqueHashtagsUseCase: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostController],
@@ -40,6 +43,7 @@ describe('PostController', () => {
         { provide: UpdatePostUseCase, useValue: mockUpdatePostUseCase },
         { provide: GetPostUseCase, useValue: mockGetPostUseCase },
         { provide: DeletePostUseCase, useValue: mockDeletePostUseCase },
+        { provide: GetUniqueHashtagsUseCase, useValue: mockGetUniqueHashtagsUseCase },
         { provide: JwtService, useValue: { verify: jest.fn(), sign: jest.fn() } }, // <-- CORREÇÃO AQUI
       ],
     }).compile();

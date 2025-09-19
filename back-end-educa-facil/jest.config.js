@@ -30,5 +30,7 @@ module.exports = {
     'main.ts$',
     '.*module\\.ts$',
   ],
+  modulePathIgnorePatterns: ["<rootDir>/dist/"],
+  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/dist/"],
   testEnvironment: 'node',
 };
