@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../entities/user.entity';
-import { Repository } from 'typeorm';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { userMock, userCreateMock } from './__mocks__/user-service.mock';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
+import { userCreateMock, userMock } from './__mocks__/user-service.mock';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
@@ -50,8 +50,6 @@ describe('UserService', () => {
         name: userMock.name,
         photo: userMock.photo,
         email: userMock.email,
-        social_midia: userMock.social_midia,
-        notification: userMock.notification,
       },
     });
   });
@@ -77,6 +75,7 @@ describe('UserService', () => {
       email: userMock.email,
       permission: userMock.permission,
       isActive: userMock.is_active,
+      photo: userMock.photo,
     });
   });
 
