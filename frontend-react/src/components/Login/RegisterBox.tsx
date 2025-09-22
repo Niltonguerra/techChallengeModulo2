@@ -1,42 +1,55 @@
 import React from 'react';
-import phoneIcon from '../assets/img/chamada-telefonica.svg';
-import emailIcon from '../assets/img/o-email.svg';
-import { Link } from 'react-router-dom';
-import './_LoginPage.scss';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Typography, Link } from '@mui/material';
+import PhoneIcon from '@mui/icons-material/Phone';
+import EmailIcon from '@mui/icons-material/Email';
 
 const RegisterBox: React.FC = () => {
   return (
-    <div className="cadastro">
-      <h1>Faça seu cadastro</h1>
-      <Link to="/aluno/create/user">
-        <p className="txt-sec cadastro-dados">
-          Não possui cadastro? Cadastre-se aqui
-        </p>
-      </Link>
-      <div></div>
-      <p className="txt-sec">Dúvidas ou precisa de alguma ajuda?</p>
+    <Box sx={{ padding: { xs: '0', md: '0 32px' } }}>
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 600 }}
+      >
+        Faça o seu registo
+      </Typography>
 
-      {}
-      <div className="contato-wrapper">
-        <div className="contato-item">
-          <img src={phoneIcon} width="18" alt="Ícone de telefone" />
-          <a className="cadastro-dados" href="tel:9999999999">
+      <Link
+        component={RouterLink}
+        to="/aluno/create/user"
+        underline="hover"
+        sx={{ display: 'block', mb: 2 }}
+      >
+        <Typography color="primary">
+          Não possui registo? Registe-se aqui
+        </Typography>
+      </Link>
+
+      <Typography color="primary" sx={{ mb: 2 }}>
+        Dúvidas ou precisa de alguma ajuda?
+      </Typography>
+
+      <Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+          <PhoneIcon fontSize="small" color="primary" />
+          <Link href="tel:9999999999" underline="hover" color="primary">
             (99) 9999-9999
-          </a>
-        </div>
-        <div className="contato-item">
-          <img src={emailIcon} width="18" alt="Ícone de email" />
-          <a
-            className="cadastro-dados"
-            href="mailto:educacaofacilfiap@gmail.com
-"
+          </Link>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <EmailIcon fontSize="small" color="primary" />
+          <Link
+            href="mailto:educacaofacilfiap@gmail.com"
+            underline="hover"
+            color="primary"
           >
-            educacaofacilfiap@gmail.com{' '}
-          </a>
-        </div>
-      </div>
-      {}
-    </div>
+            educacaofacilfiap@gmail.com
+          </Link>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
