@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { usePosts } from "../../store/post";
-import { getListTodos } from "../../service/post";
+import Carrosel from "../../components/Carousel/Carousel";
 import PostList from "../../components/PostList/PostList";
 import SearchPost from "../../components/searchPost/SearchPost";
-import Carrosel from "../../components/Carousel/Carousel";
+import { getListTodos } from "../../service/post";
+import { usePosts } from "../../store/post";
 
 function Home() {
   const { setPosts } = usePosts();
@@ -31,8 +31,8 @@ function Home() {
   return (
     <div className="page-container">
       <Carrosel />
-      <div style={{paddingBlock:80, paddingInline:120}}><SearchPost/></div>
-  
+      <div className="search-post"><SearchPost /></div>
+
       <PostList />
     </div>
   );

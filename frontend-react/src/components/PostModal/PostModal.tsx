@@ -13,7 +13,7 @@ export type PostFormValues = {
     title: string;
     description: string;
     introduction?: string;
-    external_link?: {[key: string]: string | undefined;};
+    external_link?: { [key: string]: string | undefined; };
     content_hashtags: string[];
     image?: string | null | File;
     updated_at: Date;
@@ -69,7 +69,7 @@ export default function PostModal({
                 </Grid>
             </DialogTitle>
 
-            <DialogContent dividers>
+            <DialogContent dividers sx={{ overflowX: "hidden" }}>
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={16}>
                     <Grid size={16}>
                         <Typography variant="h4">

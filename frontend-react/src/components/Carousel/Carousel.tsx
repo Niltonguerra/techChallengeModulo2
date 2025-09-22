@@ -47,7 +47,7 @@ export default function Carrosel () {
                       className="btn-slide"
                       onClick={() => handleOpen(post)}
                     >
-                      Ir para Atividade →
+                      Ir para Atividade
                     </button>
                   </div>
                 </div>

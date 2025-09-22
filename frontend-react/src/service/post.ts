@@ -1,8 +1,8 @@
 import axios, { type AxiosInstance } from "axios";
 import type { FormPostData } from "../types/form-post";
-import type { Post, ResultApi, DeleteResponse } from "../types/post";
+import type { DeleteResponse, Post, ResultApi } from "../types/post";
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE4MjZkOWJmLTdkNDAtNDI1Yi1hOGI5LWMwMTUwOWMyMmY3ZiIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzU3OTgzNjYwLCJleHAiOjE3NTgwNzAwNjB9.i1HuAVJpcNDhN4oNLt3Hbk35YB6AxRMk56lz2JeMQL4";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTgzMDM3MTYsImV4cCI6MTc1ODM5MDExNn0.N90pzkIFruDy1JPNI5Uk1-R3auRlEnQkY3aiFyou_Pc";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 let api: AxiosInstance | null = null;
@@ -13,7 +13,7 @@ export function getApi(): AxiosInstance {
     const token = localStorage.getItem("token") || TOKEN;
 
     api = axios.create({
-      baseURL:  API_URL,
+      baseURL: API_URL,
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     });
   }
@@ -46,26 +46,26 @@ export const getHashtags = async () => {
 
 
 export const getListById = async (id: string): Promise<ResultApi> => {
-    const api = getApi();
-    const response = await api.get<ResultApi>(`/post/${id}`);
-    if (response.data.statusCode === 200) {
-      return response.data;
-    }
-   throw new Error(`problemas para buscar os dados para o id ${id}.`);
+  const api = getApi();
+  const response = await api.get<ResultApi>(`/post/${id}`);
+  if (response.data.statusCode === 200) {
+    return response.data;
+  }
+  throw new Error(`problemas para buscar os dados para o id ${id}.`);
 };
 
 export const updatePost = async (data: Partial<FormPostData>)
   : Promise<{ statusCode: number, message: string }> => {
-    const api = getApi();
-    const response = await api.put("/post", data);
-    return response.data;
+  const api = getApi();
+  const response = await api.put("/post", data);
+  return response.data;
 };
 
 export const createPost = async (data: FormPostData)
   : Promise<{ statusCode: number; message: string }> => {
-    const api = getApi();
-    const response = await api.post("/post", data);
-    return response.data;
+  const api = getApi();
+  const response = await api.post("/post", data);
+  return response.data;
 };
 export const deletePost = async (id: string): Promise<DeleteResponse> => {
   const api = getApi();

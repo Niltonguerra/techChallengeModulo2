@@ -40,7 +40,7 @@
     .slide-overlay {
       border-radius: var(--border-radius-md);
       margin: 80px 120px;
-       color: #fff;
+      color: #fff;
       max-width: 500px;
       position: absolute;
       left: 0;
@@ -117,7 +117,7 @@
 
     .slide-overlay {
       padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md) var(--spacing-lg);
-      margin: 0 0 var(--spacing-lg) var(--spacing-lg);
+      margin: 40px auto !important;
       max-width: 90vw;
 
       h2 {
@@ -134,14 +134,20 @@
 
 /* Mobile */
 @media (max-width: 700px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none;
+  }
+    
   .carrosel-container {
-    height: 220px;
+    height: 100vh;
     margin-bottom: var(--spacing-xl);
 
     .slide-overlay {
-      padding: var(--spacing-md);
-      margin: 0 0 var(--spacing-sm) var(--spacing-sm);
-      max-width: 95vw;
+      padding: 0px 40px 20px 40px; 
+      margin: 0 auto;        
+      text-align: center;
+      
 
       h2 {
         font-size: var(--font-size-md);
@@ -149,7 +155,7 @@
       }
 
       p {
-        margin-bottom: var(--spacing-sm);
+        display: none;
       }
 
       .btn-slide {
