@@ -1,8 +1,12 @@
 import { Body, Controller, Get, Post, Query, UseGuards, UsePipes } from '@nestjs/common';
 import { CreateUserDTO } from '../dtos/createUser.dto';
-import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
+import {
+  FindOneUserReturnMessageDTO,
+  ListUserReturnMessageDTO,
+} from '../dtos/returnMessageCRUD.dto';
 import { CreateUserUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
+import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
 import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
 import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
@@ -26,6 +30,7 @@ export class UserController {
   constructor(
     private readonly createPostUseCase: CreateUserUseCase,
     private readonly findOneUserUseCase: FindOneUserUseCase,
+    private readonly listAuthorsUseCase: listAuthorsUseCase,
   ) {}
 
   @Post('create')
@@ -58,5 +63,17 @@ export class UserController {
   ): Promise<FindOneUserReturnMessageDTO> {
     const findOneUser = await this.findOneUserUseCase.findOneUserUseCase(queryParams);
     return findOneUser;
+  }
+
+  @Get('authors')
+  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
+  @ApiBearerAuth('JWT-Auth')
+  @ApiOperation({ summary: 'List all users who are authors of a post' })
+  @ApiOkResponse({ type: [ListUserReturnMessageDTO] })
+  async findAllAuthors(
+    @Query() queryParams: FindOneUserQueryParamsDTO,
+  ): Promise<ListUserReturnMessageDTO> {
+    const authors = await this.listAuthorsUseCase.listAuthors(queryParams);
+    return authors;
   }
 }

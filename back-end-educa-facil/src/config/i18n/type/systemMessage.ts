@@ -28,6 +28,7 @@ export type SystemMessageType = {
     errorlogin: string;
     sucessCreatePost: string;
     sucessCreateUser: string;
+    successListUsers: string;
     sucessCreateUserValidationEmail: string;
     errorCreatePost: string;
     sucessUpdatePost: string;

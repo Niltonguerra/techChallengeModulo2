@@ -31,6 +31,7 @@ export const systemMessage: SystemMessageType = {
     errorlogin: 'credenciais inválidas',
     sucessCreatePost: 'Post criado com sucesso',
     sucessCreateUser: 'Usuário criado com sucesso',
+    successListUsers: 'Usuários listados com sucesso',
     errorCreatePost: 'Erro ao criar o post',
     sucessUpdatePost: 'Post atualizado com sucesso',
     errorUpdatePost: 'Erro ao atualizar o post',

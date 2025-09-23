@@ -18,3 +18,12 @@ export class FindOneUserReturnMessageDTO {
   @ApiProperty()
   user?: User;
 }
+
+export class ListUserReturnMessageDTO {
+  @ApiProperty()
+  statusCode: number;
+  @ApiProperty()
+  message: string;
+  @ApiProperty({ type: [User] })
+  users?: User[];
+}

@@ -45,7 +45,7 @@ export default function SearchPost() {
 
 	// advanced filters select options
 	const [contentOptions, setContentOptions] = useState<string[]>([]);
-	const [authorPostsOptions, setAuthorPostsOptions] = useState<{ _id: string; name: string }[]>([]);
+	const [authorPostsOptions, setAuthorPostsOptions] = useState<{ id: string; name: string }[]>([]);
 
 	const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
 
@@ -136,7 +136,7 @@ export default function SearchPost() {
 			try {
 				const [contentResponse, authorResponse] = await Promise.all([
 					api.get('/post/hashtags'),
-					api.get('/post/author-options').catch(() => ({ data: [] })), // in case the endpoint doesn't exist yet
+					api.get('/user/authors').catch(() => ({ data: [] })), // in case the endpoint doesn't exist yet
 				]);
 
 				setContentOptions(contentResponse.data);
@@ -263,7 +263,7 @@ export default function SearchPost() {
 										if (!selected) {
 											return <span style={{ color: "#888" }}>Autor</span>;
 										}
-										const author = authorPostsOptions.find((opt) => opt._id === selected);
+										const author = authorPostsOptions.find((opt) => opt.id === selected);
 										return author ? author.name : selected;
 									}}
 								>
@@ -272,7 +272,7 @@ export default function SearchPost() {
 										Selecione
 									</MenuItem>
 									{authorPostsOptions.map((option) => (
-										<MenuItem key={option._id} value={option._id}>
+										<MenuItem key={option.id} value={option.id}>
 											{option.name}
 										</MenuItem>
 									))}

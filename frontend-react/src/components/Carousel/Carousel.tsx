@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -11,9 +11,18 @@ import { usePosts } from "../../store/post";
 
 
 export default function Carrosel () {
-  const { posts } = usePosts();
+  
   const [open, setOpen] = useState(false);
+  const [ recentPosts, setRecentPosts ] = useState<Post[]>([]);
+  const { posts } = usePosts();
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  // getting just the most recent posts for the carousel
+  useEffect(() => {
+    if(!posts || recentPosts.length) return;
+    setRecentPosts(posts.slice(0, 5));
+  }, [posts, recentPosts.length]);
+
   console.log(posts);
   const handleOpen = (post: Post) => {
     setSelectedPost(post);
@@ -33,7 +42,7 @@ export default function Carrosel () {
           modules={[Navigation, Pagination, Mousewheel, Keyboard, Autoplay]}
           className="mySwiper"
         >
-          {posts.slice(0, 5).map((post) => (
+          {recentPosts.slice(0, 5).map((post) => (
             <SwiperSlide key={post.id}>
               <div
                 className="slide-content"

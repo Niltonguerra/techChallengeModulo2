@@ -4,10 +4,14 @@ import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
+import {
+  FindOneUserReturnMessageDTO,
+  ListUserReturnMessageDTO,
+} from '../dtos/returnMessageCRUD.dto';
 import { LoginUsuarioInternoDTO } from '@modules/user/dtos/AuthUser.dto';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { IUser } from '../entities/interfaces/user.interface';
+import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 
 @Injectable()
 export class UserService {
@@ -75,6 +79,30 @@ export class UserService {
       permission: user.permission,
       isActive: user.is_active,
       photo: user.photo,
+    };
+  }
+
+  async listAuthors(field: string, value: string): Promise<ListUserReturnMessageDTO> {
+    const qb = this.userRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.posts', 'post') // we only want users who are authors of at least one post. thats why the inner join.
+      .select(['user.id', 'user.name'])
+      .distinct(true)
+      .orderBy('user.name', 'ASC')
+      .take(20);
+
+    qb.andWhere('user.permission = :perm', { perm: UserPermissionEnum.ADMIN });
+
+    if (field && value) {
+      qb.andWhere(`user.${field} = :value`, { value });
+    }
+
+    const users = await qb.getMany();
+
+    return {
+      statusCode: 200,
+      message: systemMessage.ReturnMessage.successListUsers,
+      users,
     };
   }
 }
