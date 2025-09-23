@@ -4,7 +4,6 @@ import PostList from "../../components/PostList/PostList";
 import { getListTodos } from "../../service/post";
 import { usePosts } from "../../store/post";
 
-
 function Admin() {
   const {setPosts} = usePosts();
   const [loading, setLoading] = useState(true);
