@@ -1,3 +1,4 @@
+import './polyfills/crypto';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { setupDocumentation } from 'docs/documentation';
