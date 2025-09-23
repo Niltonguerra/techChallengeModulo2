@@ -26,4 +26,4 @@ import { UpdatePostUseCase } from './usecases/updatePost.usecase';
   ],
   controllers: [PostController],
 })
-export class PostModule { }
+export class PostModule {}
