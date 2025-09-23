@@ -1,4 +1,5 @@
-import './polyfills/crypto';
+import { webcrypto } from 'crypto';
+(globalThis as { crypto: Crypto }).crypto = webcrypto as Crypto;
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { setupDocumentation } from 'docs/documentation';
