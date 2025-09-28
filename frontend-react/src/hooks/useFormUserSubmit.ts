@@ -69,7 +69,7 @@ export function useFormUserSubmit({ form, permission, setErrors, setLoading }: U
     try {
       const returnData = await createUser(dataParaEnvio);
       if (returnData.statusCode === 201) {
-        showSnackbar({ message: 'Usuário criado com sucesso!', severity: 'success' });
+        showSnackbar({ message: 'Usuário criado com sucesso, por favor acesse seu email para validar o mesmo', severity: 'success' });
         setLoading(false);
         navigate('/');
     }
