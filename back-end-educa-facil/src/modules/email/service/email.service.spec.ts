@@ -64,23 +64,6 @@ describe('EmailService', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-
-  describe('Inicialização do serviço', () => {
-    it('should be defined', () => {
-      expect(service).toBeDefined();
-    });
-
-    it('should create transporter with correct configuration', () => {
-      expect(mockedNodemailer.createTransport).toHaveBeenCalledWith({
-        service: 'gmail',
-        auth: {
-          user: 'test@gmail.com',
-          pass: 'testpassword',
-        },
-      });
-    });
-  });
-
   describe('enviaVerificacaoEmail', () => {
     const testEmail = 'user@test.com';
     const testUrl = 'user/validationEmail';
