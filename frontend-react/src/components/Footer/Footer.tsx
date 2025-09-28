@@ -36,20 +36,18 @@ export default function Footer() {
                 </div>
 
                 {/* Categorias */}
+                {hashtags.length > 0 ? (
                 <div className="hashtags">
                     <h3>Algumas hashtags</h3>
                     <div className="list">
-                        {hashtags.length > 0 ? (
-                            hashtags.map((tag) => (
-                                <Link key={tag} to="#">
-                                    <Typography sx={{ color: theme.palette.secondary.contrastText }}>{tag}</Typography>
-                                </Link>
-                            ))
-                        ) : (
-                            <p>Carregando hashtags...</p>
-                        )}
+                        {hashtags.map((tag) => (
+                            <Link key={tag} to="#">
+                                <Typography sx={{ color: theme.palette.secondary.contrastText }}>{tag}</Typography>
+                            </Link>
+                        ))}
                     </div>
                 </div>
+                ) : null}
             </div>
 
             <div className="footer-bottom">

@@ -51,8 +51,6 @@ export default function SearchPost() {
 
 	const { showSnackbar } = useSnackbar();
 
-	// const api = axios.create({ baseURL: "http://localhost:3000" });
-
 	const offset = 0;
 	const limit = 20;
 

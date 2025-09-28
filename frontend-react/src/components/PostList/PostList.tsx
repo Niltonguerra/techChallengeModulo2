@@ -32,16 +32,11 @@ export default function PostList({ isAdmin = false }: PostListProps) {
 
   return (
     <div className="post-list-wrapper">
-      {isAdmin && (
-        <div className="back-actions">
-          <Button type="button" onClick={() => navigate("/")} style={{ marginBottom: 16 }} variant="outlined">Voltar</Button>
-        </div>
-      )}
       <div className="post-list-header">
         <h2>Postagens</h2>
         {isAdmin && (
           <div className="admin-actions">
-            <Button type="button" onClick={() => navigate("/")} style={{ marginBottom: 16 }} variant="outlined">Voltar</Button>
+            <Button type="button" onClick={() => navigate("/home")} style={{ marginBottom: 16 }} variant="outlined">Voltar</Button>
             <Button className="create-btn" onClick={() => navigate("/admin/post/create")}>Criar nova postagem</Button>
           </div>
         )}

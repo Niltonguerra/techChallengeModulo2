@@ -10,6 +10,7 @@ import {
   Button,
   CircularProgress,
 } from '@mui/material';
+import { loginUser } from '../../service/user';
 
 interface LoginFormProps {
   onLogin: (userData: User, token: string) => void;
@@ -28,19 +29,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:3000/user/login', {
-        email: email,
-        password: senha,
-      });
-
-      const userData: UserDataReceived = response.data.user;
-      const token: string = response.data.token;
+      const response = await loginUser(email, senha);
+      const userData: UserDataReceived = response.user;
+      const token: string = response.token;
       onLogin(userData, token);
 
       if (userData.permission === 'admin') {
         navigate('/admin');
       } else {
-        navigate('/');
+        navigate('/home');
       }
     } catch (err) {
       setError('Email ou senha inválidos. Tente novamente.');

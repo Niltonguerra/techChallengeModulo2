@@ -57,7 +57,8 @@ function App() {
       <SnackBarComponent />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/admin">
             <Route path="post">
               <Route path="create" element={<CreateEditPostFormPage />} />

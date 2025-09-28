@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 import type { FormUserData } from "../types/form-post";
+import type { ResponseAuthUser } from "../types/login";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/";
 
@@ -24,8 +25,7 @@ export const createUser = async (data: FormUserData)
   return response.data;
 };
 export const loginUser = async (email: string, password: string)
-  : Promise<{ statusCode: number; message: string; token?: string; user?: any }> => {
-    console.log('loginUser email:', email);
+  : Promise<ResponseAuthUser> => {
   const api = getApi();
   const response = await api.post("user/login", { email, password });
   return response.data;
