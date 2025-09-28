@@ -23,4 +23,11 @@ export const createUser = async (data: FormUserData)
   const response = await api.post("user/create", data);
   return response.data;
 };
+export const loginUser = async (email: string, password: string)
+  : Promise<{ statusCode: number; message: string; token?: string; user?: any }> => {
+    console.log('loginUser email:', email);
+  const api = getApi();
+  const response = await api.post("user/login", { email, password });
+  return response.data;
+}
 
