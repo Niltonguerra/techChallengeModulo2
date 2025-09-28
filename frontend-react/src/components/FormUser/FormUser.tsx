@@ -12,11 +12,11 @@ const CreateUserForm = (props:{ permission: string }) => {
   const { permission } = props;
   const [form, setForm] = useState<FormUserData>({...initialFormUserState,});
   const navigate = useNavigate();
-  const formTitle =  'Criar Usuário';
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const formTitle = permission === 'user' ? 'Criar Usuário' : 'Criar Professor';
 
   const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
