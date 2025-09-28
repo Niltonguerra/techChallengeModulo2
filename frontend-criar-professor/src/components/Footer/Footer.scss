@@ -1,0 +1,106 @@
+.footer {
+  background-color: var(--primary-main);
+  color: var(--secondary-contrast);
+  padding: 3rem 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+
+      span {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        opacity: 0.8;
+      }
+    }
+    .hashtags {
+      h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      ul,
+      .list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+
+        @media (min-width: 480px) {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        a {
+          color: var(--secondary-contrast);
+          font-size: 0.9rem;
+          text-decoration: none;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: var(--secondary-contrast);
+          }
+        }
+      }
+    }
+  }
+
+  .footer-bottom {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--secondary-contrast);
+    border-top: 1px solid var(--text-secondary);
+  }
+
+  .image-footer {
+      max-height: 250px;
+      max-width: 250px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      }
+}
+
+.contact ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; // espaço entre ícone e texto
+}
+
+.contact li a {
+  color: var(--secondary-contrast);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.contact .icon {
+  flex-shrink: 0; // mantém o tamanho do ícone
+}

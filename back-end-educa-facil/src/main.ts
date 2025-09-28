@@ -17,7 +17,7 @@ async function bootstrap() {
   app.enableCors({
     origin:
       process.env.AMBIENTE === 'PROD'
-        ? process.env.FRONTEND_URL_PROD
+        ? [process.env.FRONTEND_URL_PROD, process.env.FRONTEND_URL_PROFESSOR]
         : process.env.FRONTEND_URL_LOCAL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
