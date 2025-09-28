@@ -3,7 +3,7 @@ import type { FormPostData } from "../types/form-post";
 import type { DeleteResponse, Post, ResultApi } from "../types/post";
 
 const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTgzMDM3MTYsImV4cCI6MTc1ODM5MDExNn0.N90pzkIFruDy1JPNI5Uk1-R3auRlEnQkY3aiFyou_Pc";
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/";
 
 let api: AxiosInstance | null = null;
 
@@ -24,7 +24,7 @@ export const getListTodos = async (): Promise<Post[]> => {
   const api = getApi();
 
   try {
-    const response = await api.get<ResultApi>("/post");
+    const response = await api.get<ResultApi>("post");
     return response.data.ListPost;
   } catch (error) {
     console.error("Erro ao chamar getListTodos:", error);
@@ -36,7 +36,7 @@ export const getListTodos = async (): Promise<Post[]> => {
 export const getHashtags = async () => {
   const api = getApi();
   try {
-    const response = await api.get("/post/hashtags");
+    const response = await api.get("post/hashtags");
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar hashtags:", error);
@@ -47,7 +47,7 @@ export const getHashtags = async () => {
 
 export const getListById = async (id: string): Promise<ResultApi> => {
   const api = getApi();
-  const response = await api.get<ResultApi>(`/post/${id}`);
+  const response = await api.get<ResultApi>(`post/${id}`);
   if (response.data.statusCode === 200) {
     return response.data;
   }
@@ -57,20 +57,20 @@ export const getListById = async (id: string): Promise<ResultApi> => {
 export const updatePost = async (data: Partial<FormPostData>)
   : Promise<{ statusCode: number, message: string }> => {
   const api = getApi();
-  const response = await api.put("/post", data);
+  const response = await api.put("post", data);
   return response.data;
 };
 
 export const createPost = async (data: FormPostData)
   : Promise<{ statusCode: number; message: string }> => {
   const api = getApi();
-  const response = await api.post("/post", data);
+  const response = await api.post("post", data);
   return response.data;
 };
 export const deletePost = async (id: string): Promise<DeleteResponse> => {
   const api = getApi();
   try {
-    const response = await api.delete<DeleteResponse>(`/post/${id}`);
+    const response = await api.delete<DeleteResponse>(`post/${id}`);
     return response.data;
   } catch (error) {
     console.error(`Erro ao deletar post ${id}:`, error);
