@@ -19,7 +19,6 @@ export function getApi(): AxiosInstance {
 
 export const createUser = async (data: FormUserData)
   : Promise<{ statusCode: number; message: string }> => {
-    console.log('createUser data:', data);
   const api = getApi();
   const response = await api.post("user/create", data);
   return response.data;

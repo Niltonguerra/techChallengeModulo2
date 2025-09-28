@@ -2,7 +2,6 @@ import axios, { type AxiosInstance } from "axios";
 import type { FormPostData } from "../types/form-post";
 import type { DeleteResponse, Post, ResultApi } from "../types/post";
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjZDA3Y2FlLWQwNTktNGM1MS05ODViLWNjMWY0ZGNiYmQwMSIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NTgzMDM3MTYsImV4cCI6MTc1ODM5MDExNn0.N90pzkIFruDy1JPNI5Uk1-R3auRlEnQkY3aiFyou_Pc";
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/";
 
 let api: AxiosInstance | null = null;
@@ -10,8 +9,7 @@ let api: AxiosInstance | null = null;
 // todo: expired token, logout, etc
 export function getApi(): AxiosInstance {
   if (!api) {
-    const token = localStorage.getItem("token") || TOKEN;
-
+    const token = sessionStorage.getItem("token");
     api = axios.create({
       baseURL: API_URL,
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },

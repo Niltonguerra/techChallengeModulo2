@@ -22,12 +22,14 @@ const userSlice = createSlice({
       state.isLoggedIn = true;
       state.user = action.payload.user;
       state.token = action.payload.token;
+      sessionStorage.setItem('token', action.payload.token);
     },
 
     logout(state) {
       state.isLoggedIn = false;
       state.user = null;
       state.token = null;
+      sessionStorage.removeItem("token");
     },
   },
 });

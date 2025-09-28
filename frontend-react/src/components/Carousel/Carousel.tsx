@@ -23,7 +23,6 @@ export default function Carrosel () {
     setRecentPosts(posts.slice(0, 5));
   }, [posts, recentPosts.length]);
 
-  console.log(posts);
   const handleOpen = (post: Post) => {
     setSelectedPost(post);
     setOpen(true);

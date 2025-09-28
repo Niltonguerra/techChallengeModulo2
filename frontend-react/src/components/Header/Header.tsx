@@ -45,15 +45,7 @@ const Header: React.FC<HeaderProps> = ({
           <img src="/logo.png" alt={HEADER_TEXTS.logoAlt} className="header__logo-image" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
           <Typography variant="h6" className="header__logo-text">{HEADER_TEXTS.logoText}</Typography>
         </Box>
-
-{/* 
-        <Box className="header__search">
-          <Button id="search" className="header__search-button" onClick={() => console.log('Buscar')} aria-label={HEADER_TEXTS.searchButton}>
-            <Search />
-          </Button>
-        </Box> */}
-
-       
+     
         <Box className="header__user-section">
    
           {isLoggedIn && user ? (

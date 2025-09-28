@@ -18,7 +18,6 @@ export function useFormPostSubmit({ form, links, setErrors, setLoading }: UseFor
   async function handleSubmit(e: React.FormEvent) {
     setLoading(true);
     e.preventDefault();
-    
     const external_link = links.reduce((acc, { key, value }) => {
       if (key && value) acc[key] = value;
       return acc;
@@ -34,7 +33,7 @@ export function useFormPostSubmit({ form, links, setErrors, setLoading }: UseFor
       external_link,
       author_id: form.author_id,
     };
-
+    
     const result = formPostSchema.safeParse(dataParaEnvio);
     const newErrors: Record<string, string> = {};
     if (!result.success) {
@@ -56,7 +55,6 @@ export function useFormPostSubmit({ form, links, setErrors, setLoading }: UseFor
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
-      console.log(newErrors);
       setLoading(false);
       return
     };
