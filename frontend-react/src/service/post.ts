@@ -6,21 +6,18 @@ const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/";
 
 let api: AxiosInstance | null = null;
 
-// todo: expired token, logout, etc
+
 export function getApi(): AxiosInstance {
-  if (!api) {
     const token = sessionStorage.getItem("token");
     api = axios.create({
       baseURL: API_URL,
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     });
-  }
   return api;
 }
 
 export const getListTodos = async (): Promise<Post[]> => {
   const api = getApi();
-
   try {
     const response = await api.get<ResultApi>("post");
     return response.data.ListPost;
