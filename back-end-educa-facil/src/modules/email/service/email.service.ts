@@ -2,33 +2,41 @@ import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SendEmailDTO } from '../dtos/sendemail.dto';
-import * as nodemailer from 'nodemailer';
-import { Transporter } from 'nodemailer';
+// import * as nodemailer from 'nodemailer';
+// import { Transporter } from 'nodemailer';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { Resend } from 'resend';
 
 @Injectable()
 export class EmailService {
+  private resend: Resend;
+  private readonly logger = new Logger(EmailService.name);
   constructor(
     private readonly jwtService: JwtService,
     private configService: ConfigService,
   ) {
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: this.configService.get<string>('EMAIL_USER'),
-        pass: this.configService.get<string>('EMAIL_PASSWORD'),
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
+    this.resend = new Resend(this.configService.get<string>('RESEND_API_KEY'));
   }
-  private transporter: Transporter;
-  private readonly logger = new Logger(EmailService.name);
+  // constructor(
+  //   private readonly jwtService: JwtService,
+  //   private configService: ConfigService,
+  // ) {
+  //   this.transporter = nodemailer.createTransport({
+  //     host: 'smtp.gmail.com',
+  //     port: 587,
+  //     secure: false,
+  //     auth: {
+  //       user: this.configService.get<string>('EMAIL_USER'),
+  //       pass: this.configService.get<string>('EMAIL_PASSWORD'),
+  //     },
+  //     tls: {
+  //       rejectUnauthorized: false,
+  //     },
+  //   });
+  // }
+  // private transporter: Transporter;
 
-  enviaVerificacaoEmail(email: string, url: string): number {
+  async enviaVerificacaoEmail(email: string, url: string): Promise<number> {
     try {
       const urlServer =
         this.configService.get<string>('AMBIENTE') === 'PROD'
@@ -42,10 +50,10 @@ export class EmailService {
         from: this.configService.get<string>('EMAIL_USER', ''),
         to: email,
         subject: tituloMensagem,
-        text: corpoMensagem,
+        html: corpoMensagem,
       };
 
-      void this.transporter.sendMail(mailOptions);
+      await this.resend.emails.send(mailOptions);
       return 200;
     } catch (error) {
       const errorMessage =
