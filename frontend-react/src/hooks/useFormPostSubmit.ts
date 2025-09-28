@@ -17,6 +17,7 @@ export function useFormPostSubmit({ form, links, setErrors, setLoading }: UseFor
   const { showSnackbar } = useSnackbar();
   async function handleSubmit(e: React.FormEvent) {
     setLoading(true);
+    
     e.preventDefault();
     const external_link = links.reduce((acc, { key, value }) => {
       if (key && value) acc[key] = value;
@@ -33,7 +34,6 @@ export function useFormPostSubmit({ form, links, setErrors, setLoading }: UseFor
       external_link,
       author_id: form.author_id,
     };
-    
     const result = formPostSchema.safeParse(dataParaEnvio);
     const newErrors: Record<string, string> = {};
     if (!result.success) {
@@ -72,6 +72,10 @@ export function useFormPostSubmit({ form, links, setErrors, setLoading }: UseFor
         showSnackbar({ message: 'Algo deu errado ao fazer upload da imagem!', severity: 'error' });
         return;
       }
+    }
+
+    if(dataParaEnvio.image == null) {
+      dataParaEnvio.image = 'https://i.ibb.co/HDb2X4DL/default-ui-image-placeholder-wireframes-600nw-1037719192.webp'
     }
 
     if (dataParaEnvio.id) {

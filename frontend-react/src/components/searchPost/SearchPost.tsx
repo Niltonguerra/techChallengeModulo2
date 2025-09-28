@@ -11,6 +11,7 @@ import type { PostSearch, ResultApi } from '../../types/post';
 import { getApi } from '../../service/post';
 import { useSnackbar } from '../../store/snackbar/useSnackbar';
 import { usePosts } from '../../store/post';
+import "./search.scss";
 
 export default function SearchPost() {
 	const modalStyle = { //<< todo: make it the standard for other modals (?)
@@ -134,7 +135,7 @@ export default function SearchPost() {
 			try {
 				const [contentResponse, authorResponse] = await Promise.all([
 					api.get('/post/hashtags'),
-					api.get('/user/authors').catch(() => ({ data: [] })), // in case the endpoint doesn't exist yet
+					api.get('/user/authors').catch(() => ({ data: [] })),
 				]);
 
 				setContentOptions(contentResponse.data);

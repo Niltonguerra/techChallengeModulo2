@@ -32,15 +32,13 @@ export default function PostList({ isAdmin = false }: PostListProps) {
 
   return (
     <div className="post-list-wrapper">
-      <div className="post-list-header">
-        <h2>Postagens</h2>
-        {isAdmin && (
-          <div className="admin-actions">
-            <Button type="button" onClick={() => navigate("/home")} style={{ marginBottom: 16 }} variant="outlined">Voltar</Button>
-            <Button className="create-btn" onClick={() => navigate("/admin/post/create")}>Criar nova postagem</Button>
-          </div>
-        )}
-      </div>
+      {isAdmin && (
+        <div className="container-buttons">
+          <Button className="ReturnButton" type="button" onClick={() => navigate("/home")} variant="outlined">Voltar</Button>
+          <Button className="ReturnButton" type="button" onClick={() => navigate("/admin/post/create")} variant="outlined">Criar nova postagem</Button>
+        </div>
+      )}
+      <h2>Postagens</h2>
       <div className="post-list">
         {currentPosts.map((post) => (
           <PostCard key={post.id} post={post} isAdmin={isAdmin} />

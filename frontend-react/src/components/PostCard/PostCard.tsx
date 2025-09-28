@@ -56,7 +56,7 @@ export default function PostCard({ post, isAdmin = false }: PostCardProps) {
               )}
             </div>
 
-            <p className="post-description">{post.description}</p>
+            <p className="post-description">{post.introduction}</p>
           </div>
 
           <div className="post-content-footer">

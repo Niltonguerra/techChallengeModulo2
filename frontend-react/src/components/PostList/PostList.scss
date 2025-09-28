@@ -11,9 +11,22 @@
     align-items: center;
     display: flex;
     width: 100%;
+    justify-content: flex-end;
+  }
+
+  .container-buttons{
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
     padding-left: 24px;
     padding-right: 24px;
+    width: 100%;
   }
+
+  .ReturnButton{
+
+  }
+  
   .post-list {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -41,37 +54,23 @@
   }
 }
 
-.post-list-header {
-  display: flex;
+  .post-list-header {
   justify-content: space-between; // joga o botão para a direita
   margin-bottom: 20px;
   gap: 20px;
   align-items: center;
+  }
 
-.create-btn {
-        font-family: 'Inter', sans-serif;
-        font-weight: var(--font-weight-semibold);
-        font-size: var(--font-size-md);
-        display: flex;
-        background: var(--secondary-main);
-        color: var(--primary-contrast);
-        text-align: center;
-        padding: var(--spacing-sm) var(--spacing-lg);
-        border-radius: var(--border-radius-sm);
-        text-decoration: none;
-        margin-top: var(--spacing-xs);  
-        
-        &:hover {
-          background: var(--secondary-dark);
-        }
-      }
-    }
-
-    .search-post {
-      padding-left: 120px;
-      padding-right: 120px;
-      padding-top: 80px;
-    }
+  .search-post {
+    padding-left: 120px;
+    padding-right: 120px;
+    padding-top: 80px;
+  }
+  .container-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
 /* Tablet */
 @media (max-width: 1024px) {

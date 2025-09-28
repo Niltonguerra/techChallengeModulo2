@@ -50,7 +50,7 @@ export default function Carrosel () {
                 <div className="slide-overlay">
                   <div className="slide-title">
                     <h2>{post.title}</h2>
-                    <p>{post.description}</p>
+                    <p>{post.introduction}</p>
                     <button
                       className="btn-slide"
                       onClick={() => handleOpen(post)}
