@@ -1,12 +1,8 @@
-import { Typography, useTheme } from "@mui/material";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
 
 import "./Footer.scss";
 export default function Footer() {
-    const theme = useTheme();
-    const [hashtags, setHashtags] = useState<string[]>([]);
     return (
         <footer className="footer">
             <div className="footer-content">
