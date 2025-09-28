@@ -33,7 +33,7 @@ const FormPost: React.FC<Partial<FormPostData>> = (props) => {
 	const [hashtags, setHashtags] = useState<{ key: string; value: string }[]>(getInitialHashtags(props.content_hashtags));
 	const [imagePreview, setImagePreview] = useState<string | null>(typeof props.image === 'string' ? props.image : null);
 	const [errors, setErrors] = useState<Record<string, string>>({});
-
+	const [loading, setLoading] = useState<boolean>(false);
 	useEffect(() => {
 		setForm(prev => ({
 			...prev,
@@ -69,7 +69,7 @@ const FormPost: React.FC<Partial<FormPostData>> = (props) => {
 
 	const handleLinksChange = React.useCallback((newLinks: { key: string; value: string }[]) => setLinks(newLinks), []);
 	const handleImage = React.useCallback((file: File | null) => setForm(prev => ({ ...prev, image: file })), []);
-	const { handleSubmit } = useFormPostSubmit({ form, links, setErrors });
+	const { handleSubmit } = useFormPostSubmit({ form, links, setErrors,setLoading });
 
 	return (
 		<Box className="form-post-container">
@@ -144,7 +144,7 @@ const FormPost: React.FC<Partial<FormPostData>> = (props) => {
 						error={!!errors.description}
 						helperText={errors.description}
 					/>
-					<Button type="submit" variant="contained" color="primary" size="large" className="form-post-submit">
+					<Button type="submit" variant="contained" color="primary" disabled={loading} size="large" className={`form-post-submit ${loading ? "submitButton" : ""}`}>
 						Enviar
 					</Button>
 				</form>

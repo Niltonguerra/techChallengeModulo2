@@ -3,20 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { formUserSchema } from '../schemas/form-user.schema';
 import { imgbbUmaImagem } from "../service/imgbb";
 import { createUser } from "../service/user";
-import Swal from "sweetalert2";
 import { AxiosError } from "axios";
-// import { imgbbUmaImagem } from '../service/imgbb'; // descomente se for usar upload real
-// import { createUser } from '../service/api'; // descomente se for usar API real
+import { useSnackbar } from "../store/snackbar/useSnackbar";
 
 interface UseFormUserSubmitParams {
   form: FormUserData;
   permission: string;
   setErrors: (errors: Record<string, string>) => void;
+  setLoading: (loading: boolean) => void;
 }
 
-export function useFormUserSubmit({ form, permission, setErrors }: UseFormUserSubmitParams) {
+export function useFormUserSubmit({ form, permission, setErrors, setLoading }: UseFormUserSubmitParams) {
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
   async function handleSubmit(e: React.FormEvent) {
+    setLoading(true);
     e.preventDefault();
 
     const result = formUserSchema.safeParse(form);
@@ -38,8 +39,12 @@ export function useFormUserSubmit({ form, permission, setErrors }: UseFormUserSu
     ) {
       newErrors['photo'] = 'O arquivo deve ser uma imagem válida';
     }
+    
     setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    if (Object.keys(newErrors).length > 0) {
+      setLoading(false);
+      return;
+    }
 
     let dataParaEnvio: FormUserData = { ...form };
     if (dataParaEnvio.photo && typeof dataParaEnvio.photo !== 'string') {
@@ -50,11 +55,8 @@ export function useFormUserSubmit({ form, permission, setErrors }: UseFormUserSu
           photo: foto ?? undefined,
         };
       }  catch {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "erro ao fazer upload da imagem!"
-        });
+        setLoading(false);
+        showSnackbar({ message: 'Erro ao fazer upload da imagem!', severity: 'error' });
         return;
       }
     }
@@ -67,30 +69,19 @@ export function useFormUserSubmit({ form, permission, setErrors }: UseFormUserSu
     try {
       const returnData = await createUser(dataParaEnvio);
       if (returnData.statusCode === 201) {
-      Swal.fire({
-        title: "sucesso!",
-        icon: "success",
-        text: "a postagem foi atualizada com sucesso!",
-        draggable: true
-      });
-      navigate('/admin');
+        showSnackbar({ message: 'Usuário criado com sucesso!', severity: 'success' });
+        setLoading(false);
+        navigate('/');
     }
     }  catch (error:unknown) {
       if (error instanceof AxiosError && error.response && error.response.status === 409) {
-        Swal.fire({
-          icon: "error",
-          title: "Usuário já existe",
-          text: "Já existe um usuário com este e-mail ou dados informados."
-        });
+        showSnackbar({ message: 'Usuário já existe', severity: 'warning' });
+        setLoading(false);
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Algo deu errado ao criar o usuário!"
-        });
+        showSnackbar({ message: 'Algo deu errado ao criar o usuário!', severity: 'error' });
+        setLoading(false);
       }
     }
   }
-
   return { handleSubmit };
 }

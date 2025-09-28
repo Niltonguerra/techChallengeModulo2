@@ -16,6 +16,7 @@ const CreateUserForm = (props:{ permission: string }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -23,7 +24,7 @@ const CreateUserForm = (props:{ permission: string }) => {
   }, []);
 
   const handleImage = React.useCallback((file: File | null) => setForm(prev => ({ ...prev, photo: file })), []);
-  const { handleSubmit } = useFormUserSubmit({ form, permission, setErrors });
+  const { handleSubmit } = useFormUserSubmit({ form, permission, setErrors, setLoading });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -95,7 +96,7 @@ const CreateUserForm = (props:{ permission: string }) => {
               ),
             }}
           />
-          <Button type="submit" variant="contained" color="primary" size="large" className="form-post-submit">
+          <Button type="submit" variant="contained" color="primary" size="large" disabled={loading} className={`form-post-submit ${loading ? "submitButton" : ""}`}>
             Enviar
           </Button>
         </form>

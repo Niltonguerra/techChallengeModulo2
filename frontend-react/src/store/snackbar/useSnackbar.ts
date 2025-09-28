@@ -23,7 +23,6 @@ export function useSnackbar() {
       severity,
       autoHideDuration,
       key,
-      // functions
       showSnackbar,
       closeSnackbar
     }),

@@ -3,19 +3,22 @@ import type { FormPostData, LinkItem } from '../types/form-post';
 import { imgbbUmaImagem } from '../service/imgbb';
 import { createPost, updatePost } from '../service/post';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import { useSnackbar } from '../store/snackbar/useSnackbar';
 
 interface UseFormPostSubmitParams {
   form: FormPostData;
   links: LinkItem[];
   setErrors: (errors: Record<string, string>) => void;
+  setLoading: (loading: boolean) => void;
 }
 
-export function useFormPostSubmit({ form, links, setErrors }: UseFormPostSubmitParams) {
+export function useFormPostSubmit({ form, links, setErrors, setLoading }: UseFormPostSubmitParams) {
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
   async function handleSubmit(e: React.FormEvent) {
+    setLoading(true);
     e.preventDefault();
-
+    
     const external_link = links.reduce((acc, { key, value }) => {
       if (key && value) acc[key] = value;
       return acc;
@@ -52,7 +55,11 @@ export function useFormPostSubmit({ form, links, setErrors }: UseFormPostSubmitP
       newErrors['image'] = 'O arquivo deve ser uma imagem válida';
     }
     setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    if (Object.keys(newErrors).length > 0) {
+      console.log(newErrors);
+      setLoading(false);
+      return
+    };
 
     if (dataParaEnvio.image && typeof dataParaEnvio.image !== 'string') {
       try {
@@ -63,11 +70,8 @@ export function useFormPostSubmit({ form, links, setErrors }: UseFormPostSubmitP
         image: foto ?? undefined,
       };
       }  catch {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "erro ao fazer upload da imagem!"
-        });
+        setLoading(false);
+        showSnackbar({ message: 'Algo deu errado ao fazer upload da imagem!', severity: 'error' });
         return;
       }
     }
@@ -76,39 +80,25 @@ export function useFormPostSubmit({ form, links, setErrors }: UseFormPostSubmitP
       try {
       const returnData = await updatePost(dataParaEnvio);
       if (returnData.statusCode === 200) {
-        Swal.fire({
-          title: "sucesso!",
-          icon: "success",
-          text: "a postagem foi criada com sucesso!",
-          draggable: true
-        });
+        showSnackbar({ message: 'Postagem atualizada com sucesso!', severity: 'success' });
+        setLoading(false);
         navigate('/admin')
       }
-      } catch {   
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Algo deu errado ao atualizar a postagem!"
-        });
+      } catch {
+        setLoading(false);
+        showSnackbar({ message: 'Algo deu errado ao atualizar a postagem!', severity: 'error' });
       }
     } else {
       try {
         const returnData = await createPost(dataParaEnvio);
         if (returnData.statusCode === 200) {
-          Swal.fire({
-            title: "sucesso!",
-            icon: "success",
-            text: "a postagem foi criada com sucesso!",
-            draggable: true
-          });
+          showSnackbar({ message: 'Postagem criada com sucesso!', severity: 'success' });
+          setLoading(false);
           navigate('/admin')
         };
       }  catch {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Algo deu errado ao criar o postagem!"
-        });
+        setLoading(false);
+        showSnackbar({ message: 'Algo deu errado ao criar a postagem!', severity: 'error' });
       }
     }
   }

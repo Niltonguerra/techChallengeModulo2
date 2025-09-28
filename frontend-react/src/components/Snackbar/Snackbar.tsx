@@ -7,7 +7,6 @@ export default function GlobalComponent() {
   const { closeSnackbar, isOpen, message, severity, autoHideDuration, key } = useSnackbar();
 
   const handleClose = (_e?: React.SyntheticEvent | Event, reason?: SnackbarCloseReason) => {
-    // stop it from closing if you click away
     if (reason === "clickaway") return;
     closeSnackbar();
   };

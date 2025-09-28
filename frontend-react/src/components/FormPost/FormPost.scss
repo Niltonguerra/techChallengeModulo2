@@ -12,6 +12,11 @@
   margin-bottom: 16px;
 }
 
+.submitButton{
+  cursor: progress !important;
+  background-color: #ccc !important;
+  box-shadow: none !important;
+}
 .form-post-form {
   display: flex;
   flex-direction: column;

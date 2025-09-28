@@ -8,13 +8,14 @@ import type { ResultApi } from "../../types/post";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { initialFormPostState } from "../../constants/formConstants";
-import Swal from "sweetalert2";
+import { useSnackbar } from "../../store/snackbar/useSnackbar";
 
 export function CreateEditPostFormPage() {
   const [postData, setPostData] = useState<FormPostData>();
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const postId = params.id;
+  const { showSnackbar } = useSnackbar();
   const { user } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
@@ -48,11 +49,7 @@ export function CreateEditPostFormPage() {
         setLoading(false);
         }
       } catch {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "alguma coisa deu errado!"
-        });  
+        showSnackbar({ message: 'Erro ao buscar postagem!', severity: 'error' });
       }
     };
     fetchPost();

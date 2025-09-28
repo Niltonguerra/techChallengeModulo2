@@ -13,5 +13,4 @@ export const formPostSchema = z.object({
   ).optional(),
   content_hashtags: z.array(z.string().min(1, 'Hashtag não pode ser vazia')).min(1, 'Pelo menos uma hashtag é obrigatória'),
   image: z.any().optional(),
-  author_id: z.string().uuid('ID do autor deve ser um UUID válido'),
 });
