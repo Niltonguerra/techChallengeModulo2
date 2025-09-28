@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import type { User, UserDataReceived } from '../../types/header-types';
 
 import {
