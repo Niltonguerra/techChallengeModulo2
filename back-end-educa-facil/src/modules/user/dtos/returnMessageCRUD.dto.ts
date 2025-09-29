@@ -25,5 +25,5 @@ export class ListUserReturnMessageDTO {
   @ApiProperty()
   message: string;
   @ApiProperty({ type: [User] })
-  users?: User[];
+  data?: User[];
 }

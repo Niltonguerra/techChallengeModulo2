@@ -102,7 +102,7 @@ export class UserService {
     return {
       statusCode: 200,
       message: systemMessage.ReturnMessage.successListUsers,
-      users,
+      data: users,
     };
   }
 }
