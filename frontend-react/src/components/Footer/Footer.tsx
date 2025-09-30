@@ -26,7 +26,7 @@ export default function Footer() {
                         </li>
                         <li>
                             <Phone size={16} className="icon" />
-                            <span>+55 (11) 99999-9999</span>
+                            <span>(11) 93231-3383</span>
                         </li>
                         <li>
                             <MapPin size={16} className="icon" />

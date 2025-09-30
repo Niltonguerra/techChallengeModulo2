@@ -34,8 +34,8 @@ const RegisterBox: React.FC = () => {
       <Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
           <PhoneIcon fontSize="small" color="primary" />
-          <Link href="tel:9999999999" underline="hover" color="primary">
-            (99) 9999-9999
+          <Link href="tel:932313383" underline="hover" color="primary">
+            (11) 93231-3383
           </Link>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
