@@ -35,7 +35,7 @@ export default function PostList({ isAdmin = false }: PostListProps) {
       {isAdmin && (
         <div className="container-buttons">
           <Button className="ReturnButton" type="button" onClick={() => navigate("/home")} variant="outlined">Voltar</Button>
-          <Button className="ReturnButton" type="button" onClick={() => navigate("/admin/post/create")} variant="outlined">Criar nova postagem</Button>
+          <Button className="ReturnButton" type="button" onClick={() => navigate("/admin/post/create")} variant="outlined">Criar</Button>
         </div>
       )}
       <h2>Postagens</h2>
