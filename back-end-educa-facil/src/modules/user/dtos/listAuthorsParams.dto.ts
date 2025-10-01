@@ -3,8 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class listAuthorsParamsDTO {
   @ApiProperty()
-  field: searchByFieldUserEnum;
+  field?: searchByFieldUserEnum;
 
   @ApiProperty()
-  value: string;
+  value?: string;
 }
