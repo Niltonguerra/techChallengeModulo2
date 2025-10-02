@@ -2,16 +2,16 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserService } from '../service/user.service';
 import { ListUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
-import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
+import { listAuthorsParamsDTO } from '../dtos/listAuthorsParams.dto';
 
 @Injectable()
 export class listAuthorsUseCase {
   private readonly logger = new Logger(listAuthorsUseCase.name);
   constructor(private readonly userService: UserService) {}
 
-  async listAuthors(params: FindOneUserQueryParamsDTO): Promise<ListUserReturnMessageDTO> {
+  async listAuthors(params: listAuthorsParamsDTO): Promise<ListUserReturnMessageDTO> {
     try {
-      const users = await this.userService.listAuthors(params.field, params.value);
+      const users = await this.userService.listAuthors(params.field || '', params.value || '');
       return users;
     } catch (error) {
       const message =

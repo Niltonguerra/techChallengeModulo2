@@ -22,6 +22,7 @@ import {
   ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { listAuthorsParamsDTO } from '../dtos/listAuthorsParams.dto';
 
 @ApiInternalServerErrorResponse({ description: 'Internal Server Error', type: ReturnMessageDTO })
 @ApiNotFoundResponse({ description: 'Not found', type: ReturnMessageDTO })
@@ -71,7 +72,7 @@ export class UserController {
   @ApiOperation({ summary: 'List all users who are authors of a post' })
   @ApiOkResponse({ type: [ListUserReturnMessageDTO] })
   async findAllAuthors(
-    @Query() queryParams: FindOneUserQueryParamsDTO,
+    @Query() queryParams: listAuthorsParamsDTO,
   ): Promise<ListUserReturnMessageDTO> {
     const authors = await this.listAuthorsUseCase.listAuthors(queryParams);
     return authors;
