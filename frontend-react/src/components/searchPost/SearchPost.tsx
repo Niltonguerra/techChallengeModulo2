@@ -141,7 +141,7 @@ export default function SearchPost() {
 				console.log('fetched filter options: ', { contentResponse, authorResponse });
 
 				setContentOptions(contentResponse.data || []);
-				setAuthorPostsOptions(authorResponse.data || []);
+				setAuthorPostsOptions(authorResponse?.data?.data || []);
 
 			} catch (err: Error | unknown) {
 				console.error('error while getting filter options: ', err);
