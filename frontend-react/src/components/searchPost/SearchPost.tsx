@@ -138,6 +138,8 @@ export default function SearchPost() {
 					api.get('/user/authors').catch(() => ({ data: [] })),
 				]);
 
+				console.log('fetched filter options: ', { contentResponse, authorResponse });
+
 				setContentOptions(contentResponse.data || []);
 				setAuthorPostsOptions(authorResponse.data || []);
 
