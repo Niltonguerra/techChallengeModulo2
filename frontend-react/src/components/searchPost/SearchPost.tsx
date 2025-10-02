@@ -28,9 +28,8 @@ export default function SearchPost() {
 	};
 
 	// const isDevMode = true;
-	const api = getApi(); // one stable instance
+	const api = React.useMemo(() => getApi(), []);
 
-	 
 	const { setPosts } = usePosts();
 
 	// const [postList, setPostList] = useState<Post[]>([]);
@@ -131,6 +130,7 @@ export default function SearchPost() {
 
 	// getting the options for advanced filters
 	useEffect(() => {
+		console.log('fetching filter options...');
 		const fetchFilterOptions = async () => {
 			try {
 				const [contentResponse, authorResponse] = await Promise.all([
