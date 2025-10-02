@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { setupDocumentation } from 'docs/documentation';
 import { AppModule } from './app.module';
+import qs from 'qs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,7 +12,19 @@ async function bootstrap() {
   setupDocumentation(app);
   await app.startAllMicroservices();
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  );
+
+  (
+    app.getHttpAdapter().getInstance() as {
+      setQuerystringParser: (fn: (str: string) => any) => void;
+    }
+  ).setQuerystringParser((str: string) => qs.parse(str));
 
   // Habilitando CORS
   app.enableCors({

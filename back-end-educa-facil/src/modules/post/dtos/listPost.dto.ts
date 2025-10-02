@@ -1,7 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsOptional, IsString, IsNumberString, IsObject } from 'class-validator';
+import { IsOptional, IsString, IsNumberString, IsISO8601, ValidateNested } from 'class-validator';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+
+export class DateRangeDTO {
+  @ApiPropertyOptional({ type: String, format: 'date-time' })
+  @IsOptional()
+  @IsISO8601()
+  @Type(() => Date)
+  after?: Date;
+
+  @ApiPropertyOptional({ type: String, format: 'date-time' })
+  @IsOptional()
+  @IsISO8601()
+  @Type(() => Date)
+  before?: Date;
+}
 
 export class ListPostDTO {
   @ApiPropertyOptional()
@@ -24,6 +38,7 @@ export class ListPostDTO {
   @IsString({ message: systemMessage.validation.isString })
   content?: string;
 
+  /*
   @ApiPropertyOptional()
   @IsOptional()
   @IsObject({ message: systemMessage.validation.isObject })
@@ -31,6 +46,13 @@ export class ListPostDTO {
     before?: Date | null;
     after?: Date | null;
   };
+  */
+
+  @ApiPropertyOptional({ type: () => DateRangeDTO })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => DateRangeDTO)
+  createdAt?: DateRangeDTO;
 
   @ApiPropertyOptional()
   @IsOptional()

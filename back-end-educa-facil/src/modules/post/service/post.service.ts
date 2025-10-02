@@ -52,7 +52,7 @@ export class PostService {
       userId,
       offset = 0,
       limit = 10,
-    } = listPostData; //<<
+    } = listPostData;
 
     const query = this.postRepository
       .createQueryBuilder('p')
@@ -84,13 +84,12 @@ export class PostService {
       query.andWhere('p.user_id = :userId', { userId });
     }
 
-    // content_hashtags
-    if (contentHashtags) {
+    if (contentHashtags && contentHashtags.length > 0) {
       const tags = Array.isArray(contentHashtags) ? contentHashtags : [contentHashtags];
-      query.andWhere('p.content_hashtags && ARRAY[:...tags]', { tags });
+      query.andWhere('p.content_hashtags && :tags::text[]', { tags });
     }
 
-    // createdAt range
+    // createdAt range (Date objects thanks to DTO)
     if (createdAt?.after) query.andWhere('p.created_at >= :after', { after: createdAt.after });
     if (createdAt?.before) query.andWhere('p.created_at <= :before', { before: createdAt.before });
 
