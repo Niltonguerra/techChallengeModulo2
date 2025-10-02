@@ -74,6 +74,7 @@ export class UserController {
   async findAllAuthors(
     @Query() queryParams: listAuthorsParamsDTO,
   ): Promise<ListUserReturnMessageDTO> {
+    console.log('list authors with params: ', queryParams);
     const authors = await this.listAuthorsUseCase.listAuthors(queryParams);
     return authors;
   }
