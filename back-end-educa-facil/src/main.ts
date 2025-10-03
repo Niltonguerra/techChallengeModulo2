@@ -4,7 +4,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { setupDocumentation } from 'docs/documentation';
 import { AppModule } from './app.module';
-import qs from 'qs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,11 +19,7 @@ async function bootstrap() {
     }),
   );
 
-  (
-    app.getHttpAdapter().getInstance() as {
-      setQuerystringParser: (fn: (str: string) => any) => void;
-    }
-  ).setQuerystringParser((str: string) => qs.parse(str));
+  console.log('HTTP adapter:', app.getHttpAdapter().getType());
 
   // Habilitando CORS
   app.enableCors({
