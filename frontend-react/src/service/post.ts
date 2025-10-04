@@ -61,7 +61,6 @@ export const getHashtags = async () => {
   }
 };
 
-
 export const getListById = async (id: string): Promise<ResultApi> => {
   const api = getApi();
   const response = await api.get<ResultApi>(`post/${id}`);
@@ -94,3 +93,29 @@ export const deletePost = async (id: string): Promise<DeleteResponse> => {
     throw error;
   }
 };
+
+export const fetchPosts = async (data: PostSearch):Promise<any> => {
+  const api = getApi();
+  const {advanced = false,signal,search,userId,content,createdAt,offset,limit} = data;
+
+  let params: Record<string, any> = {
+    search: advanced ? search : search ?? null,
+    offset,
+    limit,
+  };
+
+  if (advanced) {
+    params = {
+      ...params,
+      userId: userId ?? null,
+      content: content ?? null,
+      createdAt: createdAt ?? null,
+    };
+  }
+
+  const dataReturn = await api.get<ResultApi>('/post', {
+    params,
+    signal,
+  });
+   return dataReturn.ListPost;
+}

@@ -66,4 +66,5 @@ export const HEADER_TEXTS = {
   searchButton: 'Buscar',
   loginButton: 'Entrar',
   logoutButton: 'Sair',
+  AdminButton: 'acessar admin',
 } as const;

@@ -14,7 +14,7 @@ describe('ListPostUseCase', () => {
 
   it('deve retornar a lista de posts com os campos esperados', async () => {
     mockPostService.listPosts.mockResolvedValue(mockListPostData);
-    const result = await useCase.execute({ offset: 0, limit: 10 });
+    const result = await useCase.execute({ offset: '0', limit: '10' });
     expect(mockPostService.listPosts).toHaveBeenCalledWith({ offset: 0, limit: 10 });
     expect(result).toEqual(mockListPostData);
     expect(Array.isArray(result.ListPost)).toBe(true);
@@ -27,8 +27,8 @@ describe('ListPostUseCase', () => {
     const loggerSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation();
     const customError = new HttpException('Erro customizado', 404);
     mockPostService.listPosts.mockRejectedValue(customError);
-    await expect(useCase.execute({ offset: 0, limit: 10 })).rejects.toThrow(HttpException);
-    await expect(useCase.execute({ offset: 0, limit: 10 })).rejects.toThrow(
+    await expect(useCase.execute({ offset: '0', limit: '10' })).rejects.toThrow(HttpException);
+    await expect(useCase.execute({ offset: '0', limit: '10' })).rejects.toThrow(
       'Erro customizado: 404',
     );
     expect(loggerSpy).toHaveBeenCalledWith('Erro customizado: 404');
@@ -38,8 +38,8 @@ describe('ListPostUseCase', () => {
   it('deve lançar HttpException e logar erro se o service lançar erro genérico', async () => {
     const loggerSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation();
     mockPostService.listPosts.mockRejectedValue(new Error('Erro genérico'));
-    await expect(useCase.execute({ offset: 0, limit: 10 })).rejects.toThrow(HttpException);
-    await expect(useCase.execute({ offset: 0, limit: 10 })).rejects.toThrow(
+    await expect(useCase.execute({ offset: '0', limit: '10' })).rejects.toThrow(HttpException);
+    await expect(useCase.execute({ offset: '0', limit: '10' })).rejects.toThrow(
       `${systemMessage.ReturnMessage.errorGetPosts}: 500`,
     );
     expect(loggerSpy).toHaveBeenCalledWith(`${systemMessage.ReturnMessage.errorGetPosts}: 500`);
