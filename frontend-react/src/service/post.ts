@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
 import type { FormPostData } from "../types/form-post";
-import type { DeleteResponse, Post, ResultApi } from "../types/post";
+import type { DeleteResponse, Post, PostSearch, ResultApi } from "../types/post";
 import { store } from "../store"; // store Redux
 import { showSnackbar } from "../store/snackbar/snackbarSlice";
 
@@ -117,5 +117,5 @@ export const fetchPosts = async (data: PostSearch):Promise<any> => {
     params,
     signal,
   });
-   return dataReturn.ListPost;
+   return dataReturn.data.ListPost;
 }

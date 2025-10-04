@@ -3,7 +3,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
-import { Dayjs } from 'dayjs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { getApi } from '../../service/post';
@@ -36,8 +35,8 @@ export default function SearchPost() {
 	const [postSearch, setPostSearch] = useState('');
 	const [postAuthor, setPostAuthor] = useState<string | null>(null);
 	const [postContent, setPostContent] = useState<string | null>(null);
-	const [createdAtBefore, setCreatedAtBefore] = useState<Dayjs | null>(null);
-	const [createdAtAfter, setCreatedAtAfter] = useState<Dayjs | null>(null);
+	// const [createdAtBefore, setCreatedAtBefore] = useState<Dayjs | null>(null);
+	// const [createdAtAfter, setCreatedAtAfter] = useState<Dayjs | null>(null);
 
 	// dynamic search bar input
 	const [debouncedSearch] = useDebounce(postSearch || '', 400); // 400ms delay
@@ -110,10 +109,10 @@ export default function SearchPost() {
 			search: postSearch || null,
 			userId: postAuthor || null,
 			content: postContent || null,
-			createdAt: {
-				before: createdAtBefore ? createdAtBefore.toDate() : null,
-				after: createdAtAfter ? createdAtAfter.toDate() : null,
-			},
+			// createdAt: {
+			// 	before: createdAtBefore ? createdAtBefore.toDate() : null,
+			// 	after: createdAtAfter ? createdAtAfter.toDate() : null,
+			// },
 			offset,
 			limit,
 			signal: controller.signal,
