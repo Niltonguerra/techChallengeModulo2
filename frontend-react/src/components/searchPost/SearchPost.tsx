@@ -148,21 +148,14 @@ export default function SearchPost() {
 
 	return (
 		<>
-			<Box
-				sx={{
-					display: "grid",
-					gridTemplateColumns: { xs: "1fr", sm: "1fr auto" }, // 🔹 empilha no mobile, lado a lado no desktop
-					gap: 1.5,
-					alignItems: "center",
-					width: { xs: "100%", sm: 720 },
-				}}
-			>
+			<Box className="post-search">
 				<OutlinedInput
 					value={postSearch}
 					onChange={(e) => setPostSearch(e.target.value)}
 					placeholder="Filtrar posts"
 					fullWidth
 					size="small"
+					className='search-input'
 					endAdornment={
 						<InputAdornment position="end" sx={{ paddingRight: 1 }}>
 							<SearchIcon fontSize="small" sx={{ opacity: 0.6, pointerEvents: "none" }} />
