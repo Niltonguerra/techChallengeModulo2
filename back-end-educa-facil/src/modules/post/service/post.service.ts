@@ -47,7 +47,6 @@ export class PostService {
   async listPosts(listPostData: ListPostDTO): Promise<ReturnListPost> {
     const offsetNumber = listPostData?.offset ? Number(listPostData.offset) : 0;
     const limitNumber = listPostData?.limit ? Number(listPostData.limit) : 10;
-
     const { search, content: contentHashtags, createdAt, userId } = listPostData;
 
     const query = this.postRepository
