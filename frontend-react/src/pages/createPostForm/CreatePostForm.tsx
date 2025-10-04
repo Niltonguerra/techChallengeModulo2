@@ -8,14 +8,12 @@ import type { ResultApi } from "../../types/post";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import { initialFormPostState } from "../../constants/formConstants";
-import { useSnackbar } from "../../store/snackbar/useSnackbar";
 
 export function CreateEditPostFormPage() {
   const [postData, setPostData] = useState<FormPostData>();
   const [loading, setLoading] = useState(true);
   const params = useParams();
   const postId = params.id;
-  const { showSnackbar } = useSnackbar();
   const { user } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
@@ -51,7 +49,7 @@ export function CreateEditPostFormPage() {
           setLoading(false);
         }
       } catch {
-        showSnackbar({ message: 'Erro ao buscar postagem!', severity: 'error' });
+        console.error("Erro ao buscar o post.");
       }
     };
     fetchPost();
