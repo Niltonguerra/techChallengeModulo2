@@ -6,10 +6,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { CreatePostDTO } from '../dtos/createPost.dto';
+import { ListPostDTO } from '../dtos/listPost.dto';
 import { ReturnListPost } from '../dtos/returnlistPost.dto';
 import { UpdatePostDTO } from '../dtos/updatePost.dto';
 import { Post } from '../entities/post.entity';
-import { ListPostDTO } from '../dtos/listPost.dto';
 
 @Injectable()
 export class PostService {
@@ -17,7 +17,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) {}
+  ) { }
 
   async createPostService(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const validadeName = await this.postRepository.findOneBy({ title: createPostData.title });
@@ -47,7 +47,8 @@ export class PostService {
   async listPosts(listPostData: ListPostDTO): Promise<ReturnListPost> {
     const offsetNumber = listPostData?.offset ? Number(listPostData.offset) : 0;
     const limitNumber = listPostData?.limit ? Number(listPostData.limit) : 10;
-    const { search, content: contentHashtags, createdAt, userId } = listPostData;
+    // const { search, content: contentHashtags, createdAt, userId } = listPostData;
+    const { search, content: contentHashtags, userId } = listPostData;
 
     const query = this.postRepository
       .createQueryBuilder('p')
@@ -81,12 +82,12 @@ export class PostService {
 
     if (contentHashtags && contentHashtags.length > 0) {
       const tags = Array.isArray(contentHashtags) ? contentHashtags : [contentHashtags];
-      query.andWhere('p.content_hashtags && :tags::text[]', { tags });
+      query.andWhere('p.content_hashtags && :tags::varchar[]', { tags });
     }
 
-    // createdAt range (Date objects thanks to DTO)
-    if (createdAt?.after) query.andWhere('p.created_at >= :after', { after: createdAt.after });
-    if (createdAt?.before) query.andWhere('p.created_at <= :before', { before: createdAt.before });
+    // TODO createdAt range (Date objects thanks to DTO)
+    // if (createdAt?.after) query.andWhere('p.created_at >= :after', { after: createdAt.after });
+    // if (createdAt?.before) query.andWhere('p.created_at <= :before', { before: createdAt.before });
 
     const [posts, total_post] = await query.getManyAndCount();
 
