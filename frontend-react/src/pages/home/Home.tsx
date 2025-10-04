@@ -31,8 +31,7 @@ function Home() {
   return (
     <div className="page-container">
       <Carrosel />
-      <div className="search-post"><SearchPost /></div>
-
+        <SearchPost />
       <PostList />
     </div>
   );

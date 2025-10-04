@@ -24,8 +24,8 @@ export type PostSearch = {
         before?: Date | null;
         after?: Date | null;
     }
-    offset?: number;
-    limit?: number;
+    offset: string;
+    limit: string;
 }
 
 export type ResultApi = {

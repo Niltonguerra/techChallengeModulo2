@@ -1,16 +1,11 @@
 import { formPostSchema } from '../schemas/form-post.schema';
-import type { FormPostData, LinkItem } from '../types/form-post';
+import type { FormPostData, UseFormPostSubmitParams } from '../types/form-post';
 import { imgbbUmaImagem } from '../service/imgbb';
 import { createPost, updatePost } from '../service/post';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../store/snackbar/useSnackbar';
 
-interface UseFormPostSubmitParams {
-  form: FormPostData;
-  links: LinkItem[];
-  setErrors: (errors: Record<string, string>) => void;
-  setLoading: (loading: boolean) => void;
-}
+
 
 export function useFormPostSubmit({ form, links, setErrors, setLoading }: UseFormPostSubmitParams) {
   const navigate = useNavigate();

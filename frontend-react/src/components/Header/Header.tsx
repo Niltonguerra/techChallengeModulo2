@@ -6,9 +6,8 @@ import { KeyboardArrowDown, Logout } from '@mui/icons-material';
 import './Header.scss';
 import type { HeaderProps } from '../../types/header-types';
 import { HEADER_TEXTS } from '../../constants/headerConstants';
-import { Link } from 'react-router-dom';
-
-
+import { Link, useNavigate } from 'react-router-dom';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const Header: React.FC<HeaderProps> = ({
   isLoggedIn = false,
@@ -18,8 +17,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
   const userMenuOpen = Boolean(userMenuAnchor);
-
-  
+  const navigate = useNavigate();
 
 
   const handleUserMenuClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
@@ -35,6 +33,10 @@ const Header: React.FC<HeaderProps> = ({
     onLogout?.();
   }, [handleUserMenuClose, onLogout]);
   
+  const handleAdmin = useCallback(() => {
+  handleUserMenuClose();
+  navigate('/admin');
+  }, [handleUserMenuClose]);
  
 
   return (
@@ -63,10 +65,17 @@ const Header: React.FC<HeaderProps> = ({
                 </Box>
               </Button>
               <Menu id="user-menu" anchorEl={userMenuAnchor} open={userMenuOpen} onClose={handleUserMenuClose}>
+                {user.permission === "admin" && (
+                  <MenuItem onClick={handleAdmin} className="header__admin-item">
+                    <ListItemIcon><AdminPanelSettingsIcon /></ListItemIcon>
+                    <ListItemText primary={HEADER_TEXTS.AdminButton} />
+                  </MenuItem>
+                )}
                 <MenuItem onClick={handleLogout} className="header__logout-item">
                   <ListItemIcon><Logout /></ListItemIcon>
                   <ListItemText primary={HEADER_TEXTS.logoutButton} />
                 </MenuItem>
+
               </Menu>
             </Box>
           ) : (

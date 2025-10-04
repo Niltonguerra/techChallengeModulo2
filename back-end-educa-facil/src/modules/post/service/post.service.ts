@@ -45,22 +45,18 @@ export class PostService {
   }
 
   async listPosts(listPostData: ListPostDTO): Promise<ReturnListPost> {
-    const {
-      search,
-      content: contentHashtags,
-      createdAt,
-      userId,
-      offset = 0,
-      limit = 10,
-    } = listPostData;
+    const offsetNumber = listPostData?.offset ? Number(listPostData.offset) : 0;
+    const limitNumber = listPostData?.limit ? Number(listPostData.limit) : 10;
+
+    const { search, content: contentHashtags, createdAt, userId } = listPostData;
 
     const query = this.postRepository
       .createQueryBuilder('p')
       .leftJoinAndSelect('p.user', 'u')
       .select(['p', 'u'])
       .orderBy('p.created_at', 'DESC')
-      .skip(offset)
-      .take(limit);
+      .skip(offsetNumber)
+      .take(limitNumber);
 
     if (search?.trim()) {
       const terms = search
@@ -98,8 +94,8 @@ export class PostService {
     const postDataReturn: ReturnListPost = {
       message: systemMessage.ReturnMessage.sucessGetPosts,
       statusCode: 200,
-      limit,
-      offset,
+      limit: limitNumber,
+      offset: offsetNumber,
       total: total_post,
       ListPost: posts.map((p) => ({
         id: p.id,

@@ -63,3 +63,10 @@ export interface DynamicFieldsInputProps<T = DynamicFieldItem> {
   valuePlaceholder?: string;
   renderExtraFields?: (item: T, idx: number, items: T[], onChange: (items: T[]) => void) => React.ReactNode;
 }
+
+export interface UseFormPostSubmitParams {
+  form: FormPostData;
+  links: LinkItem[];
+  setErrors: (errors: Record<string, string>) => void;
+  setLoading: (loading: boolean) => void;
+}

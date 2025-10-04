@@ -231,15 +231,32 @@
     }
   }
 
-  &__logout-item {
+  &__admin-item {
+    padding: 12px 16px !important;
+    border-radius: 6px;
+    margin: 4px 8px;
+    color: var(--primary-main) !important;
+
+    &:hover {
+      background-color: var(--primary-dark); // error.main com 12% opacity
+    }
+
+    .MuiListItemIcon-root {
+      min-width: 36px;
+      color:var(--primary-main) !important;
+    }
+
+    .MuiListItemText-primary {
+      font-weight: 500;
+      color: var(--primary-main) !important;
+    }
+  }
+
+    &__logout-item {
     padding: 12px 16px !important;
     border-radius: 6px;
     margin: 4px 8px;
     color: var(--error-main) !important;
-
-    &:hover {
-      background-color: rgba(244, 67, 54, 0.12); // error.main com 12% opacity
-    }
 
     .MuiListItemIcon-root {
       min-width: 36px;

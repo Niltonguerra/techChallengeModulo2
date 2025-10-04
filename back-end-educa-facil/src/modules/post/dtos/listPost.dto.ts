@@ -20,13 +20,13 @@ export class DateRangeDTO {
 export class ListPostDTO {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumberString({}, { message: systemMessage.validation.isNumberString })
-  offset?: number;
+  @IsString({ message: systemMessage.validation.isNumberString })
+  offset?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumberString({}, { message: systemMessage.validation.isNumberString })
-  limit?: number;
+  @IsString({ message: systemMessage.validation.isNumberString })
+  limit?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
