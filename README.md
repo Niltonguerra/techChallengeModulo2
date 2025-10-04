@@ -89,7 +89,7 @@ AMBIENTE=PROD
         
 
 envs(sei que é errado deixar aqui, mas é para simplificar nossa vida):
-AMBIENTE=dev
+AMBIENTE=PROD
 
 DB_HOST_DEV=localhost
 DB_PORT_DEV=5432
@@ -112,14 +112,16 @@ JWT_SECRET=educa_facil
 SECRET_JWT_EMAIL=educa_facil
 JWT_EMAIL_EXPIRES_IN=1h
 JWT_EXPIRES_IN=24h
-EMAIL_USER=educacaofacilfiap@gmail.com
+EMAIL_USER=no-reply@educafacil.space
 EMAIL_PASSWORD=svjkqhfvifjqryde
+RESEND_API_KEY=re_jU4zzHai_4Byi7bivUKWxSRckuNuxtGfT
 
 SWAGGER_USER='admin'
 SWAGGER_PASS='admin123'
 
 FRONTEND_URL_LOCAL =http://localhost:5173
-FRONTEND_URL_PROD =http://localhost:5173
+FRONTEND_URL_PROD =https://tech-challenge-modulo2-qcu447prv-niltonguerras-projects.vercel.app
+FRONTEND_URL_PROFESSOR=https://tech-challenge-modulo2-zv8l-gmbfouuf6-niltonguerras-projects.vercel.app
 
 
 

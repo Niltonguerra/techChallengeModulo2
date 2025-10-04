@@ -1,17 +1,8 @@
-import { Body, Controller, Get, Post, Query, UseGuards, UsePipes } from '@nestjs/common';
-import { CreateUserDTO } from '../dtos/createUser.dto';
-import {
-  FindOneUserReturnMessageDTO,
-  ListUserReturnMessageDTO,
-} from '../dtos/returnMessageCRUD.dto';
-import { CreateUserUseCase } from '../usecases/createUser.usecase';
-import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
-import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
-import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
-import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
-import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
+import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
+import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { Body, Controller, Get, Post, Query, UseGuards, UsePipes } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
@@ -22,7 +13,16 @@ import {
   ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { CreateUserDTO } from '../dtos/createUser.dto';
+import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
 import { listAuthorsParamsDTO } from '../dtos/listAuthorsParams.dto';
+import {
+  FindOneUserReturnMessageDTO,
+  ListUserReturnMessageDTO,
+} from '../dtos/returnMessageCRUD.dto';
+import { CreateUserUseCase } from '../usecases/createUser.usecase';
+import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
+import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
 
 @ApiInternalServerErrorResponse({ description: 'Internal Server Error', type: ReturnMessageDTO })
 @ApiNotFoundResponse({ description: 'Not found', type: ReturnMessageDTO })
@@ -32,7 +32,7 @@ export class UserController {
     private readonly createPostUseCase: CreateUserUseCase,
     private readonly findOneUserUseCase: FindOneUserUseCase,
     private readonly listAuthorsUseCase: listAuthorsUseCase,
-  ) {}
+  ) { }
 
   @Post('create')
   @UsePipes(HashPasswordPipe)
@@ -74,7 +74,6 @@ export class UserController {
   async findAllAuthors(
     @Query() queryParams: listAuthorsParamsDTO,
   ): Promise<ListUserReturnMessageDTO> {
-    console.log('list authors with params: ', queryParams);
     const authors = await this.listAuthorsUseCase.listAuthors(queryParams);
     return authors;
   }

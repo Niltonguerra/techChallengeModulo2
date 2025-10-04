@@ -3,6 +3,7 @@ export interface User {
   email: string;
   photo: string;
   id: string;
+  permission: 'user' | 'admin';
 }
 
 export interface UserDataReceived {

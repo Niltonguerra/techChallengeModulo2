@@ -1,7 +1,7 @@
-import { IsOptional, IsString, IsNumberString, IsISO8601, ValidateNested } from 'class-validator';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import { IsISO8601, IsOptional, IsString } from 'class-validator';
 
 export class DateRangeDTO {
   @ApiPropertyOptional({ type: String, format: 'date-time' })
@@ -20,13 +20,13 @@ export class DateRangeDTO {
 export class ListPostDTO {
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumberString({}, { message: systemMessage.validation.isNumberString })
-  offset?: number;
+  @IsString({ message: systemMessage.validation.isNumberString })
+  offset?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNumberString({}, { message: systemMessage.validation.isNumberString })
-  limit?: number;
+  @IsString({ message: systemMessage.validation.isNumberString })
+  limit?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -48,11 +48,11 @@ export class ListPostDTO {
   };
   */
 
-  @ApiPropertyOptional({ type: () => DateRangeDTO })
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => DateRangeDTO)
-  createdAt?: DateRangeDTO;
+  // @ApiPropertyOptional({ type: () => DateRangeDTO })
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => DateRangeDTO)
+  // createdAt?: DateRangeDTO;
 
   @ApiPropertyOptional()
   @IsOptional()

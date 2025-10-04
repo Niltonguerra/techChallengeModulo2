@@ -1,16 +1,15 @@
 // general imports
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDebounce } from 'use-debounce';
-import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import type { PostSearch, ResultApi } from '../../types/post';
+import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
+import { Dayjs } from 'dayjs';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 import { getApi } from '../../service/post';
-import { useSnackbar } from '../../store/snackbar/useSnackbar';
 import { usePosts } from '../../store/post';
+import { useSnackbar } from '../../store/snackbar/useSnackbar';
+import type { PostSearch, ResultApi } from '../../types/post';
 import "./search.scss";
 
 export default function SearchPost() {
@@ -51,8 +50,8 @@ export default function SearchPost() {
 
 	const { showSnackbar } = useSnackbar();
 
-	const offset = 0;
-	const limit = 20;
+	const offset = '0';
+	const limit = '20';
 
 	const fetchPosts = useCallback(async (props: PostSearch) => {
 		const {
@@ -130,15 +129,12 @@ export default function SearchPost() {
 
 	// getting the options for advanced filters
 	useEffect(() => {
-		console.log('fetching filter options...');
 		const fetchFilterOptions = async () => {
 			try {
 				const [contentResponse, authorResponse] = await Promise.all([
 					api.get('/post/hashtags'),
 					api.get('/user/authors').catch(() => ({ data: [] })),
 				]);
-
-				console.log('fetched filter options: ', { contentResponse, authorResponse });
 
 				setContentOptions(contentResponse.data || []);
 				setAuthorPostsOptions(authorResponse?.data?.data || []);
@@ -278,7 +274,7 @@ export default function SearchPost() {
 										</MenuItem>
 									))}
 								</Select>
-								<Stack direction="row" spacing={2} justifyContent="space-between">
+								{/* <Stack direction="row" spacing={2} justifyContent="space-between">
 									<DatePicker
 										label="De: "
 										value={createdAtBefore}
@@ -291,8 +287,8 @@ export default function SearchPost() {
 										onChange={(newValue: React.SetStateAction<dayjs.Dayjs | null>) => setCreatedAtAfter(newValue)}
 										format='DD/MM/YYYY'
 									/>
-								</Stack>
-								<Button
+								</Stack> */}
+								{/* <Button
 									variant="text"
 									style={{
 										fontSize: '0.8rem',
@@ -305,7 +301,7 @@ export default function SearchPost() {
 									}}
 								>
 									Limpar datas
-								</Button>
+								</Button> */}
 							</Stack>
 
 							<Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ marginTop: 3 }}>
