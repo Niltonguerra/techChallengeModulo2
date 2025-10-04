@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { User, UserDataReceived } from '../../types/header-types';
+import type { User } from '../../types/header-types';
 
 import {
   Box,
@@ -29,7 +29,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
     try {
       const response = await loginUser(email, senha);
-      const userData: UserDataReceived = response.user;
+      const userData: User = response.user;
       const token: string = response.token;
       onLogin(userData, token);
 
