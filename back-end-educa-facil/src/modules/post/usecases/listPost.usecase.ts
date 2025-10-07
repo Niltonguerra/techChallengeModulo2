@@ -7,7 +7,7 @@ import { PostService } from '../service/post.service';
 @Injectable()
 export class ListPostUseCase {
   private readonly logger = new Logger(ListPostUseCase.name);
-  constructor(private readonly postService: PostService) { }
+  constructor(private readonly postService: PostService) {}
 
   async execute(query: ListPostDTO): Promise<ReturnListPost> {
     try {

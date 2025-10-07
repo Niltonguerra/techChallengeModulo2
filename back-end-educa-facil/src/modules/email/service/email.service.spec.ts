@@ -59,7 +59,7 @@ describe('EmailService', () => {
     configService = module.get(ConfigService);
 
     // Mock do logger
-    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => { });
+    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -132,7 +132,7 @@ describe('EmailService', () => {
       // Assert
       expect(result).toBe(400);
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Erro ao enviar e-mail de verificação:')
+        expect.stringContaining('Erro ao enviar e-mail de verificação:'),
       );
     });
 

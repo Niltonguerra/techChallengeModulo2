@@ -1,93 +1,112 @@
-import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDTO } from '../dtos/createUser.dto';
-import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
-import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
+import { UserController } from './user.controller';
 import { CreateUserUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
+import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
+import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
+import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
 import {
-  mockAppGuard,
   mockCreateUserDTO,
-  mockCreateUserUseCase,
   mockFindOneUserQuery,
   mockFindOneUserReturn,
-  mockFindOneUserUseCase,
-  mockJwtService,
   mockReturnMessageDTO,
   mockReturnMessageDTOValid,
   mockToken,
 } from './__mocks__/user.controller.mock';
-import { UserController } from './user.controller';
-// importação removida, guard será sobrescrito via overrideGuard
+import { listAuthorsParamsDTO } from '../dtos/listAuthorsParams.dto';
+
+// Mock de retorno do listAuthorsUseCase
+const mockListAuthorsResult = {
+  message: 'Authors found',
+  statusCode: 200,
+  users: [{ id: '1', name: 'Author 1' }],
+};
+
 describe('UserController', () => {
   let controller: UserController;
-  let createUserUseCase: CreateUserUseCase;
-  let findOneUserUseCase: FindOneUserUseCase;
+
+  const mockCreateUserUseCase = {
+    validationEmailCreateUser: jest.fn(),
+    create: jest.fn(),
+  };
+
+  const mockFindOneUserUseCase = {
+    findOneUserUseCase: jest.fn(),
+  };
+
+  const mockListAuthorsUseCase = {
+    listAuthors: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [
         { provide: CreateUserUseCase, useValue: mockCreateUserUseCase },
         { provide: FindOneUserUseCase, useValue: mockFindOneUserUseCase },
-        { provide: JwtService, useValue: mockJwtService },
-        { provide: APP_GUARD, useValue: mockAppGuard },
+        { provide: listAuthorsUseCase, useValue: mockListAuthorsUseCase },
       ],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuardUser)
+      .useValue({ canActivate: jest.fn(() => true) })
+      .overrideGuard(RolesGuardStudent)
+      .useValue({ canActivate: jest.fn(() => true) })
+      .compile();
 
     controller = module.get<UserController>(UserController);
-    createUserUseCase = module.get<CreateUserUseCase>(CreateUserUseCase);
-    findOneUserUseCase = module.get<FindOneUserUseCase>(FindOneUserUseCase);
   });
+
   it('deve ser definido', () => {
     expect(controller).toBeDefined();
   });
+
   it('deve criar usuário com sucesso', async () => {
-    jest
-      .spyOn(createUserUseCase, 'validationEmailCreateUser')
-      .mockResolvedValue(mockReturnMessageDTO);
+    mockCreateUserUseCase.validationEmailCreateUser.mockResolvedValue(mockReturnMessageDTO);
     const result = await controller.createUser(mockCreateUserDTO);
     expect(result).toBe(mockReturnMessageDTO);
-    expect(createUserUseCase.validationEmailCreateUser as jest.Mock).toHaveBeenCalledWith(
-      mockCreateUserDTO,
-    );
+    expect(mockCreateUserUseCase.validationEmailCreateUser).toHaveBeenCalledWith(mockCreateUserDTO);
   });
+
   it('deve validar email com sucesso', async () => {
-    jest.spyOn(createUserUseCase, 'create').mockResolvedValue(mockReturnMessageDTOValid);
+    mockCreateUserUseCase.create.mockResolvedValue(mockReturnMessageDTOValid);
     const result = await controller.validationEmail(mockToken);
     expect(result).toBe(mockReturnMessageDTOValid);
-    expect(createUserUseCase.create as jest.Mock).toHaveBeenCalledWith(mockToken);
+    expect(mockCreateUserUseCase.create).toHaveBeenCalledWith(mockToken);
   });
+
   it('deve buscar usuário com sucesso', async () => {
-    jest.spyOn(findOneUserUseCase, 'findOneUserUseCase').mockResolvedValue(mockFindOneUserReturn);
+    mockFindOneUserUseCase.findOneUserUseCase.mockResolvedValue(mockFindOneUserReturn);
     const result = await controller.findOne(mockFindOneUserQuery);
     expect(result).toBe(mockFindOneUserReturn);
-    expect(findOneUserUseCase.findOneUserUseCase as jest.Mock).toHaveBeenCalledWith(
-      mockFindOneUserQuery,
-    );
+    expect(mockFindOneUserUseCase.findOneUserUseCase).toHaveBeenCalledWith(mockFindOneUserQuery);
   });
-  it('deve propagar erro do usecase ao criar usuário', async () => {
-    const dto: CreateUserDTO = {
-      email: 'fail@email.com',
-      password: '123',
-      name: 'Fail',
-      photo: '',
-      permission: UserPermissionEnum.ADMIN,
-    };
-    jest.spyOn(createUserUseCase, 'validationEmailCreateUser').mockRejectedValue(new Error('erro'));
-    await expect(controller.createUser(dto)).rejects.toThrow('erro');
+
+  it('deve listar autores com sucesso', async () => {
+    mockListAuthorsUseCase.listAuthors.mockResolvedValue(mockListAuthorsResult);
+    const queryParams: listAuthorsParamsDTO = {}; // apenas propriedades válidas do DTO
+    const result = await controller.findAllAuthors(queryParams);
+    expect(result).toBe(mockListAuthorsResult);
+    expect(mockListAuthorsUseCase.listAuthors).toHaveBeenCalledWith(queryParams);
   });
-  it('deve propagar erro do usecase ao validar email', async () => {
-    jest.spyOn(createUserUseCase, 'create').mockRejectedValue(new Error('erro'));
-    await expect(controller.validationEmail('token')).rejects.toThrow('erro');
+
+  it('deve propagar erro ao criar usuário', async () => {
+    mockCreateUserUseCase.validationEmailCreateUser.mockRejectedValue(new Error('erro'));
+    await expect(controller.createUser(mockCreateUserDTO)).rejects.toThrow('erro');
   });
-  it('deve propagar erro do usecase ao buscar usuário', async () => {
-    const query: FindOneUserQueryParamsDTO = {
-      field: searchByFieldUserEnum.EMAIL,
-      value: 'x',
-    };
-    jest.spyOn(findOneUserUseCase, 'findOneUserUseCase').mockRejectedValue(new Error('erro'));
-    await expect(controller.findOne(query)).rejects.toThrow('erro');
+
+  it('deve propagar erro ao validar email', async () => {
+    mockCreateUserUseCase.create.mockRejectedValue(new Error('erro'));
+    await expect(controller.validationEmail(mockToken)).rejects.toThrow('erro');
+  });
+
+  it('deve propagar erro ao buscar usuário', async () => {
+    mockFindOneUserUseCase.findOneUserUseCase.mockRejectedValue(new Error('erro'));
+    await expect(controller.findOne(mockFindOneUserQuery)).rejects.toThrow('erro');
+  });
+
+  it('deve propagar erro ao listar autores', async () => {
+    mockListAuthorsUseCase.listAuthors.mockRejectedValue(new Error('erro'));
+    const queryParams: listAuthorsParamsDTO = {};
+    await expect(controller.findAllAuthors(queryParams)).rejects.toThrow('erro');
   });
 });
