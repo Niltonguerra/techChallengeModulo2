@@ -1,5 +1,4 @@
-import { webcrypto } from 'crypto';
-(globalThis as { crypto: Crypto }).crypto = webcrypto as Crypto;
+// (globalThis as { crypto: Crypto }).crypto = webcrypto as Crypto;
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { setupDocumentation } from 'docs/documentation';
@@ -18,8 +17,6 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
-
-  console.log('HTTP adapter:', app.getHttpAdapter().getType());
 
   // Habilitando CORS
   app.enableCors({
