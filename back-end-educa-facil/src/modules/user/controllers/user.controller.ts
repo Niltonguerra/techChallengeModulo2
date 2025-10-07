@@ -32,7 +32,7 @@ export class UserController {
     private readonly createPostUseCase: CreateUserUseCase,
     private readonly findOneUserUseCase: FindOneUserUseCase,
     private readonly listAuthorsUseCase: listAuthorsUseCase,
-  ) { }
+  ) {}
 
   @Post('create')
   @UsePipes(HashPasswordPipe)

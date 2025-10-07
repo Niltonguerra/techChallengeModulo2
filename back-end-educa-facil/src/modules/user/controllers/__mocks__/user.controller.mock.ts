@@ -11,27 +11,33 @@ export const mockJwtService = {
 };
 
 export const mockCreateUserUseCase = {
-  validationEmailCreateUser: jest.fn(() => Promise.resolve({
-    message: 'Usuário criado com sucesso',
-    statusCode: 201,
-  })),
-  create: jest.fn(() => Promise.resolve({
-    message: 'Email validado com sucesso',
-    statusCode: 200,
-  })),
+  validationEmailCreateUser: jest.fn(() =>
+    Promise.resolve({
+      message: 'Usuário criado com sucesso',
+      statusCode: 201,
+    }),
+  ),
+  create: jest.fn(() =>
+    Promise.resolve({
+      message: 'Email validado com sucesso',
+      statusCode: 200,
+    }),
+  ),
 };
 
 export const mockFindOneUserUseCase = {
-  findOneUserUseCase: jest.fn(() => Promise.resolve({
-    statusCode: 200,
-    message: 'ok',
-    user: {
-      id: '1',
-      name: 'Test',
-      photo: '',
-      email: 'test@email.com',
-    },
-  })),
+  findOneUserUseCase: jest.fn(() =>
+    Promise.resolve({
+      statusCode: 200,
+      message: 'ok',
+      user: {
+        id: '1',
+        name: 'Test',
+        photo: '',
+        email: 'test@email.com',
+      },
+    }),
+  ),
 };
 
 export const mockAppGuard = {

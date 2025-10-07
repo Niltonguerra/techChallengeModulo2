@@ -5,7 +5,7 @@ import { PostService } from '../service/post.service';
 @Injectable()
 export class GetUniqueHashtagsUseCase {
   private readonly logger = new Logger(GetUniqueHashtagsUseCase.name);
-  constructor(private readonly postService: PostService) { }
+  constructor(private readonly postService: PostService) {}
 
   async execute(): Promise<string[]> {
     try {

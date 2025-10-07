@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { listAuthorsUseCase } from './listAuthors.usecase';
 import { UserService } from '../service/user.service';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
@@ -16,10 +16,10 @@ describe('listAuthorsUseCase', () => {
     statusCode: 200,
     data: [
       {
-        id: '1', // ✅ id como string
+        id: '1',
         name: 'John Doe',
-        email: 'john@example.com', // ✅ obrigatório
-        photo: 'https://example.com/photo.jpg', // ✅ obrigatório
+        email: 'john@example.com',
+        photo: 'https://example.com/photo.jpg',
       },
     ],
   };
@@ -30,10 +30,7 @@ describe('listAuthorsUseCase', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        listAuthorsUseCase,
-        { provide: UserService, useValue: mockUserService },
-      ],
+      providers: [listAuthorsUseCase, { provide: UserService, useValue: mockUserService }],
     }).compile();
 
     useCase = module.get<listAuthorsUseCase>(listAuthorsUseCase);
@@ -74,7 +71,7 @@ describe('listAuthorsUseCase', () => {
 
     await expect(useCase.listAuthors(params)).rejects.toThrow(HttpException);
     await expect(useCase.listAuthors(params)).rejects.toThrow(
-      `${systemMessage.ReturnMessage.errorUserNotFound}: 500`
+      `${systemMessage.ReturnMessage.errorUserNotFound}: 500`,
     );
   });
 });
