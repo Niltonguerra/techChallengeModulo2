@@ -42,7 +42,7 @@ describe('PostService', () => {
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(
         mockQueryBuilder as SelectQueryBuilder<Post>,
       );
-      const result = await service.listPosts({ offset: 0, limit: 10 });
+      const result = await service.listPosts({ offset: '0', limit: '10' });
       expect(result.statusCode).toBe(200);
       expect(result.total).toBe(1);
       expect(Array.isArray(result.ListPost)).toBe(true);
@@ -61,7 +61,7 @@ describe('PostService', () => {
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(
         mockQueryBuilder as SelectQueryBuilder<Post>,
       );
-      const result = await service.listPosts({ offset: 0, limit: 10 });
+      const result = await service.listPosts({ offset: '0', limit: '10' });
       expect(result.statusCode).toBe(200);
       expect(result.total).toBe(0);
       expect(Array.isArray(result.ListPost)).toBe(true);
@@ -85,7 +85,7 @@ describe('PostService', () => {
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(
         mockQueryBuilder as SelectQueryBuilder<Post>,
       );
-      const result = await service.listPosts({ offset: 0, limit: 10, search: 'foo,bar' });
+      const result = await service.listPosts({ offset: '0', limit: '10', search: 'foo,bar' });
       expect(result.statusCode).toBe(200);
       expect(result.total).toBe(1);
       expect(Array.isArray(result.ListPost)).toBe(true);
@@ -129,7 +129,7 @@ describe('PostService', () => {
       );
 
       // Chamando o método com offset e limit específicos
-      const result = await service.listPosts({ limit: 2, offset: 5 });
+      const result = await service.listPosts({ limit: '2', offset: '5' });
 
       // Verifica se skip e take foram chamados corretamente
       expect(mockQueryBuilder.skip).toHaveBeenCalledWith(5);

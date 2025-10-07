@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { FindOneUserUseCase } from './FindOneUser.usecase';
-import { UserService } from '../service/user.service';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
 import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
+import { UserService } from '../service/user.service';
+import { FindOneUserUseCase } from './FindOneUser.usecase';
 
 describe('FindOneUserUseCase (simple)', () => {
   let useCase: FindOneUserUseCase;
