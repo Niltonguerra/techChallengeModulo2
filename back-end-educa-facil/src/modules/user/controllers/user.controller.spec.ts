@@ -7,6 +7,7 @@ import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
 import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
 import { CreateUserUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
+import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
 import {
   mockAppGuard,
   mockCreateUserDTO,
@@ -35,6 +36,7 @@ describe('UserController', () => {
         { provide: FindOneUserUseCase, useValue: mockFindOneUserUseCase },
         { provide: JwtService, useValue: mockJwtService },
         { provide: APP_GUARD, useValue: mockAppGuard },
+        { provide: listAuthorsUseCase, useValue: listAuthorsUseCase },
       ],
     }).compile();
 
