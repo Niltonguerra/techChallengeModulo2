@@ -15,7 +15,7 @@ import {
 } from './__mocks__/user.controller.mock';
 import { listAuthorsParamsDTO } from '../dtos/listAuthorsParams.dto';
 
-// Criando mock do retorno de listAuthors
+// Mock de retorno do listAuthorsUseCase
 const mockListAuthorsResult = {
   message: 'Authors found',
   statusCode: 200,
@@ -24,9 +24,6 @@ const mockListAuthorsResult = {
 
 describe('UserController', () => {
   let controller: UserController;
-  let createUserUseCase: CreateUserUseCase;
-  let findOneUserUseCase: FindOneUserUseCase;
-  let listAuthorsUseCaseMock: listAuthorsUseCase;
 
   const mockCreateUserUseCase = {
     validationEmailCreateUser: jest.fn(),
@@ -57,9 +54,6 @@ describe('UserController', () => {
       .compile();
 
     controller = module.get<UserController>(UserController);
-    createUserUseCase = module.get<CreateUserUseCase>(CreateUserUseCase);
-    findOneUserUseCase = module.get<FindOneUserUseCase>(FindOneUserUseCase);
-    listAuthorsUseCaseMock = module.get<listAuthorsUseCase>(listAuthorsUseCase);
   });
 
   it('deve ser definido', () => {
