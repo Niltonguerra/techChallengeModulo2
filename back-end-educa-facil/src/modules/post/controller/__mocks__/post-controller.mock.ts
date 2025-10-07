@@ -2,7 +2,7 @@ import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { CreatePostDTO } from '@modules/post/dtos/createPost.dto';
 import { UpdatePostDTO } from '@modules/post/dtos/updatePost.dto';
 
-export const listPostDTOMock = { page: 1, limit: 10 };
+export const listPostDTOMock = { page: '1', limit: '10' };
 export const returnListPostMock = { posts: [{ id: 'abc123', title: 'Post' }], total: 1 };
 
 export const createPostDTOMock: CreatePostDTO = {

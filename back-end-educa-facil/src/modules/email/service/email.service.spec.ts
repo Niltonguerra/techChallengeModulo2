@@ -1,9 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Logger } from '@nestjs/common';
-import { EmailService } from './email.service';
+import { Test, TestingModule } from '@nestjs/testing';
 import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
+import { EmailService } from './email.service';
 
 // Mock do nodemailer
 jest.mock('nodemailer');
@@ -58,7 +59,7 @@ describe('EmailService', () => {
     configService = module.get(ConfigService);
 
     // Mock do logger
-    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => { });
   });
 
   afterEach(() => {
@@ -80,77 +81,90 @@ describe('EmailService', () => {
       });
     });
 
-    it('should send verification email successfully', () => {
+    it('should send verification email successfully', async () => {
       // Arrange
-      mockTransporter.sendMail.mockImplementation(() => {});
+      const sendMock = jest.fn().mockResolvedValue({ id: 'fake-id' });
+      service['resend'] = {
+        emails: { send: sendMock },
+      } as unknown as Resend;
 
       // Act
-      const result = service.enviaVerificacaoEmail(testEmail, testUrl);
+      const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
-      expect(result).toBe(200);
-      expect(mockTransporter.sendMail).toHaveBeenCalledWith({
+      expect(sendMock).toHaveBeenCalledWith({
         from: 'test@gmail.com',
         to: testEmail,
         subject: 'Verificação de e-mail do aplicativo MoveSmart',
-        text: `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${testUrl}?token=${testEmail}`,
+        html: `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${testUrl}?token=${testEmail}`,
       });
+
+      expect(result).toBe(200);
     });
 
-    it('should return 400 when sendMail throws an error', () => {
+    it('should return 400 when sendMail throws an error', async () => {
       // Arrange
-      const error = new Error('SMTP Error');
-      mockTransporter.sendMail.mockImplementation(() => {
-        throw error;
-      });
+      const sendMock = jest.fn().mockRejectedValue(new Error('SMTP Error'));
+      service['resend'] = {
+        emails: { send: sendMock },
+      } as unknown as Resend;
 
       // Act
-      const result = service.enviaVerificacaoEmail(testEmail, testUrl);
+      const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
       expect(result).toBe(400);
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        `Erro ao enviar e-mail de verificação: ${error.message}`,
+        `Erro ao enviar e-mail de verificação: SMTP Error`,
       );
     });
 
-    it('should handle non-Error exceptions', () => {
+    it('should handle non-Error exceptions', async () => {
       // Arrange
-      mockTransporter.sendMail.mockImplementation(() => {
-        throw new Error('String error');
-      });
+      const sendMock = jest.fn().mockRejectedValue('String error'); // não é Error
+      service['resend'] = {
+        emails: { send: sendMock },
+      } as unknown as Resend;
 
       // Act
-      const result = service.enviaVerificacaoEmail(testEmail, testUrl);
+      const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
       expect(result).toBe(400);
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Erro ao enviar e-mail de verificação:'),
+        expect.stringContaining('Erro ao enviar e-mail de verificação:')
       );
     });
 
-    it('should generate correct email content', () => {
+    it('should generate correct email content', async () => {
       // Arrange
       const expectedSubject = 'Verificação de e-mail do aplicativo MoveSmart';
-      const expectedText = `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${testUrl}?token=${testEmail}`;
+      const expectedHtml = `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${testUrl}?token=${testEmail}`;
+
+      const sendMock = jest.fn().mockResolvedValue({ id: 'fake-id' });
+      service['resend'] = {
+        emails: { send: sendMock },
+      } as unknown as Resend;
 
       // Act
-      service.enviaVerificacaoEmail(testEmail, testUrl);
+      const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
-      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
+      expect(sendMock).toHaveBeenCalledWith(
         expect.objectContaining({
           subject: expectedSubject,
-          text: expectedText,
+          html: expectedHtml,
           to: testEmail,
         }),
       );
+
+      expect(result).toBe(200);
     });
 
-    it('should use EMAIL_USER from config as sender', () => {
+    it('should use EMAIL_USER from config as sender', async () => {
       // Arrange
       const expectedSender = 'configured@email.com';
+
       configService.get.mockImplementation((key: string) => {
         if (key === 'EMAIL_USER') return expectedSender;
         if (key === 'EMAIL_PASSWORD') return 'testpassword';
@@ -160,15 +174,22 @@ describe('EmailService', () => {
         return '';
       });
 
+      const sendMock = jest.fn().mockResolvedValue({ id: 'fake-id' });
+      service['resend'] = {
+        emails: { send: sendMock },
+      } as unknown as Resend;
+
       // Act
-      service.enviaVerificacaoEmail(testEmail, testUrl);
+      const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
 
       // Assert
-      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
+      expect(sendMock).toHaveBeenCalledWith(
         expect.objectContaining({
           from: expectedSender,
         }),
       );
+
+      expect(result).toBe(200);
     });
   });
 });
