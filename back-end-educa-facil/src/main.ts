@@ -1,8 +1,9 @@
-// (globalThis as { crypto: Crypto }).crypto = webcrypto as Crypto;
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { webcrypto } from 'crypto';
 import { setupDocumentation } from 'docs/documentation';
 import { AppModule } from './app.module';
+(globalThis as { crypto: Crypto }).crypto = webcrypto as Crypto;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
