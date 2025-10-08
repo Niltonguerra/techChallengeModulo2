@@ -18,6 +18,8 @@
     - [Lint / format / tipos](#lint--format--tipos)
 - [Configuração do Mobile](#configuração-do-mobile)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
+    - [Variáveis do backend:](#variáveis-do-backend)
+    - [Variáveis de frontend:](#variáveis-de-frontend)
 - [Comandos úteis (resumo)](#comandos-úteis-resumo)
 - [Estrutura do projeto (backend)](#estrutura-do-projeto-backend)
 - [Credenciais](#credenciais)
@@ -169,37 +171,47 @@ npm run type-check
 
 # Variáveis de ambiente
 
-Crie um arquivo `.env` a partir de `.env.example`. `.env` com segredos reais.
-
-Exemplo de variáveis:
+### Variáveis do backend:
 
 ```env
-AMBIENTE=
-DB_HOST_DEV=
-DB_PORT_DEV=
-DB_DATABASE_DEV=
-DB_USERNAME_DEV=
-DB_PASSWORD_DEV=
-DB_HOST_PROD=
-DB_PORT_PROD=
-DB_DATABASE_PROD=
-DB_USERNAME_PROD=
-DB_PASSWORD_PROD=
-URL_SERVER_DEV=
-URL_SERVER_PROD=
-BCRYPT_SALT_ROUNDS=
-JWT_SECRET=
-SECRET_JWT_EMAIL=
-JWT_EMAIL_EXPIRES_IN=
-JWT_EXPIRES_IN=
-EMAIL_USER=
-EMAIL_PASSWORD=
-RESEND_API_KEY=
-SWAGGER_USER=
-SWAGGER_PASS=
-FRONTEND_URL_LOCAL=
-FRONTEND_URL_PROD=
-FRONTEND_URL_PROFESSOR=
+AMBIENTE=PROD
+
+DB_HOST_DEV=localhost
+DB_PORT_DEV=5432
+URL_SERVER_DEV=http://localhost:3000/
+DB_DATABASE_DEV=nest_db
+DB_USERNAME_DEV=nest_user
+DB_PASSWORD_DEV=nest_password
+
+DB_HOST_PROD=aws-1-sa-east-1.pooler.supabase.com
+DB_PORT_PROD=5432
+URL_SERVER_PROD=https://techchallengemodulo2.onrender.com/
+DB_DATABASE_PROD=postgres
+DB_USERNAME_PROD=postgres.lvonfxuhdykgviwqcmyw
+DB_PASSWORD_PROD=VxoVH8ReYuqsB3N1
+
+BCRYPT_SALT_ROUNDS=10
+JWT_SECRET=educa_facil
+SECRET_JWT_EMAIL=educa_facil
+JWT_EMAIL_EXPIRES_IN=1h
+JWT_EXPIRES_IN=24h
+EMAIL_USER=no-reply@educafacil.space
+EMAIL_PASSWORD=svjkqhfvifjqryde
+RESEND_API_KEY=re_jU4zzHai_4Byi7bivUKWxSRckuNuxtGfT
+
+SWAGGER_USER='admin'
+SWAGGER_PASS='admin123'
+
+FRONTEND_URL_LOCAL =http://localhost:5173
+FRONTEND_URL_PROD =https://tech-challenge-modulo2-qcu447prv-niltonguerras-projects.vercel.app
+FRONTEND_URL_PROFESSOR=https://tech-challenge-modulo2-zv8l-gmbfouuf6-niltonguerras-projects.vercel.app
+```
+
+### Variáveis de frontend:
+```
+VITE_URL_IMGBB=https://api.imgbb.com/1/upload
+VITE_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
+VITE_API_URL=https://techchallengemodulo2.onrender.com
 ```
 
 ---
