@@ -1,19 +1,95 @@
-const tintColorLight = '#2f95dc';
-const tintColorDark = '#fff';
-
 export default {
   light: {
     text: '#000',
     background: '#fff',
-    tint: tintColorLight,
+    tint: '#2f95dc',
     tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight,
+    tabIconSelected: '#2f95dc',
   },
   dark: {
     text: '#fff',
     background: '#000',
-    tint: tintColorDark,
+    tint: '#fff',
     tabIconDefault: '#ccc',
-    tabIconSelected: tintColorDark,
+    tabIconSelected: '#fff',
+  },
+  palette: {
+    main: {
+      primaryColor: '#4953B8',
+      secondColor: '#F57005',
+      thirdColor: '#2B264D',
+      textPrimaryColor: '#1C1C1E',
+      textSecondaryColor: '#64748B',
+      backgroundColor: '#F5F3F4',
+    },
+    light: {
+      primaryLightColor: '#6B73E6',
+      secondaryLightColor: '#FF9833',
+      tertiaryLightColor: '#3D3669',
+    },
+    dark: {
+      primaryColor: '#373E8C',
+      secondaryColor: '#C75A00',
+      tertiaryColor: '#1F1A3A',
+      textPrimaryColor: '#FFFFFF',
+      textSecondaryColor: '#64748B',
+      backgroundColor: '#000000',
+    },
+    error: '#DC2626',
+    success: '#10B981',
+    warning: '#F59E0B',
+  },
+  typography: {
+    fontFamily: 'Inter, Montserrat, sans-serif',
+    h1: {
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 700,
+      fontSize: '48px',
+      lineHeight: 1.2,
+      color: '#0F172A',
+    },
+    h2: {
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 700,
+      fontSize: '32px',
+      lineHeight: 1.2,
+      color: '#0F172A',
+    },
+    h3: {
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 600,
+      fontSize: '24px',
+      lineHeight: 1.3,
+      color: '#0F172A',
+    },
+    h4: {
+      fontFamily: 'Inter, sans-serif',
+      fontWeight: 600,
+      fontSize: '18px',
+      lineHeight: 1.4,
+      color: '#0F172A',
+    },
+    h5: {
+      fontFamily: 'Inter, sans-serif',
+      fontWeight: 400,
+      fontSize: '16px',
+      lineHeight: 1.6,
+      color: '#334155',
+    },
+    h6: {
+      fontFamily: 'Inter, sans-serif',
+      fontWeight: 400,
+      fontSize: '14px',
+      lineHeight: 1.5,
+      color: '#64748B',
+    },
+    button: {
+      fontFamily: 'Inter, sans-serif',
+      fontWeight: 600,
+      fontSize: '16px',
+      color: '#fff',
+      textTransform: 'none',
+      letterSpacing: '0.02em',
+    },
   },
 };
