@@ -1,94 +1,179 @@
-# 🚀 Configuração do Backend
+# README — Projeto Fullstack (Backend / Frontend / Mobile)
 
-Este projeto utiliza Docker e Docker Compose para gerenciar os contêineres do banco de dados, servidor e pgAdmin.
+**Resumo:** instruções práticas para rodar, testar e desenvolver o backend (NestJS), frontend (React + Vite) e mobile. Vá direto ao ponto.
 
-## 🏗 comandos uteis:
-🏗 comando para rodar os serviços localmente:<br>
-``docker compose -f docker/docker-compose.local.yml up -d``
+---
 
-🏗 comando para rodar o banco e o pgadmin:<br>
-``docker compose -f docker/docker-compose.db.yml up -d``
+## Índice
 
-🏗 comando para rodar o projeto inteiro:<br>
-``docker compose -f docker/docker-compose.yml up -d``
+- [README — Projeto Fullstack (Backend / Frontend / Mobile)](#readme--projeto-fullstack-backend--frontend--mobile)
+  - [Índice](#índice)
+- [Configuração do Backend](#configuração-do-backend)
+    - [Rodando local (desenvolvimento)](#rodando-local-desenvolvimento)
+    - [Testes](#testes)
+    - [Formatação e lint](#formatação-e-lint)
+    - [Gerar módulo / recurso (Nest)](#gerar-módulo--recurso-nest)
+- [Configuração do Frontend](#configuração-do-frontend)
+    - [Rodar local](#rodar-local)
+    - [Lint / format / tipos](#lint--format--tipos)
+- [Configuração do Mobile](#configuração-do-mobile)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+    - [Variáveis do backend:](#variáveis-do-backend)
+    - [Variáveis de frontend:](#variáveis-de-frontend)
+- [Comandos úteis (resumo)](#comandos-úteis-resumo)
+- [Estrutura do projeto (backend)](#estrutura-do-projeto-backend)
+- [Credenciais](#credenciais)
 
-🏗 comando para rodar o servidor local:<br>
-``pnpm run start:dev``
+---
 
-📜 Ver logs do NestJS:<br>
-``docker logs -f nest_api``
+# Configuração do Backend
 
-## 🌐 Acessos
-- 🔗 pgAdmin: [http://localhost:5050/](http://localhost:5050/)
-- 🔗 Postman: [https://app.getpostman.com/join-team?invite_code=58f4c15f967d63612f4e9e18bb98f0bad8747a2e80c920a529e1089b2d0214be](https://app.getpostman.com/join-team?invite_code=58f4c15f967d63612f4e9e18bb98f0bad8747a2e80c920a529e1089b2d0214be)
+**Stack principal**
 
-## 🔧 Ferramentas de Desenvolvimento
-🛠 Rodar Prettier para formatar código:<br>
-``pnpm prettier --write "src/**/*.ts"``
+* Node 18 (recomendado)
+* pnpm
+* NestJS (TypeScript)
+* Docker / Docker Compose
+* PostgreSQL + PgAdmin
+* JWT, bcrypt, uuid
+* Jest (testes)
+* Swagger / Redoc (documentação)
+* Resend (envio de e-mail)
+* ESLint, Prettier, class-validator, passport-jwt
 
-### 🔧 realizar teste testes
-🛠 Comando para rodar os testes localmente:
-``pnpm test``
+**Pré-requisitos**
 
-🛠 Comando para rodar o covarage:
-``pnpm test:cov``
+* Node 18: `nvm install 18 && nvm use 18`
+* Docker e Docker Compose
+* pnpm: `npm i -g pnpm`
 
-🛠 Comando para o teste apenas para um arquivo (para essse comando funcionar deve se estar no diretório do teste):
-``pnpm test "nome-do-arquivo"``
+### Rodando local (desenvolvimento)
 
+1. Instale dependências:
 
-## informações sobre o projeto:
+```bash
+pnpm install
+```
 
-- versão do node: 18
-- é importante sempre que for rodar local mudar a variavel de ambiente chamada `AMBIENTE` para `DEV` quando for rodar local e mudar para `PROD` quando for subir para o servidor
-### 🔑 Credenciais de acesso
+2. Suba DB e serviços:
 
-#### 🏦 Banco de Dados (PostgreSQL)
-- Usuário: nest_user
-- Senha: nest_password
+```bash
+docker compose -f docker/docker-compose.yml up -d
+# ou para ambiente local apenas:
+docker compose -f docker/docker-compose.local.yml up -d
+```
 
-#### 🖥 pgAdmin
-- E-mail: admin@admin.com
-- Senha: admin 
+3. Inicie o servidor Nest (watch):
 
-## Comandos utilitarios:
-comando para criar um modulo em nest com todas as dependências:
+```bash
+pnpm run start:dev
+```
 
-``nome="nome do modulo" && nest generate module $nome && nest generate service $nome && nest generate controller $nome && nest generate pipe $nome && nest generate decorator $nome && nest generate guard $nome && nest generate middleware $nome && nest generate filter $nome ``
+4. Acessos:
 
-- substitua o nome do modulo pelo nome do modulo que você quer criar, por exemplo:
-`nome="materias" && nest generate module $nome && nest generate service $nome && nest generate controller $nome && nest generate pipe $nome && nest generate decorator $nome && nest generate guard $nome && nest generate middleware $nome && nest generate filter $nome`
+* API: `http://localhost:3000`
+* Swagger: `http://localhost:3000/swagger-ui`
+* Docs (Redoc): `http://localhost:3000/docs`
+* PgAdmin: `http://localhost:5050`
 
-- comando para criar um modulo com um CRUD basico:
-``nest g resource "nome do modulo a ser criado"``
+### Testes
 
-## Credenciais:
+* Rodar testes: `pnpm test`
+* Coverage: `pnpm test:cov`
+* Rodar teste específico (executar no diretório do teste): `pnpm test "nome-do-arquivo"`
 
+### Formatação e lint
 
-### credenciais de acesso da conta do google:
-email: educacaofacilfiap@gmail.com
-senha: 4c5WG1gW8hxC
+* Formatar com Prettier:
 
+```bash
+pnpm prettier --write "src/**/*.ts"
+```
 
-## Documentação de API:
+* ESLint:
 
-### credenciais de acesso Swagger e docs:
-usuario: admin 
-senha: admin123
+```bash
+pnpm run lint
+pnpm run lint:fix
+```
 
-### Links:
-Swagger: http://localhost:3000/swagger-ui
-Docs: http://localhost:3000/docs
+### Gerar módulo / recurso (Nest)
 
+Gerar módulo + service + controller + pipe + decorator + guard + middleware + filter:
 
-### envs:
-envs(sei que é errado deixar aqui, mas é para simplificar nossa vida) 
+```bash
+nome="nome_do_modulo" && \
+nest generate module $nome && \
+nest generate service $nome && \
+nest generate controller $nome && \
+nest generate pipe $nome && \
+nest generate decorator $nome && \
+nest generate guard $nome && \
+nest generate middleware $nome && \
+nest generate filter $nome
+```
 
-AMBIENTE=PROD
+Gerar CRUD básico:
 
-        
+```bash
+nest g resource nome_do_modulo
+```
 
-envs(sei que é errado deixar aqui, mas é para simplificar nossa vida):
+---
+
+# Configuração do Frontend
+
+**Stack**
+
+* React 18 + TypeScript
+* Vite
+* React Router DOM
+* Redux Toolkit
+* ESLint, Prettier
+
+### Rodar local
+
+1. Instalar dependências:
+
+```bash
+npm install
+```
+
+2. Iniciar dev server:
+
+```bash
+npm run dev
+```
+
+3. Build / preview:
+
+```bash
+npm run build
+npm run preview
+```
+
+### Lint / format / tipos
+
+```bash
+npm run lint
+npm run lint:fix
+npm run format
+npm run format:check
+npm run type-check
+```
+
+---
+
+# Configuração do Mobile
+
+>em desenvolvimento...
+---
+
+# Variáveis de ambiente
+
+### Variáveis do backend:
+
+```env
 AMBIENTE=PROD
 
 DB_HOST_DEV=localhost
@@ -98,14 +183,12 @@ DB_DATABASE_DEV=nest_db
 DB_USERNAME_DEV=nest_user
 DB_PASSWORD_DEV=nest_password
 
-
 DB_HOST_PROD=aws-1-sa-east-1.pooler.supabase.com
 DB_PORT_PROD=5432
 URL_SERVER_PROD=https://techchallengemodulo2.onrender.com/
 DB_DATABASE_PROD=postgres
 DB_USERNAME_PROD=postgres.lvonfxuhdykgviwqcmyw
 DB_PASSWORD_PROD=VxoVH8ReYuqsB3N1
-
 
 BCRYPT_SALT_ROUNDS=10
 JWT_SECRET=educa_facil
@@ -122,78 +205,104 @@ SWAGGER_PASS='admin123'
 FRONTEND_URL_LOCAL =http://localhost:5173
 FRONTEND_URL_PROD =https://tech-challenge-modulo2-qcu447prv-niltonguerras-projects.vercel.app
 FRONTEND_URL_PROFESSOR=https://tech-challenge-modulo2-zv8l-gmbfouuf6-niltonguerras-projects.vercel.app
-
-
-
-
-# Configurações do front-end:
-
-## 🚀 Tecnologias
-
-- **React 18** - Biblioteca principal
-- **TypeScript** - Tipagem estática
-- **Vite** - Build tool e dev server ultra-rápido
-- **React Router DOM** - Roteamento
-- **Redux Toolkit** - Gerenciamento de estado
-- **ESLint** - Linting e análise de código
-- **Prettier** - Formatação de código
-
-## 📦 Scripts Disponíveis
-
-```bash
-# Desenvolvimento
-npm run dev
-
-# Build para produção
-npm run build
-
-# Preview do build
-npm run preview
-
-# Linting
-npm run lint
-npm run lint:fix
-
-# Formatação
-npm run format
-npm run format:check
-
-# Type checking
-npm run type-check
 ```
 
-## 🏗️ Estrutura do Projeto
+### Variáveis de frontend:
+```
+VITE_URL_IMGBB=https://api.imgbb.com/1/upload
+VITE_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
+VITE_API_URL=https://techchallengemodulo2.onrender.com
+```
+
+---
+
+# Comandos úteis (resumo)
+
+* Subir tudo (produção/dev):
+
+```bash
+docker compose -f docker/docker-compose.yml up -d
+```
+
+* Subir local (apenas serviços locais):
+
+```bash
+docker compose -f docker/docker-compose.local.yml up -d
+```
+
+* Rodar servidor Nest em dev:
+
+```bash
+pnpm run start:dev
+```
+
+* Ver logs do container Nest:
+
+```bash
+docker logs -f nest_api
+```
+
+* Prettier:
+
+```bash
+pnpm prettier --write "src/**/*.ts"
+```
+
+* Testes:
+
+```bash
+pnpm test
+pnpm test:cov
+```
+
+---
+
+# Estrutura do projeto (backend)
 
 ```
 src/
-├── components/          # Componentes reutilizáveis
-│   └── Navbar.tsx
-├── pages/              # Páginas da aplicação
-│   ├── Home.tsx
-│   └── About.tsx
-├── store/              # Redux store
-│   ├── index.ts        # Configuração da store
-│   ├── hooks.ts        # Hooks tipados do Redux
-│   └── slices/         # Slices do Redux Toolkit
-│       └── counterSlice.ts
-├── App.tsx             # Componente principal
-├── App.css             # Estilos globais
-└── main.tsx            # Entry point
+├── modules/
+│   ├── auth/
+│   │   ├── controllers/
+│   │   ├── dtos/
+│   │   ├── guards/
+│   │   ├── strategies/
+│   │   └── auth.module.ts
+│   ├── post/
+│   │   ├── controller/
+│   │   ├── dtos/
+│   │   ├── entities/
+│   │   ├── service/
+│   │   └── usecases/
+│   ├── user/
+│   ├── email/
+│   └── common/
+├── config/
+├── docs/
+├── app.module.ts
+└── main.ts
 ```
 
-## 🔧 Como usar
+---
 
-1. **Clonar e instalar dependências:**
-   ```bash
-   npm install
-   ```
+# Credenciais 
 
-2. **Iniciar o servidor de desenvolvimento:**
-   ```bash
-   npm run dev
-   ```
+**PostgreSQL**
 
-3. **Acessar no navegador:**
-   ```
-   http://localhost:5173
-   ```
+* Usuário: `nest_user`
+* Senha: `nest_password`
+
+**PgAdmin**
+
+* E-mail: `admin@admin.com`
+* Senha: `admin`
+
+**Swagger / Docs**
+
+* Usuário: `admin`
+* Senha: `admin123`
+
+**Conta Google**
+
+* Email: `educacaofacilfiap@gmail.com`
+* Senha: `4c5WG1gW8hxC`
