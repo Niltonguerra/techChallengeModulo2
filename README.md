@@ -17,6 +17,7 @@
     - [Rodar local](#rodar-local)
     - [Lint / format / tipos](#lint--format--tipos)
 - [Configuração do Mobile](#configuração-do-mobile)
+    - [Rodando local (desenvolvimento)](#rodando-local-desenvolvimento-1)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
     - [Variáveis do backend:](#variáveis-do-backend)
     - [Variáveis de frontend:](#variáveis-de-frontend)
@@ -166,7 +167,14 @@ npm run type-check
 
 # Configuração do Mobile
 
->em desenvolvimento...
+### Rodando local (desenvolvimento)
+
+1. Instale dependências:
+`pnpm install`
+
+2. rode o projeto:
+``pnpm start`
+
 ---
 
 # Variáveis de ambiente
