@@ -1,3 +1,6 @@
+import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
+import { ListAllUsersUseCase } from '../usecases/listAllUsers.usecase';
+import { User } from '../entities/user.entity';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
 import { HashPasswordPipe } from '@modules/auth/pipe/passwordEncryption.pipe';
@@ -23,6 +26,7 @@ import {
 import { CreateUserUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
 import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
+import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 
 @ApiInternalServerErrorResponse({ description: 'Internal Server Error', type: ReturnMessageDTO })
 @ApiNotFoundResponse({ description: 'Not found', type: ReturnMessageDTO })
@@ -32,6 +36,7 @@ export class UserController {
     private readonly createPostUseCase: CreateUserUseCase,
     private readonly findOneUserUseCase: FindOneUserUseCase,
     private readonly listAuthorsUseCase: listAuthorsUseCase,
+    private readonly listAllUsersUseCase: ListAllUsersUseCase,
   ) {}
 
   @Post('create')
@@ -77,4 +82,16 @@ export class UserController {
     const authors = await this.listAuthorsUseCase.listAuthors(queryParams);
     return authors;
   }
+
+  @Get('list-all')
+  @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
+  @ApiBearerAuth('JWT-Auth')
+  @ApiOperation({ summary: 'List all registered users (for admins/professors)' })
+  @ApiOkResponse({ description: 'List of users', type: [User] })
+  async findAllUsers(
+    @Query('permission') permission?: UserPermissionEnum,
+  ): Promise<Partial<User>[]> {
+    return this.listAllUsersUseCase.execute(permission);
+  }
 }
+//
