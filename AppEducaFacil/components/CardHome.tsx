@@ -12,7 +12,7 @@ const CardHome = () => (
     <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
     <Card.Actions>
       <Button>Cancel</Button>
-      <Button>Ok</Button>
+      <Button>ok</Button>
     </Card.Actions>
   </Card>
 );
