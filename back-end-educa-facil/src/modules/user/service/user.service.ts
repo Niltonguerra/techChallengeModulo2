@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import {
@@ -16,6 +16,7 @@ import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -85,7 +86,7 @@ export class UserService {
   async listAuthors(field: string, value: string): Promise<ListUserReturnMessageDTO> {
     const qb = this.userRepository
       .createQueryBuilder('user')
-      .innerJoin('user.posts', 'post') // we only want users who are authors of at least one post. thats why the inner join.
+      .innerJoin('user.posts', 'post')
       .select(['user.id', 'user.name'])
       .distinct(true)
       .orderBy('user.name', 'ASC')
@@ -104,5 +105,17 @@ export class UserService {
       message: systemMessage.ReturnMessage.successListUsers,
       data: users,
     };
+  }
+
+  async findAll(permission?: UserPermissionEnum): Promise<Partial<User>[]> {
+    const options: FindManyOptions<User> = {
+      select: ['id', 'name', 'email', 'permission', 'photo', 'is_active'],
+    };
+
+    if (permission) {
+      options.where = { permission };
+    }
+
+    return this.userRepository.find(options);
   }
 }

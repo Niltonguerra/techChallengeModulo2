@@ -11,6 +11,7 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { EmailModule } from '@modules/email/email.module';
 import { Post } from '@modules/post/entities/post.entity';
 import { listAuthorsUseCase } from './usecases/listAuthors.usecase';
+import { ListAllUsersUseCase } from './usecases/listAllUsers.usecase';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Post, User]), AuthModule, EmailModule],
@@ -20,8 +21,9 @@ import { listAuthorsUseCase } from './usecases/listAuthors.usecase';
     FindOneUserUseCase,
     SignInUseCase,
     listAuthorsUseCase,
+    ListAllUsersUseCase,
   ],
   controllers: [UserController, AuthController],
-  exports: [UserService],
+  exports: [UserService, ListAllUsersUseCase],
 })
 export class UserModule {}
