@@ -1,37 +1,52 @@
-import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UserService } from './user.service';
 import { User } from '../entities/user.entity';
 import { userCreateMock, userMock } from './__mocks__/user-service.mock';
-import { UserService } from './user.service';
+import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 
 describe('UserService', () => {
   let service: UserService;
-  let userRepository: Repository<User>;
+  let repository: jest.Mocked<Repository<User>>;
 
   beforeEach(async () => {
-    const userRepositoryMock = {
+    const repositoryMock = {
       save: jest.fn(),
       findOne: jest.fn(),
+      find: jest.fn(),
+      createQueryBuilder: jest.fn().mockReturnValue({
+        innerJoin: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        distinct: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([userMock]),
+      }),
     } as unknown as jest.Mocked<Repository<User>>;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
         {
           provide: getRepositoryToken(User),
-          useValue: userRepositoryMock,
+          useValue: repositoryMock,
         },
       ],
     }).compile();
+
     service = module.get<UserService>(UserService);
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+    repository = module.get(getRepositoryToken(User));
   });
 
   it('deve criar usuário com sucesso', async () => {
-    (userRepository.save as jest.Mock).mockResolvedValue(userCreateMock);
+    repository.save.mockResolvedValue(userCreateMock as any);
+
     const result = await service.createUpdateUser(userCreateMock);
-    expect(userRepository.save).toHaveBeenCalledWith(expect.objectContaining(userCreateMock));
+
+    expect(repository.save).toHaveBeenCalledWith(expect.objectContaining(userCreateMock));
     expect(result).toEqual({
       message: systemMessage.ReturnMessage.sucessCreateUser,
       statusCode: 200,
@@ -39,9 +54,11 @@ describe('UserService', () => {
   });
 
   it('deve retornar usuário encontrado', async () => {
-    (userRepository.findOne as jest.Mock).mockResolvedValue(userMock);
+    repository.findOne.mockResolvedValue(userMock as any);
+
     const result = await service.findOneUser('email', userMock.email);
-    expect(userRepository.findOne).toHaveBeenCalledWith({ where: { email: userMock.email } });
+
+    expect(repository.findOne).toHaveBeenCalledWith({ where: { email: userMock.email } });
     expect(result).toEqual({
       statusCode: 200,
       message: systemMessage.ReturnMessage.sucessFindOneUser,
@@ -55,9 +72,11 @@ describe('UserService', () => {
   });
 
   it('deve retornar erro se usuário não encontrado', async () => {
-    (userRepository.findOne as jest.Mock).mockResolvedValue(undefined);
+    repository.findOne.mockResolvedValue(null);
+
     const result = await service.findOneUser('email', 'notfound@email.com');
-    expect(userRepository.findOne).toHaveBeenCalledWith({ where: { email: 'notfound@email.com' } });
+
+    expect(repository.findOne).toHaveBeenCalledWith({ where: { email: 'notfound@email.com' } });
     expect(result).toEqual({
       statusCode: 400,
       message: systemMessage.ReturnMessage.errorUserNotFound,
@@ -65,9 +84,11 @@ describe('UserService', () => {
   });
 
   it('deve retornar dados para login interno', async () => {
-    (userRepository.findOne as jest.Mock).mockResolvedValue(userMock);
+    repository.findOne.mockResolvedValue(userMock as any);
+
     const result = await service.findOneUserLogin(userMock.email);
-    expect(userRepository.findOne).toHaveBeenCalledWith({ where: { email: userMock.email } });
+
+    expect(repository.findOne).toHaveBeenCalledWith({ where: { email: userMock.email } });
     expect(result).toEqual({
       id: userMock.id,
       password: userMock.password,
@@ -80,9 +101,34 @@ describe('UserService', () => {
   });
 
   it('deve retornar false se usuário não encontrado para login interno', async () => {
-    (userRepository.findOne as jest.Mock).mockResolvedValue(undefined);
+    repository.findOne.mockResolvedValue(null);
+
     const result = await service.findOneUserLogin('notfound@email.com');
-    expect(userRepository.findOne).toHaveBeenCalledWith({ where: { email: 'notfound@email.com' } });
+
+    expect(repository.findOne).toHaveBeenCalledWith({ where: { email: 'notfound@email.com' } });
     expect(result).toBe(false);
+  });
+
+  it('deve listar autores com sucesso', async () => {
+    const result = await service.listAuthors('', '');
+
+    expect(repository.createQueryBuilder).toHaveBeenCalled();
+    expect(result).toEqual({
+      statusCode: 200,
+      message: systemMessage.ReturnMessage.successListUsers,
+      data: [userMock],
+    });
+  });
+
+  it('deve retornar todos usuários com permissão específica', async () => {
+    repository.find.mockResolvedValue([userMock as any]);
+
+    const result = await service.findAll(UserPermissionEnum.ADMIN);
+
+    expect(repository.find).toHaveBeenCalledWith({
+      select: ['id', 'name', 'email', 'permission', 'photo', 'is_active'],
+      where: { permission: UserPermissionEnum.ADMIN },
+    });
+    expect(result).toEqual([userMock]);
   });
 });
