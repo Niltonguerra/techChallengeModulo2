@@ -1,35 +1,30 @@
 import axios, { type AxiosInstance } from "axios";
-import type { FormUserData } from "../types/form-post";
-import type { ResponseAuthUser } from "../types/login";
+import Constants from "expo-constants";
+import { RequestUser, ResponseAuthUser } from "@/types/login";
+import { FormUserData } from "@/types/form-post";
+import { ReturnMessage } from "@/types/returnMessaget";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/";
+const API_URL = Constants.expoConfig?.extra.apiUrl ?? "http://192.168.0.10:3000";
 
-let api: AxiosInstance | null = null;
-
-// todo: expired token, logout, etc
 export function getApi(): AxiosInstance {
-  if (!api) {
-    api = axios.create({
-      baseURL:  API_URL,
-      headers: { "Content-Type": "application/json"},
-    });
-  }
-  return api;
+  return axios.create({
+    baseURL: API_URL,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
+export const loginUserService = async (data: RequestUser): Promise<ResponseAuthUser> => {
+  const api = getApi();
+  const response = await api.post("user/login", data);
+  return response.data;
+};
+
 export const createUser = async (data: FormUserData)
-  : Promise<{ statusCode: number; message: string }> => {
+  : Promise<ReturnMessage> => {
   const api = getApi();
   const response = await api.post("user/create", data);
   return response.data;
 };
-export const loginUser = async (email: string, password: string)
-  : Promise<ResponseAuthUser> => {
-  const api = getApi();
-  const response = await api.post("user/login", { email, password });
-  return response.data;
-}
-
 
 export const getAuthors = async () => {
   const api = getApi();

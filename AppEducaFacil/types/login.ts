@@ -9,3 +9,7 @@ export interface ResponseAuthUser {
   };
 }
 
+export interface RequestUser {
+  email: string;
+  password:string;
+}

@@ -4,7 +4,7 @@ import { ExternalLink } from './ExternalLink';
 import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
 import Colors from '@/constants/Colors';
-import CardHome from './CardHome';
+import CardHome from './CardPost';
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const dados = [

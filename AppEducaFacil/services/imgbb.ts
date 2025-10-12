@@ -1,7 +1,9 @@
 import axios from 'axios';
+import Constants from "expo-constants";
 
-const url = import.meta.env.VITE_URL_IMGBB;
-const apiKey = import.meta.env.VITE_KEY_IMGBB;
+const URL_IMGBB = Constants.expoConfig?.extra.apiUrl;
+const URL_KEY_IMGBB = Constants.expoConfig?.extra.imgBB;
+
 
 export async function imgbbUmaImagem(file: Blob) {
   return new Promise<string>((resolve, reject) => {
@@ -9,11 +11,11 @@ export async function imgbbUmaImagem(file: Blob) {
     formData.append('image', file);
 
     const params = new URLSearchParams({
-      key: apiKey,
+      key: URL_KEY_IMGBB,
     });
 
     axios
-      .post(`${url}?${params.toString()}`, formData, {
+      .post(`${URL_IMGBB}?${params.toString()}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
