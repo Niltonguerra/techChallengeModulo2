@@ -1,5 +1,13 @@
 import * as nodeCrypto from 'crypto';
-if (!(globalThis as any).crypto) {
-  (globalThis as any).crypto = {} as any;
+
+declare global {
+  interface Crypto {
+    randomUUID(): string;
+  }
+
+  var crypto: Crypto;
 }
-(globalThis as any).crypto.randomUUID = nodeCrypto.randomUUID.bind(nodeCrypto);
+
+if (!globalThis.crypto) {
+  globalThis.crypto = { randomUUID: nodeCrypto.randomUUID.bind(nodeCrypto) };
+}
