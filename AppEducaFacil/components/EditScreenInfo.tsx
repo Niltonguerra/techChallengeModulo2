@@ -4,8 +4,8 @@ import { ExternalLink } from './ExternalLink';
 import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
 import Colors from '@/constants/Colors';
-import UniversalCard from './CardHome';
-import Constants from "expo-constants";
+import CardUser from './CardUser';
+import CardPost from './CardPost';
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const dados = [
@@ -15,16 +15,13 @@ export default function EditScreenInfo({ path }: { path: string }) {
   { id: '4', nome: 'Item 4' },
   // Adicione mais itens
 ];
-const {apiUrl} = Constants.expoConfig?.extra || {};
   return (
     <View>
-      <Text>123123123 {apiUrl}</Text>
-      
       <FlatList
         data={dados} // array de itens
         keyExtractor={(item) => item.id} // chave única para cada item
         renderItem={({ item }) => (
-            <UniversalCard></UniversalCard>
+            <CardPost></CardPost>
         )}
       />
     </View>

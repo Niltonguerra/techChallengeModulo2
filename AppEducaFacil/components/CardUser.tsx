@@ -3,10 +3,10 @@ import { Avatar, Button, Card, Text } from 'react-native-paper';
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 
-const CardAdmin = () => (
+const CardUser = () => (
   <Card>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
   </Card>
 );
 
-export default CardAdmin;
+export default CardUser;
