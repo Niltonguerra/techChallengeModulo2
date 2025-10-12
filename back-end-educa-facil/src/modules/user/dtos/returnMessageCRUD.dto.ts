@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class User {
+export class UserPropertiesDTO {
   @ApiProperty()
   id: string;
   @ApiProperty()
@@ -16,7 +16,7 @@ export class FindOneUserReturnMessageDTO {
   @ApiProperty()
   message: string;
   @ApiProperty()
-  user?: User;
+  user?: UserPropertiesDTO;
 }
 
 export class ListUserReturnMessageDTO {
@@ -24,6 +24,6 @@ export class ListUserReturnMessageDTO {
   statusCode: number;
   @ApiProperty()
   message: string;
-  @ApiProperty({ type: [User] })
-  data?: User[];
+  @ApiProperty({ type: [UserPropertiesDTO] })
+  data?: UserPropertiesDTO[];
 }
