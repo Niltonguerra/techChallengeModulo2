@@ -1,13 +1,10 @@
-import * as nodeCrypto from 'crypto';
+/* eslint-disable */
+/* @ts-nocheck */
 
-declare global {
-  interface Crypto {
-    randomUUID(): string;
-  }
+import * as nodeCrypto from "crypto";
 
-  var crypto: Crypto;
+if (!(globalThis as any).crypto) {
+  (globalThis as any).crypto = {};
 }
 
-if (!globalThis.crypto) {
-  globalThis.crypto = { randomUUID: nodeCrypto.randomUUID.bind(nodeCrypto) };
-}
+(globalThis as any).crypto.randomUUID = nodeCrypto.randomUUID.bind(nodeCrypto);
