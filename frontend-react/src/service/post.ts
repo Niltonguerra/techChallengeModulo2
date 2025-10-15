@@ -96,7 +96,7 @@ export const deletePost = async (id: string): Promise<DeleteResponse> => {
 
 export const fetchPosts = async (data: PostSearch):Promise<any> => {
   const api = getApi();
-  const {advanced = false,signal,search,userId,content,createdAt,offset,limit} = data;
+  const {advanced = false,signal,search,userId,content, createdAtBefore, createdAtAfter, offset,limit} = data;
 
   let params: Record<string, any> = {
     search: advanced ? search : search ?? null,
@@ -109,7 +109,8 @@ export const fetchPosts = async (data: PostSearch):Promise<any> => {
       ...params,
       userId: userId ?? null,
       content: content ?? null,
-      createdAt: createdAt ?? null,
+      createdAtBefore : createdAtBefore ?? null,
+      createdAtAfter : createdAtAfter ?? null,
     };
   }
 
