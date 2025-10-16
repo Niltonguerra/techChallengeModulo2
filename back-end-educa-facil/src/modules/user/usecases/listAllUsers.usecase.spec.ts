@@ -46,9 +46,7 @@ describe('ListAllUsersUseCase', () => {
 
   it('deve retornar a lista de usuários com permissão específica', async () => {
     const permission = UserPermissionEnum.ADMIN;
-    const mockUsers: Partial<User>[] = [
-      { id: '3', name: 'Administrador' },
-    ];
+    const mockUsers: Partial<User>[] = [{ id: '3', name: 'Administrador' }];
 
     userService.findAll.mockResolvedValue(mockUsers);
 
