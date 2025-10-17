@@ -1,100 +1,113 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   ScrollView,
   Image,
   Alert,
+	Pressable,
 } from 'react-native';
 import {
   TextInput,
   Button,
   IconButton,
+	Text,
+	Menu,
 } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 
 import type {
-  StringRef,
-  LinkEntry,
-  HashtagEntry,
-  PostFormProps,
-} from '../../types/post-form-types';
+  FormPostData,
+  FormPostProps,
+} from '@/types/form-post';
 
 import { styles } from './styles';
+import { createPost, getHashtags, getListById, updatePost } from '@/services/post';
 
 /**
- * Create a new StringRef with an optional initial value.  This helper
- * function simplifies creation of mutable refs outside of hooks.  The
- * returned object will persist across renders because it is stored
- * inside state or as a ref.
- *
- * @param initial - The initial value for the ref.
- */
-function makeStringRef(initial: string = ''): StringRef {
-  return { current: initial };
-}
+ * @param postId: for editing existing posts
+ * @param afterSubmit: callback function to be called after submission
+*/
+const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
+	const [loading, setLoading] = useState(true);
 
-// initial values: for editing existing post
-const Form: React.FC<PostFormProps> = ({ initialValues = {}, onSubmit = () => {} }) => {
-  // Uncontrolled refs for single-value fields
-  const titleRef = useRef<string>(initialValues.title ?? '');
-  const introductionRef = useRef<string>(initialValues.introduction ?? '');
-  const descriptionRef = useRef<string>(initialValues.description ?? '');
+	// string states
+	const [title, setTitle] = useState('');
+	const [introduction, setIntroduction] = useState('');
+	const [description, setDescription] = useState('');
 
-  // Selected image URI stored in state so that the preview updates when
-  // changed.  Other field values remain uncontrolled via refs.
-  const [imageUri, setImageUri] = useState<string | null>(initialValues.image ?? null);
+	let auxScreenWidth = window.innerWidth;
+	console.log({auxScreenWidth})
 
-  // Dynamic array of link entries.  Each entry stores its own StringRef
-  // objects and initial values.  We initialise based on any provided
-  // initialValues.links; otherwise start with a single empty entry.
-  const [links, setLinks] = useState<LinkEntry[]>(() => {
-    const initialLinks = initialValues.links;
-    if (initialLinks && Array.isArray(initialLinks) && initialLinks.length > 0) {
-      return initialLinks.map((link) => ({
-        nameRef: makeStringRef(link.name ?? ''),
-        urlRef: makeStringRef(link.url ?? ''),
-        initialName: link.name ?? '',
-        initialUrl: link.url ?? '',
-      }));
-    }
-    return [
-      {
-        nameRef: makeStringRef(''),
-        urlRef: makeStringRef(''),
-        initialName: '',
-        initialUrl: '',
-      },
-    ];
-  });
+ 	// image
+  const [imageUri, setImageUri] = useState<File | string | null>(null);
 
-  // Dynamic array of hashtags.  Each entry stores a StringRef and an
-  // initialTag.  Initialise from any provided initialValues.hashtags.
-  const [hashtags, setHashtags] = useState<HashtagEntry[]>(() => {
-    const initialTags = initialValues.hashtags;
-    if (initialTags && Array.isArray(initialTags) && initialTags.length > 0) {
-      return initialTags.map((tag) => ({
-        tagRef: makeStringRef(tag),
-        initialTag: tag,
-      }));
-    }
-    return [
-      {
-        tagRef: makeStringRef(''),
-        initialTag: '',
-      },
-    ];
-  });
+	const [hashtags, setHashtags] = useState<string[]>([""]);
+	const [hashtagOptions, setHashtagOptions] = useState<string[]>();
+	const [hashTagSelectMenu, setHashTagSelectMenu] = useState<{ isOpen: boolean; selectedTag: number }>({ isOpen: false, selectedTag: -1 });
 
+	// getting the info of the existing post, if we are editing
+ 	useEffect(() => {
+		if (postId) {
+			// Fetch the post data and set initial values
+			getListById(postId).then((data) => {
+				if(data) {
+					let auxData = data.ListPost[0];
+
+					console.log('ediiting post data: ', auxData);
+
+					setTitle(auxData.title || '');
+					setIntroduction(auxData.introduction || '');
+					setDescription(auxData.description || '');
+					setImageUri(auxData.image || null);
+					setHashtags(auxData.content_hashtags || []);
+					setExternalLinks(() => {
+						const initialLink = auxData.external_link;
+						if (initialLink && typeof initialLink === 'object' && Object.keys(initialLink).length) {
+							let auxLinks: { name: string; url: string }[] = [];
+							for (const [name, url] of Object.entries(initialLink)) {
+								auxLinks.push({ name: name || '', url: url || '' });
+							}
+							return auxLinks;
+						}
+						return [{ name: '', url: '' }];
+					});
+					setLoading(false);
+				} else {
+					Alert.alert('Erro', 'Não foi possível carregar os dados do post para edição.');
+				}
+			}).catch((err) => {
+				console.log('err getting post data:', err);
+				Alert.alert('Erro', err.message || 'Não foi possível carregar os dados do post para edição.');
+			});
+		} else {
+			setLoading(false);
+		}
+	}, [postId]);
+
+	// getting hashtag options
+	useEffect(() => {
+		console.log('getting hashtags');
+		getHashtags().then((data) => {
+			setHashtagOptions(data || []);
+		}).catch((err) => {
+			console.error('Error fetching hashtags:', err);
+			setHashtagOptions([]);
+		});
+	}, []);
+
+	// initializing links
+	const [externalLinks, setExternalLinks] = useState<{ name: string; url: string }[]>(() => {
+		if(!postId) return [{ name: '', url: '' }];
+		return [];
+	});
+
+  
   /**
-   * Handle picking an image from the device's photo library.  This function
-   * requests permission if necessary and then launches the picker.  The
-   * selected image URI is stored in state for preview and inclusion in
-   * submission data.  Errors are caught and logged.
+	 * Dealing with the img upload. for that we need to ask for permission and then open the image picker.
    */
   const handlePickImage = async (): Promise<void> => {
     try {
-      // Request permissions on the first call.  If permission is denied
-      // notify the user and abort.
+      // Requesting permissions to use library
       const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (permission.status !== 'granted') {
         Alert.alert(
@@ -104,16 +117,13 @@ const Form: React.FC<PostFormProps> = ({ initialValues = {}, onSubmit = () => {}
         return;
       }
 
-      // Launch the image library picker.  The options can be tailored
-      // depending on your needs (e.g. allowing editing, specifying
-      // quality, etc.).  See the expo-image-picker documentation.
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.7,
+        quality: 0.7, // i might just be old but i remember a bug if you set quality to 1
       });
 
-      // Only update the state if the user actually selects an image.
+      // only update the state if the user actually selects an image
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         setImageUri(uri);
@@ -122,106 +132,120 @@ const Form: React.FC<PostFormProps> = ({ initialValues = {}, onSubmit = () => {}
       console.warn('Error picking image:', error);
     }
   };
+	/**
+ 	* adding empty link if the user clicks the add new button
+ 	*/
+	const addLink = (): void => {
+		setExternalLinks((prevLinks) => [...prevLinks, { name: '', url: '' }]);
+	};
 
   /**
-   * Append a new blank link entry to the links array.  Each new entry
-   * contains its own StringRefs so that changes do not interfere with
-   * existing entries.  Using functional state updates ensures that we
-   * always operate on the latest links array.
-   */
-  const addLink = (): void => {
-    setLinks((prevLinks) => [
-      ...prevLinks,
-      {
-        nameRef: makeStringRef(''),
-        urlRef: makeStringRef(''),
-        initialName: '',
-        initialUrl: '',
-      },
-    ]);
-  };
-
-  /**
-   * Remove a link entry by its index.  If only one link exists, removal
-   * will be prevented by conditionally rendering the delete button in the
-   * JSX below.
-   *
-   * @param index - The zero‑based index of the link to remove.
-   */
-  const removeLink = (index: number): void => {
-    setLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
-  };
-
-  /**
-   * Append a new blank hashtag entry to the hashtags array.  As with
-   * links, each new entry uses its own StringRef.
+   * Adding a new empty hashtag if the user clicks the add new button
    */
   const addHashtag = (): void => {
     setHashtags((prevTags) => [
       ...prevTags,
-      {
-        tagRef: makeStringRef(''),
-        initialTag: '',
-      },
-    ]);
+      '',
+		]);
   };
 
+	/**
+	 * Removing a link entry using the index
+	 *
+	 * @param index: index of the link to be removed (starting from 0)
+	 */
+	const removeLink = (index: number): void => {
+		setExternalLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
+	};
+
   /**
-   * Remove a hashtag entry by its index.  The delete button is shown only
-   * when there are multiple hashtags, preventing removal of the last field.
+   * Removing a hashtag entry using the index
    *
-   * @param index - The zero‑based index of the hashtag to remove.
+   * @param index: index of the hashtag to be removed (starting from 0)
    */
   const removeHashtag = (index: number): void => {
     setHashtags((prevTags) => prevTags.filter((_, i) => i !== index));
   };
 
-  /**
-   * Collect values from all uncontrolled inputs and invoke the onSubmit
-   * callback.  Values are trimmed to remove leading/trailing whitespace.
-   * Empty link entries (where both name and URL are blank) are skipped.
+	/**
+   * Toggle the visibility of a hashtag's dropdown menu.  only one can be open at a time
    */
-  const handleSubmit = (): void => {
-    // Extract and clean link data
-    const linkData = links
-      .map((entry) => {
-        const nameValue = entry.nameRef.current || '';
-        const urlValue = entry.urlRef.current || '';
-        return { name: nameValue.trim(), url: urlValue.trim() };
-      })
-      .filter(({ name, url }) => name !== '' || url !== '');
+  const toggleHashtagMenu = (index: number): void => {
+    setHashTagSelectMenu((prev) => ({
+			isOpen: prev.isOpen && prev.selectedTag === index ? false : true,
+			selectedTag: index,
+		}));
+  };
 
-    // Extract and clean hashtag data
-    const tagData = hashtags
-      .map((entry) => {
-        const tagValue = entry.tagRef.current || '';
-        return tagValue.trim();
-      })
-      .filter((tag) => tag !== '');
+	// if a link has either only the name or the url filled, we throw an error
+	// also there cant be repeated or empty names since they are used as keys in the backend
+	const verifyLinks = (): boolean => {
+		const auxLinkNames = new Set<string>();
+		for (const externalLink of externalLinks) {
+			if ((externalLink.name && !externalLink.url) || (!externalLink.name && externalLink.url)) {
+				if(!externalLink.name) {
+					Alert.alert('Todos os links externos devem ter um nome.', 'Por favor, preencha o nome do link externo ou deixe ambos os campos vazios.');
+					return false;
+				}
+				if(!externalLink.url) {
+					Alert.alert('Todos os links externos devem ter uma URL.', 'Por favor, preencha a URL do link externo ou deixe ambos os campos vazios.');
+					return false;
+				}
+			}
+			if (auxLinkNames.has(externalLink.name)) {
+				Alert.alert('Nome de link duplicado', `O nome do link "${externalLink.name}" já está em uso.`);
+				return false;
+			}
+			auxLinkNames.add(externalLink.name);
+		}
+		return true;
+	};
+
+  const handleSubmit = (): void => {
+    // parses link data
+    const linkData: Record<string, string> = {};
+    externalLinks.forEach((externalLink) => {
+      if (externalLink.name && externalLink.url) {
+        linkData[externalLink.name] = externalLink.url;
+      }
+    });
+
+		let auxLinkVerification = verifyLinks();
+		console.log({auxLinkVerification})
+		if(!auxLinkVerification) return;
 
     // Compose final submission payload
     const payload = {
-      title: titleRef.current.trim(),
-      introduction: introductionRef.current.trim(),
-      description: descriptionRef.current.trim(),
+      title,
+      introduction,
+      description, 
       image: imageUri,
-      links: linkData,
-      hashtags: tagData,
+      external_link: linkData,
+      content_hashtags: hashtags,
     };
 
-    onSubmit(payload);
+		const actionFunction = postId ? updatePost : createPost;
+
+		actionFunction(postId ? { id: postId, ...payload } : payload).then((response) => {
+			Alert.alert('Success', `Post ${postId ? 'atualizado' : 'criado'} com sucesso!`);
+			if (afterSubmit) afterSubmit();
+		}).catch((error) => {
+			console.error('Error submitting post:', error);
+			Alert.alert('Error', error.message || `Houve um erro ao ${postId ? 'atualizar' : 'criar'} o post. Por favor, tente novamente.`);
+		});
   };
 
   return (
     <ScrollView
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
+			style={{ flex: 1 }}
+			contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+			keyboardShouldPersistTaps="handled"
     >
-      {/* Image selection and preview */}
+      {/* image selection and preview */}
       <View style={styles.imagePickerSection}>
         {imageUri && (
           <Image
-            source={{ uri: imageUri }}
+            source={{ uri: imageUri ? imageUri.toString() : '' }}
             style={styles.imagePreview}
             resizeMode="cover"
           />
@@ -236,33 +260,30 @@ const Form: React.FC<PostFormProps> = ({ initialValues = {}, onSubmit = () => {}
         </Button>
       </View>
 
-      {/* Title field */}
       <TextInput
-        label="Title *"
-        placeholder="Enter a title"
-        defaultValue={initialValues.title}
+        label="Título *"
+        placeholder="Digite um título"
+        value={title || ''}
         onChangeText={(text) => {
-          titleRef.current = text;
+          setTitle(text);
+        }}
+        mode="outlined"
+        style={styles.input}
+        returnKeyType="next"
+      />
+      <TextInput
+        label="Introdução *"
+        placeholder="Digite uma introdução"
+        value={introduction || ''}
+        onChangeText={(text) => {
+          setIntroduction(text);
         }}
         mode="outlined"
         style={styles.input}
         returnKeyType="next"
       />
 
-      {/* Introduction field */}
-      <TextInput
-        label="Introduction *"
-        placeholder="Enter an introduction"
-        defaultValue={initialValues.introduction}
-        onChangeText={(text) => {
-          introductionRef.current = text;
-        }}
-        mode="outlined"
-        style={styles.input}
-        returnKeyType="next"
-      />
-
-      {/* External links section */}
+      {/* external links */}
       <View style={styles.sectionHeaderContainer}>
         <Button
           mode="text"
@@ -273,15 +294,19 @@ const Form: React.FC<PostFormProps> = ({ initialValues = {}, onSubmit = () => {}
           Add link
         </Button>
       </View>
-      {links.map((link, index) => (
+      {externalLinks.map((link, index) => (
         <View key={`link-${index}`} style={styles.linkRow}>
           <View style={styles.linkInputsContainer}>
             <TextInput
-              label="Link name"
+              label="Nome do link *"
               placeholder="e.g. GitHub, documentation"
-              defaultValue={link.initialName}
+              value={link.name}
               onChangeText={(text) => {
-                link.nameRef.current = text;
+                setExternalLinks((prevLinks) => {
+									const newLinks = [...prevLinks];
+									newLinks[index].name = text;
+									return newLinks;
+								});
               }}
               mode="outlined"
               style={[styles.input, styles.linkName]}
@@ -290,9 +315,13 @@ const Form: React.FC<PostFormProps> = ({ initialValues = {}, onSubmit = () => {}
             <TextInput
               label="URL"
               placeholder="e.g. https://..."
-              defaultValue={link.initialUrl}
+              value={link.url}
               onChangeText={(text) => {
-                link.urlRef.current = text;
+                setExternalLinks((prevLinks) => {
+									const newLinks = [...prevLinks];
+									newLinks[index].url = text;
+									return newLinks;
+								});
               }}
               mode="outlined"
               style={[styles.input, styles.linkUrl]}
@@ -300,59 +329,81 @@ const Form: React.FC<PostFormProps> = ({ initialValues = {}, onSubmit = () => {}
               returnKeyType="done"
             />
           </View>
-          {links.length > 1 && (
+          {externalLinks.length > 1 && (
             <IconButton
               icon="delete"
               size={24}
               onPress={() => removeLink(index)}
-              accessibilityLabel="Remove link"
+              accessibilityLabel="Remover link"
             />
           )}
         </View>
       ))}
 
-      {/* Hashtags section */}
-      <View style={styles.sectionHeaderContainer}>
-        <Button
+      {/* hashtags */}
+      <View style={styles.hashtagContainer}>
+				<Button
           mode="text"
           onPress={addHashtag}
-          icon="tag-plus"
+          icon="plus"
           contentStyle={styles.addButtonContent}
         >
           Add hashtag
         </Button>
+        {hashtags.map((hashtag, index) => (
+          <View key={`hashtag-${index}`} style={styles.hashtagRow}>
+            <Menu
+              visible={hashTagSelectMenu.isOpen && hashTagSelectMenu.selectedTag === index}
+              onDismiss={() => toggleHashtagMenu(index)}
+              anchor={
+									<Pressable style={styles.hashtagAnchor} onPress={() => toggleHashtagMenu(index)}>
+										<TextInput
+											label="Hashtag*"
+											placeholder="Selecione uma opção"
+											value={hashtag}
+											editable={false}
+											mode="outlined"
+											style={[{ width: auxScreenWidth * 0.92 }, styles.input]}
+											right={
+												hashtags.length > 1 && (
+													<TextInput.Icon
+														icon="delete"
+														onPress={() => removeHashtag(index)}
+														forceTextInputFocus={false}
+														accessibilityLabel="Remover hashtag"
+													/>
+												)
+											}
+										/>
+									</Pressable>
+              }
+            >
+              {hashtagOptions && hashtagOptions.map((option) => (
+                <Menu.Item
+                  key={option}
+                  title={option}
+									style={{ width: auxScreenWidth }}
+                  onPress={() => {
+										setHashtags((prevTags) => {
+											const newTags = [...prevTags];
+											newTags[index] = option;
+											return newTags;
+										});
+										toggleHashtagMenu(index);
+									}}
+                />
+              ))}
+            </Menu>        
+          </View>
+        ))}
       </View>
-      {hashtags.map((tag, index) => (
-        <View key={`hashtag-${index}`} style={styles.hashtagRow}>
-          <TextInput
-            label="Hashtag"
-            placeholder="e.g. reactnative"
-            defaultValue={tag.initialTag}
-            onChangeText={(text) => {
-              tag.tagRef.current = text;
-            }}
-            mode="outlined"
-            style={[styles.input, styles.hashtagInput]}
-            returnKeyType="done"
-          />
-          {hashtags.length > 1 && (
-            <IconButton
-              icon="delete"
-              size={24}
-              onPress={() => removeHashtag(index)}
-              accessibilityLabel="Remove hashtag"
-            />
-          )}
-        </View>
-      ))}
 
-      {/* Description field */}
       <TextInput
-        label="Description *"
-        placeholder="Enter a detailed description"
-        defaultValue={initialValues.description}
+        label="Descrição *"
+        placeholder="Digite uma descrição detalhada"
+        value={description || ''}
         onChangeText={(text) => {
-          descriptionRef.current = text;
+          setDescription(text);
         }}
         mode="outlined"
         style={styles.descriptionInput}
@@ -366,7 +417,7 @@ const Form: React.FC<PostFormProps> = ({ initialValues = {}, onSubmit = () => {}
         style={styles.submitButton}
         contentStyle={styles.submitContent}
       >
-        Submit
+				{postId ? 'Atualizar Post' : 'Criar'}
       </Button>
     </ScrollView>
   );

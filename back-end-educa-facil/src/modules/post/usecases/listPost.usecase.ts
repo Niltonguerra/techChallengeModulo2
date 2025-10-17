@@ -11,7 +11,7 @@ export class ListPostUseCase {
 
   async execute(query: ListPostDTO): Promise<ReturnListPost> {
     try {
-      const posts = await this.postService.listPosts(query); //<<
+      const posts = await this.postService.listPosts(query);
       return posts;
     } catch (error) {
       this.logger.error('Erro em listPosts:', error);

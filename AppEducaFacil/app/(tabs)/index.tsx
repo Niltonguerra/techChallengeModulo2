@@ -3,14 +3,17 @@ import { StyleSheet } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import PostForm from '@/components/PostForm/form';
+import { PaperProvider } from 'react-native-paper';
 
 export default function TabOneScreen() {
   return (
-    <View>
-      {/* //<< temp for dev. undo later
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-      */}
-      <PostForm />
+    <View style={{height: '100%'}}>
+      <PaperProvider>
+        {/* //<< temp for dev. undo later
+        <EditScreenInfo path="app/(tabs)/index.tsx" />
+        */}
+        <PostForm postId='mock'/>
+      </PaperProvider>
     </View>
   );
 }

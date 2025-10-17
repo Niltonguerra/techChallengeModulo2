@@ -17,28 +17,51 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   input: {
-    marginBottom: 16,
+    marginBottom: 16
   },
   descriptionInput: {
     marginBottom: 24,
   },
+  sectionHeaderWithTitle: {
+   	flexDirection: 'column',
+		alignItems: 'flex-start',
+		marginBottom: 24,
+		marginTop: 16,
+  },
+	linkRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 12,
+	},
+	sectionTitle: {
+		fontSize: 16,
+		fontWeight: '600',
+	},
   sectionHeaderContainer: {
+		flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'flex-end',
+		alignItems: 'center',
     marginBottom: 8,
     marginTop: 16,
+		width: '100%',
   },
+	hashtagContainer: {
+		marginVertical: 16,
+		width: '100%',
+	},
+	hashtagAnchor: {
+  	flex: 1,
+  	width: '100%',
+	},
   addButtonContent: {
-    flexDirection: 'row-reverse',
-  },
-  linkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
+		justifyContent: 'flex-end',
+		flex: 1
   },
   linkInputsContainer: {
     flex: 1,
     flexDirection: 'column',
+		justifyContent: 'center'
   },
   linkName: {
     marginBottom: 8,
@@ -49,10 +72,11 @@ export const styles = StyleSheet.create({
   hashtagRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+		width: '100%',
   },
   hashtagInput: {
     flex: 1,
+    width: '100%',
   },
   submitButton: {
     marginTop: 24,
