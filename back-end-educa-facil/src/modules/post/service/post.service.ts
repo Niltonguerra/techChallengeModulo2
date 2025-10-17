@@ -48,7 +48,13 @@ export class PostService {
     const offsetNumber = listPostData?.offset ? Number(listPostData.offset) : 0;
     const limitNumber = listPostData?.limit ? Number(listPostData.limit) : 10;
     // const { search, content: contentHashtags, createdAt, userId } = listPostData;
-    const { search, content: contentHashtags, userId } = listPostData;
+    const {
+      search,
+      content: contentHashtags,
+      userId,
+      createdAtBefore,
+      createdAtAfter,
+    } = listPostData;
 
     const query = this.postRepository
       .createQueryBuilder('p')
@@ -85,9 +91,23 @@ export class PostService {
       query.andWhere('p.content_hashtags && :tags::varchar[]', { tags });
     }
 
-    // TODO createdAt range (Date objects thanks to DTO)
-    // if (createdAt?.after) query.andWhere('p.created_at >= :after', { after: createdAt.after });
-    // if (createdAt?.before) query.andWhere('p.created_at <= :before', { before: createdAt.before });
+    if (createdAtBefore) {
+      if (!isNaN(new Date(createdAtBefore).getTime())) {
+        const auxDate = new Date(createdAtBefore);
+        auxDate.setHours(0, 0, 0, 0);
+        query.andWhere('p.created_at > :createdAtBefore', {
+          createdAtBefore: auxDate.toISOString(),
+        });
+      }
+    }
+
+    if (createdAtAfter) {
+      if (!isNaN(new Date(createdAtAfter).getTime())) {
+        const auxDate = new Date(createdAtAfter);
+        auxDate.setHours(23, 59, 59, 999);
+        query.andWhere('p.created_at < :createdAtAfter', { createdAtAfter: auxDate.toISOString() });
+      }
+    }
 
     const [posts, total_post] = await query.getManyAndCount();
 

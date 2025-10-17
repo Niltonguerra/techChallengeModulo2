@@ -4,15 +4,17 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useDebounce } from 'use-debounce';
 import { getApi } from '../../service/post';
 import { usePosts } from '../../store/post';
 import { useSnackbar } from '../../store/snackbar/useSnackbar';
 import type { PostSearch, ResultApi } from '../../types/post';
 import "./search.scss";
+import dayjs, { Dayjs } from 'dayjs';
 
 export default function SearchPost() {
-	const modalStyle = { //<< todo: make it the standard for other modals (?)
+	const modalStyle = {
 		position: "absolute" as const,
 		top: "50%",
 		left: "50%",
@@ -35,8 +37,8 @@ export default function SearchPost() {
 	const [postSearch, setPostSearch] = useState('');
 	const [postAuthor, setPostAuthor] = useState<string | null>(null);
 	const [postContent, setPostContent] = useState<string | null>(null);
-	// const [createdAtBefore, setCreatedAtBefore] = useState<Dayjs | null>(null);
-	// const [createdAtAfter, setCreatedAtAfter] = useState<Dayjs | null>(null);
+	const [createdAtBefore, setCreatedAtBefore] = useState<Dayjs | null>(null);
+	const [createdAtAfter, setCreatedAtAfter] = useState<Dayjs | null>(null);
 
 	// dynamic search bar input
 	const [debouncedSearch] = useDebounce(postSearch || '', 400); // 400ms delay
@@ -59,7 +61,8 @@ export default function SearchPost() {
 			search,
 			userId,
 			content,
-			createdAt,
+			createdAtBefore,
+			createdAtAfter,
 			offset,
 			limit,
 		} = props;
@@ -76,7 +79,8 @@ export default function SearchPost() {
 				...params,
 				userId: userId ?? null,
 				content: content ?? null,
-				createdAt: createdAt ?? null,
+				createdAtBefore : createdAtBefore ?? null,
+				createdAtAfter : createdAtAfter ?? null,
 			};
 		}
 
@@ -89,7 +93,6 @@ export default function SearchPost() {
 
 	// search field search
 	useEffect(() => {
-
 		const controller = new AbortController();
 		fetchPosts({
 			advanced: false,
@@ -109,10 +112,8 @@ export default function SearchPost() {
 			search: postSearch || null,
 			userId: postAuthor || null,
 			content: postContent || null,
-			// createdAt: {
-			// 	before: createdAtBefore ? createdAtBefore.toDate() : null,
-			// 	after: createdAtAfter ? createdAtAfter.toDate() : null,
-			// },
+			createdAtBefore: createdAtBefore ? createdAtBefore.toDate() : null,
+			createdAtAfter: createdAtAfter ? createdAtAfter.toDate() : null,
 			offset,
 			limit,
 			signal: controller.signal,
@@ -266,7 +267,7 @@ export default function SearchPost() {
 										</MenuItem>
 									))}
 								</Select>
-								{/* <Stack direction="row" spacing={2} justifyContent="space-between">
+								<Stack direction="row" spacing={2} justifyContent="space-between">
 									<DatePicker
 										label="De: "
 										value={createdAtBefore}
@@ -279,8 +280,8 @@ export default function SearchPost() {
 										onChange={(newValue: React.SetStateAction<dayjs.Dayjs | null>) => setCreatedAtAfter(newValue)}
 										format='DD/MM/YYYY'
 									/>
-								</Stack> */}
-								{/* <Button
+								</Stack>
+								<Button
 									variant="text"
 									style={{
 										fontSize: '0.8rem',
@@ -293,7 +294,7 @@ export default function SearchPost() {
 									}}
 								>
 									Limpar datas
-								</Button> */}
+								</Button>
 							</Stack>
 
 							<Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ marginTop: 3 }}>
