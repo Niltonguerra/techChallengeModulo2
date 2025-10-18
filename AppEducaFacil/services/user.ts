@@ -4,7 +4,7 @@ import { RequestUser, ResponseAuthUser } from "@/types/login";
 import { FormUserData } from "@/types/form-post";
 import { ReturnMessage } from "@/types/returnMessaget";
 
-const API_URL = Constants.expoConfig?.extra.apiUrl ?? "http://192.168.0.10:3000";
+const API_URL = Constants.expoConfig!.extra!.apiUrl ?? "http://192.168.0.10:3000";
 
 export function getApi(): AxiosInstance {
   return axios.create({
