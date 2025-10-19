@@ -1,20 +1,21 @@
 import React from 'react';
-import { ScrollView, FlatList,StyleSheet } from 'react-native';
-import { ExternalLink } from './ExternalLink';
-import { MonoText } from './StyledText';
-import { Text, View } from './Themed';
-import Colors from '@/constants/styleGuide';
-import CardUser from './CardUser/CardUser';
-import CardPost from './CardPost/CardPost';
+// import { ScrollView, FlatList,StyleSheet } from 'react-native';
+// import { ExternalLink } from './ExternalLink';
+// import { MonoText } from './StyledText';
+// import { Text, View } from './Themed';
+import { View } from './Themed';
+// import Colors from '@/constants/Colors';
+// import CardUser from './CardUser';
+// import CardPost from './CardPost';
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const dados = [
-  { id: '1', nome: 'Item 1' },
-  { id: '2', nome: 'Item 2' },
-  { id: '3', nome: 'Item 3' },
-  { id: '4', nome: 'Item 4' },
-  // Adicione mais itens
-];
+    { id: '1', nome: 'Item 1' },
+    { id: '2', nome: 'Item 2' },
+    { id: '3', nome: 'Item 3' },
+    { id: '4', nome: 'Item 4' },
+    // Adicione mais itens
+  ];
   return (
     <View>
       {/* <FlatList
@@ -36,18 +37,6 @@ export default function EditScreenInfo({ path }: { path: string }) {
             }} />
         )}
       /> */}
-      <FlatList
-        data={dados} // array de itens
-        keyExtractor={(item) => item.id} // chave única para cada item
-        renderItem={({ item }) => (
-            <CardUser isEditable={true} dataProperties={{
-              id: '39eed3a6-20d2-42fb-8aaf-08f45d2df410nilton',
-              name: 'Nilton Dionisio Guerra',
-              photo: '',
-              email: 'niltondg.39@gmail.com',
-            }} />
-        )}
-      />
     </View>
   );
 }

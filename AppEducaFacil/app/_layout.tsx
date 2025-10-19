@@ -9,10 +9,11 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/components/useColorScheme';
 import { ConfirmModalProvider } from '@/hooks/modalConfirm/ConfirmModal';
 import { SnackbarProvider } from '@/hooks/snackbar/snackbar';
+import { PaperProvider } from 'react-native-paper';
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from 'expo-router';
 
 export const unstable_settings = {
@@ -51,15 +52,19 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
+
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <ConfirmModalProvider>
-        <SnackbarProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </SnackbarProvider>
-      </ConfirmModalProvider>
+      <PaperProvider>
+        <ConfirmModalProvider>
+          <SnackbarProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            </Stack>
+
+          </SnackbarProvider>
+        </ConfirmModalProvider>
+      </PaperProvider>
     </ThemeProvider>
   );
 }

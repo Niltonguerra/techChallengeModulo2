@@ -17,7 +17,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) {}
+  ) { }
 
   async createPostService(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const validadeName = await this.postRepository.findOneBy({ title: createPostData.title });
@@ -95,7 +95,7 @@ export class PostService {
       if (!isNaN(new Date(createdAtBefore).getTime())) {
         const auxDate = new Date(createdAtBefore);
         auxDate.setHours(0, 0, 0, 0);
-        query.andWhere('p.created_at > :createdAtBefore', {
+        query.andWhere('p.created_at <= :createdAtBefore', {
           createdAtBefore: auxDate.toISOString(),
         });
       }
@@ -105,7 +105,9 @@ export class PostService {
       if (!isNaN(new Date(createdAtAfter).getTime())) {
         const auxDate = new Date(createdAtAfter);
         auxDate.setHours(23, 59, 59, 999);
-        query.andWhere('p.created_at < :createdAtAfter', { createdAtAfter: auxDate.toISOString() });
+        query.andWhere('p.created_at >= :createdAtAfter', {
+          createdAtAfter: auxDate.toISOString(),
+        });
       }
     }
 

@@ -3,21 +3,20 @@ import Constants from "expo-constants";
 import type { FormPostData } from "../types/form-post";
 import type { DeleteResponse, Post, PostSearch, ResultApi } from "../types/post";
 
-const API_URL = Constants.expoConfig?.extra.apiUrl ;
-
+const API_URL = Constants.expoConfig!.extra!.apiUrl; // diz ao TypeScript “confie em mim, isso nunca será undefined
 let api: AxiosInstance | null = null;
 
-const tokenTeste = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI3MzM1ZTM3LTY3Y2MtNDc2Mi05NGRkLTE1Y2JlNTI5YTIzMyIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzYwODE5NzAzLCJleHAiOjE3NjA5MDYxMDN9.lDZRibjx-uzAxDXnoMhSDPuZSoCmbxf9dszWMMXeXIo";
+const tokenTeste = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY1MjE1MTllLTRiMWMtNGRmNS04Zjg1LTAzMmJjYjBkZTUyYSIsImVtYWlsIjoibHVpczUwODI0QGdtYWlsLmNvbSIsInBlcm1pc3Npb24iOiJ1c2VyIiwiaWF0IjoxNzYwODI3ODE0LCJleHAiOjE3NjA5MTQyMTR9.NT2wgWX5U2bRZ0zS7HWgsCqMdb235hBIwPYmZ-DBGlo";
 
 export function getApi(): AxiosInstance {
   const token = tokenTeste;
   api = axios.create({
     baseURL: API_URL,
-    headers: { 
-      "Content-Type": "application/json", 
-      Authorization: `Bearer ${token}` 
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
     },
-    
+
   });
   return api;
 }
@@ -29,7 +28,7 @@ export const getListTodos = async (): Promise<Post[]> => {
 };
 
 
-export const getHashtags = async ():Promise<string[]> => {
+export const getHashtags = async (): Promise<string[]> => {
   const api = getApi();
   const response = await api.get("post/hashtags");
   return response.data;
@@ -47,9 +46,9 @@ export const deletePost = async (id: string): Promise<DeleteResponse> => {
   return response.data;
 };
 
-export const fetchPosts = async (data: PostSearch):Promise<any> => {
+export const fetchPosts = async (data: PostSearch): Promise<any> => {
   const api = getApi();
-  const {advanced = false,signal,search,userId,content,createdAt,offset,limit} = data;
+  const { advanced = false, signal, search, userId, content, createdAt, offset, limit } = data;
 
   let params: Record<string, any> = {
     search: advanced ? search : search ?? null,
@@ -70,7 +69,7 @@ export const fetchPosts = async (data: PostSearch):Promise<any> => {
     params,
     signal,
   });
-   return dataReturn.data.ListPost;
+  return dataReturn.data.ListPost;
 }
 
 export const updatePost = async (data: Partial<FormPostData>)

@@ -3,15 +3,15 @@ export type Post = {
     title: string;
     description: string;
     introduction: string;
-    image: string | null | File;
+    image: string | null;
     content_hashtags: string[];
     style_id: string;
-    external_link: {[key: string]: string | undefined;};
+    external_link: { [key: string]: string | undefined; };
     created_at: Date;
     updated_at: Date;
     user_name: string;
     user_email: string;
-    user_social_media: {[key: string]: string | undefined;};
+    user_social_media: { [key: string]: string | undefined; };
 }
 
 export type PostSearch = {
@@ -24,8 +24,8 @@ export type PostSearch = {
         before?: Date | null;
         after?: Date | null;
     }
-    offset?: number;
-    limit?: number;
+    offset?: string;
+    limit?: string;
 }
 
 export type ResultApi = {

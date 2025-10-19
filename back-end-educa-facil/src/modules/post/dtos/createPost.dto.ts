@@ -50,5 +50,5 @@ export class CreatePostDTO {
   @IsOptional()
   @IsString({ message: systemMessage.validation.isString })
   @IsUUID('4', { message: systemMessage.validation.isUUID })
-  user_id: string;
+  user_id?: string; // already inserted using the JWT token
 }
