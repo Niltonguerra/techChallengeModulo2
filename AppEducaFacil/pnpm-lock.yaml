@@ -29,6 +29,9 @@ importers:
       expo-font:
         specifier: ~14.0.8
         version: 14.0.8(expo@54.0.12)(react-native@0.81.4(@babel/core@7.28.4)(@react-native-community/cli@20.0.2(typescript@5.9.3))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      expo-image-picker:
+        specifier: ^17.0.8
+        version: 17.0.8(expo@54.0.12)
       expo-linking:
         specifier: ~8.0.8
         version: 8.0.8(expo@54.0.12)(react-native@0.81.4(@babel/core@7.28.4)(@react-native-community/cli@20.0.2(typescript@5.9.3))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -2058,6 +2061,16 @@ packages:
       expo: '*'
       react: '*'
       react-native: '*'
+
+  expo-image-loader@6.0.0:
+    resolution: {integrity: sha512-nKs/xnOGw6ACb4g26xceBD57FKLFkSwEUTDXEDF3Gtcu3MqF3ZIYd3YM+sSb1/z9AKV1dYT7rMSGVNgsveXLIQ==}
+    peerDependencies:
+      expo: '*'
+
+  expo-image-picker@17.0.8:
+    resolution: {integrity: sha512-489ByhVs2XPoAu9zodivAKLv7hG4S/FOe8hO/C2U6jVxmRjpAKakKNjMml0IwWjf1+c/RYBqm1XxKaZ+vq/fDQ==}
+    peerDependencies:
+      expo: '*'
 
   expo-keep-awake@15.0.7:
     resolution: {integrity: sha512-CgBNcWVPnrIVII5G54QDqoE125l+zmqR4HR8q+MQaCfHet+dYpS5vX5zii/RMayzGN4jPgA4XYIQ28ePKFjHoA==}
@@ -6761,6 +6774,15 @@ snapshots:
       fontfaceobserver: 2.3.0
       react: 19.1.0
       react-native: 0.81.4(@babel/core@7.28.4)(@react-native-community/cli@20.0.2(typescript@5.9.3))(@types/react@19.1.17)(react@19.1.0)
+
+  expo-image-loader@6.0.0(expo@54.0.12):
+    dependencies:
+      expo: 54.0.12(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.10)(react-native@0.81.4(@babel/core@7.28.4)(@react-native-community/cli@20.0.2(typescript@5.9.3))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+
+  expo-image-picker@17.0.8(expo@54.0.12):
+    dependencies:
+      expo: 54.0.12(@babel/core@7.28.4)(@expo/metro-runtime@6.1.2)(expo-router@6.0.10)(react-native@0.81.4(@babel/core@7.28.4)(@react-native-community/cli@20.0.2(typescript@5.9.3))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      expo-image-loader: 6.0.0(expo@54.0.12)
 
   expo-keep-awake@15.0.7(expo@54.0.12)(react@19.1.0):
     dependencies:
