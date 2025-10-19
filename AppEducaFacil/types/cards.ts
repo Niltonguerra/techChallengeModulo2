@@ -14,3 +14,13 @@ export type CardPostProps = {
     authorEmail: string;
   }
 };
+
+export type CardUserProps = {
+  isEditable: boolean;
+  dataProperties: {
+    id: string;
+    name: string;
+    photo: string;
+    email: string;
+  };
+}

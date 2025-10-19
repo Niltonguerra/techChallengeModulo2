@@ -42,10 +42,10 @@ export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
         <View style={styles.modalContainer}>
           <Text style={styles.message}>{options.message}</Text>
           <View style={styles.buttonRow}>
-            <Button style={styles.btn2} labelStyle={styles.btnLabel} onPress={handleConfirm}>
+            <Button style={styles.btn1} labelStyle={styles.btnLabel} onPress={handleConfirm}>
               {options.TextButton2 || 'Confirmar'}
             </Button>
-            <Button style={styles.btn1} labelStyle={styles.btnLabel} onPress={handleCancel}>
+            <Button style={styles.btn2} labelStyle={styles.btnLabel} onPress={handleCancel}>
               {options.TextButton1 || 'Cancelar'}
             </Button>
           </View>

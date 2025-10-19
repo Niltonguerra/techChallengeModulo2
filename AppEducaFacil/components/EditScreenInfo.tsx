@@ -17,7 +17,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
 ];
   return (
     <View>
-      <FlatList
+      {/* <FlatList
         data={dados} // array de itens
         keyExtractor={(item) => item.id} // chave única para cada item
         renderItem={({ item }) => (
@@ -33,6 +33,18 @@ export default function EditScreenInfo({ path }: { path: string }) {
               updated_at: '2025-10-04T16:42:10.364Z',
               authorEmail: 'luis-gu10@hotmail.com',
               external_link: {'Wikipedia': 'https://pt.wikipedia.org/wiki/Geografia'}
+            }} />
+        )}
+      /> */}
+      <FlatList
+        data={dados} // array de itens
+        keyExtractor={(item) => item.id} // chave única para cada item
+        renderItem={({ item }) => (
+            <CardUser isEditable={true} dataProperties={{
+              id: '39eed3a6-20d2-42fb-8aaf-08f45d2df410nilton',
+              name: 'Nilton Dionisio Guerra',
+              photo: 'https://i.pravatar.cc/150?img=3',
+              email: 'niltondg.39@gmail.com',
             }} />
         )}
       />

@@ -13,7 +13,13 @@ const CardPost = (dataCard: CardPostProps) => {
     <Card style={styles.card} mode="elevated" elevation={2}>
       <Link href="/modal" asChild>
         <Pressable accessibilityRole="link" style={styles.cardContentLinkPressable}>
+          {dataCard.dataProperties.imageUrl ? (
           <Card.Cover style={styles.img} source={{ uri: dataCard.dataProperties.imageUrl }} />
+          ) : (
+            <View style={[styles.img, styles.defaultIconContainer]}>
+              <MaterialCommunityIcons name="image-off" size={80} color="#9ca3af" />
+            </View>
+          )}
           <Card.Content style={styles.cardContent}>
             <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
             <View style={styles.tagsContainer}>
@@ -70,6 +76,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
+  },
+  defaultIconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f3f4f6',
   },
   cardContent: {},
   cardContentLinkPressable: {},
