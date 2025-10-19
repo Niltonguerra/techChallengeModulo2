@@ -1,8 +1,8 @@
+import CardPost from '@/components/CardPost/CardPost';
 import { Post } from '@/types/post';
 import React, { useEffect, useState } from "react";
 import { FlatList, View } from 'react-native';
 import { ActivityIndicator, Text } from "react-native-paper";
-import CardPost from "../../components/CardPost";
 import { Filter } from "../../components/Filter";
 import { fetchPosts } from "../../services/post";
 
@@ -83,7 +83,7 @@ export default function TabOneScreen() {
           <FlatList
             data={posts}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <CardPost post={item} />}
+            renderItem={({ item }) => <CardPost isEditable={false} dataProperties={item} />}
             onEndReached={fetchMorePosts}
             onEndReachedThreshold={0.5}
             ListFooterComponent={
