@@ -26,7 +26,7 @@ const CardPost = (dataCard: CardPostProps) => {
             </View>
             <Text style={styles.introduction}>{dataCard.dataProperties.introduction}</Text>
             <View style={styles.metaRow}>
-              <Text style={styles.authorName}>Autor: {dataCard.dataProperties.user_email}</Text>
+              <Text style={styles.authorName}>Autor: {dataCard.dataProperties.user_name}</Text>
               <View style={styles.dateRow}>
                 <MaterialCommunityIcons name="calendar" size={16} color="#9ca3af" />
                 <Text style={styles.date}>
