@@ -43,13 +43,8 @@ export const getListById = async (id: string): Promise<ResultApi> => {
 
 export const deletePost = async (id: string): Promise<DeleteResponse> => {
   const api = getApi();
-  try {
-    const response = await api.delete<DeleteResponse>(`post/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Erro ao deletar post ${id}:`, error);
-    throw error;
-  }
+  const response = await api.delete<DeleteResponse>(`post/${id}`);
+  return response.data;
 };
 
 export const fetchPosts = async (data: PostSearch):Promise<any> => {

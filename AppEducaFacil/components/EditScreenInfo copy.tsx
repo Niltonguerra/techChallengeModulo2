@@ -3,8 +3,9 @@ import { ScrollView, FlatList,StyleSheet } from 'react-native';
 import { ExternalLink } from './ExternalLink';
 import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
-import Colors from '@/constants/Colors';
+import Colors, { styleGuide } from '@/constants/styleGuide';
 import CardPost from './CardPost/CardPost';
+import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const dados = [
@@ -80,7 +81,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
               introduction: 'Um mapa-múndi é uma representação cartográfica de toda a superfície do planeta Terra em uma superfície plana reduzida. O mapa do mundo, portanto, retrata de uma só vez todos os seis continentes e os cinco oceanos terrestres em escala reduzida, apresentando baixo grau de detalhamento.',
               imageUrl: 'https://i.ibb.co/MDs70Rb8/mapa-mundi.webp',
               content_hashtags: ["#geografia","#cultura"],
-              author: 'luis-gu10@hotmail.com',
+              author: 'Luis Augusto',
               created_at: '2025-10-04T16:42:10.364Z',
               updated_at: '2025-10-04T16:42:10.364Z',
               authorEmail: 'luis-gu10@hotmail.com',
@@ -95,12 +96,13 @@ export default function EditScreenInfo({ path }: { path: string }) {
 
 const styles = StyleSheet.create({
   list: {
-    marginBottom: 16,
+    marginBottom: 160,
+    marginVertical: 8,
+    backgroundColor: styleGuide.palette.main.primaryColor,
   },
   item: {
-    marginBottom: 16,
+    backgroundColor: styleGuide.palette.main.fourthColor,
   },
-
   getStartedContainer: {
     alignItems: 'center',
     marginHorizontal: 50,

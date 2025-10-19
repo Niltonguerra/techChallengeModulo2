@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { ConfirmModalProvider } from '@/hooks/modalConfirm/ConfirmModal';
+import { SnackbarProvider } from '@/hooks/snackbar/snackbar';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,10 +52,14 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
+      <ConfirmModalProvider>
+        <SnackbarProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
+      </SnackbarProvider>
+      </ConfirmModalProvider>
     </ThemeProvider>
   );
 }

@@ -28,11 +28,6 @@ export const createUser = async (data: FormUserData)
 
 export const getAuthors = async () => {
   const api = getApi();
-  try {
-    const response = await api.get("post/hashtags");
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar hashtags:", error);
-    throw error;
-  }
+  const response = await api.get("post/hashtags");
+  return response.data;
 };

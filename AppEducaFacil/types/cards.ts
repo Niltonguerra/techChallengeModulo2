@@ -1,4 +1,4 @@
-export type CardPostType = {
+export type CardPostProps = {
   isEditable: boolean;
   dataProperties: {
     id: string;
@@ -13,5 +13,4 @@ export type CardPostType = {
     author: string;
     authorEmail: string;
   }
-
 };
