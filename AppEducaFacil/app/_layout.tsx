@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { ConfirmModalProvider } from '@/hooks/modalConfirm/ConfirmModal';
+import { SnackbarProvider } from '@/hooks/snackbar/snackbar';
 import { PaperProvider } from 'react-native-paper';
 
 export {
@@ -53,10 +55,15 @@ function RootLayoutNav() {
 
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <PaperProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
+        <ConfirmModalProvider>
+          <SnackbarProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            </Stack>
+
+          </SnackbarProvider>
+        </ConfirmModalProvider>
       </PaperProvider>
     </ThemeProvider>
   );
