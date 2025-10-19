@@ -7,7 +7,7 @@ const API_URL = Constants.expoConfig?.extra.apiUrl ;
 
 let api: AxiosInstance | null = null;
 
-const tokenTeste = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI3MzM1ZTM3LTY3Y2MtNDc2Mi05NGRkLTE1Y2JlNTI5YTIzMyIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzYwMjgxNzQ5LCJleHAiOjE3NjAzNjgxNDl9.gmcnoHE6XiB1uhOizv4OMSYw0SfqpaXglKj3S08y6ZA";
+const tokenTeste = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI3MzM1ZTM3LTY3Y2MtNDc2Mi05NGRkLTE1Y2JlNTI5YTIzMyIsImVtYWlsIjoibmlsdG9uZGcuMzlAZ21haWwuY29tIiwicGVybWlzc2lvbiI6ImFkbWluIiwiaWF0IjoxNzYwODE5NzAzLCJleHAiOjE3NjA5MDYxMDN9.lDZRibjx-uzAxDXnoMhSDPuZSoCmbxf9dszWMMXeXIo";
 
 export function getApi(): AxiosInstance {
   const token = tokenTeste;
@@ -43,13 +43,8 @@ export const getListById = async (id: string): Promise<ResultApi> => {
 
 export const deletePost = async (id: string): Promise<DeleteResponse> => {
   const api = getApi();
-  try {
-    const response = await api.delete<DeleteResponse>(`post/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Erro ao deletar post ${id}:`, error);
-    throw error;
-  }
+  const response = await api.delete<DeleteResponse>(`post/${id}`);
+  return response.data;
 };
 
 export const fetchPosts = async (data: PostSearch):Promise<any> => {
