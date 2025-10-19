@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { Button, Card, Text, Snackbar } from 'react-native-paper';
-import { CardPostProps } from '@/types/cards';
-import { Link } from 'expo-router';
-import { Pressable, StyleSheet, TextStyle, View } from 'react-native';
 import styleGuide from '@/constants/styleGuide';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useDeletePost } from '@/hooks/handleDeletePost/handleDeletePost';
+import { CardPostProps } from '@/types/cards';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
+import * as React from 'react';
+import { Pressable, StyleSheet, TextStyle, View } from 'react-native';
+import { Button, Card, Text } from 'react-native-paper';
 
 const CardPost = (dataCard: CardPostProps) => {
   const { handleDeletePost } = useDeletePost();
@@ -13,7 +13,7 @@ const CardPost = (dataCard: CardPostProps) => {
     <Card style={styles.card} mode="elevated" elevation={2}>
       <Link href="/modal" asChild>
         <Pressable accessibilityRole="link" style={styles.cardContentLinkPressable}>
-          <Card.Cover style={styles.img} source={{ uri: dataCard.dataProperties.imageUrl }} />
+          <Card.Cover style={styles.img} source={{ uri: dataCard.dataProperties.image ?? '' }} />
           <Card.Content style={styles.cardContent}>
             <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
             <View style={styles.tagsContainer}>
@@ -27,7 +27,7 @@ const CardPost = (dataCard: CardPostProps) => {
             </View>
             <Text style={styles.introduction}>{dataCard.dataProperties.introduction}</Text>
             <View style={styles.metaRow}>
-              <Text style={styles.authorName}>Autor: {dataCard.dataProperties.author}</Text>
+              <Text style={styles.authorName}>Autor: {dataCard.dataProperties.user_name}</Text>
               <View style={styles.dateRow}>
                 <MaterialCommunityIcons name="calendar" size={16} color="#9ca3af" />
                 <Text style={styles.date}>

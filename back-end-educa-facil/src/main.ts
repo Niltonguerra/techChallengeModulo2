@@ -1,8 +1,8 @@
-import './polyfills';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { setupDocumentation } from 'docs/documentation';
 import { AppModule } from './app.module';
+import './polyfills';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,9 +21,9 @@ async function bootstrap() {
   // Habilitando CORS
   app.enableCors({
     origin:
-      process.env.AMBIENTE === 'PROD'
-        ? [process.env.FRONTEND_URL_PROD, process.env.FRONTEND_URL_PROFESSOR]
-        : process.env.FRONTEND_URL_LOCAL,
+      // eslint-disable-next-line prettier/prettier
+      process.env.AMBIENTE === 'PROD' ? [process.env.FRONTEND_URL_PROD, process.env.FRONTEND_URL_PROFESSOR, process.env.FRONTEND_URL_MOBILE_PROD]
+        : [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_MOBILE_LOCAL],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

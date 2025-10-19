@@ -213,6 +213,8 @@ SWAGGER_PASS='admin123'
 FRONTEND_URL_LOCAL =http://localhost:5173
 FRONTEND_URL_PROD =https://tech-challenge-modulo2-qcu447prv-niltonguerras-projects.vercel.app
 FRONTEND_URL_PROFESSOR=https://tech-challenge-modulo2-zv8l-gmbfouuf6-niltonguerras-projects.vercel.app
+FRONTEND_URL_MOBILE_LOCAL =http://localhost:8081
+FRONTEND_URL_MOBILE_PROD =http://localhost:8081
 ```
 
 ### Variáveis de frontend:
