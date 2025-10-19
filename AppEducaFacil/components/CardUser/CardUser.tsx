@@ -68,6 +68,8 @@ const styles = StyleSheet.create({
   defaultIconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: styleGuide.palette.main.thirdColor,
+    borderRadius: 40,
   },
   userInfo: {
     flex: 1,
