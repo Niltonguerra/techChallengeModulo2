@@ -8,7 +8,12 @@ export interface FormPostData {
 	external_link: Record<string, string>;
 	content_hashtags: string[];
 	image: File | null | string;
-	author_id: string;
+	author_id?: string; // backend can set this automatically
+}
+
+export type FormPostProps = {
+  postId?: string
+  afterSubmit?: () => void
 }
 
 export interface FormUserData {

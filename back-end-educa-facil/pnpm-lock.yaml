@@ -71,6 +71,9 @@ importers:
       pg:
         specifier: 8.16.0
         version: 8.16.0
+      pnpm:
+        specifier: 10.18.3
+        version: 10.18.3
       qs:
         specifier: 6.14.0
         version: 6.14.0
@@ -3149,6 +3152,11 @@ packages:
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
+
+  pnpm@10.18.3:
+    resolution: {integrity: sha512-u9FubXKG/X4B9rPAs8kyzaKWXAapCDKPdGY/EKmupR8RKe6mFRNL+ZKDGwCeq+Fn7LcAi1l/QP+bx1lGqt+wjQ==}
+    engines: {node: '>=18.12'}
+    hasBin: true
 
   postgres-array@2.0.0:
     resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
@@ -7291,6 +7299,8 @@ snapshots:
       find-up: 4.1.0
 
   pluralize@8.0.0: {}
+
+  pnpm@10.18.3: {}
 
   postgres-array@2.0.0: {}
 
