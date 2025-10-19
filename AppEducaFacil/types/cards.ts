@@ -4,7 +4,7 @@ export type CardPostProps = {
     id: string;
     title: string;
     description: string;
-    imageUrl: string;
+    image: string;
     introduction: string;
     content_hashtags: string[];
     external_link: Record<string, string>;
