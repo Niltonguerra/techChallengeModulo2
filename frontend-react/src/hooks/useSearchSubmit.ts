@@ -23,11 +23,9 @@ export function useSearchSubmit(fetchPosts: (props: PostSearch) => Promise<void>
         advanced: true,
         search: filters.postSearch,
         userId: filters.postAuthor,
+        createdAtBefore: filters.createdAtBefore,
+        createdAtAfter: filters.createdAtAfter,
         content: filters.postContent,
-        createdAt: {
-          before: filters.createdAtBefore,
-          after: filters.createdAtAfter,
-        },
         offset: filters.offset,
         limit: filters.limit,
         signal: controller.signal,
