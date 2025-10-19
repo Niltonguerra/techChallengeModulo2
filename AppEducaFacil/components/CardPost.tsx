@@ -1,50 +1,22 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Avatar, Button, Card, Text } from 'react-native-paper';
-import { RequestUser } from '@/types/login';
-import { loginUserService } from '@/services/user';
-import { getHashtags, getListById, getListTodos } from '@/services/post';
 import { Post } from '@/types/post';
+import * as React from 'react';
+import { Button, Card, Text } from 'react-native-paper';
 
-const CardPost = () => {
-  const [data, setData] = useState<any | null>();
-  const [erro, setErro] = useState(null);
+type CardPostProps = {
+  post: Post;
+};
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const dataSend:RequestUser = {
-          email:'niltondg.39@gmail.com',
-          password: 'ndg.100502'
-        } 
-        const result = await getListById('39eed3a6-20d2-42fb-8aaf-08f45d2df410');
-        setData(result.ListPost[0].title);
-      } catch (error) {
-        setErro(error.message || 'Erro ao carregar dados');
-      }
-    };
-
-    fetchData();
-  }, []);
+const CardPost: React.FC<CardPostProps> = ({ post }) => {
 
   return (
     <Card style={{ marginVertical: 8 }}>
+      {post.image && <Card.Cover source={{ uri: post.image }} />}
       <Card.Content>
-        {erro ? (
-          <Text variant="titleLarge">Erro: {erro}</Text>
-        ) : data ? (
-          <>
-            <Text variant="titleLarge">{data}</Text>
-
-          </>
-        ) : (
-          <Text variant="titleLarge">Carregando...</Text>
-        )}
+        <Text variant="titleLarge">{post.title}</Text>
+        <Text>{post.introduction}</Text>
       </Card.Content>
-      <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
       <Card.Actions>
-        <Button>Cancel</Button>
+        <Button>Cancelar</Button>
         <Button>Ok</Button>
       </Card.Actions>
     </Card>
