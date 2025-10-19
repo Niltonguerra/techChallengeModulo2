@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   defaultIconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: styleGuide.palette.main.thirdColor,
+    backgroundColor: '#cccccc',
     borderRadius: 40,
   },
   userInfo: {
