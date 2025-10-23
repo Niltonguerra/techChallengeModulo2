@@ -9,11 +9,15 @@ import {
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useDispatch } from "react-redux";
 import { loginUserService } from "@/services/user";
-import { RequestUser } from "@/types/login";
+import { loginSuccess } from "@/store/authSlice";
+import { AppDispatch } from "@/store/store";
+import { RequestUser, ResponseAuthUser } from "@/types/login";
 
 export default function LoginScreen() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,12 +32,17 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       const data: RequestUser = { email, password };
-      const response = await loginUserService(data);
+      const response: ResponseAuthUser = await loginUserService(data);
+
+      dispatch(loginSuccess({ user: response.user, token: response.token }));
 
       Alert.alert("Sucesso", `Bem-vindo ${response.user.name}`);
       router.replace("/(tabs)");
     } catch (err: any) {
-      Alert.alert("Erro", err.response?.data?.message || "Usuário ou senha incorretos");
+      Alert.alert(
+        "Erro",
+        err.response?.data?.message || "Usuário ou senha incorretos"
+      );
     } finally {
       setLoading(false);
     }
@@ -60,8 +69,16 @@ export default function LoginScreen() {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Entrar</Text>}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Entrar</Text>
+        )}
       </TouchableOpacity>
 
       <Text style={styles.titleregister}>Faça o seu registro</Text>

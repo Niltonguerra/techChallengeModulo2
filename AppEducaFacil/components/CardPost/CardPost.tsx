@@ -1,36 +1,50 @@
-import styleGuide from '@/constants/styleGuide';
-import { useDeletePost } from '@/hooks/handleDeletePost/handleDeletePost';
-import { CardPostProps } from '@/types/cards';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
-import * as React from 'react';
-import { Pressable, StyleSheet, TextStyle, View } from 'react-native';
-import { Button, Card, Text } from 'react-native-paper';
+import styleGuide from "@/constants/styleGuide";
+import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
+import { CardPostProps } from "@/types/cards";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Link } from "expo-router";
+import * as React from "react";
+import { Pressable, StyleSheet, TextStyle, View } from "react-native";
+import { Button, Card, Text } from "react-native-paper";
 
 const CardPost = (dataCard: CardPostProps) => {
   const { handleDeletePost } = useDeletePost();
   return (
     <Card style={styles.card} mode="elevated" elevation={2}>
+      <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
       <Link href="/modal" asChild>
-        <Pressable accessibilityRole="link" style={styles.cardContentLinkPressable}>
+        <Pressable
+          accessibilityRole="link"
+          style={styles.cardContentLinkPressable}
+        >
           <Card.Content style={styles.cardContent}>
             <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
             <View style={styles.tagsContainer}>
               {dataCard.dataProperties.content_hashtags.map((tag, idx) => (
                 <View key={`${tag}-${idx}`} style={styles.tag}>
                   <Text style={styles.tagText}>
-                    {tag.startsWith('#') ? tag : `#${tag}`}
+                    {tag.startsWith("#") ? tag : `#${tag}`}
                   </Text>
                 </View>
               ))}
             </View>
-            <Text style={styles.introduction}>{dataCard.dataProperties.introduction}</Text>
+            <Text style={styles.introduction}>
+              {dataCard.dataProperties.introduction}
+            </Text>
             <View style={styles.metaRow}>
-              <Text style={styles.authorName}>Autor: {dataCard.dataProperties.user_name}</Text>
+              <Text style={styles.authorName}>
+                Autor: {dataCard.dataProperties.user_name}
+              </Text>
               <View style={styles.dateRow}>
-                <MaterialCommunityIcons name="calendar" size={16} color="#9ca3af" />
+                <MaterialCommunityIcons
+                  name="calendar"
+                  size={16}
+                  color="#9ca3af"
+                />
                 <Text style={styles.date}>
-                  {new Date(dataCard.dataProperties.updated_at).toLocaleDateString('pt-BR')}
+                  {new Date(
+                    dataCard.dataProperties.updated_at
+                  ).toLocaleDateString("pt-BR")}
                 </Text>
               </View>
             </View>
@@ -40,9 +54,15 @@ const CardPost = (dataCard: CardPostProps) => {
       {dataCard.isEditable && (
         <Card.Actions style={styles.btnContainer}>
           <Link href="/modal" asChild>
-            <Button labelStyle={styles.btnLabel} style={styles.btnEdit}>Editar</Button>
+            <Button labelStyle={styles.btnLabel} style={styles.btnEdit}>
+              Editar
+            </Button>
           </Link>
-          <Button labelStyle={styles.btnLabel} style={styles.btnDelete} onPress={() => handleDeletePost(dataCard.dataProperties.id)}>
+          <Button
+            labelStyle={styles.btnLabel}
+            style={styles.btnDelete}
+            onPress={() => handleDeletePost(dataCard.dataProperties.id)}
+          >
             Deletar
           </Button>
         </Card.Actions>
@@ -57,13 +77,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     backgroundColor: styleGuide.palette.main.fourthColor,
     borderRadius: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   img: {
     marginBottom: 8,
     padding: 0,
     margin: 0,
-    width: '100%',
+    width: "100%",
     height: 180,
     borderTopRightRadius: 16,
     borderTopLeftRadius: 16,
@@ -71,26 +91,26 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
   },
   defaultIconContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f3f4f6',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f3f4f6",
   },
   cardContent: {},
   cardContentLinkPressable: {},
   title: {
-    ...styleGuide.typography.h3 as TextStyle,
-    fontWeight: 'bold',
+    ...(styleGuide.typography.h3 as TextStyle),
+    fontWeight: "bold",
     margin: 0,
     marginBottom: 8,
   },
   introduction: {
-    ...styleGuide.typography.h5 as TextStyle,
+    ...(styleGuide.typography.h5 as TextStyle),
     fontSize: 16,
     marginBottom: 8,
   },
   tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 8,
   },
   tag: {
@@ -101,31 +121,31 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   tagText: {
-    ...styleGuide.typography.h6 as TextStyle,
+    ...(styleGuide.typography.h6 as TextStyle),
     color: styleGuide.palette.main.fourthColor,
   },
   metaRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   authorName: {
-    ...styleGuide.typography.h5 as TextStyle,
+    ...(styleGuide.typography.h5 as TextStyle),
   },
   dateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   date: {
-    ...styleGuide.typography.h5 as TextStyle,
+    ...(styleGuide.typography.h5 as TextStyle),
   },
   btnContainer: {
     paddingTop: 0,
   },
   btnLabel: {
-    ...styleGuide.typography.button as TextStyle,
+    ...(styleGuide.typography.button as TextStyle),
   },
   btnEdit: {
     backgroundColor: styleGuide.palette.main.secondColor,
