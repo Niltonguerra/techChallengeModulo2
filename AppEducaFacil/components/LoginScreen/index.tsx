@@ -6,22 +6,30 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { loginUserService } from "@/services/user";
 import { RequestUser } from "@/types/login";
+import { useSnackbar } from "@/hooks/snackbar/snackbar";
+import styleGuide from "@/constants/styleGuide";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { showSnackbar } = useSnackbar();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert("Erro", "Preencha todos os campos");
+      showSnackbar({
+        message: "Preencha todos os campos",
+        duration: 3000,
+      });
       return;
     }
 
@@ -30,10 +38,16 @@ export default function LoginScreen() {
       const data: RequestUser = { email, password };
       const response = await loginUserService(data);
 
-      Alert.alert("Sucesso", `Bem-vindo ${response.user.name}`);
+      showSnackbar({
+        message: `Bem-vindo ${response.user.name}`,
+        duration: 3000,
+      });
       router.replace("/(tabs)");
     } catch (err: any) {
-      Alert.alert("Erro", err.response?.data?.message || "Usuário ou senha incorretos");
+      showSnackbar({
+        message: err.response?.data?.message || "Usuário ou senha incorretos",
+        duration: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -43,61 +57,120 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <Text style={styles.titlelogin}>Login</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Digite aqui o seu usuário*"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
+      <View style={styles.inputRow}>
+        <TextInput
+          style={[styles.input, styles.inputWithIcon]}
+          placeholder="Digite aqui o seu usuário*"
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          placeholderTextColor={styleGuide.palette.main.textSecondaryColor}
+        />
+      </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Digite aqui a sua senha*"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+      <View style={[styles.inputRow, styles.passwordRow]}>
+        <TextInput
+          style={[styles.input, styles.inputWithIcon]}
+          placeholder="Digite aqui a sua senha*"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+          placeholderTextColor={styleGuide.palette.main.textSecondaryColor}
+        />
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={styles.showIconButton}
+        >
+          <MaterialCommunityIcons
+            name={showPassword ? "eye-off" : "eye"}
+            size={22}
+            color={styleGuide.palette.main.primaryColor}
+          />
+        </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handleLogin}
+        disabled={loading}
+      >
         {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Entrar</Text>}
       </TouchableOpacity>
 
-      <Text style={styles.titleregister}>Faça o seu registro</Text>
-      <Text style={styles.text}>Não Possui registro? Registre-se aqui</Text>
+      <Text style={styles.titleregister}>Faça o seu registro </Text>
+      <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
+        <Text style={styles.text}>Não Possui registro? Registre-se aqui</Text>
+      </TouchableOpacity>
       <Text style={styles.text}>Dúvidas ou precisa de alguma ajuda?</Text>
-      <Text style={styles.text}>(11) 93231-3383</Text>
-      <Text style={styles.text}>educacaofacilfiap@gmail.com</Text>
+      <Text style={styles.text}>
+        <MaterialCommunityIcons
+          name="phone"
+          size={16}
+          color={styleGuide.palette.main.primaryColor}
+          style={styles.contactIcon}
+        />
+        (11) 93231-3383
+      </Text>
+      <Text style={styles.text}>
+        <MaterialCommunityIcons
+          name="email-outline"
+          size={16}
+          color={styleGuide.palette.main.primaryColor}
+          style={styles.contactIcon}
+        />
+        educacaofacilfiap@gmail.com
+      </Text>
     </View>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: styleGuide.light.background || styleGuide.palette.main.fourthColor,
     justifyContent: "center",
     padding: 24,
   },
   titlelogin: {
-    fontSize: 28,
-    fontWeight: "bold",
+    ...styleGuide.typography.h2,
     textAlign: "center",
     marginBottom: 22,
     marginTop: 20,
+    color: styleGuide.palette.main.textPrimaryColor,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 16,
-    borderRadius: 10,
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
     marginLeft: 32,
     marginRight: 32,
   },
+  iconLeft: {
+    marginRight: 8,
+  },
+  inputWithIcon: {
+    flex: 1,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: styleGuide.palette.main.textSecondaryColor,
+    padding: 16,
+    borderRadius: 10,
+    backgroundColor: styleGuide.palette.light.fourthLightColor,
+    color: styleGuide.palette.main.textPrimaryColor,
+  },
+  passwordRow: {
+    position: "relative",
+  },
+  showIconButton: {
+    position: "absolute",
+    right: 8,
+    padding: 8,
+  },
   button: {
-    backgroundColor: "#F57005",
+    backgroundColor: styleGuide.palette.main.secondColor,
     padding: 16,
     borderRadius: 10,
     alignItems: "center",
@@ -105,22 +178,33 @@ const styles = StyleSheet.create({
     marginRight: 32,
     marginTop: 16,
   },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
   buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
+    ...styleGuide.typography.button,
+    color: styleGuide.typography.button.color,
   },
   text: {
-    color: "#4953B8",
+    color: styleGuide.palette.main.primaryColor,
     fontSize: 14,
     marginTop: 20,
     textAlign: "center",
   },
   titleregister: {
-    fontSize: 28,
-    fontWeight: "bold",
+    ...styleGuide.typography.h3,
     textAlign: "center",
     marginBottom: 12,
     marginTop: 24,
+    color: styleGuide.palette.main.textPrimaryColor,
+  },
+  contactRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 8,
+  },
+  contactIcon: {
+    marginRight: 8,
   },
 });

@@ -6,7 +6,7 @@ import type { DeleteResponse, Post, PostSearch, ResultApi } from "../types/post"
 const API_URL = Constants.expoConfig!.extra!.apiUrl; // diz ao TypeScript “confie em mim, isso nunca será undefined
 let api: AxiosInstance | null = null;
 
-const tokenTeste = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY1MjE1MTllLTRiMWMtNGRmNS04Zjg1LTAzMmJjYjBkZTUyYSIsImVtYWlsIjoibHVpczUwODI0QGdtYWlsLmNvbSIsInBlcm1pc3Npb24iOiJ1c2VyIiwiaWF0IjoxNzYwODI3ODE0LCJleHAiOjE3NjA5MTQyMTR9.NT2wgWX5U2bRZ0zS7HWgsCqMdb235hBIwPYmZ-DBGlo";
+const tokenTeste = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZkOTFiOTU0LTBjZDQtNGU0MC1iMzE5LTI1ZDg3OGFkMTIwMiIsImVtYWlsIjoiZ3VpLnBpbWVudGVsMjAwNEBnbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiYWRtaW4iLCJpYXQiOjE3NjExNTYxNzAsImV4cCI6MTc2MTI0MjU3MH0.AITvfaVqcQG8Ll_8qqHNVDxoSRaU5fOg07qjndmSrd4";
 
 export function getApi(): AxiosInstance {
   const token = tokenTeste;
