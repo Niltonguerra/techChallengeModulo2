@@ -1,36 +1,31 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import { Stack, SplashScreen, useRouter, usePathname } from "expo-router";
+import React, { useEffect } from "react";
+import "react-native-reanimated";
+import { Provider, useSelector } from "react-redux";
+import { PaperProvider } from "react-native-paper";
 
-import { useColorScheme } from '@/components/useColorScheme';
-import { ConfirmModalProvider } from '@/hooks/modalConfirm/ConfirmModal';
-import { SnackbarProvider } from '@/hooks/snackbar/snackbar';
-import { PaperProvider } from 'react-native-paper';
+import { useColorScheme } from "@/components/useColorScheme";
+import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
+import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
+import { store, RootState } from "@/store/store";
+import Header from "@/components/header/header";
+export { ErrorBoundary } from "expo-router";
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -45,23 +40,49 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
+  );
 }
 
-function RootLayoutNav() {
+function AppContent() {
   const colorScheme = useColorScheme();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const currentRoute = pathname;
+
+    if (isAuthenticated) {
+      if (!currentRoute.startsWith("/(tabs)")) {
+        console.log("Redirecting to (tabs)");
+        router.replace("/(tabs)");
+      }
+    } else {
+      if (!currentRoute.startsWith("/(auth)")) {
+        console.log("Redirecting to (auth)/login");
+        router.replace("/(auth)/login");
+      }
+    }
+  }, [isAuthenticated, pathname, router]);
 
   return (
-
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <PaperProvider>
         <ConfirmModalProvider>
           <SnackbarProvider>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-            </Stack>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(auth)" />
 
+              <Stack.Screen name="(tabs)" />
+
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+            </Stack>
           </SnackbarProvider>
         </ConfirmModalProvider>
       </PaperProvider>

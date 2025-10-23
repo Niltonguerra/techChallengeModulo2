@@ -1,7 +1,7 @@
-import CardPost from '@/components/CardPost/CardPost';
-import { Post } from '@/types/post';
+import CardPost from "@/components/CardPost/CardPost";
+import { Post } from "@/types/post";
 import React, { useEffect, useState } from "react";
-import { FlatList, View } from 'react-native';
+import { FlatList, View } from "react-native";
 import { ActivityIndicator, Text } from "react-native-paper";
 import { Filter } from "../../components/Filter";
 import { fetchPosts } from "../../services/post";
@@ -25,7 +25,10 @@ export default function TabOneScreen() {
     createdAtBefore?: string;
   };
   // Função para buscar posts (com opção de mostrar loader)
-  const handleFilter = async (filters: PostFilters = {}, showLoader: boolean = true) => {
+  const handleFilter = async (
+    filters: PostFilters = {},
+    showLoader: boolean = true
+  ) => {
     if (showLoader) setLoading(true);
     try {
       const data = await fetchPosts({
@@ -68,22 +71,27 @@ export default function TabOneScreen() {
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
-
       <Filter onFilter={handleFilter} />
 
       {/* Área de posts */}
       <View style={{ flex: 1, marginTop: 16 }}>
         {loading ? (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
             <ActivityIndicator size="large" />
           </View>
         ) : posts.length === 0 ? (
-          <Text style={{ textAlign: "center", marginTop: 24 }}>Nenhum post encontrado.</Text>
+          <Text style={{ textAlign: "center", marginTop: 24 }}>
+            Nenhum post encontrado.
+          </Text>
         ) : (
           <FlatList
             data={posts}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <CardPost isEditable={false} dataProperties={item} />}
+            renderItem={({ item }) => (
+              <CardPost isEditable={false} dataProperties={item} />
+            )}
             onEndReached={fetchMorePosts}
             onEndReachedThreshold={0.5}
             ListFooterComponent={
