@@ -1,3 +1,4 @@
+import styleGuide from "@/constants/styleGuide";
 import { MaterialCommunityIcons } from "@expo/vector-icons"; // Ícones para as setas indicativas
 import DateTimePicker from "@react-native-community/datetimepicker"; // Componente de seleção de data
 import React, { useEffect, useRef, useState } from "react";
@@ -80,21 +81,29 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
             {/* Barra de busca */}
             <Searchbar
                 placeholder="Buscar título ou descrição"
+                placeholderTextColor={styleGuide.palette.main.textSecondaryColor}
                 value={search}
                 onChangeText={setSearch}
                 style={{
-                    height: 38,
-                    justifyContent: "center",
                     width: "100%",
+                    borderWidth: 1,
+                    borderColor: styleGuide.palette.main.primaryColor,
                     borderRadius: 8,
+                    backgroundColor: "transparent",
+                    paddingHorizontal: 8,
+                    justifyContent: "center", // iOS
+                    elevation: 0,             // remove sombra Android
                 }}
                 inputStyle={{
-                    height: 38,
-                    textAlignVertical: "center",
-                    paddingVertical: 0,
                     fontSize: 13,
+                    color: styleGuide.palette.main.primaryColor,
+                    paddingVertical: 6,        // ajusta centralização vertical
+                    textAlignVertical: "center", // Android
                 }}
+                iconColor={styleGuide.palette.main.primaryColor}
             />
+
+
 
             {/* Container do scroll horizontal */}
             <View style={{ position: "relative", marginTop: 2 }}>
@@ -137,9 +146,10 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                                             height: 38,
                                             justifyContent: "center",
                                             borderRadius: 6,
+                                            borderColor: styleGuide.palette.main.primaryColor,
                                         }}
-                                        contentStyle={{ height: 38, paddingVertical: 0 }}
-                                        labelStyle={{ fontSize: 13 }}
+                                        contentStyle={{ height: 38, paddingVertical: 0, }}
+                                        labelStyle={{ fontSize: 13, color: styleGuide.palette.main.primaryColor }}
                                         icon="shape-outline"
                                     >
                                         {content ? content : "Categoria"}
@@ -163,9 +173,10 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                             justifyContent: "center",
                             borderRadius: 6,
                             marginRight: 6,
+                            borderColor: styleGuide.palette.main.primaryColor,
                         }}
                         contentStyle={{ height: 38, paddingVertical: 0 }}
-                        labelStyle={{ fontSize: 13 }}
+                        labelStyle={{ fontSize: 13, color: styleGuide.palette.main.primaryColor }}
                         icon="calendar-range"
                     >
                         {dates.after ? dates.after.toLocaleDateString() : "De"}
@@ -180,9 +191,10 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                             justifyContent: "center",
                             borderRadius: 6,
                             marginRight: 6,
+                            borderColor: styleGuide.palette.main.primaryColor,
                         }}
                         contentStyle={{ height: 38, paddingVertical: 0 }}
-                        labelStyle={{ fontSize: 13 }}
+                        labelStyle={{ fontSize: 13, color: styleGuide.palette.main.primaryColor }}
                         icon="calendar"
                     >
                         {dates.before ? dates.before.toLocaleDateString() : "Até"}
@@ -191,8 +203,9 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                     {/* Botão Limpar */}
                     <IconButton
                         icon="close-circle-outline"
-                        size={18}
+                        size={30}
                         onPress={handleClear} // Reseta filtros e scroll
+                        iconColor={styleGuide.palette.main.secondColor}
                         style={{
                             height: 34,
                             width: 34,

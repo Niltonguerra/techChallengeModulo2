@@ -2,62 +2,74 @@ import styleGuide from "@/constants/styleGuide";
 import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
 import { CardPostProps } from "@/types/cards";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import * as React from "react";
 import { Pressable, StyleSheet, TextStyle, View } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 
 const CardPost = (dataCard: CardPostProps) => {
+  const router = useRouter();
   const { handleDeletePost } = useDeletePost();
+
+  const handleOpenDetail = () => {
+    router.push({
+      pathname: "/PostDetail",
+      params: { id: dataCard.dataProperties.id },
+    });
+  };
+  const handleOpenDefaultModal = () => {
+    router.push({
+      pathname: "/default", // se esse também for um modal
+      params: { id: dataCard.dataProperties.id },
+    });
+  };
   return (
     <Card style={styles.card} mode="elevated" elevation={2}>
       <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
-      <Link href="/modal" asChild>
-        <Pressable
-          accessibilityRole="link"
-          style={styles.cardContentLinkPressable}
-        >
-          <Card.Content style={styles.cardContent}>
-            <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
-            <View style={styles.tagsContainer}>
-              {dataCard.dataProperties.content_hashtags.map((tag, idx) => (
-                <View key={`${tag}-${idx}`} style={styles.tag}>
-                  <Text style={styles.tagText}>
-                    {tag.startsWith("#") ? tag : `#${tag}`}
-                  </Text>
-                </View>
-              ))}
-            </View>
-            <Text style={styles.introduction}>
-              {dataCard.dataProperties.introduction}
-            </Text>
-            <View style={styles.metaRow}>
-              <Text style={styles.authorName}>
-                Autor: {dataCard.dataProperties.user_name}
-              </Text>
-              <View style={styles.dateRow}>
-                <MaterialCommunityIcons
-                  name="calendar"
-                  size={16}
-                  color="#9ca3af"
-                />
-                <Text style={styles.date}>
-                  {new Date(
-                    dataCard.dataProperties.updated_at
-                  ).toLocaleDateString("pt-BR")}
+      <Pressable
+        onPress={handleOpenDetail}
+        style={styles.cardContentLinkPressable}
+      >
+        <Card.Content style={styles.cardContent}>
+          <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
+          <View style={styles.tagsContainer}>
+            {dataCard.dataProperties.content_hashtags.map((tag, idx) => (
+              <View key={`${tag}-${idx}`} style={styles.tag}>
+                <Text style={styles.tagText}>
+                  {tag.startsWith("#") ? tag : `#${tag}`}
                 </Text>
               </View>
+            ))}
+          </View>
+          <Text style={styles.introduction}>
+            {dataCard.dataProperties.introduction}
+          </Text>
+          <View style={styles.metaRow}>
+            <Text style={styles.authorName}>
+              Autor: {dataCard.dataProperties.user_name}
+            </Text>
+            <View style={styles.dateRow}>
+              <MaterialCommunityIcons
+                name="calendar"
+                size={16}
+                color="#9ca3af"
+              />
+              <Text style={styles.date}>
+                {new Date(
+                  dataCard.dataProperties.updated_at
+                ).toLocaleDateString("pt-BR")}
+              </Text>
             </View>
-          </Card.Content>
-        </Pressable>
-      </Link>
+          </View>
+        </Card.Content>
+      </Pressable>
       {dataCard.isEditable && (
         <Card.Actions style={styles.btnContainer}>
-          <Link href="/modal" asChild>
+          <Pressable onPress={handleOpenDefaultModal}>
             <Button labelStyle={styles.btnLabel} style={styles.btnEdit}>
               Editar
             </Button>
-          </Link>
+          </Pressable>
           <Button
             labelStyle={styles.btnLabel}
             style={styles.btnDelete}

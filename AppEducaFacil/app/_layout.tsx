@@ -1,21 +1,16 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack, SplashScreen, useRouter, usePathname } from "expo-router";
+import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
 import React, { useEffect } from "react";
+import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { Provider, useSelector } from "react-redux";
-import { PaperProvider } from "react-native-paper";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
-import { store, RootState } from "@/store/store";
-import Header from "@/components/header/header";
+import { RootState, store } from "@/store/store";
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
@@ -31,14 +26,10 @@ export default function RootLayout() {
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
+    if (loaded) SplashScreen.hideAsync();
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded) return null;
 
   return (
     <Provider store={store}>
@@ -49,23 +40,22 @@ export default function RootLayout() {
 
 function AppContent() {
   const colorScheme = useColorScheme();
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const currentRoute = pathname;
 
+    // Rotas que NÃO devem ser redirecionadas automaticamente
+    const allowedRoutes = ["/PostDetail"];
+
     if (isAuthenticated) {
-      if (!currentRoute.startsWith("/(tabs)")) {
-        console.log("Redirecting to (tabs)");
+      if (!currentRoute.startsWith("/(tabs)") && !allowedRoutes.includes(currentRoute)) {
         router.replace("/(tabs)");
       }
     } else {
-      if (!currentRoute.startsWith("/(auth)")) {
-        console.log("Redirecting to (auth)/login");
+      if (!currentRoute.startsWith("/(auth)/login")) {
         router.replace("/(auth)/login");
       }
     }
@@ -76,13 +66,7 @@ function AppContent() {
       <PaperProvider>
         <ConfirmModalProvider>
           <SnackbarProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(auth)" />
-
-              <Stack.Screen name="(tabs)" />
-
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            </Stack>
+            <Stack screenOptions={{ headerShown: false }} />
           </SnackbarProvider>
         </ConfirmModalProvider>
       </PaperProvider>

@@ -20,10 +20,8 @@ export type PostSearch = {
     search?: string | null;
     userId?: string | null;
     content?: string | null;
-    createdAt?: {
-        before?: Date | null;
-        after?: Date | null;
-    }
+    createdAtBefore?: string | null;
+    createdAtAfter?: string | null;
     offset?: string;
     limit?: string;
 }

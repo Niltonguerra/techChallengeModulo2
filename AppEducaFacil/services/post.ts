@@ -1,3 +1,4 @@
+import { store } from "@/store/store";
 import axios, { type AxiosInstance } from "axios";
 import Constants from "expo-constants";
 import type { FormPostData } from "../types/form-post";
@@ -7,7 +8,6 @@ import type {
   PostSearch,
   ResultApi,
 } from "../types/post";
-import { store } from "@/store/store";
 
 const API_URL = Constants.expoConfig!.extra!.apiUrl; // diz ao TypeScript “confie em mim, isso nunca será undefined
 let api: AxiosInstance | null = null;
@@ -63,7 +63,8 @@ export const fetchPosts = async (data: PostSearch): Promise<any> => {
     search,
     userId,
     content,
-    createdAt,
+    createdAtBefore,
+    createdAtAfter,
     offset,
     limit,
   } = data;
@@ -79,7 +80,8 @@ export const fetchPosts = async (data: PostSearch): Promise<any> => {
       ...params,
       userId: userId ?? null,
       content: content ?? null,
-      createdAt: createdAt ?? null,
+      createdAtBefore: createdAtBefore ?? null,
+      createdAtAfter: createdAtAfter ?? null,
     };
   }
 
