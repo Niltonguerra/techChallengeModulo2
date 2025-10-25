@@ -2,8 +2,8 @@ import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { LoginUsuarioInternoDTO } from '@modules/user/dtos/AuthUser.dto';
 import { UserPermissionEnum } from '../../../auth/Enum/permission.enum';
 import { FindOneUserReturnMessageDTO } from '../../dtos/returnMessageCRUD.dto';
-import { IUser } from '../../entities/interfaces/user.interface';
 import { UserStatusEnum } from '../../enum/status.enum';
+import { IUser } from '@modules/user/interfaces/user.interface';
 
 export const userMock: IUser = {
   id: '1',
@@ -47,7 +47,7 @@ export const loginUsuarioInternoMock: LoginUsuarioInternoDTO = {
   password: userMock.password,
   name: userMock.name,
   email: userMock.email,
-  permission: userMock.permission,
-  isActive: userMock.is_active,
+  permission: UserPermissionEnum.USER,
+  isActive: UserStatusEnum.ACTIVE,
   photo: userMock.photo,
 };

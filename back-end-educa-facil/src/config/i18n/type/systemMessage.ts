@@ -15,6 +15,8 @@ export type SystemMessageType = {
     isEnum: string;
   };
   ReturnMessage: {
+    successDeleteUser: string;
+    errorDeleteUser: string;
     existePostWithThisTitle: string;
     errorGetPostByField: string;
     sucessGetPostByField: string;
