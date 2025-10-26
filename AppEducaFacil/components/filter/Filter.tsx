@@ -11,7 +11,7 @@ import {
     useWindowDimensions,
 } from "react-native";
 import { ActivityIndicator, Button, IconButton, Menu, Searchbar } from "react-native-paper";
-import { getHashtags } from "../services/post";
+import { getHashtags } from "../../services/post";
 
 type FilterProps = {
     onFilter: (filters: {

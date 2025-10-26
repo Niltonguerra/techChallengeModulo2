@@ -14,6 +14,8 @@ import { loginUserService } from "@/services/user";
 import { loginSuccess } from "@/store/authSlice";
 import { AppDispatch } from "@/store/store";
 import { RequestUser, ResponseAuthUser } from "@/types/login";
+import CardPost from '../CardPost/CardPost';
+import CardUser from "../CardUser/CardUser";
 
 export default function LoginScreen() {
   const router = useRouter();
