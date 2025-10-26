@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
+import { UserReadController } from './userRead.controller';
 import { CreateUserUseCase } from '../usecases/createUser.usecase';
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
 import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
@@ -7,14 +7,7 @@ import { ListAllUsersUseCase } from '../usecases/listAllUsers.usecase';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
-import {
-  mockCreateUserDTO,
-  mockFindOneUserQuery,
-  mockFindOneUserReturn,
-  mockReturnMessageDTO,
-  mockReturnMessageDTOValid,
-  mockToken,
-} from './__mocks__/user.controller.mock';
+import { mockFindOneUserQuery, mockFindOneUserReturn } from './__mocks__/user.controller.mock';
 import { listAuthorsParamsDTO } from '../dtos/listAuthorsParams.dto';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 
@@ -26,7 +19,7 @@ const mockListAuthorsResult = {
 };
 
 describe('UserController', () => {
-  let controller: UserController;
+  let controller: UserReadController;
 
   const mockCreateUserUseCase = {
     validationEmailCreateUser: jest.fn(),
@@ -47,7 +40,7 @@ describe('UserController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
+      controllers: [UserReadController],
       providers: [
         { provide: CreateUserUseCase, useValue: mockCreateUserUseCase },
         { provide: FindOneUserUseCase, useValue: mockFindOneUserUseCase },
@@ -63,25 +56,11 @@ describe('UserController', () => {
       .useValue({ canActivate: jest.fn(() => true) })
       .compile();
 
-    controller = module.get<UserController>(UserController);
+    controller = module.get<UserReadController>(UserReadController);
   });
 
   it('deve ser definido', () => {
     expect(controller).toBeDefined();
-  });
-
-  it('deve criar usuário com sucesso', async () => {
-    mockCreateUserUseCase.validationEmailCreateUser.mockResolvedValue(mockReturnMessageDTO);
-    const result = await controller.createUser(mockCreateUserDTO);
-    expect(result).toBe(mockReturnMessageDTO);
-    expect(mockCreateUserUseCase.validationEmailCreateUser).toHaveBeenCalledWith(mockCreateUserDTO);
-  });
-
-  it('deve validar email com sucesso', async () => {
-    mockCreateUserUseCase.create.mockResolvedValue(mockReturnMessageDTOValid);
-    const result = await controller.validationEmail(mockToken);
-    expect(result).toBe(mockReturnMessageDTOValid);
-    expect(mockCreateUserUseCase.create).toHaveBeenCalledWith(mockToken);
   });
 
   it('deve buscar usuário com sucesso', async () => {
@@ -109,16 +88,6 @@ describe('UserController', () => {
   });
 
   // ---- TESTES DE ERRO ----
-
-  it('deve propagar erro ao criar usuário', async () => {
-    mockCreateUserUseCase.validationEmailCreateUser.mockRejectedValue(new Error('erro'));
-    await expect(controller.createUser(mockCreateUserDTO)).rejects.toThrow('erro');
-  });
-
-  it('deve propagar erro ao validar email', async () => {
-    mockCreateUserUseCase.create.mockRejectedValue(new Error('erro'));
-    await expect(controller.validationEmail(mockToken)).rejects.toThrow('erro');
-  });
 
   it('deve propagar erro ao buscar usuário', async () => {
     mockFindOneUserUseCase.findOneUserUseCase.mockRejectedValue(new Error('erro'));

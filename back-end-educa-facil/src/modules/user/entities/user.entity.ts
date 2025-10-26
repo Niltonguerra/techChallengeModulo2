@@ -9,12 +9,11 @@ import {
 } from 'typeorm';
 import { UserStatusEnum } from '../enum/status.enum';
 import { UserPermissionEnum } from '../../auth/Enum/permission.enum';
-import { IUser } from './interfaces/user.interface';
 
 @Entity({
   name: 'User',
 })
-export class User implements IUser {
+export class User {
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
   })

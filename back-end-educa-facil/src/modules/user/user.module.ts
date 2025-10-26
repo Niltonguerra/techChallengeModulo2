@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './service/user.service';
-import { UserController } from './controllers/user.controller';
+import { UserReadController } from './controllers/userRead.controller';
 import { CreateUserUseCase } from './usecases/createUser.usecase';
 import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,6 +12,8 @@ import { EmailModule } from '@modules/email/email.module';
 import { Post } from '@modules/post/entities/post.entity';
 import { listAuthorsUseCase } from './usecases/listAuthors.usecase';
 import { ListAllUsersUseCase } from './usecases/listAllUsers.usecase';
+import { UserDeleteService } from './service/userDelete.service';
+import { UserWriteController } from './controllers/UserWrite.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Post, User]), AuthModule, EmailModule],
@@ -22,8 +24,9 @@ import { ListAllUsersUseCase } from './usecases/listAllUsers.usecase';
     SignInUseCase,
     listAuthorsUseCase,
     ListAllUsersUseCase,
+    UserDeleteService,
   ],
-  controllers: [UserController, AuthController],
+  controllers: [UserReadController, AuthController, UserWriteController],
   exports: [UserService, ListAllUsersUseCase],
 })
 export class UserModule {}

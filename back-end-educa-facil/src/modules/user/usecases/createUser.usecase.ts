@@ -5,7 +5,7 @@ import { CreateUserDTO } from '../dtos/createUser.dto';
 import { EmailService } from '@modules/email/service/email.service';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { UserStatusEnum } from '../enum/status.enum';
-import { IUser } from '../entities/interfaces/user.interface';
+import { IUser } from '../interfaces/user.interface';
 
 @Injectable()
 export class CreateUserUseCase {
