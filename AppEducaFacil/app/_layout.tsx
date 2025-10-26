@@ -1,5 +1,9 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
 import React, { useEffect } from "react";
@@ -37,7 +41,9 @@ export default function RootLayout() {
 }
 
 function AppContent() {
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
   const router = useRouter();
   const pathname = usePathname();
 
@@ -48,7 +54,10 @@ function AppContent() {
     const allowedRoutes = ["/PostDetail"];
 
     if (isAuthenticated) {
-      if (!currentRoute.startsWith("/(tabs)") && !allowedRoutes.includes(currentRoute)) {
+      if (
+        !currentRoute.startsWith("/(tabs)") &&
+        !allowedRoutes.includes(currentRoute)
+      ) {
         router.replace("/(tabs)");
       }
     } else {
@@ -59,12 +68,12 @@ function AppContent() {
   }, [isAuthenticated, pathname, router]);
 
   return (
-      <PaperProvider>
-        <ConfirmModalProvider>
-          <SnackbarProvider>
-            <Stack screenOptions={{ headerShown: false }} />
-          </SnackbarProvider>
-        </ConfirmModalProvider>
-      </PaperProvider>
+    <PaperProvider>
+      <ConfirmModalProvider>
+        <SnackbarProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </SnackbarProvider>
+      </ConfirmModalProvider>
+    </PaperProvider>
   );
 }
