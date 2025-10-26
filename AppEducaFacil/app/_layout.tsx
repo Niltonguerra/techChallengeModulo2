@@ -10,8 +10,6 @@ import React, { useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { Provider, useSelector } from "react-redux";
-
-import { useColorScheme } from "@/components/useColorScheme";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
 import { RootState, store } from "@/store/store";
@@ -43,7 +41,6 @@ export default function RootLayout() {
 }
 
 function AppContent() {
-  const colorScheme = useColorScheme();
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
@@ -71,14 +68,12 @@ function AppContent() {
   }, [isAuthenticated, pathname, router]);
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <PaperProvider>
-        <ConfirmModalProvider>
-          <SnackbarProvider>
-            <Stack screenOptions={{ headerShown: false }} />
-          </SnackbarProvider>
-        </ConfirmModalProvider>
-      </PaperProvider>
-    </ThemeProvider>
+    <PaperProvider>
+      <ConfirmModalProvider>
+        <SnackbarProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </SnackbarProvider>
+      </ConfirmModalProvider>
+    </PaperProvider>
   );
 }

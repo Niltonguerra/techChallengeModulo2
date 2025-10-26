@@ -9,7 +9,7 @@ import type {
   ResultApi,
 } from "../types/post";
 
-const API_URL = Constants.expoConfig!.extra!.apiUrl; // diz ao TypeScript “confie em mim, isso nunca será undefined
+const API_URL = Constants.expoConfig!.extra!.apiUrl; 
 let api: AxiosInstance | null = null;
 
 export function getApi(): AxiosInstance {
