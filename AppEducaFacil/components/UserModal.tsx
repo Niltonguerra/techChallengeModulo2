@@ -21,12 +21,12 @@ interface UserModalProps {
 }
 
 type AppRoutes =
-  | "/(tabs)/editar-dados"
-  | "/(tabs)/info-pessoal"
-  | "/(tabs)/admin-professor"
-  | "/(tabs)/admin-aluno"
-  | "/(tabs)/admin-postagens"
-  | "/(tabs)/cadastro-professor"
+  | "/(tabs)/edit-user-data"
+  | "/(tabs)/persona-info"
+  | "/(tabs)/admin-teacher"
+  | "/(tabs)/admin-student"
+  | "/(tabs)/admin-posts"
+  | "/(tabs)/register-teacher"
   | "/(auth)/login";
 
 export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
@@ -36,32 +36,33 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
 
   if (!user) return null;
 
-  const alunoLinks = [
-    { label: "Editar Dados", path: "/(tabs)/editar-dados" as const },
-    { label: "Informações Pessoais", path: "/(tabs)/info-pessoal" as const },
+  const userLinks = [
+    { label: "Editar Dados", path: "/(tabs)/edit-user-data" as const },
+    { label: "Informações Pessoais", path: "/(tabs)/persona-info" as const },
   ];
 
-  const professorLinks = [
+  const adminLinks = [
     {
       label: "Administrador de Professor",
-      path: "/(tabs)/admin-professor" as const,
+      path: "/(tabs)/admin-teacher" as const,
     },
-    { label: "Administrador de Aluno", path: "/(tabs)/admin-aluno" as const },
-    { label: "Edição de Postagens", path: "/(tabs)/admin-postagens" as const },
-    { label: "Editar Dados", path: "/(tabs)/editar-dados" as const },
-    { label: "Informações Pessoais", path: "/(tabs)/info-pessoal" as const },
+    { label: "Administrador de Aluno", path: "/(tabs)/admin-student" as const },
     {
       label: "Cadastrar Professor",
-      path: "/(tabs)/cadastro-professor" as const,
+      path: "/(tabs)/register-teacher" as const,
     },
+    { label: "Edição de Postagens", path: "/(tabs)/admin-posts" as const },
+    { label: "Editar Dados", path: "/(tabs)/edit-user-data" as const },
+
+    { label: "Informações Pessoais", path: "/(tabs)/persona-info" as const },
   ];
 
   const links =
-    user.permission === UserPermissionEnum.ADMIN ? professorLinks : alunoLinks;
+    user.permission === UserPermissionEnum.ADMIN ? adminLinks : userLinks;
 
   const handleNavigate = (path: AppRoutes) => {
     onClose();
-    router.push(path as any);
+    router.push(path);
   };
 
   const handleLogout = () => {
@@ -129,12 +130,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: styleGuide.light.background,
     width: "85%",
     borderRadius: 20,
     alignItems: "center",
     padding: 20,
-    shadowColor: "#000",
+    shadowColor: styleGuide.dark.background,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
   optionButton: {
     paddingVertical: 14,
     borderTopWidth: 1,
-    borderColor: "#eee",
+    borderColor: styleGuide.palette.main.fourthColor,
     width: "100%",
     alignItems: "center",
   },
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
     color: styleGuide.palette.main.textPrimaryColor,
   },
   logoutButton: {
-    borderColor: "#eee",
+    borderColor: styleGuide.palette.main.fourthColor,
     borderTopWidth: 1,
   },
   closeButton: {
