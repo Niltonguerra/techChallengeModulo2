@@ -79,3 +79,12 @@ export const mockFindOneUserReturn: FindOneUserReturnMessageDTO = {
     email: 'test@email.com',
   },
 };
+
+export const mockUpdateUserDTO = {
+  id: '1',
+  name: 'Updated Test',
+  photo: 'updated_photo.png',
+  email: 'updated_test@email.com',
+  permission: UserPermissionEnum.USER,
+  is_active: true,
+};

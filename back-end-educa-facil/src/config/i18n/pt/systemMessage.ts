@@ -18,6 +18,8 @@ export const systemMessage: SystemMessageType = {
       'O campo $property deve ser um dos seguintes valores: id,name,email,permission,is_active,created_at,updated_at,social_midia.',
   },
   ReturnMessage: {
+    successDeleteUser: 'Usuário deletado com sucesso',
+    errorDeleteUser: 'Erro ao deletar o usuário',
     existePostWithThisTitle: 'Já existe um post com este título.',
     errorGetPostByField: 'Erro ao encontrar o post pelo campo.',
     sucessGetPostByField: 'Post encontrado com sucesso pelo campo.',
@@ -43,7 +45,7 @@ export const systemMessage: SystemMessageType = {
     errorGetPosts: 'Erro ao encontrar os posts',
     sucessGetPostById: 'Post encontrado com sucesso pelo ID',
     errorGetPostById: 'Erro ao encontrar o post pelo ID',
-    errorUserNotFound: 'Usuário não encontrado',
+    errorUserNotFound: 'Usuário não encontrado no banco de dados',
     errorSendEmail: 'Erro ao enviar o e-mail',
     sucessCreateUserValidationEmail:
       'Usuário criado com sucesso. Verifique seu e-mail para ativar sua conta.',
