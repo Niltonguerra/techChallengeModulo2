@@ -1,9 +1,17 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons"; // Ícones para as setas indicativas
-import DateTimePicker from "@react-native-community/datetimepicker"; // Componente de seleção de data
+import styleGuide from "@/constants/styleGuide";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, ScrollView, View, useWindowDimensions } from "react-native"; // Componentes e hooks do RN
-import { ActivityIndicator, Button, IconButton, Menu, Searchbar } from "react-native-paper"; // Componentes de UI
-import { getHashtags } from "../services/post"; // Função para buscar categorias (hashtags)
+import {
+    Animated,
+    ScrollView,
+    StyleSheet,
+    TouchableOpacity,
+    View,
+    useWindowDimensions,
+} from "react-native";
+import { ActivityIndicator, Button, IconButton, Menu, Searchbar } from "react-native-paper";
+import { getHashtags } from "../services/post";
 
 type FilterProps = {
     onFilter: (filters: {
@@ -11,36 +19,33 @@ type FilterProps = {
         content?: string;
         createdAtAfter?: string;
         createdAtBefore?: string;
-    }) => void; // Função que retorna os filtros aplicados
+    }) => void;
 };
 
 export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
-    // Estados de filtros
-    const [search, setSearch] = useState(""); // Texto da barra de busca
-    const [content, setContent] = useState(""); // Categoria selecionada
-    const [dates, setDates] = useState<{ after?: Date; before?: Date }>({}); // Datas "De" e "Até"
-    const [activePicker, setActivePicker] = useState<"after" | "before" | "menu" | null>(null); // Controle do menu ou DatePicker
-    const [hashtags, setHashtags] = useState<string[]>([]); // Lista de categorias
-    const [loading, setLoading] = useState(true); // Indicador de carregamento
-    const { width } = useWindowDimensions(); // Largura da tela
+    const [search, setSearch] = useState("");
+    const [content, setContent] = useState("");
+    const [dates, setDates] = useState<{ after?: Date; before?: Date }>({});
+    const [activePicker, setActivePicker] = useState<"after" | "before" | "menu" | null>(null);
+    const [hashtags, setHashtags] = useState<string[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    // Estados e animações para setas indicativas do scroll
+    const { width } = useWindowDimensions();
+    const scrollRef = useRef<ScrollView>(null);
+    const scrollOffset = useRef(0);
+
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(false);
-    const leftOpacity = useRef(new Animated.Value(0)).current; // Opacidade animada da seta esquerda
-    const rightOpacity = useRef(new Animated.Value(0)).current; // Opacidade animada da seta direita
-    const scrollRef = useRef<ScrollView>(null); // Referência para o scroll horizontal
+    const leftOpacity = useRef(new Animated.Value(0)).current;
+    const rightOpacity = useRef(new Animated.Value(0)).current;
 
-    // Carregar hashtags/categorias
     useEffect(() => {
         getHashtags().then(data => setHashtags(data || [])).finally(() => setLoading(false));
     }, []);
 
-    // Formatar datas para enviar ao filtro
     const formatDate = (date?: Date) =>
         date ? new Date(date.setHours(0, 0, 0, 0)).toISOString() : undefined;
 
-    // Disparar o filtro sempre que algum estado mudar
     useEffect(() => {
         onFilter({
             search,
@@ -50,22 +55,18 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
         });
     }, [search, content, dates]);
 
-    // Limpar filtros
     const handleClear = () => {
-        setSearch(""); // Limpa busca
-        setContent(""); // Limpa categoria
-        setDates({}); // Limpa datas
-
-        scrollRef.current?.scrollTo({ x: 0, animated: true }); // Reseta scroll para o início
-
-        // Esconde setas imediatamente
+        setSearch("");
+        setContent("");
+        setDates({});
+        scrollRef.current?.scrollTo({ x: 0, animated: true });
+        scrollOffset.current = 0;
         setShowLeftArrow(false);
         setShowRightArrow(false);
         leftOpacity.setValue(0);
         rightOpacity.setValue(0);
     };
 
-    // Função para animar entrada/saída das setas
     const toggleArrow = (arrow: "left" | "right", visible: boolean) => {
         const target = arrow === "left" ? leftOpacity : rightOpacity;
         Animated.timing(target, {
@@ -75,54 +76,62 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
         }).start();
     };
 
+    const handleScrollLeft = () => {
+        scrollRef.current?.scrollTo({
+            x: Math.max(0, scrollOffset.current - width / 2),
+            animated: true,
+        });
+    };
+
+    const handleScrollRight = () => {
+        scrollRef.current?.scrollTo({
+            x: scrollOffset.current + width / 2,
+            animated: true,
+        });
+    };
+
     return (
-        <View style={{ marginBottom: 8, width: "100%" }}>
+        <View style={styles.container}>
             {/* Barra de busca */}
             <Searchbar
                 placeholder="Buscar título ou descrição"
+                placeholderTextColor={styleGuide.palette.main.textSecondaryColor}
                 value={search}
                 onChangeText={setSearch}
-                style={{
-                    height: 38,
-                    justifyContent: "center",
-                    width: "100%",
-                    borderRadius: 8,
-                }}
-                inputStyle={{
-                    height: 38,
-                    textAlignVertical: "center",
-                    paddingVertical: 0,
-                    fontSize: 13,
-                }}
+                style={styles.searchbar}
+                inputStyle={styles.searchbarInput}
+                iconColor={styleGuide.palette.main.primaryColor}
             />
 
-            {/* Container do scroll horizontal */}
-            <View style={{ position: "relative", marginTop: 2 }}>
+            {/* Scroll horizontal */}
+            <View style={styles.scrollContainer}>
                 <ScrollView
-                    ref={scrollRef} // Referência para resetar scroll
+                    ref={scrollRef}
                     horizontal
-                    showsHorizontalScrollIndicator={false} // Oculta scroll padrão
-                    contentContainerStyle={{ alignItems: "center", paddingHorizontal: 10 }}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.scrollContent}
                     onContentSizeChange={(contentWidth) => {
-                        // Verifica se precisa mostrar seta direita inicialmente
                         const hasScroll = contentWidth > width;
                         setShowRightArrow(hasScroll);
                         toggleArrow("right", hasScroll);
                     }}
                     onScroll={({ nativeEvent }) => {
-                        // Atualiza visibilidade das setas conforme posição do scroll
                         const { contentOffset, layoutMeasurement, contentSize } = nativeEvent;
+                        scrollOffset.current = contentOffset.x;
+
                         const leftVisible = contentOffset.x > 5;
-                        const rightVisible = contentOffset.x + layoutMeasurement.width < contentSize.width - 5;
+                        const rightVisible =
+                            contentOffset.x + layoutMeasurement.width < contentSize.width - 5;
+
                         setShowLeftArrow(leftVisible);
                         setShowRightArrow(rightVisible);
                         toggleArrow("left", leftVisible);
                         toggleArrow("right", rightVisible);
                     }}
-                    scrollEventThrottle={16} // Frequência de atualização do scroll
+                    scrollEventThrottle={16}
                 >
                     {/* Categoria */}
-                    <View style={{ flexGrow: 1, flexBasis: 120, marginRight: 6 }}>
+                    <View style={styles.categoryContainer}>
                         {loading ? (
                             <ActivityIndicator size="small" />
                         ) : (
@@ -133,13 +142,9 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                                     <Button
                                         mode="outlined"
                                         onPress={() => setActivePicker("menu")}
-                                        style={{
-                                            height: 38,
-                                            justifyContent: "center",
-                                            borderRadius: 6,
-                                        }}
-                                        contentStyle={{ height: 38, paddingVertical: 0 }}
-                                        labelStyle={{ fontSize: 13 }}
+                                        style={styles.button}
+                                        contentStyle={styles.buttonContent}
+                                        labelStyle={styles.buttonLabel}
                                         icon="shape-outline"
                                     >
                                         {content ? content : "Categoria"}
@@ -154,103 +159,61 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                         )}
                     </View>
 
-                    {/* Botão Data "De" */}
+                    {/* Botões de datas */}
                     <Button
                         mode="outlined"
                         onPress={() => setActivePicker("after")}
-                        style={{
-                            height: 38,
-                            justifyContent: "center",
-                            borderRadius: 6,
-                            marginRight: 6,
-                        }}
-                        contentStyle={{ height: 38, paddingVertical: 0 }}
-                        labelStyle={{ fontSize: 13 }}
+                        style={styles.button}
+                        contentStyle={styles.buttonContent}
+                        labelStyle={styles.buttonLabel}
                         icon="calendar-range"
                     >
                         {dates.after ? dates.after.toLocaleDateString() : "De"}
                     </Button>
 
-                    {/* Botão Data "Até" */}
                     <Button
                         mode="outlined"
                         onPress={() => setActivePicker("before")}
-                        style={{
-                            height: 38,
-                            justifyContent: "center",
-                            borderRadius: 6,
-                            marginRight: 6,
-                        }}
-                        contentStyle={{ height: 38, paddingVertical: 0 }}
-                        labelStyle={{ fontSize: 13 }}
+                        style={styles.button}
+                        contentStyle={styles.buttonContent}
+                        labelStyle={styles.buttonLabel}
                         icon="calendar"
                     >
                         {dates.before ? dates.before.toLocaleDateString() : "Até"}
                     </Button>
 
-                    {/* Botão Limpar */}
+                    {/* Botão limpar */}
                     <IconButton
                         icon="close-circle-outline"
-                        size={18}
-                        onPress={handleClear} // Reseta filtros e scroll
-                        style={{
-                            height: 34,
-                            width: 34,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
+                        size={33}
+                        onPress={handleClear}
+                        iconColor={styleGuide.palette.main.primaryColor}
+                        style={styles.clearButton}
                     />
                 </ScrollView>
 
-                {/* Setas indicativas esquerda */}
+                {/* Setas */}
                 {showLeftArrow && (
-                    <Animated.View
-                        style={{
-                            opacity: leftOpacity,
-                            position: "absolute",
-                            left: 2,
-                            top: 0,
-                            bottom: 0,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: "rgba(255,255,255,0.8)",
-                            borderRadius: 20,
-                            width: 24,
-                            height: 24,
-                            alignSelf: "center",
-                            shadowColor: "#000",
-                            shadowOpacity: 0.1,
-                            shadowRadius: 3,
-                            shadowOffset: { width: 1, height: 1 },
-                        }}
-                    >
-                        <MaterialCommunityIcons name="chevron-left" size={20} color="#444" />
+                    <Animated.View style={[styles.arrowContainer, { left: 4, opacity: leftOpacity }]}>
+                        <TouchableOpacity onPress={handleScrollLeft} activeOpacity={0.7} style={styles.arrowTouchable}>
+                            <MaterialCommunityIcons
+                                name="chevron-left"
+                                size={24}
+                                color={styleGuide.palette.main.fourthColor}
+                            />
+                        </TouchableOpacity>
                     </Animated.View>
                 )}
 
-                {/* Setas indicativas direita */}
                 {showRightArrow && (
-                    <Animated.View
-                        style={{
-                            opacity: rightOpacity,
-                            position: "absolute",
-                            right: 2,
-                            top: 0,
-                            bottom: 0,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: "rgba(255,255,255,0.8)",
-                            borderRadius: 20,
-                            width: 24,
-                            height: 24,
-                            alignSelf: "center",
-                            shadowColor: "#000",
-                            shadowOpacity: 0.1,
-                            shadowRadius: 3,
-                            shadowOffset: { width: 1, height: 1 },
-                        }}
-                    >
-                        <MaterialCommunityIcons name="chevron-right" size={20} color="#444" />
+                    <Animated.View style={[styles.arrowContainer, { right: 4, opacity: rightOpacity }]}>
+                        <TouchableOpacity onPress={handleScrollRight} activeOpacity={0.7} style={styles.arrowTouchable}>
+                            <MaterialCommunityIcons
+                                name="chevron-right"
+                                size={24}
+                                color={styleGuide.palette.main.fourthColor}
+                            />
+                        </TouchableOpacity>
                     </Animated.View>
                 )}
             </View>
@@ -263,11 +226,62 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                     display="default"
                     onChange={(_, d) => {
                         if (d) setDates(prev => ({ ...prev, [activePicker]: d }));
-                        setActivePicker(null); // Fecha picker após seleção
+                        setActivePicker(null);
                     }}
-                    style={{ height: 0 }} // Esconde o componente na tela
+                    style={{ height: 0 }}
                 />
             )}
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: { marginBottom: 8, width: "100%" },
+    searchbar: {
+        width: "100%",
+        borderWidth: 1,
+        borderColor: styleGuide.palette.main.primaryColor,
+        borderRadius: 8,
+        backgroundColor: "transparent",
+        paddingHorizontal: 8,
+        justifyContent: "center",
+        elevation: 0,
+    },
+    searchbarInput: {
+        fontSize: 13,
+        color: styleGuide.palette.main.textPrimaryColor,
+        paddingVertical: 6,
+        textAlignVertical: "center",
+    },
+    scrollContainer: { position: "relative", marginTop: 2 },
+    scrollContent: { alignItems: "center", paddingHorizontal: 1 },
+    categoryContainer: { flexGrow: 1, flexBasis: 120, marginRight: 1 },
+    button: {
+        height: 38,
+        justifyContent: "center",
+        borderRadius: 4,
+        marginRight: 4,
+        borderColor: styleGuide.palette.main.primaryColor,
+    },
+    buttonContent: { height: 38, paddingVertical: 0 },
+    buttonLabel: { fontSize: 13, color: styleGuide.palette.main.primaryColor },
+    clearButton: { height: 34, width: 34, justifyContent: "center", alignItems: "center" },
+    arrowContainer: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    arrowTouchable: {
+        backgroundColor: styleGuide.palette.main.primaryColor,
+        borderRadius: 20,
+        padding: 6,
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: styleGuide.palette.main.thirdColor,
+        shadowOpacity: 0.15,
+        shadowRadius: 3,
+        shadowOffset: { width: 1, height: 1 },
+    },
+});
