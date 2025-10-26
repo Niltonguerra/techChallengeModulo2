@@ -12,7 +12,6 @@ import {
   mockToken,
   mockUpdateUserDTO,
 } from './__mocks__/user.controller.mock';
-import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 
@@ -131,6 +130,7 @@ describe('UserWriteController', () => {
       try {
         await controller.deleteUser('test-id');
       } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(error.message).toBe(systemMessage.ReturnMessage.errorDeleteUser);
       }
     });

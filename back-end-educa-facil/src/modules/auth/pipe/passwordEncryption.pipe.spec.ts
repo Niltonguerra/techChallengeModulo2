@@ -22,7 +22,9 @@ describe('HashPasswordPipe', () => {
       metatype: Object,
       data: 'password',
     };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await pipe.transform(value, metadata);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(result.password).toBe('hashed-password');
     expect(bcrypt.hash).toHaveBeenCalledWith('senha123', 10);
   });
@@ -47,6 +49,7 @@ describe('HashPasswordPipe', () => {
       data: 'password',
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await pipe.transform(value, metadata);
     expect(result).toEqual({});
     expect(bcrypt.hash).not.toHaveBeenCalled();
@@ -116,6 +119,7 @@ describe('HashPasswordPipe', () => {
       metatype: Object,
       data: 'password',
     };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await pipe.transform(value, metadata);
     expect(result).toEqual(value);
     expect(bcrypt.hash).not.toHaveBeenCalled();
