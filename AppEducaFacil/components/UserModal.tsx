@@ -6,82 +6,117 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  SafeAreaView,
+  ScrollView,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "expo-router";
 import { RootState } from "@/store/store";
 import { logout } from "@/store/authSlice";
 import styleGuide from "@/constants/styleGuide";
+import { UserPermissionEnum } from "@/types/userPermissionEnum";
 
 interface UserModalProps {
   visible: boolean;
   onClose: () => void;
 }
 
+type AppRoutes =
+  | "/(tabs)/editar-dados"
+  | "/(tabs)/info-pessoal"
+  | "/(tabs)/admin-professor"
+  | "/(tabs)/admin-aluno"
+  | "/(tabs)/admin-postagens"
+  | "/(tabs)/cadastro-professor"
+  | "/(auth)/login";
+
 export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
-  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
   const router = useRouter();
-
-  const handleLogout = () => {
-    onClose();
-    dispatch(logout());
-    router.replace("/(auth)/login");
-  };
+  const user = useSelector((state: RootState) => state.auth.user);
 
   if (!user) return null;
 
+  const alunoLinks = [
+    { label: "Editar Dados", path: "/(tabs)/editar-dados" as const },
+    { label: "Informações Pessoais", path: "/(tabs)/info-pessoal" as const },
+  ];
+
+  const professorLinks = [
+    {
+      label: "Administrador de Professor",
+      path: "/(tabs)/admin-professor" as const,
+    },
+    { label: "Administrador de Aluno", path: "/(tabs)/admin-aluno" as const },
+    { label: "Edição de Postagens", path: "/(tabs)/admin-postagens" as const },
+    { label: "Editar Dados", path: "/(tabs)/editar-dados" as const },
+    { label: "Informações Pessoais", path: "/(tabs)/info-pessoal" as const },
+    {
+      label: "Cadastrar Professor",
+      path: "/(tabs)/cadastro-professor" as const,
+    },
+  ];
+
+  const links =
+    user.permission === UserPermissionEnum.ADMIN ? professorLinks : alunoLinks;
+
+  const handleNavigate = (path: AppRoutes) => {
+    onClose();
+    router.push(path as any);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    onClose();
+    router.replace("/(auth)/login");
+  };
+
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <TouchableOpacity
-        style={styles.overlay}
-        activeOpacity={1}
-        onPressOut={onClose}
-      >
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.container} onStartShouldSetResponder={() => true}>
-            <Image
-              source={{
-                uri:
-                  user.photo ||
-                  "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-              }}
-              style={styles.avatar}
-            />
-            <Text style={styles.name}>{user.name}</Text>
-            {user.email && <Text style={styles.email}>{user.email}</Text>}
+    <Modal animationType="fade" transparent visible={visible}>
+      <View style={styles.overlay}>
+        <View style={styles.modalContainer}>
+          <Image
+            source={{
+              uri:
+                user.photo ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+            }}
+            style={styles.avatar}
+          />
 
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Editar Perfil</Text>
-            </TouchableOpacity>
+          <Text style={styles.name}>{user.name}</Text>
+          {user.email && <Text style={styles.email}>{user.email}</Text>}
 
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Configurações</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.optionButton, styles.logoutButton]}
-              onPress={handleLogout}
-            >
-              <Text
-                style={[styles.optionText, { color: styleGuide.palette.error }]}
+          <ScrollView
+            style={{ width: "100%", marginTop: 10 }}
+            contentContainerStyle={{ alignItems: "center" }}
+          >
+            {links.map((link, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.optionButton}
+                onPress={() => handleNavigate(link.path)}
               >
-                Sair
-              </Text>
-            </TouchableOpacity>
+                <Text style={styles.optionText}>{link.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
 
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeText}>Fechar</Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.optionButton, styles.logoutButton]}
+            onPress={handleLogout}
+          >
+            <Text
+              style={[styles.optionText, { color: styleGuide.palette.error }]}
+            >
+              Sair
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Text style={styles.closeText}>Fechar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </Modal>
   );
 };
@@ -93,11 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  safeArea: {
-    width: "100%",
-    alignItems: "center",
-  },
-  container: {
+  modalContainer: {
     backgroundColor: "#fff",
     width: "85%",
     borderRadius: 20,
@@ -108,6 +139,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    maxHeight: "80%",
   },
   avatar: {
     width: 90,
@@ -123,10 +155,10 @@ const styles = StyleSheet.create({
   email: {
     fontSize: 14,
     color: styleGuide.palette.main.textSecondaryColor,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   optionButton: {
-    paddingVertical: 15,
+    paddingVertical: 14,
     borderTopWidth: 1,
     borderColor: "#eee",
     width: "100%",
@@ -137,10 +169,11 @@ const styles = StyleSheet.create({
     color: styleGuide.palette.main.textPrimaryColor,
   },
   logoutButton: {
-    borderColor: "#eee", // Borda sutil
+    borderColor: "#eee",
+    borderTopWidth: 1,
   },
   closeButton: {
-    marginTop: 15,
+    marginTop: 10,
   },
   closeText: {
     color: styleGuide.palette.main.primaryColor,
