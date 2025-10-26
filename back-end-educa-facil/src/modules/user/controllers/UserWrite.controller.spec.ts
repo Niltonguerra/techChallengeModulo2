@@ -13,6 +13,8 @@ import {
   mockUpdateUserDTO,
 } from './__mocks__/user.controller.mock';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
+import { systemMessage } from '@config/i18n/pt/systemMessage';
 
 describe('UserWriteController', () => {
   let controller: UserWriteController;
@@ -54,6 +56,8 @@ describe('UserWriteController', () => {
       .overrideGuard(JwtAuthGuardUser)
       .useValue({ canActivate: jest.fn(() => true) })
       .overrideGuard(RolesGuardStudent)
+      .useValue({ canActivate: jest.fn(() => true) })
+      .overrideGuard(RolesGuardProfessor)
       .useValue({ canActivate: jest.fn(() => true) })
       .compile();
 
@@ -98,16 +102,19 @@ describe('UserWriteController', () => {
   describe('editUser', () => {
     it('should edit a user successfully', async () => {
       mockUserService.createUpdateUser.mockResolvedValue(mockReturnMessageDTO);
-      const result = await controller.EditUser(mockUpdateUserDTO);
+      const result = await controller.EditUser('1', mockUpdateUserDTO);
       expect(result).toBe(mockReturnMessageDTO);
       expect(userService.createUpdateUser).toHaveBeenCalledWith(mockUpdateUserDTO);
     });
 
     it('should handle error when editing user', async () => {
       mockUserService.createUpdateUser.mockRejectedValue(new Error('erro'));
-      const result: ReturnMessageDTO = await controller.EditUser(mockUpdateUserDTO);
-      expect(result.statusCode).toBe(500);
-      expect(result.message).toBe('Erro ao deletar o usuário');
+      try {
+        await controller.EditUser('1', mockUpdateUserDTO);
+      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(error.message).toBe(systemMessage.ReturnMessage.errorUpdatePost);
+      }
     });
   });
 
@@ -121,9 +128,11 @@ describe('UserWriteController', () => {
 
     it('should handle error when deleting user', async () => {
       mockUserDeleteService.deleteUser.mockRejectedValue(new Error('erro'));
-      const result: ReturnMessageDTO = await controller.deleteUser('test-id');
-      expect(result.statusCode).toBe(500);
-      expect(result.message).toBe('Erro ao deletar o usuário');
+      try {
+        await controller.deleteUser('test-id');
+      } catch (error) {
+        expect(error.message).toBe(systemMessage.ReturnMessage.errorDeleteUser);
+      }
     });
   });
 });

@@ -45,7 +45,7 @@ export const systemMessage: SystemMessageType = {
     errorGetPosts: 'Erro ao encontrar os posts',
     sucessGetPostById: 'Post encontrado com sucesso pelo ID',
     errorGetPostById: 'Erro ao encontrar o post pelo ID',
-    errorUserNotFound: 'Usuário não encontrado',
+    errorUserNotFound: 'Usuário não encontrado no banco de dados',
     errorSendEmail: 'Erro ao enviar o e-mail',
     sucessCreateUserValidationEmail:
       'Usuário criado com sucesso. Verifique seu e-mail para ativar sua conta.',
