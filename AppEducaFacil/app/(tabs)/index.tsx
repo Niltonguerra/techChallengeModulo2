@@ -1,10 +1,10 @@
-import CardPost from "@/components/CardPost/CardPost";
+import CardPost from "../../components/CardPost/CardPost";
 import styleGuide from "@/constants/styleGuide";
 import { Post } from "@/types/post";
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TextStyle, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
-import { Filter } from "../../components/Filter";
+import { Filter } from "../../components/filter/Filter";
 import { fetchPosts } from "../../services/post";
 
 export default function TabOneScreen() {

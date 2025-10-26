@@ -3,12 +3,10 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, useSegments } from "expo-router";
 import { useSelector } from "react-redux";
 import { View, Image, StyleSheet, Platform, Text } from "react-native";
-
 import styleGuide from "@/constants/styleGuide";
-import { useColorScheme } from "@/components/useColorScheme";
 import { RootState } from "@/store/store";
 import Header from "@/components/header/header";
-import { UserModal } from "@/components/UserModal";
+import { UserModal } from "@/components/userModal/UserModal";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
@@ -40,7 +38,6 @@ function extractActiveScreen(segments: string[]): string {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const [modalVisible, setModalVisible] = useState(false);

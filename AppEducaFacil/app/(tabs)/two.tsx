@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { useRouter, useFocusEffect } from "expo-router";
-import { UserModal } from "@/components/UserModal";
+import { UserModal } from "@/components/userModal/UserModal";
 import styleGuide from "@/constants/styleGuide";
 
 export default function TabTwoScreen() {

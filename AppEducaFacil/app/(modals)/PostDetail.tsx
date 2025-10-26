@@ -1,10 +1,9 @@
-import { View } from "@/components/Themed";
 import styleGuide from "@/constants/styleGuide";
 import { getListById } from "@/services/post";
 import { Post } from "@/types/post";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Linking, ScrollView, StyleSheet, TextStyle } from "react-native";
+import { Linking, ScrollView, StyleSheet, TextStyle, View } from "react-native";
 import { ActivityIndicator, Avatar, Button, Card, Divider, IconButton, Text } from "react-native-paper";
 
 export default function PostDetail() {

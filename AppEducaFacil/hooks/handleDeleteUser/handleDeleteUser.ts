@@ -1,7 +1,6 @@
-// useDeletePost.ts
 import { useConfirm } from '@/hooks/modalConfirm/ConfirmModal';
 import { useSnackbar } from '@/hooks/snackbar/snackbar';
-import { deletePost } from '@/services/post';
+import { deleteUser } from '@/services/user';
 
 export function useDeleteUser() {
   const { confirm } = useConfirm();
@@ -16,7 +15,7 @@ export function useDeleteUser() {
 
     if (ok) {
       try {
-        // await deleteUser(id);
+        await deleteUser(id);
         showSnackbar({ message: 'Usuário deletado com sucesso!', duration: 3000 });
       } catch {
         showSnackbar({ message: 'Erro ao deletar o usuário!', duration: 3000 });
