@@ -31,3 +31,12 @@ export const getAuthors = async () => {
   const response = await api.get("post/hashtags");
   return response.data;
 };
+
+export const getAllUsers = async (token: string, permission?: 'user' | 'professor') => {
+  const api = getApi();
+  const response = await api.get('user/list-all', {
+    headers: { Authorization: `Bearer ${token}` },
+    params: permission ? { permission } : {},
+  });
+  return response.data; // Partial<User>[]
+};

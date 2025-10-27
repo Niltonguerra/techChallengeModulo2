@@ -1,19 +1,19 @@
-import React from 'react';
+import React from "react";
 // import { ScrollView, FlatList,StyleSheet } from 'react-native';
 // import { ExternalLink } from './ExternalLink';
 // import { MonoText } from './StyledText';
 // import { Text, View } from './Themed';
-import { View } from './Themed';
+import { View } from "./Themed";
 // import Colors from '@/constants/Colors';
 // import CardUser from './CardUser';
 // import CardPost from './CardPost';
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const dados = [
-    { id: '1', nome: 'Item 1' },
-    { id: '2', nome: 'Item 2' },
-    { id: '3', nome: 'Item 3' },
-    { id: '4', nome: 'Item 4' },
+    { id: "1", nome: "Item 1" },
+    { id: "2", nome: "Item 2" },
+    { id: "3", nome: "Item 3" },
+    { id: "4", nome: "Item 4" },
     // Adicione mais itens
   ];
   return (

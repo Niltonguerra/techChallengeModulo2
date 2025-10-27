@@ -1,48 +1,105 @@
-import styleGuide from '@/constants/styleGuide';
-import { useDeletePost } from '@/hooks/handleDeletePost/handleDeletePost';
-import { CardPostProps } from '@/types/cards';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
-import * as React from 'react';
-import { Pressable, StyleSheet, TextStyle, View } from 'react-native';
-import { Button, Card, Text } from 'react-native-paper';
+import styleGuide from "@/constants/styleGuide";
+import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
+import { CardPostProps } from "@/types/cards";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Link, useRouter } from "expo-router";
+import React from "react";
+import { Alert, Pressable, StyleSheet, TextStyle, View } from "react-native";
+import { Button, Card, Text } from "react-native-paper";
 
 const CardPost = (dataCard: CardPostProps) => {
+  const router = useRouter();
   const { handleDeletePost } = useDeletePost();
+
+  // função de exclusão com confirmação
+  const onDeletePress = async () => {
+    Alert.alert(
+      "Confirmar exclusão",
+      "Tem certeza que deseja excluir esta postagem?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await handleDeletePost(dataCard.dataProperties.id);
+              Alert.alert("Sucesso", "Postagem deletada com sucesso!");
+            } catch (error) {
+              Alert.alert("Erro", "Não foi possível excluir o post.");
+              console.error(error);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <Card style={styles.card} mode="elevated" elevation={2}>
-      <Link href="/modal" asChild>
+      {/* Imagem de capa */}
+      <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
+
+      {/* Conteúdo clicável que leva aos detalhes */}
+      <Link href={`/modal?id=${dataCard.dataProperties.id}`} asChild>
         <Pressable accessibilityRole="link" style={styles.cardContentLinkPressable}>
           <Card.Content style={styles.cardContent}>
             <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
+
+            {/* Hashtags */}
             <View style={styles.tagsContainer}>
-              {dataCard.dataProperties.content_hashtags.map((tag, idx) => (
+              {dataCard.dataProperties.content_hashtags?.map((tag, idx) => (
                 <View key={`${tag}-${idx}`} style={styles.tag}>
                   <Text style={styles.tagText}>
-                    {tag.startsWith('#') ? tag : `#${tag}`}
+                    {tag.startsWith("#") ? tag : `#${tag}`}
                   </Text>
                 </View>
               ))}
             </View>
-            <Text style={styles.introduction}>{dataCard.dataProperties.introduction}</Text>
+
+            {/* Introdução */}
+            <Text style={styles.introduction}>
+              {dataCard.dataProperties.introduction}
+            </Text>
+
+            {/* Autor e data */}
             <View style={styles.metaRow}>
-              <Text style={styles.authorName}>Autor: {dataCard.dataProperties.user_name}</Text>
+              <Text style={styles.authorName}>
+                Autor: {dataCard.dataProperties.user_name}
+              </Text>
               <View style={styles.dateRow}>
                 <MaterialCommunityIcons name="calendar" size={16} color="#9ca3af" />
                 <Text style={styles.date}>
-                  {new Date(dataCard.dataProperties.updated_at).toLocaleDateString('pt-BR')}
+                  {new Date(
+                    dataCard.dataProperties.updated_at
+                  ).toLocaleDateString("pt-BR")}
                 </Text>
               </View>
             </View>
           </Card.Content>
         </Pressable>
       </Link>
+
+      {/* Botões de CRUD para admin */}
       {dataCard.isEditable && (
         <Card.Actions style={styles.btnContainer}>
-          <Link href="/modal" asChild>
-            <Button labelStyle={styles.btnLabel} style={styles.btnEdit}>Editar</Button>
-          </Link>
-          <Button labelStyle={styles.btnLabel} style={styles.btnDelete} onPress={() => handleDeletePost(dataCard.dataProperties.id)}>
+          <Button
+            labelStyle={styles.btnLabel}
+            style={styles.btnEdit}
+            onPress={() => {
+              const id = dataCard.dataProperties.id;
+              // navega para o formulário de criação/edição do post
+              router.push({ pathname: "/(admin)/post/form", params: { edit: id } });
+            }}
+          >
+            Editar
+          </Button>
+
+          <Button
+            labelStyle={styles.btnLabel}
+            style={styles.btnDelete}
+            onPress={onDeletePress}
+          >
             Deletar
           </Button>
         </Card.Actions>
@@ -57,40 +114,30 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     backgroundColor: styleGuide.palette.main.fourthColor,
     borderRadius: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   img: {
     marginBottom: 8,
-    padding: 0,
-    margin: 0,
-    width: '100%',
+    width: "100%",
     height: 180,
     borderTopRightRadius: 16,
     borderTopLeftRadius: 16,
-    borderBottomRightRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
-  defaultIconContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f3f4f6',
   },
   cardContent: {},
   cardContentLinkPressable: {},
   title: {
-    ...styleGuide.typography.h3 as TextStyle,
-    fontWeight: 'bold',
-    margin: 0,
+    ...(styleGuide.typography.h3 as TextStyle),
+    fontWeight: "bold",
     marginBottom: 8,
   },
   introduction: {
-    ...styleGuide.typography.h5 as TextStyle,
+    ...(styleGuide.typography.h5 as TextStyle),
     fontSize: 16,
     marginBottom: 8,
   },
   tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 8,
   },
   tag: {
@@ -101,35 +148,35 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   tagText: {
-    ...styleGuide.typography.h6 as TextStyle,
+    ...(styleGuide.typography.h6 as TextStyle),
     color: styleGuide.palette.main.fourthColor,
   },
   metaRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   authorName: {
-    ...styleGuide.typography.h5 as TextStyle,
+    ...(styleGuide.typography.h5 as TextStyle),
   },
   dateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   date: {
-    ...styleGuide.typography.h5 as TextStyle,
+    ...(styleGuide.typography.h5 as TextStyle),
   },
   btnContainer: {
     paddingTop: 0,
+    justifyContent: "flex-end",
   },
   btnLabel: {
-    ...styleGuide.typography.button as TextStyle,
+    ...(styleGuide.typography.button as TextStyle),
   },
   btnEdit: {
     backgroundColor: styleGuide.palette.main.secondColor,
-    borderWidth: 0,
   },
   btnDelete: {
     backgroundColor: styleGuide.palette.main.primaryColor,

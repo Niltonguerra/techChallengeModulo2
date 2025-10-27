@@ -8,15 +8,18 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useDispatch } from "react-redux";
 import { loginUserService } from "@/services/user";
-import { RequestUser } from "@/types/login";
 import { useSnackbar } from "@/hooks/snackbar/snackbar";
 import styleGuide from "@/constants/styleGuide";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { loginSuccess } from "@/store/authSlice";
+import { AppDispatch } from "@/store/store";
+import { RequestUser, ResponseAuthUser } from "@/types/login";
 
 export default function LoginScreen() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const { showSnackbar } = useSnackbar();
 
   const [email, setEmail] = useState("");
@@ -36,7 +39,9 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       const data: RequestUser = { email, password };
-      const response = await loginUserService(data);
+      const response: ResponseAuthUser = await loginUserService(data);
+
+      dispatch(loginSuccess({ user: response.user, token: response.token }));
 
       showSnackbar({
         message: `Bem-vindo ${response.user.name}`,
@@ -91,11 +96,15 @@ export default function LoginScreen() {
       </View>
 
       <TouchableOpacity
-        style={[styles.button, loading && styles.buttonDisabled]}
+        style={styles.button}
         onPress={handleLogin}
         disabled={loading}
       >
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Entrar</Text>}
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Entrar</Text>
+        )}
       </TouchableOpacity>
 
       <Text style={styles.titleregister}>Faça o seu registro </Text>
