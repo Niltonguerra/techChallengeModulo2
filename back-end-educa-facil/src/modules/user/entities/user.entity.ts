@@ -1,14 +1,15 @@
+import { Comments } from '@modules/comments/entities/comment.entity';
 import { Post } from '@modules/post/entities/post.entity';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { UserStatusEnum } from '../enum/status.enum';
 import { UserPermissionEnum } from '../../auth/Enum/permission.enum';
+import { UserStatusEnum } from '../enum/status.enum';
 
 @Entity({
   name: 'User',
@@ -69,4 +70,7 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Comments, (comment) => comment.post)
+  comments: Comment[];
 }

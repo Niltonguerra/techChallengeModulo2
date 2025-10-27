@@ -11,7 +11,8 @@ export type Post = {
     updated_at: Date;
     user_name: string;
     user_email: string;
-    user_social_media: { [key: string]: string | undefined; };
+    user_photo?: string;
+    comments?: Comment[];
 }
 
 export type PostSearch = {

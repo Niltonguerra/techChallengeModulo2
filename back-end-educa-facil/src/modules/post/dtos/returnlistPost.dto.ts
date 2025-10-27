@@ -1,3 +1,4 @@
+import { ListComment } from '@modules/comments/dto/return-comment.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ListPost {
@@ -33,6 +34,12 @@ export class ListPost {
 
   @ApiProperty()
   user_email: string;
+
+  @ApiProperty()
+  user_photo?: string;
+
+  @ApiProperty()
+  comments?: ListComment[];
 }
 export class ReturnListPost {
   @ApiProperty()
