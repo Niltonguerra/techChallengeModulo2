@@ -109,6 +109,7 @@ describe('PostService', () => {
         created_at: new Date(),
         updated_at: new Date(),
         user: mockUser,
+        comments: [],
         updateSearchField: jest.fn(), // <-- aqui
       };
 
