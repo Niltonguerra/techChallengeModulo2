@@ -49,5 +49,7 @@ export const systemMessage: SystemMessageType = {
     errorSendEmail: 'Erro ao enviar o e-mail',
     sucessCreateUserValidationEmail:
       'Usuário criado com sucesso. Verifique seu e-mail para ativar sua conta.',
+    successDeleteComment: 'Comentário deletado com sucesso',
+    errorCommentNotFound: 'Comentário não encontrado no banco de dados',
   },
 };

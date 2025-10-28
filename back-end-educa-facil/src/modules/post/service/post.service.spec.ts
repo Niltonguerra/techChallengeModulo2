@@ -109,6 +109,7 @@ describe('PostService', () => {
         created_at: new Date(),
         updated_at: new Date(),
         user: mockUser,
+        comments: [],
         updateSearchField: jest.fn(), // <-- aqui
       };
 
@@ -267,6 +268,7 @@ describe('PostService', () => {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
         getOne: jest.fn().mockResolvedValue(mockPost),
       };
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(mockQueryBuilder);
@@ -292,6 +294,7 @@ describe('PostService', () => {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
         getOne: jest.fn().mockResolvedValue(null),
       };
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(mockQueryBuilder);

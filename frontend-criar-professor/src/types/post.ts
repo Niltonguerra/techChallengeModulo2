@@ -1,3 +1,5 @@
+import type { Comment } from "./comment";
+
 export type Post = {
     id: string;
     title: string;
@@ -6,12 +8,13 @@ export type Post = {
     image: string | null | File;
     content_hashtags: string[];
     style_id: string;
-    external_link: {[key: string]: string | undefined;};
+    external_link: { [key: string]: string | undefined; };
     created_at: Date;
     updated_at: Date;
     user_name: string;
     user_email: string;
-    user_social_media: {[key: string]: string | undefined;};
+    user_photo?: string;
+    comments?: Comment[];
 }
 
 export type PostSearch = {
