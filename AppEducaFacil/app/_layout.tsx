@@ -13,6 +13,7 @@ import { Provider, useSelector } from "react-redux";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
 import { RootState, store } from "@/store/store";
+import UserForm from "@/components/UserForm";
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
@@ -48,6 +49,7 @@ function AppContent() {
   const pathname = usePathname();
 
   useEffect(() => {
+    return; //<< undo after testing
     const currentRoute = pathname;
 
     // Rotas que NÃO devem ser redirecionadas automaticamente
@@ -71,7 +73,10 @@ function AppContent() {
     <PaperProvider>
       <ConfirmModalProvider>
         <SnackbarProvider>
-          <Stack screenOptions={{ headerShown: false }} />
+          <UserForm afterSubmit={() => {}} userType="admin"/>
+            {/* //<< undo after testing
+            <Stack screenOptions={{ headerShown: false }} />
+            */}
         </SnackbarProvider>
       </ConfirmModalProvider>
     </PaperProvider>

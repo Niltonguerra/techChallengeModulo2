@@ -39,6 +39,19 @@ export const createUser = async (data: FormUserData)
   return response.data;
 };
 
+export const getUser = async (field: string, value: string) => {
+  const api = getApi();
+
+  const response = await api.get("user/findOne", {
+    params: {
+      field,
+      value,
+    },
+  });
+  
+  return response.data;
+};
+
 export const getAuthors = async () => {
   const api = getApi();
   const response = await api.get("post/hashtags");

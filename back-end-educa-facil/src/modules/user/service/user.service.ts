@@ -23,11 +23,20 @@ export class UserService {
   ) {}
 
   async createUpdateUser(createUserData: Partial<IUser>): Promise<ReturnMessageDTO> {
-    const createUser: Partial<IUser> = {
-      id: createUserData.id ?? uuidv4(),
-      ...createUserData,
-    };
-    await this.userRepository.save(createUser);
+    // see if the user already exists
+    const existingUser = await this.userRepository.findOne({
+      where: { id: createUserData.id }
+    });
+
+    let auxUser;
+
+    if(!existingUser){
+      auxUser = this.userRepository.create(createUserData);
+    } else {
+      auxUser = this.userRepository.merge(existingUser, createUserData);
+    }
+
+    await this.userRepository.save(auxUser);
 
     const returnService: ReturnMessageDTO = {
       message: systemMessage.ReturnMessage.sucessCreateUser,
