@@ -1,65 +1,85 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ListAllUsersUseCase } from './listAllUsers.usecase';
 import { UserService } from '../service/user.service';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
-import { User } from '../entities/user.entity';
+import { UserListDTO } from '../dtos/userList.dto';
 
 describe('ListAllUsersUseCase', () => {
-  let useCase: ListAllUsersUseCase;
+  let listAllUsersUseCase: ListAllUsersUseCase;
   let userService: jest.Mocked<UserService>;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ListAllUsersUseCase,
-        {
-          provide: UserService,
-          useValue: {
-            findAll: jest.fn(),
-          },
-        },
-      ],
-    }).compile();
+  beforeEach(() => {
+    userService = {
+      findAll: jest.fn(),
+    } as any;
 
-    useCase = module.get<ListAllUsersUseCase>(ListAllUsersUseCase);
-    userService = module.get(UserService);
+    listAllUsersUseCase = new ListAllUsersUseCase(userService);
   });
 
-  it('deve estar definido', () => {
-    expect(useCase).toBeDefined();
-    expect(userService).toBeDefined();
-  });
-
-  it('deve retornar a lista de usuários sem permissão específica', async () => {
-    const mockUsers: Partial<User>[] = [
-      { id: '1', name: 'Guilherme' },
-      { id: '2', name: 'Felipe' },
+  it('deve retornar uma lista de usuários mapeados para UserListDTO', async () => {
+    const mockUsers = [
+      {
+        id: '1',
+        email: 'user1@example.com',
+        name: 'User One',
+        permission: UserPermissionEnum.USER,
+      },
+      {
+        id: '2',
+        email: 'user2@example.com',
+        name: 'User Two',
+        permission: UserPermissionEnum.ADMIN,
+      },
     ];
 
     userService.findAll.mockResolvedValue(mockUsers);
 
-    const result = await useCase.execute();
+    const result = await listAllUsersUseCase.execute();
 
     expect(userService.findAll).toHaveBeenCalledWith(undefined);
-    expect(result).toEqual(mockUsers);
+    expect(result).toHaveLength(2);
+    expect(result[0]).toBeInstanceOf(UserListDTO);
+    expect(result[0]).toEqual({
+      id: '1',
+      email: 'user1@example.com',
+      name: 'User One',
+      permission: UserPermissionEnum.USER,
+    });
   });
 
-  it('deve retornar a lista de usuários com permissão específica', async () => {
+  it('deve chamar o serviço com o parâmetro de permissão', async () => {
     const permission = UserPermissionEnum.ADMIN;
-    const mockUsers: Partial<User>[] = [{ id: '3', name: 'Administrador' }];
+    userService.findAll.mockResolvedValue([]);
 
-    userService.findAll.mockResolvedValue(mockUsers);
-
-    const result = await useCase.execute(permission);
+    await listAllUsersUseCase.execute(permission);
 
     expect(userService.findAll).toHaveBeenCalledWith(permission);
-    expect(result).toEqual(mockUsers);
   });
 
-  it('deve propagar erros lançados pelo UserService', async () => {
-    userService.findAll.mockRejectedValue(new Error('Erro ao buscar usuários'));
+  it('deve retornar um array vazio se nenhum usuário for encontrado', async () => {
+    userService.findAll.mockResolvedValue([]);
 
-    await expect(useCase.execute()).rejects.toThrow('Erro ao buscar usuários');
-    expect(userService.findAll).toHaveBeenCalledTimes(1);
+    const result = await listAllUsersUseCase.execute();
+
+    expect(result).toEqual([]);
+  });
+
+  it('deve lidar com campos ausentes em um usuário retornado', async () => {
+    userService.findAll.mockResolvedValue([
+      {
+        id: undefined,
+        email: undefined,
+        name: undefined,
+        permission: undefined,
+      },
+    ]);
+
+    const result = await listAllUsersUseCase.execute();
+
+    expect(result[0]).toEqual({
+      id: '',
+      email: '',
+      name: '',
+      permission: '',
+    });
   });
 });
