@@ -49,7 +49,6 @@ function AppContent() {
   const pathname = usePathname();
 
   useEffect(() => {
-    return; //<< undo after testing
     const currentRoute = pathname;
 
     // Rotas que NÃO devem ser redirecionadas automaticamente
@@ -63,8 +62,8 @@ function AppContent() {
         router.replace("/(tabs)");
       }
     } else {
-      if (!currentRoute.startsWith("/(auth)/login")) {
-        router.replace("/(auth)/login");
+      if (!currentRoute.includes("login") && !currentRoute.includes("user-registration")) {
+        router.replace("/login");
       }
     }
   }, [isAuthenticated, pathname, router]);
@@ -73,10 +72,7 @@ function AppContent() {
     <PaperProvider>
       <ConfirmModalProvider>
         <SnackbarProvider>
-          <UserForm afterSubmit={() => {}} userType="admin"/>
-            {/* //<< undo after testing
-            <Stack screenOptions={{ headerShown: false }} />
-            */}
+          <Stack screenOptions={{ headerShown: false }} />
         </SnackbarProvider>
       </ConfirmModalProvider>
     </PaperProvider>

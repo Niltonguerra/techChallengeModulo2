@@ -14,10 +14,10 @@ import {
   Text,
   List
 } from 'react-native-paper';
-// Import styles and type definitions from separate modules
 import { userFormStyles as styles } from './styles'
 import type { FormUserData, FormUserProps } from '@/types/form-post';
 import { createUser, EditUser, getUser } from '@/services/user';
+import { router } from 'expo-router';
 
 
 const UserForm: React.FC<FormUserProps> = ({
@@ -25,6 +25,8 @@ const UserForm: React.FC<FormUserProps> = ({
   userType = 'user',
   afterSubmit = () => {}, // function of redirect, refresh, etc goes here
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // field states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -47,7 +49,7 @@ const UserForm: React.FC<FormUserProps> = ({
   }>({});
 
   // getting the info of the existing user, if we are editing
-    useEffect(() => {
+  useEffect(() => {
     if (userId) {
       getUser('id', userId)
         .then((userData: FormUserData) => {
@@ -155,6 +157,7 @@ const UserForm: React.FC<FormUserProps> = ({
       // When validation fails, don't proceed with submission
       return;
     }
+    setIsSubmitting(true);
     const actionFunction = userId ? EditUser : createUser;
     const formData: FormUserData = {
       id: userId || undefined,
@@ -166,9 +169,11 @@ const UserForm: React.FC<FormUserProps> = ({
     };
 
     actionFunction(formData).then((response) => {
+      setIsSubmitting(false);
       Alert.alert("Sucesso", response.message);
       if (afterSubmit) afterSubmit();
     }).catch((error) => {
+      setIsSubmitting(false);
       console.error("user form error:", error);
       Alert.alert("Erro", "Ocorreu um erro ao enviar o formulário.");
     });
@@ -295,15 +300,29 @@ const UserForm: React.FC<FormUserProps> = ({
             {errors.password}
           </HelperText>
         )}
-        
-        <Button
-          mode="contained"
-          onPress={handleSubmit}
-          style={styles.submitButton}
-          contentStyle={styles.submitContent}
-        >
-          {userId ? 'Atualizar Usuário' : 'Criar Usuário'}
-        </Button>
+        <View style={styles.buttonRow}>
+          <Button
+            mode="contained"
+            onPress={() => {
+              router.back();
+            }}
+            style={{...styles.submitButton, ...styles.halfButton}}
+            contentStyle={styles.submitContent}
+            disabled={isSubmitting}
+          >
+            Voltar
+          </Button>
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            style={{...styles.submitButton, ...styles.halfButton}}
+            contentStyle={styles.submitContent}
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          >
+            {userId ? 'Atualizar Usuário' : 'Criar Usuário'}
+          </Button>
+        </View>
       </ScrollView>
     </View>
   );

@@ -41,5 +41,14 @@ export const userFormStyles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "white",
     width: '100%',
-  }
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 16,
+},
+  halfButton: {
+    flexBasis: "47%",
+  },
 });
