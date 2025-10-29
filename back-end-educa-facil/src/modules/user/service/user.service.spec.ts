@@ -16,6 +16,8 @@ describe('UserService', () => {
       save: jest.fn(),
       findOne: jest.fn(),
       find: jest.fn(),
+      create: jest.fn(),        
+      merge: jest.fn(),
       createQueryBuilder: jest.fn().mockReturnValue({
         innerJoin: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
