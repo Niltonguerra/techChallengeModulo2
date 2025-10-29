@@ -44,11 +44,20 @@ describe('UserService', () => {
   });
 
   it('deve criar usuário com sucesso', async () => {
-    repository.save.mockResolvedValue(userCreateMock as any);
+    // need to find out if the user already exists (create/update user)
+    repository.findOne!.mockResolvedValue(null);
+
+    const createdEntity = { ...userCreateMock } as any;
+    repository.create!.mockReturnValue(createdEntity);
+
+    repository.save!.mockResolvedValue({ id: 'u1', ...createdEntity });
 
     const result = await service.createUpdateUser(userCreateMock);
 
-    expect(repository.save).toHaveBeenCalledWith(expect.objectContaining(userCreateMock));
+    expect(repository.findOne).toHaveBeenCalled();
+    expect(repository.create).toHaveBeenCalledWith(userCreateMock);
+    expect(repository.save).toHaveBeenCalledWith(createdEntity);
+
     expect(result).toEqual({
       message: systemMessage.ReturnMessage.sucessCreateUser,
       statusCode: 200,
