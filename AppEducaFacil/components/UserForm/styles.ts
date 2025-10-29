@@ -40,7 +40,7 @@ export const userFormStyles = StyleSheet.create({
     borderRadius: 6,
     overflow: "hidden",
     backgroundColor: "white",
-    width: '100%',
+    width: "100%",
   },
   buttonRow: {
     flexDirection: "row",
