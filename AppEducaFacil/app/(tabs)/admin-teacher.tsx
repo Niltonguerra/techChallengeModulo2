@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import CardUser from '@/components/CardUser/CardUser';
 import { getAllUsers } from '@/services/user';
+import styleGuide from "@/constants/styleGuide";
 
 export default function AlunosScreen() {
     const [students, setStudents] = useState<any[]>([]);
@@ -14,20 +15,20 @@ export default function AlunosScreen() {
     useEffect(() => {
         async function fetchStudents() {
             if (!token) return;
-            const users = await getAllUsers(token, 'professor');
+            const users = await getAllUsers(token, 'admin');
             setStudents(users);
         }
         fetchStudents();
     }, [token]);
 
     if (!currentUser || currentUser.permission !== 'admin') {
-        return <View style={styles.restricted}><Button title="Acesso restrito" disabled /></View>;
+        return <View style={[styles.restricted, { backgroundColor: styleGuide.light.background }]}><Button title="Acesso restrito" disabled color={styleGuide.palette.main.primaryColor} /></View>;
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={[styles.container, { backgroundColor: styleGuide.light.background }]}>
             <View style={styles.createBtn}>
-                <Button title="Criar Aluno" onPress={() => console.log('Abrir modal de criação')} />
+                <Button title="Criar Professor" onPress={() => console.log('Abrir modal de criação')} color={styleGuide.palette.main.primaryColor} />
             </View>
 
             {students.map(student => (
@@ -48,6 +49,6 @@ export default function AlunosScreen() {
 
 const styles = StyleSheet.create({
     container: { padding: 16 },
-    createBtn: { marginBottom: 12 },
+    createBtn: { marginBottom: 12, },
     restricted: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

@@ -3,16 +3,29 @@ import Constants from "expo-constants";
 import { RequestUser, ResponseAuthUser } from "@/types/login";
 import { FormUserData } from "@/types/form-post";
 import { ReturnMessage } from "@/types/returnMessaget";
+import { store } from "@/store/store";
 
-const API_URL = Constants.expoConfig!.extra!.apiUrl ?? "http://192.168.0.10:3000";
+const API_URL = Constants.expoConfig!.extra!.apiUrl; 
+let api: AxiosInstance | null = null;
 
 export function getApi(): AxiosInstance {
-  return axios.create({
-    baseURL: API_URL,
-    headers: { "Content-Type": "application/json" },
-  });
-}
+  const state = store.getState();
+  const token = state.auth.token;
 
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const api = axios.create({
+    baseURL: API_URL,
+    headers: headers,
+  });
+  return api;
+}
 export const loginUserService = async (data: RequestUser): Promise<ResponseAuthUser> => {
   const api = getApi();
   const response = await api.post("user/login", data);
@@ -32,11 +45,26 @@ export const getAuthors = async () => {
   return response.data;
 };
 
-export const getAllUsers = async (token: string, permission?: 'user' | 'professor') => {
+export const getAllUsers = async (token: string, permission?: 'user' | 'admin') => {
   const api = getApi();
   const response = await api.get('user/list-all', {
     headers: { Authorization: `Bearer ${token}` },
     params: permission ? { permission } : {},
   });
-  return response.data; // Partial<User>[]
+  return response.data; 
 };
+
+export const EditUser = async (data: FormUserData)
+  : Promise<ReturnMessage> => {
+  const api = getApi();
+  const response = await api.put("user/edit", data);
+  return response.data;
+};
+
+export const deleteUser = async (id: string)
+  : Promise<ReturnMessage> => {
+  const api = getApi();
+  const response = await api.delete(`user/delete/${id}`);
+  return response.data;
+};
+  

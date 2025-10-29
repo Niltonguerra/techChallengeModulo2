@@ -24,6 +24,7 @@ const CardUser = (dataCard: CardUserProps) => {
 
           <View style={styles.userInfo}>
             <Text style={styles.title}>{dataCard.dataProperties.name}</Text>
+            <Text style={styles.title}>{dataCard.dataProperties.email}</Text>
             {dataCard.isEditable && (
               <View style={styles.btnContainer}>
                 <Link href="/modal" asChild>
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   title: {
-    ...styleGuide.typography.h3 as TextStyle,
+    ...styleGuide.typography.h5 as TextStyle,
     fontWeight: 'bold',
     marginBottom: 6,
   },

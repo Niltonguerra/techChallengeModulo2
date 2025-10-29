@@ -2,99 +2,88 @@ import styleGuide from "@/constants/styleGuide";
 import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
 import { CardPostProps } from "@/types/cards";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Link, useRouter } from "expo-router";
-import React from "react";
-import { Alert, Pressable, StyleSheet, TextStyle, View } from "react-native";
+import { useRouter } from "expo-router";
+import * as React from "react";
+import { Pressable, StyleSheet, TextStyle, View } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 
 const CardPost = (dataCard: CardPostProps) => {
   const router = useRouter();
   const { handleDeletePost } = useDeletePost();
 
-  // função de exclusão com confirmação
+  const handleOpenDetail = () => {
+    router.push({
+      pathname: "/PostDetail" as const,
+      params: { id: dataCard.dataProperties.id },
+    });
+  };
+
+  const handleOpenEdit = () => {
+    router.push({
+      pathname: "/post/form" as const,
+      params: { edit: dataCard.dataProperties.id },
+    });
+  };
+
   const onDeletePress = async () => {
-    Alert.alert(
-      "Confirmar exclusão",
-      "Tem certeza que deseja excluir esta postagem?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await handleDeletePost(dataCard.dataProperties.id);
-              Alert.alert("Sucesso", "Postagem deletada com sucesso!");
-            } catch (error) {
-              Alert.alert("Erro", "Não foi possível excluir o post.");
-              console.error(error);
-            }
-          },
-        },
-      ]
-    );
+    try {
+      await handleDeletePost(dataCard.dataProperties.id);
+      // Opcional: adicionar callback para atualizar lista
+    } catch (error) {
+      console.error("Erro ao deletar:", error);
+    }
   };
 
   return (
     <Card style={styles.card} mode="elevated" elevation={2}>
       {/* Imagem de capa */}
       <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
-
-      {/* Conteúdo clicável que leva aos detalhes */}
-      <Link href={`/modal?id=${dataCard.dataProperties.id}`} asChild>
-        <Pressable accessibilityRole="link" style={styles.cardContentLinkPressable}>
-          <Card.Content style={styles.cardContent}>
-            <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
-
-            {/* Hashtags */}
-            <View style={styles.tagsContainer}>
-              {dataCard.dataProperties.content_hashtags?.map((tag, idx) => (
-                <View key={`${tag}-${idx}`} style={styles.tag}>
-                  <Text style={styles.tagText}>
-                    {tag.startsWith("#") ? tag : `#${tag}`}
-                  </Text>
-                </View>
-              ))}
-            </View>
-
-            {/* Introdução */}
-            <Text style={styles.introduction}>
-              {dataCard.dataProperties.introduction}
-            </Text>
-
-            {/* Autor e data */}
-            <View style={styles.metaRow}>
-              <Text style={styles.authorName}>
-                Autor: {dataCard.dataProperties.user_name}
-              </Text>
-              <View style={styles.dateRow}>
-                <MaterialCommunityIcons name="calendar" size={16} color="#9ca3af" />
-                <Text style={styles.date}>
-                  {new Date(
-                    dataCard.dataProperties.updated_at
-                  ).toLocaleDateString("pt-BR")}
+      <Pressable
+        onPress={handleOpenDetail}
+        style={styles.cardContentLinkPressable}
+      >
+        <Card.Content style={styles.cardContent}>
+          <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
+          <View style={styles.tagsContainer}>
+            {dataCard.dataProperties.content_hashtags.map((tag, idx) => (
+              <View key={`${tag}-${idx}`} style={styles.tag}>
+                <Text style={styles.tagText}>
+                  {tag.startsWith("#") ? tag : `#${tag}`}
                 </Text>
               </View>
+            ))}
+          </View>
+          <Text style={styles.introduction}>
+            {dataCard.dataProperties.introduction}
+          </Text>
+          <View style={styles.metaRow}>
+            <Text style={styles.authorName}>
+              Autor: {dataCard.dataProperties.user_name}
+            </Text>
+            <View style={styles.dateRow}>
+              <MaterialCommunityIcons
+                name="calendar"
+                size={16}
+                color="#9ca3af"
+              />
+              <Text style={styles.date}>
+                {new Date(
+                  dataCard.dataProperties.updated_at
+                ).toLocaleDateString("pt-BR")}
+              </Text>
             </View>
-          </Card.Content>
-        </Pressable>
-      </Link>
-
-      {/* Botões de CRUD para admin */}
+          </View>
+        </Card.Content>
+      </Pressable>
       {dataCard.isEditable && (
         <Card.Actions style={styles.btnContainer}>
           <Button
             labelStyle={styles.btnLabel}
             style={styles.btnEdit}
-            onPress={() => {
-              const id = dataCard.dataProperties.id;
-              // navega para o formulário de criação/edição do post
-              router.push({ pathname: "/(admin)/post/form", params: { edit: id } });
-            }}
+            onPress={handleOpenEdit}
           >
             Editar
           </Button>
-
           <Button
             labelStyle={styles.btnLabel}
             style={styles.btnDelete}

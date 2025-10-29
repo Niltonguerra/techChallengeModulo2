@@ -10,8 +10,8 @@ import {
 } from '../dtos/returnMessageCRUD.dto';
 import { LoginUsuarioInternoDTO } from '@modules/user/dtos/AuthUser.dto';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { IUser } from '../entities/interfaces/user.interface';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
+import { IUser } from '../interfaces/user.interface';
 
 @Injectable()
 export class UserService {

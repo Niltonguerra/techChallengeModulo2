@@ -12,7 +12,7 @@ export default function AdminPostFormPage() {
 
   const handleAfterSubmit = () => {
     // volta para a lista de posts após criar/editar
-    router.replace("/(admin)/post");
+    router.replace("/(tabs)/admin-post");
   };
 
   return (

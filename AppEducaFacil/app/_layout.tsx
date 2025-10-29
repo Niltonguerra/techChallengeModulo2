@@ -5,13 +5,11 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack, SplashScreen, useRouter, usePathname } from "expo-router";
+import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
 import React, { useEffect } from "react";
+import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { Provider, useSelector } from "react-redux";
-import { PaperProvider } from "react-native-paper";
-
-import { useColorScheme } from "@/components/useColorScheme";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
 import { store, RootState } from "@/store/store";
@@ -32,14 +30,10 @@ export default function RootLayout() {
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
+    if (loaded) SplashScreen.hideAsync();
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded) return null;
 
   return (
     <Provider store={store}>
@@ -49,14 +43,12 @@ export default function RootLayout() {
 }
 
 function AppContent() {
-  const colorScheme = useColorScheme();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  // Pegando isAuthenticated e user do Redux
   const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth
   );
+  const router = useRouter();
+  const pathname = usePathname();
+
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -82,16 +74,12 @@ function AppContent() {
   }, [isAuthenticated, pathname, user, router]);
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <PaperProvider>
-        <ConfirmModalProvider>
-          <SnackbarProvider>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            </Stack>
-          </SnackbarProvider>
-        </ConfirmModalProvider>
-      </PaperProvider>
-    </ThemeProvider>
+    <PaperProvider>
+      <ConfirmModalProvider>
+        <SnackbarProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </SnackbarProvider>
+      </ConfirmModalProvider>
+    </PaperProvider>
   );
 }

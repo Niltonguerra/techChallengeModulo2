@@ -3,15 +3,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, Button, Fade, IconButton, InputAdornment, MenuItem, Modal, OutlinedInput, Select, Stack, TextField, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from 'dayjs';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { getApi } from '../../service/post';
 import { usePosts } from '../../store/post';
 import { useSnackbar } from '../../store/snackbar/useSnackbar';
 import type { PostSearch, ResultApi } from '../../types/post';
 import "./search.scss";
-import dayjs, { Dayjs } from 'dayjs';
 
 export default function SearchPost() {
 	const modalStyle = {
@@ -79,8 +79,8 @@ export default function SearchPost() {
 				...params,
 				userId: userId ?? null,
 				content: content ?? null,
-				createdAtBefore : createdAtBefore ?? null,
-				createdAtAfter : createdAtAfter ?? null,
+				createdAtBefore: createdAtBefore ?? null,
+				createdAtAfter: createdAtAfter ?? null,
 			};
 		}
 

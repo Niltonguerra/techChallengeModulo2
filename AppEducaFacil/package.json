@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^2.9.1",
     "@types/react-redux": "^7.1.34",
     "axios": "^1.12.2",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "expo-constants": "~18.0.9",
     "expo-font": "~14.0.8",

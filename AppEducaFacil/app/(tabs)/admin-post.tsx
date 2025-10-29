@@ -7,6 +7,7 @@ import CardPost from "@/components/CardPost/CardPost";
 import { Post } from "@/types/post";
 import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
 import { getListTodos } from "@/services/post"; 
+import styleGuide from "@/constants/styleGuide";
 
 export default function AdminPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -60,8 +61,10 @@ export default function AdminPostsPage() {
 
       <Button
         mode="contained"
-        onPress={() => router.push({ pathname: "/(admin)/post/form" })}
+        onPress={() => router.push({ pathname: "/(tabs)/post/form" })}
         style={styles.addButton}
+        contentStyle={styles.addButtonContent}
+        labelStyle={styles.addButtonLabel}
       >
         + Criar Novo Post
       </Button>
@@ -70,7 +73,9 @@ export default function AdminPostsPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
-  addButton: { marginTop: 10 },
+  container: { flex: 1, padding: 16, backgroundColor: styleGuide.light.background },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10, color: styleGuide.palette.main.primaryColor },
+  addButton: { marginTop: 10, borderRadius: 8, backgroundColor: styleGuide.palette.main.primaryColor },
+  addButtonContent: { height: 44 },
+  addButtonLabel: { color: styleGuide.palette.light.fourthLightColor },
 });
