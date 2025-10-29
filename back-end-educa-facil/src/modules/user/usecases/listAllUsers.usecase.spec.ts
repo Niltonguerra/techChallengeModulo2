@@ -10,7 +10,7 @@ describe('ListAllUsersUseCase', () => {
   beforeEach(() => {
     userService = {
       findAll: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<UserService>;
 
     listAllUsersUseCase = new ListAllUsersUseCase(userService);
   });
@@ -64,14 +64,16 @@ describe('ListAllUsersUseCase', () => {
   });
 
   it('deve lidar com campos ausentes em um usuário retornado', async () => {
-    userService.findAll.mockResolvedValue([
+    const mockUsers = [
       {
         id: undefined,
         email: undefined,
         name: undefined,
         permission: undefined,
       },
-    ]);
+    ];
+
+    userService.findAll.mockResolvedValue(mockUsers as any);
 
     const result = await listAllUsersUseCase.execute();
 
