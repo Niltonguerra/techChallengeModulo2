@@ -47,10 +47,10 @@ describe('UserService', () => {
     // need to find out if the user already exists (create/update user)
     repository.findOne!.mockResolvedValue(null);
 
-    const createdEntity = { ...userCreateMock } as any;
+    const createdEntity = { ...userCreateMock } as User;
     repository.create!.mockReturnValue(createdEntity);
 
-    repository.save!.mockResolvedValue({ id: 'u1', ...createdEntity });
+    repository.save!.mockResolvedValue({ ...createdEntity });
 
     const result = await service.createUpdateUser(userCreateMock);
 
