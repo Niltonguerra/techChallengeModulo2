@@ -37,32 +37,31 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
   if (!user) return null;
 
   const userLinks = [
-    { label: "Editar Dados", path: "/(tabs)/edit-user-data" as const },
-    { label: "Informações Pessoais", path: "/(tabs)/persona-info" as const },
+    { label: "Editar Dados", pathname: "/(tabs)/edit-user-data" },
+    { label: "Informações Pessoais", pathname: "/(tabs)/persona-info" },
   ];
 
   const adminLinks = [
     {
       label: "Administrador de Professor",
-      path: "/(tabs)/admin-teacher" as const,
+      pathname: "/(tabs)/admin-teacher",
     },
-    { label: "Administrador de Aluno", path: "/(tabs)/admin-student" as const },
+    { label: "Administrador de Aluno", pathname: "/(tabs)/admin-student" },
     {
       label: "Cadastrar Professor",
-      path: "/(tabs)/register-teacher" as const,
+      pathname: "/(tabs)/register-teacher",
     },
-    { label: "Edição de Postagens", path: "/(tabs)/admin-posts" as const },
-    { label: "Editar Dados", path: "/(tabs)/edit-user-data" as const },
-
-    { label: "Informações Pessoais", path: "/(tabs)/persona-info" as const },
+    { label: "Administrador de Postagens", pathname: "/(tabs)/admin-post" },
+    { label: "Editar Dados", pathname: "/(tabs)/edit-user-data" },
+    { label: "Informações Pessoais", pathname: "/(tabs)/persona-info" },
   ];
 
   const links =
     user.permission === UserPermissionEnum.ADMIN ? adminLinks : userLinks;
 
-  const handleNavigate = (path: AppRoutes) => {
+  const handleNavigate = (pathname: string) => {
     onClose();
-    router.push(path);
+    router.push(pathname as any );
   };
 
   const handleLogout = () => {
@@ -95,7 +94,7 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
               <TouchableOpacity
                 key={index}
                 style={styles.optionButton}
-                onPress={() => handleNavigate(link.path)}
+                onPress={() => handleNavigate(link.pathname)}
               >
                 <Text style={styles.optionText}>{link.label}</Text>
               </TouchableOpacity>

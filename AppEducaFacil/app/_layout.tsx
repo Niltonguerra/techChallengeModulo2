@@ -12,7 +12,9 @@ import "react-native-reanimated";
 import { Provider, useSelector } from "react-redux";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
-import { RootState, store } from "@/store/store";
+import { store, RootState } from "@/store/store";
+import Header from "@/components/header/header";
+
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
@@ -41,31 +43,35 @@ export default function RootLayout() {
 }
 
 function AppContent() {
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
+  const { isAuthenticated, user } = useSelector(
+    (state: RootState) => state.auth
   );
   const router = useRouter();
   const pathname = usePathname();
 
+
   useEffect(() => {
-    const currentRoute = pathname;
-
-    // Rotas que NÃO devem ser redirecionadas automaticamente
-    const allowedRoutes = ["/PostDetail"];
-
-    if (isAuthenticated) {
-      if (
-        !currentRoute.startsWith("/(tabs)") &&
-        !allowedRoutes.includes(currentRoute)
-      ) {
-        router.replace("/(tabs)");
-      }
-    } else {
-      if (!currentRoute.startsWith("/(auth)/login")) {
+    if (!isAuthenticated) {
+      if (!pathname?.startsWith("/(auth)")) {
         router.replace("/(auth)/login");
       }
+      return;
     }
-  }, [isAuthenticated, pathname, router]);
+
+    // determina se é admin (suporta permission ou role)
+    const isAdmin = user?.permission === "admin" || user?.role === "admin";
+
+    // bloqueia acesso a rotas /admin para usuários não-admin
+    if (pathname?.startsWith("/(admin)") && !isAdmin) {
+      router.replace("/(tabs)");
+      return;
+    }
+
+    // se autenticado e ainda está nas rotas de auth, direciona para tabs
+    if (pathname?.startsWith("/(auth)")) {
+      router.replace("/(tabs)");
+    }
+  }, [isAuthenticated, pathname, user, router]);
 
   return (
     <PaperProvider>
