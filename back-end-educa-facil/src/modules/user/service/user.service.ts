@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { FindManyOptions, Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import {
   FindOneUserReturnMessageDTO,
