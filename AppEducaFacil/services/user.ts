@@ -62,6 +62,7 @@ export const EditUser = async (data: FormUserData)
   : Promise<ReturnMessage> => {
   const api = getApi();
   const response = await api.put("user/edit", data);
+  // const response = await api.put(`/user/edit/${data.id}`, data);
   return response.data;
 };
 
