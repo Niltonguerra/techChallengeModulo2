@@ -48,7 +48,7 @@ export class User {
     type: 'varchar',
     name: 'permission',
   })
-  permission: UserPermissionEnum; // admin (teacher), user (student)
+  permission: UserPermissionEnum;
 
   @Column({
     type: 'varchar',
