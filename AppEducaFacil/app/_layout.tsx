@@ -13,6 +13,7 @@ import { Provider, useSelector } from "react-redux";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
 import { RootState, store } from "@/store/store";
+import UserForm from "@/components/UserForm";
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
@@ -61,8 +62,8 @@ function AppContent() {
         router.replace("/(tabs)");
       }
     } else {
-      if (!currentRoute.startsWith("/(auth)/login")) {
-        router.replace("/(auth)/login");
+      if (!currentRoute.includes("login") && !currentRoute.includes("user-registration")) {
+        router.replace("/login");
       }
     }
   }, [isAuthenticated, pathname, router]);
