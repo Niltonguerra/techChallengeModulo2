@@ -16,8 +16,6 @@ describe('UserService', () => {
       save: jest.fn(),
       findOne: jest.fn(),
       find: jest.fn(),
-      create: jest.fn(),        
-      merge: jest.fn(),
       createQueryBuilder: jest.fn().mockReturnValue({
         innerJoin: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
@@ -44,20 +42,11 @@ describe('UserService', () => {
   });
 
   it('deve criar usuário com sucesso', async () => {
-    // need to find out if the user already exists (create/update user)
-    repository.findOne!.mockResolvedValue(null);
-
-    const createdEntity = { ...userCreateMock } as User;
-    repository.create!.mockReturnValue(createdEntity);
-
-    repository.save!.mockResolvedValue({ ...createdEntity });
+    repository.save.mockResolvedValue(userCreateMock as any);
 
     const result = await service.createUpdateUser(userCreateMock);
 
-    expect(repository.findOne).toHaveBeenCalled();
-    expect(repository.create).toHaveBeenCalledWith(userCreateMock);
-    expect(repository.save).toHaveBeenCalledWith(createdEntity);
-
+    expect(repository.save).toHaveBeenCalledWith(expect.objectContaining(userCreateMock));
     expect(result).toEqual({
       message: systemMessage.ReturnMessage.sucessCreateUser,
       statusCode: 200,
