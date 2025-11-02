@@ -84,7 +84,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       <Text style={styles.titleregister}>Faça o seu registro</Text>
-      <Text style={styles.text}>Não Possui registro? Registre-se aqui</Text>
+      <Text style={styles.text} onPress={() => {router.push('/user-registration')}}>Não Possui registro? Registre-se aqui</Text>
       <Text style={styles.text}>Dúvidas ou precisa de alguma ajuda?</Text>
       <Text style={styles.text}>(11) 93231-3383</Text>
       <Text style={styles.text}>educacaofacilfiap@gmail.com</Text>
