@@ -1,7 +1,10 @@
+import { GetTokenValues } from '@modules/auth/decorators/token.decorator';
+import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
+import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { Controller, Delete, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
@@ -11,6 +14,7 @@ import {
   ApiOperation,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { CreateCommentDTO } from '../dto/create-comment.dto';
 import { CommentsService } from '../service/comments.service';
 
 @ApiUnauthorizedResponse({ description: 'Unauthorized', type: ReturnMessageDTO })
@@ -28,5 +32,16 @@ export class CommentsController {
   @ApiOkResponse({ type: ReturnMessageDTO })
   remove(@Param('id') id: string) {
     return this.commentsService.delete(id);
+  }
+
+  @Post()
+  @ApiBearerAuth('JWT-Auth')
+  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
+  @ApiOperation({ summary: 'Create a new comment' })
+  @ApiOkResponse({ type: ReturnMessageDTO })
+  async create(@Body() dto: CreateCommentDTO, @GetTokenValues() rawToken: JwtPayload) {
+    const userId = rawToken.id;
+    const result = await this.commentsService.create(dto, userId);
+    return result;
   }
 }
