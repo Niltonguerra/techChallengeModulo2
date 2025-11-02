@@ -1,9 +1,4 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
 import React, { useEffect } from "react";
@@ -13,7 +8,6 @@ import { Provider, useSelector } from "react-redux";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
 import { store, RootState } from "@/store/store";
-import Header from "@/components/header/header";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -49,26 +43,49 @@ function AppContent() {
   const router = useRouter();
   const pathname = usePathname();
 
-
   useEffect(() => {
+    const currentRoute = pathname;
+    const allowedRoutes = ["/PostDetail"];
+    const isAdmin = user?.permission === "admin" || user?.role === "admin";
+    const isAdminRoute =
+  pathname.startsWith("/admin-") || pathname.startsWith("/(admin)") ||
+  pathname.includes("/post") ||
+  pathname.includes("/user");
+
+    const isTabsRoute = pathname.startsWith("/(tabs)");
+    const isAuthRoute =
+      pathname.includes("login") || pathname.includes("user-registration");
+
+    // 1️⃣ Usuário não autenticado → redireciona pro login
     if (!isAuthenticated) {
-      if (!pathname?.startsWith("/(auth)")) {
-        router.replace("/(auth)/login");
+      if (!isAuthRoute) {
+        router.replace("/login");
       }
       return;
     }
 
-    // determina se é admin (suporta permission ou role)
-    const isAdmin = user?.permission === "admin" || user?.role === "admin";
-
-    // bloqueia acesso a rotas /admin para usuários não-admin
-    if (pathname?.startsWith("/(admin)") && !isAdmin) {
+    // 2️⃣ Usuário comum tentando acessar rota de admin → bloqueia
+    if (isAdminRoute && !isAdmin) {
       router.replace("/(tabs)");
       return;
     }
 
-    // se autenticado e ainda está nas rotas de auth, direciona para tabs
-    if (pathname?.startsWith("/(auth)")) {
+    // 3️⃣ Admin tentando acessar (tabs) → ok
+    if (isAdminRoute && isAdmin) {
+      return;
+    }
+
+    // 4️⃣ Qualquer usuário autenticado em (auth) → manda pra tabs
+    if (pathname.startsWith("/(auth)")) {
+      router.replace("/(tabs)");
+      return;
+    }
+
+    // 5️⃣ Admins e users logados podem ficar em suas rotas válidas
+    const isAllowed =
+      isTabsRoute || isAdminRoute || allowedRoutes.includes(currentRoute);
+
+    if (!isAllowed) {
       router.replace("/(tabs)");
     }
   }, [isAuthenticated, pathname, user, router]);

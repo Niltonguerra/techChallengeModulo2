@@ -27,9 +27,22 @@ const CardUser = (dataCard: CardUserProps) => {
             <Text style={styles.title}>{dataCard.dataProperties.email}</Text>
             {dataCard.isEditable && (
               <View style={styles.btnContainer}>
-                <Link href="/modal" asChild>
+                <Link
+                  href={{
+                    pathname: "/user/form",
+                    params: {
+                      userId: dataCard.dataProperties.id,
+                      userType: dataCard.dataProperties.permission || "user",
+                    },
+                  }}
+                  asChild
+                >
                   <Button labelStyle={styles.btnLabel} style={styles.btnEdit}>
-                    <MaterialCommunityIcons name="account-edit" size={24} color={styleGuide.palette.warning} />
+                    <MaterialCommunityIcons
+                      name="account-edit"
+                      size={24}
+                      color={styleGuide.palette.warning}
+                    />
                   </Button>
                 </Link>
                 <Button

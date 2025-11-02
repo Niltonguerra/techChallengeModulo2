@@ -1,3 +1,4 @@
+import { Comments } from '@modules/comments/entities/comment.entity';
 import { User } from '@modules/user/entities/user.entity';
 import {
   BeforeInsert,
@@ -7,6 +8,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -78,6 +80,9 @@ export class Post {
 
   @Column('text', { nullable: true })
   search?: string;
+
+  @OneToMany(() => Comments, (comment) => comment.post)
+  comments: Comment[];
 
   @BeforeInsert()
   @BeforeUpdate()

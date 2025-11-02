@@ -42,16 +42,9 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
   ];
 
   const adminLinks = [
-    {
-      label: "Administrador de Professor",
-      pathname: "/(tabs)/admin-teacher",
-    },
-    { label: "Administrador de Aluno", pathname: "/(tabs)/admin-student" },
-    {
-      label: "Cadastrar Professor",
-      pathname: "/(tabs)/register-teacher",
-    },
-    { label: "Administrador de Postagens", pathname: "/(tabs)/admin-post" },
+    { label: "Administrador de Professor", pathname: "/(admin)/admin-teacher" },    
+    { label: "Administrador de Aluno", pathname: "/(admin)/admin-student" },
+    { label: "Administrador de Postagens", pathname: "/(admin)/admin-post" },
     { label: "Editar Dados", pathname: "/(tabs)/edit-user-data" },
     { label: "Informações Pessoais", pathname: "/(tabs)/persona-info" },
   ];
@@ -61,7 +54,7 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
 
   const handleNavigate = (pathname: string) => {
     onClose();
-    router.push(pathname as any );
+    router.replace(pathname as any );
   };
 
   const handleLogout = () => {

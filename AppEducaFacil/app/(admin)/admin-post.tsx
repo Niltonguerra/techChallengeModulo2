@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Alert } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Button } from "react-native-paper";
 import { useRouter } from "expo-router";
 
 import CardPost from "@/components/CardPost/CardPost";
 import { Post } from "@/types/post";
 import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
-import { getListTodos } from "@/services/post"; 
+import { getListTodos } from "@/services/post";
 import styleGuide from "@/constants/styleGuide";
 
 export default function AdminPostsPage() {
@@ -16,7 +16,7 @@ export default function AdminPostsPage() {
 
   const fetchPosts = async () => {
     try {
-      const data = await getListTodos(); 
+      const data = await getListTodos();
       setPosts(data);
     } catch (err: any) {
       console.error(err);
@@ -41,12 +41,6 @@ export default function AdminPostsPage() {
 
   return (
     <View style={styles.container}>
-      <Button mode="text" onPress={() => router.back()} style={{ marginBottom: 8 }}>
-        Voltar
-      </Button>
-
-      <Text style={styles.title}>Gerenciar Postagens</Text>
-
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id}
@@ -59,23 +53,46 @@ export default function AdminPostsPage() {
         contentContainerStyle={{ paddingBottom: 120 }}
       />
 
-      <Button
-        mode="contained"
-        onPress={() => router.push({ pathname: "/(tabs)/post/form" })}
-        style={styles.addButton}
-        contentStyle={styles.addButtonContent}
-        labelStyle={styles.addButtonLabel}
-      >
-        + Criar Novo Post
-      </Button>
+      <View style={styles.buttonRow}>
+        <Button
+          mode="contained"
+          onPress={() => router.push("/(tabs)")}
+          style={{ ...styles.submitButton, ...styles.halfButton }}
+          contentStyle={styles.submitContent}
+        >
+          Voltar
+        </Button>
+        <Button
+          mode="contained"
+          onPress={() => router.push({ pathname: "/(admin)/post/form" })}
+          style={{ ...styles.submitButton, ...styles.halfButton }}
+          contentStyle={styles.submitContent}
+        >
+          Criar Novo Post
+        </Button>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: styleGuide.light.background },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10, color: styleGuide.palette.main.primaryColor },
-  addButton: { marginTop: 10, borderRadius: 8, backgroundColor: styleGuide.palette.main.primaryColor },
-  addButtonContent: { height: 44 },
-  addButtonLabel: { color: styleGuide.palette.light.fourthLightColor },
+
+  submitButton: {
+    marginTop: 24,
+    marginBottom: 32,
+    backgroundColor: styleGuide.palette.main.primaryColor,
+  },
+  submitContent: {
+    paddingVertical: 8,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 16,
+  },
+  halfButton: {
+    flexBasis: "47%",
+  },
 });

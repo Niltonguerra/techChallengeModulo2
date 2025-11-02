@@ -14,5 +14,6 @@ export type CardUserProps = {
     name: string;
     photo: string;
     email: string;
+    permission?: "user" | "admin";
   };
 }

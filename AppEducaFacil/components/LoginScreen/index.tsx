@@ -43,8 +43,15 @@ export default function LoginScreen() {
       const data: RequestUser = { email, password };
       const response: ResponseAuthUser = await loginUserService(data);
 
-      dispatch(loginSuccess({ user: response.user, token: response.token }));
-
+      dispatch(
+        loginSuccess({
+          user: {
+            ...response.user,
+            role: response.user.permission === "admin" ? "admin" : "user",
+          },
+          token: response.token,
+        })
+      );
       showSnackbar({
         message: `Bem-vindo ${response.user.name}`,
         duration: 3000,
@@ -109,10 +116,8 @@ export default function LoginScreen() {
         )}
       </TouchableOpacity>
 
-      <Text style={styles.titleregister}>Faça o seu registro </Text>
-      <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
-        <Text style={styles.text}>Não Possui registro? Registre-se aqui</Text>
-      </TouchableOpacity>
+      <Text style={styles.titleregister}>Faça o seu registro</Text>
+      <Text style={styles.text} onPress={() => { router.push('/user-registration') }}>Não Possui registro? Registre-se aqui</Text>
       <Text style={styles.text}>Dúvidas ou precisa de alguma ajuda?</Text>
       <Text style={styles.text}>
         <MaterialCommunityIcons

@@ -16,12 +16,15 @@ import type { FormUserData } from "@/types/form-post";
 import { useSnackbar } from "@/hooks/snackbar/snackbar";
 import styleGuide from "@/constants/styleGuide";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { UserPermissionEnum } from "@/types/userPermissionEnum";
 
 interface Props {
-  permission: string;
+  permission: UserPermissionEnum;
+  userId?: string;
+  afterSubmit?: () => void;
 }
 
-export default function CreateUserForm({ permission }: Props) {
+export default function CreateUserForm({ permission, userId, afterSubmit }: Props) {
   const { showSnackbar } = useSnackbar();
   const navigation = useNavigation();
   const [form, setForm] = useState<FormUserData>({
@@ -29,7 +32,7 @@ export default function CreateUserForm({ permission }: Props) {
     email: "",
     password: "",
     photo: null,
-    permission,
+    permission: permission as UserPermissionEnum,
   });
 
   const [showPassword, setShowPassword] = useState(false);
