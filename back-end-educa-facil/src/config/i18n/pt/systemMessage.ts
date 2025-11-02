@@ -46,10 +46,12 @@ export const systemMessage: SystemMessageType = {
     sucessGetPostById: 'Post encontrado com sucesso pelo ID',
     errorGetPostById: 'Erro ao encontrar o post pelo ID',
     errorUserNotFound: 'Usuário não encontrado no banco de dados',
+    errorPostNotFound: 'Post não encontrado',
     errorSendEmail: 'Erro ao enviar o e-mail',
     sucessCreateUserValidationEmail:
       'Usuário criado com sucesso. Verifique seu e-mail para ativar sua conta.',
     successDeleteComment: 'Comentário deletado com sucesso',
     errorCommentNotFound: 'Comentário não encontrado no banco de dados',
+    successCreatedComment: 'Comentário criado com sucesso',
   },
 };

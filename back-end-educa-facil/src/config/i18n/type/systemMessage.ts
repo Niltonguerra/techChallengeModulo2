@@ -47,5 +47,7 @@ export type SystemMessageType = {
     errorSendEmail: string;
     successDeleteComment: string;
     errorCommentNotFound: string;
+    successCreatedComment: string;
+    errorPostNotFound: string;
   };
 };
