@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet, Alert } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
@@ -7,11 +7,13 @@ import CardUser from "@/components/CardUser/CardUser";
 import { getAllUsers } from "@/services/user";
 import styleGuide from "@/constants/styleGuide";
 import { Link, useRouter } from "expo-router";
+import { useSnackbar } from "@/hooks/snackbar/snackbar";
 
 export default function AlunosScreen() {
   const [students, setStudents] = useState<any[]>([]);
   const token = useSelector((state: RootState) => state.auth.token);
   const currentUser = useSelector((state: RootState) => state.auth.user);
+  const { showSnackbar } = useSnackbar();
   const router = useRouter();
 
   useEffect(() => {
@@ -21,7 +23,10 @@ export default function AlunosScreen() {
         const users = await getAllUsers(token, "user");
         setStudents(users);
       } catch (err) {
-        Alert.alert("Erro", "Não foi possível carregar os alunos.");
+        showSnackbar({
+          message: "Não foi possível carregar os alunos.",
+          duration: 3000,
+        });
       }
     }
     fetchStudents();
@@ -29,9 +34,7 @@ export default function AlunosScreen() {
 
   if (!currentUser || currentUser.permission !== "admin") {
     return (
-      <View
-        style={[styles.restricted, { backgroundColor: styleGuide.light.background }]}
-      >
+      <View style={[styles.restricted, { backgroundColor: styleGuide.light.background }]}>
         <Button mode="contained" disabled>
           Acesso restrito
         </Button>
@@ -94,9 +97,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     backgroundColor: styleGuide.palette.main.primaryColor,
   },
-  submitContent: {
-    paddingVertical: 8,
-  },
+  submitContent: { paddingVertical: 8 },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -104,7 +105,5 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 16,
   },
-  halfButton: {
-    flexBasis: "47%",
-  },
+  halfButton: { flexBasis: "47%" },
 });

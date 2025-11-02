@@ -56,7 +56,6 @@ function AppContent() {
     const isAuthRoute =
       pathname.includes("login") || pathname.includes("user-registration");
 
-    // 1️⃣ Usuário não autenticado → redireciona pro login
     if (!isAuthenticated) {
       if (!isAuthRoute) {
         router.replace("/login");
@@ -64,24 +63,20 @@ function AppContent() {
       return;
     }
 
-    // 2️⃣ Usuário comum tentando acessar rota de admin → bloqueia
     if (isAdminRoute && !isAdmin) {
       router.replace("/(tabs)");
       return;
     }
 
-    // 3️⃣ Admin tentando acessar (tabs) → ok
     if (isAdminRoute && isAdmin) {
       return;
     }
 
-    // 4️⃣ Qualquer usuário autenticado em (auth) → manda pra tabs
     if (pathname.startsWith("/(auth)")) {
       router.replace("/(tabs)");
       return;
     }
-
-    // 5️⃣ Admins e users logados podem ficar em suas rotas válidas
+    
     const isAllowed =
       isTabsRoute || isAdminRoute || allowedRoutes.includes(currentRoute);
 

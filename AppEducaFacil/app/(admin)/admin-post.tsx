@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, FlatList, StyleSheet, Alert } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { useRouter } from "expo-router";
 
@@ -7,11 +7,13 @@ import CardPost from "@/components/CardPost/CardPost";
 import { Post } from "@/types/post";
 import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
 import { getListTodos } from "@/services/post";
+import { useSnackbar } from "@/hooks/snackbar/snackbar";
 import styleGuide from "@/constants/styleGuide";
 
 export default function AdminPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const { handleDeletePost } = useDeletePost();
+  const { showSnackbar } = useSnackbar();
   const router = useRouter();
 
   const fetchPosts = async () => {
@@ -20,7 +22,10 @@ export default function AdminPostsPage() {
       setPosts(data);
     } catch (err: any) {
       console.error(err);
-      Alert.alert("Erro", "Não foi possível carregar os posts.");
+      showSnackbar({
+        message: "Não foi possível carregar os posts.",
+        duration: 3000,
+      });
     }
   };
 
@@ -28,14 +33,20 @@ export default function AdminPostsPage() {
     fetchPosts();
   }, []);
 
-  // Função para deletar e atualizar a lista localmente
   const onDelete = async (id: string) => {
     try {
       await handleDeletePost(id);
       setPosts((prev) => prev.filter((p) => p.id !== id));
+      showSnackbar({
+        message: "Post deletado com sucesso!",
+        duration: 3000,
+      });
     } catch (err: any) {
       console.error(err);
-      Alert.alert("Erro", "Não foi possível deletar o post.");
+      showSnackbar({
+        message: "Não foi possível deletar o post.",
+        duration: 3000,
+      });
     }
   };
 
@@ -45,10 +56,7 @@ export default function AdminPostsPage() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <CardPost
-            dataProperties={item}
-            isEditable
-          />
+          <CardPost dataProperties={item} isEditable onDelete={onDelete} />
         )}
         contentContainerStyle={{ paddingBottom: 120 }}
       />
@@ -77,22 +85,17 @@ export default function AdminPostsPage() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: styleGuide.light.background },
-
   submitButton: {
     marginTop: 24,
     marginBottom: 32,
     backgroundColor: styleGuide.palette.main.primaryColor,
   },
-  submitContent: {
-    paddingVertical: 8,
-  },
+  submitContent: { paddingVertical: 8 },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
     marginTop: 16,
   },
-  halfButton: {
-    flexBasis: "47%",
-  },
+  halfButton: { flexBasis: "47%" },
 });
