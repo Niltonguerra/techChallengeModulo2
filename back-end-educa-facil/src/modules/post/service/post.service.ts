@@ -163,7 +163,6 @@ export class PostService {
       .leftJoinAndSelect('p.user', 'u')
       .select(['p', 'u']) // seleciona os campos que quer
       .where('p.id = :id', { id })
-      .orderBy('c.createdAt', 'DESC')
       .getOne();
 
     if (!post) {
