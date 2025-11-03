@@ -47,7 +47,7 @@ export class CommentsController {
 
   @Get('post/:postId')
   @ApiBearerAuth('JWT-Auth')
-  @UseGuards(JwtAuthGuardUser, RolesGuardStudent) // Todos os usuários autenticados podem ver
+  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   @ApiOperation({ summary: 'Get comments by post ID' })
   @ApiOkResponse({ type: [ListCommentDTO] })
   async getCommentsByPost(@Param('postId') postId: string) {
