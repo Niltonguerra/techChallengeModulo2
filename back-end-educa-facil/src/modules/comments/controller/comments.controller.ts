@@ -23,7 +23,7 @@ import { CommentsService } from '../service/comments.service';
 @ApiInternalServerErrorResponse({ description: 'Internal Server Error', type: ReturnMessageDTO })
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) { }
+  constructor(private readonly commentsService: CommentsService) {}
 
   @Delete(':id')
   @ApiBearerAuth('JWT-Auth')

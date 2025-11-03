@@ -64,9 +64,7 @@ export class UserReadController {
   @ApiBearerAuth('JWT-Auth')
   @ApiOperation({ summary: 'List all registered users (for admins/professors)' })
   @ApiOkResponse({ description: 'List of users', type: [User] })
-  async findAllUsers(
-    @Query('permission') permission?: UserPermissionEnum,
-  ): Promise<UserListDTO[]> {
+  async findAllUsers(@Query('permission') permission?: UserPermissionEnum): Promise<UserListDTO[]> {
     return this.listAllUsersUseCase.execute(permission);
   }
 }

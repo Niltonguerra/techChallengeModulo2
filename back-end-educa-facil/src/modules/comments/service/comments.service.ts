@@ -18,7 +18,7 @@ export class CommentsService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) { }
+  ) {}
 
   async delete(id: string): Promise<ReturnMessageDTO> {
     const comment = await this.repository.findOne({ where: { id: id } });

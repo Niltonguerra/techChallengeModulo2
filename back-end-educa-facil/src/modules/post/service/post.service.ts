@@ -1,5 +1,4 @@
 import { systemMessage } from '@config/i18n/pt/systemMessage';
-import { Comments } from '@modules/comments/entities/comment.entity';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { User } from '@modules/user/entities/user.entity';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
@@ -18,7 +17,7 @@ export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
-  ) { }
+  ) {}
 
   async createPostService(createPostData: CreatePostDTO): Promise<ReturnMessageDTO> {
     const validadeName = await this.postRepository.findOneBy({ title: createPostData.title });
@@ -162,9 +161,7 @@ export class PostService {
     const post: Post | null = await this.postRepository
       .createQueryBuilder('p')
       .leftJoinAndSelect('p.user', 'u')
-      .leftJoinAndSelect('p.comments', 'c') // adiciona os comentários
-      .leftJoinAndSelect('c.user', 'cu') // opcional: usuário de cada comentário
-      .select(['p', 'u', 'c', 'cu.id', 'cu.name', 'cu.photo']) // seleciona os campos que quer
+      .select(['p', 'u']) // seleciona os campos que quer
       .where('p.id = :id', { id })
       .orderBy('c.createdAt', 'DESC')
       .getOne();
@@ -175,7 +172,6 @@ export class PostService {
       this.logger.error(`${message}: ${status}`);
       throw new HttpException(`${message}: ${status}`, status);
     }
-    const comments = post.comments as unknown as Comments[];
     const postDataReturn: ReturnListPost = {
       message: systemMessage.ReturnMessage.sucessGetPostById,
       statusCode: 200,

@@ -12,4 +12,4 @@ import { CommentsService } from './service/comments.service';
   controllers: [CommentsController],
   providers: [CommentsService],
 })
-export class CommentsModule { }
+export class CommentsModule {}
