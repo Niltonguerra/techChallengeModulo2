@@ -58,6 +58,14 @@ export const getAuthors = async () => {
   return response.data;
 };
 
+export const getAllUsers = async (permission?: 'user' | 'admin') => {
+  const api = getApi();
+  const response = await api.get('user/list-all', {
+    params: permission ? { permission } : {},
+  });
+  return response.data; 
+};
+
 export const EditUser = async (data: FormUserData)
   : Promise<ReturnMessage> => {
   const api = getApi();
@@ -72,3 +80,4 @@ export const deleteUser = async (id: string)
   const response = await api.delete(`user/delete/${id}`);
   return response.data;
 };
+  

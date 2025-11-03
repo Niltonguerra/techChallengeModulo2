@@ -11,6 +11,7 @@ export interface UserDataReceived {
   photo: string;
   id: string;
   permission: string;
+  role: "admin" | "user";
 }
 
 export interface NavigationItem {

@@ -22,6 +22,7 @@ import {
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
 import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
+import { UserListDTO } from '../dtos/userList.dto';
 
 @ApiInternalServerErrorResponse({ description: 'Internal Server Error', type: ReturnMessageDTO })
 @ApiNotFoundResponse({ description: 'Not found', type: ReturnMessageDTO })
@@ -65,7 +66,7 @@ export class UserReadController {
   @ApiOkResponse({ description: 'List of users', type: [User] })
   async findAllUsers(
     @Query('permission') permission?: UserPermissionEnum,
-  ): Promise<Partial<User>[]> {
+  ): Promise<UserListDTO[]> {
     return this.listAllUsersUseCase.execute(permission);
   }
 }

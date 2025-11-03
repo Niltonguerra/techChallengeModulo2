@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, ScrollView, Image, Alert, Pressable } from "react-native";
 import { TextInput, Button, IconButton, Text, Menu } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
+
 
 import type { FormPostData, FormPostProps } from "@/types/form-post";
 
@@ -19,6 +21,7 @@ import {
  */
 const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // string states
   const [title, setTitle] = useState("");
@@ -79,7 +82,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
           Alert.alert(
             "Erro",
             err.message ||
-              "Não foi possível carregar os dados do post para edição."
+            "Não foi possível carregar os dados do post para edição."
           );
         });
     } else {
@@ -253,9 +256,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         Alert.alert(
           "Error",
           error.message ||
-            `Houve um erro ao ${
-              postId ? "atualizar" : "criar"
-            } o post. Por favor, tente novamente.`
+          `Houve um erro ao ${postId ? "atualizar" : "criar"
+          } o post. Por favor, tente novamente.`
         );
       });
   };
@@ -443,14 +445,25 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         numberOfLines={4}
       />
 
-      <Button
-        mode="contained"
-        onPress={handleSubmit}
-        style={styles.submitButton}
-        contentStyle={styles.submitContent}
-      >
-        {postId ? "Atualizar Post" : "Criar"}
-      </Button>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 16 }}>
+        <Button
+          mode="contained"
+          onPress={() => router.back()}
+          style={[styles.submitButton, { flex: 1, marginRight: 6 }]}
+          contentStyle={styles.submitContent}
+        >
+          Voltar
+        </Button>
+
+        <Button
+          mode="contained"
+          onPress={handleSubmit}
+          style={[styles.submitButton, { flex: 1, marginLeft: 6 }]}
+          contentStyle={styles.submitContent}
+        >
+          {postId ? "Atualizar Post" : "Criar"}
+        </Button>
+      </View>
     </ScrollView>
   );
 };

@@ -13,16 +13,26 @@ const CardPost = (dataCard: CardPostProps) => {
 
   const handleOpenDetail = () => {
     router.push({
-      pathname: "/PostDetail",
+      pathname: "/PostDetail" as const,
       params: { id: dataCard.dataProperties.id },
     });
   };
-  const handleOpenDefaultModal = () => {
+
+  const handleOpenEdit = () => {
     router.push({
-      pathname: "/default", // se esse também for um modal
-      params: { id: dataCard.dataProperties.id },
+      pathname: "/post/form" as const,
+      params: { edit: dataCard.dataProperties.id },
     });
   };
+
+  const onDeletePress = async () => {
+    try {
+      await handleDeletePost(dataCard.dataProperties.id);
+    } catch (error) {
+      console.error("Erro ao deletar:", error);
+    }
+  };
+
   return (
     <Card style={styles.card} mode="elevated" elevation={2}>
       <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
@@ -65,15 +75,17 @@ const CardPost = (dataCard: CardPostProps) => {
       </Pressable>
       {dataCard.isEditable && (
         <Card.Actions style={styles.btnContainer}>
-          <Pressable onPress={handleOpenDefaultModal}>
-            <Button labelStyle={styles.btnLabel} style={styles.btnEdit}>
-              Editar
-            </Button>
-          </Pressable>
+          <Button
+            labelStyle={styles.btnLabel}
+            style={styles.btnEdit}
+            onPress={handleOpenEdit}
+          >
+            Editar
+          </Button>
           <Button
             labelStyle={styles.btnLabel}
             style={styles.btnDelete}
-            onPress={() => handleDeletePost(dataCard.dataProperties.id)}
+            onPress={onDeletePress}
           >
             Deletar
           </Button>
@@ -93,26 +105,16 @@ const styles = StyleSheet.create({
   },
   img: {
     marginBottom: 8,
-    padding: 0,
-    margin: 0,
     width: "100%",
     height: 180,
     borderTopRightRadius: 16,
     borderTopLeftRadius: 16,
-    borderBottomRightRadius: 0,
-    borderBottomLeftRadius: 0,
-  },
-  defaultIconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f3f4f6",
   },
   cardContent: {},
   cardContentLinkPressable: {},
   title: {
     ...(styleGuide.typography.h3 as TextStyle),
     fontWeight: "bold",
-    margin: 0,
     marginBottom: 8,
   },
   introduction: {
@@ -155,13 +157,13 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     paddingTop: 0,
+    justifyContent: "flex-end",
   },
   btnLabel: {
     ...(styleGuide.typography.button as TextStyle),
   },
   btnEdit: {
     backgroundColor: styleGuide.palette.main.secondColor,
-    borderWidth: 0,
   },
   btnDelete: {
     backgroundColor: styleGuide.palette.main.primaryColor,
