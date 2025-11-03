@@ -20,7 +20,7 @@ export default function ProfessoresScreen() {
     async function fetchTeachers() {
       try {
         if (!token) return;
-        const users = await getAllUsers(token, "admin");
+        const users = await getAllUsers("admin");
         setTeachers(users);
       } catch (err) {
         showSnackbar({

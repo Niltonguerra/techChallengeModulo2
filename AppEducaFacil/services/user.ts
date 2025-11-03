@@ -58,10 +58,9 @@ export const getAuthors = async () => {
   return response.data;
 };
 
-export const getAllUsers = async (token: string, permission?: 'user' | 'admin') => {
+export const getAllUsers = async (permission?: 'user' | 'admin') => {
   const api = getApi();
   const response = await api.get('user/list-all', {
-    headers: { Authorization: `Bearer ${token}` },
     params: permission ? { permission } : {},
   });
   return response.data; 

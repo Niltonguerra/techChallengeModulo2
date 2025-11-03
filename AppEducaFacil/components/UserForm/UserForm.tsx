@@ -42,12 +42,10 @@ export default function CreateUserForm({ permission, userId, afterSubmit }: Prop
 
   const formTitle = permission === "user" ? "Criar Usuário" : "Criar Professor";
 
-  // Atualiza valores
   const handleChange = (field: keyof FormUserData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Selecionar imagem da galeria
   const handleImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -71,7 +69,6 @@ export default function CreateUserForm({ permission, userId, afterSubmit }: Prop
     }
   };
 
-  // Enviar formulário
   const handleSubmit = async () => {
     setErrors({});
 
@@ -92,7 +89,6 @@ export default function CreateUserForm({ permission, userId, afterSubmit }: Prop
       dataToSend.append("password", form.password || "");
       dataToSend.append("permission", form.permission || "");
 
-      // Se tiver imagem, adiciona ao FormData
       if (form.photo && typeof form.photo === "string") {
         const filename = form.photo.split("/").pop() || "photo.jpg";
         const type = `image/${filename.split(".").pop()}`;

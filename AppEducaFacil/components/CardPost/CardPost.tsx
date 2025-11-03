@@ -28,7 +28,6 @@ const CardPost = (dataCard: CardPostProps) => {
   const onDeletePress = async () => {
     try {
       await handleDeletePost(dataCard.dataProperties.id);
-      // Opcional: adicionar callback para atualizar lista
     } catch (error) {
       console.error("Erro ao deletar:", error);
     }
@@ -36,7 +35,6 @@ const CardPost = (dataCard: CardPostProps) => {
 
   return (
     <Card style={styles.card} mode="elevated" elevation={2}>
-      {/* Imagem de capa */}
       <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
       <Pressable
         onPress={handleOpenDetail}
