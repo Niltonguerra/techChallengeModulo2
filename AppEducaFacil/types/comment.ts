@@ -4,7 +4,7 @@ export type UserSummary = {
     photo: string;
 }
 
-export type Comment = {
+export type Comments = {
     id: string;
     content: string;
     createdAt: Date;

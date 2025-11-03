@@ -196,15 +196,6 @@ export class PostService {
           user_name: post.user.name,
           user_email: post.user.email,
           user_photo: post.user.photo,
-          comments: comments.map((c: Comments) => ({
-            id: c.id,
-            content: c.content,
-            createdAt: c.createdAt,
-            user: {
-              name: c.user.name,
-              photo: c.user.photo,
-            },
-          })),
         },
       ],
     };

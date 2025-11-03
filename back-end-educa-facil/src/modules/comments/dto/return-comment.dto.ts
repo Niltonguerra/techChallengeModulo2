@@ -9,7 +9,7 @@ export class UserSummaryDTO {
     photo: string;
 }
 
-export class ListComment {
+export class ListCommentDTO {
     @ApiProperty()
     id: string;
 

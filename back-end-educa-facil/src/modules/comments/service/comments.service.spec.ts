@@ -20,6 +20,10 @@ describe('CommentsService', () => {
     id: 'uuid-123',
     content: 'Test comment',
     createdAt: new Date(),
+    user: {
+      name: 'User Test',
+      photo: 'photo.jpg',
+    },
   } as Comments;
 
   const mockUser = {
@@ -40,6 +44,7 @@ describe('CommentsService', () => {
           provide: getRepositoryToken(Comments),
           useValue: {
             findOne: jest.fn(),
+            find: jest.fn(),
             remove: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
@@ -147,6 +152,44 @@ describe('CommentsService', () => {
         statusCode: 200,
         message: systemMessage.ReturnMessage.successCreatedComment,
       });
+    });
+  });
+
+  describe('findByPostId', () => {
+    it('should throw NotFoundException if post not found', async () => {
+      jest.spyOn(postRepository, 'findOne').mockResolvedValue(null);
+
+      await expect(service.findByPostId('invalid-post')).rejects.toThrow(
+        new NotFoundException(systemMessage.ReturnMessage.errorPostNotFound),
+      );
+
+      expect(postRepository.findOne).toHaveBeenCalledWith({ where: { id: 'invalid-post' } });
+    });
+
+    it('should return a list of formatted comments when found', async () => {
+      jest.spyOn(postRepository, 'findOne').mockResolvedValue(mockPost);
+      jest.spyOn(commentsRepository, 'find').mockResolvedValue([mockComment]);
+
+      const result = await service.findByPostId('post-uuid');
+
+      expect(postRepository.findOne).toHaveBeenCalledWith({ where: { id: 'post-uuid' } });
+      expect(commentsRepository.find).toHaveBeenCalledWith({
+        where: { post: { id: 'post-uuid' } },
+        relations: ['user'],
+        order: { createdAt: 'ASC' },
+      });
+
+      expect(result).toEqual([
+        {
+          id: mockComment.id,
+          content: mockComment.content,
+          createdAt: mockComment.createdAt,
+          user: {
+            name: mockComment.user.name,
+            photo: mockComment.user.photo,
+          },
+        },
+      ]);
     });
   });
 });

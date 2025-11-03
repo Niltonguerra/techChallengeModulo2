@@ -8,6 +8,7 @@ import { CanActivate } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommentsController } from '../controller/comments.controller';
 import { CreateCommentDTO } from '../dto/create-comment.dto';
+import { ListCommentDTO } from '../dto/return-comment.dto';
 import { CommentsService } from '../service/comments.service';
 
 describe('CommentsController', () => {
@@ -25,6 +26,7 @@ describe('CommentsController', () => {
           useValue: {
             delete: jest.fn(),
             create: jest.fn(),
+            findByPostId: jest.fn(),
           },
         },
       ],
@@ -89,14 +91,11 @@ describe('CommentsController', () => {
       };
 
       const mockResult = {
-        id: 'comment-uuid-789',
-        content: dto.content,
-        user: { id: token.id },
-        post: { id: dto.postId },
-        createdAt: new Date(),
+        statusCode: 200,
+        message: systemMessage.ReturnMessage.successCreatedComment,
       };
 
-      jest.spyOn(service, 'create').mockResolvedValue(mockResult as any);
+      jest.spyOn(service, 'create').mockResolvedValue(mockResult);
 
       const result = await controller.create(dto, token);
 
@@ -116,6 +115,41 @@ describe('CommentsController', () => {
 
       await expect(controller.create(dto, token)).rejects.toThrow('Post não encontrado');
       expect(service.create).toHaveBeenCalledWith(dto, token.id);
+    });
+  });
+
+  describe('getCommentsByPost', () => {
+    it('should call CommentsService.findByPostId and return formatted comments', async () => {
+      const mockComments: ListCommentDTO[] = [
+        {
+          id: 'comment-1',
+          content: 'Ótimo post!',
+          createdAt: new Date('2025-11-03T12:00:00Z'),
+          user: { name: 'João Silva', photo: 'joao.jpg' },
+        },
+        {
+          id: 'comment-2',
+          content: 'Muito informativo!',
+          createdAt: new Date('2025-11-03T12:05:00Z'),
+          user: { name: 'Maria Souza', photo: 'maria.jpg' },
+        },
+      ];
+
+      jest.spyOn(service, 'findByPostId').mockResolvedValue(mockComments);
+
+      const result = await controller.getCommentsByPost('post-uuid-123');
+
+      expect(service.findByPostId).toHaveBeenCalledWith('post-uuid-123');
+      expect(result).toEqual(mockComments);
+    });
+
+    it('should handle error when post is not found', async () => {
+      jest.spyOn(service, 'findByPostId').mockRejectedValue(new Error('Post não encontrado'));
+
+      await expect(controller.getCommentsByPost('invalid-post-id')).rejects.toThrow(
+        'Post não encontrado',
+      );
+      expect(service.findByPostId).toHaveBeenCalledWith('invalid-post-id');
     });
   });
 });

@@ -6,6 +6,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { CreateCommentDTO } from '../dto/create-comment.dto';
+import { ListCommentDTO } from '../dto/return-comment.dto';
 import { Comments } from '../entities/comment.entity';
 
 @Injectable()
@@ -55,5 +56,26 @@ export class CommentsService {
       statusCode: 200,
       message: systemMessage.ReturnMessage.successCreatedComment,
     };
+  }
+
+  async findByPostId(postId: string): Promise<ListCommentDTO[]> {
+    const post = await this.postRepository.findOne({ where: { id: postId } });
+    if (!post) throw new NotFoundException(systemMessage.ReturnMessage.errorPostNotFound);
+
+    const comments = await this.repository.find({
+      where: { post: { id: postId } },
+      relations: ['user'],
+      order: { createdAt: 'ASC' },
+    });
+
+    return comments.map((c: Comments) => ({
+      id: c.id,
+      content: c.content,
+      createdAt: c.createdAt,
+      user: {
+        name: c.user?.name,
+        photo: c.user?.photo,
+      },
+    }));
   }
 }
