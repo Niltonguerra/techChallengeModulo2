@@ -12,5 +12,4 @@ export class UserListDTO {
 
   @ApiProperty()
   name: string;
-
 }

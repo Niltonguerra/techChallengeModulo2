@@ -7,6 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCommentDTO } from '../dto/create-comment.dto';
+import { PaginateDTO } from '../dto/get-comment.dto';
 import { Comments } from '../entities/comment.entity';
 import { CommentsService } from '../service/comments.service';
 
@@ -20,6 +21,10 @@ describe('CommentsService', () => {
     id: 'uuid-123',
     content: 'Test comment',
     createdAt: new Date(),
+    user: {
+      name: 'User Test',
+      photo: 'photo.jpg',
+    },
   } as Comments;
 
   const mockUser = {
@@ -40,6 +45,7 @@ describe('CommentsService', () => {
           provide: getRepositoryToken(Comments),
           useValue: {
             findOne: jest.fn(),
+            find: jest.fn(),
             remove: jest.fn(),
             create: jest.fn(),
             save: jest.fn(),
@@ -147,6 +153,64 @@ describe('CommentsService', () => {
         statusCode: 200,
         message: systemMessage.ReturnMessage.successCreatedComment,
       });
+    });
+  });
+
+  describe('findByPostId', () => {
+    it('should throw NotFoundException if post not found', async () => {
+      jest.spyOn(postRepository, 'findOne').mockResolvedValue(null);
+
+      await expect(
+        service.findByPostId('invalid-post', { offset: '0', limit: '10' }),
+      ).rejects.toThrow(new NotFoundException(systemMessage.ReturnMessage.errorPostNotFound));
+
+      expect(postRepository.findOne).toHaveBeenCalledWith({ where: { id: 'invalid-post' } });
+    });
+
+    it('should return a list of formatted comments when found (with pagination)', async () => {
+      jest.spyOn(postRepository, 'findOne').mockResolvedValue(mockPost);
+      jest.spyOn(commentsRepository, 'find').mockResolvedValue([mockComment]);
+
+      const paginate: PaginateDTO = { offset: '5', limit: '20' };
+
+      const result = await service.findByPostId('post-uuid', paginate);
+
+      expect(postRepository.findOne).toHaveBeenCalledWith({ where: { id: 'post-uuid' } });
+      expect(commentsRepository.find).toHaveBeenCalledWith({
+        where: { post: { id: 'post-uuid' } },
+        relations: ['user'],
+        order: { createdAt: 'ASC' },
+        skip: 5,
+        take: 20,
+      });
+
+      expect(result).toEqual([
+        {
+          id: mockComment.id,
+          content: mockComment.content,
+          createdAt: mockComment.createdAt,
+          user: {
+            name: mockComment.user.name,
+            photo: mockComment.user.photo,
+          },
+        },
+      ]);
+    });
+
+    it('should use default pagination values if none provided', async () => {
+      jest.spyOn(postRepository, 'findOne').mockResolvedValue(mockPost);
+      jest.spyOn(commentsRepository, 'find').mockResolvedValue([mockComment]);
+
+      const result = await service.findByPostId('post-uuid', {} as PaginateDTO);
+
+      expect(commentsRepository.find).toHaveBeenCalledWith({
+        where: { post: { id: 'post-uuid' } },
+        relations: ['user'],
+        order: { createdAt: 'ASC' },
+        skip: 0,
+        take: 10,
+      });
+      expect(result.length).toBe(1);
     });
   });
 });

@@ -1,3 +1,5 @@
+import { Comments } from "./comment";
+
 export type Post = {
     id: string;
     title: string;
@@ -12,7 +14,6 @@ export type Post = {
     user_name: string;
     user_email: string;
     user_photo?: string;
-    comments?: Comment[];
 }
 
 export type PostSearch = {
@@ -41,3 +42,5 @@ export type DeleteResponse = {
     statusCode: number;
     deletedId?: string;
 }
+export { Comments };
+

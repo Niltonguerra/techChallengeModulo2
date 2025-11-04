@@ -56,4 +56,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     CommentsModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

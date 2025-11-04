@@ -1,24 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserSummaryDTO {
+  @ApiProperty()
+  name: string;
 
-    @ApiProperty()
-    name: string;
-
-    @ApiProperty()
-    photo: string;
+  @ApiProperty()
+  photo: string;
 }
 
-export class ListComment {
-    @ApiProperty()
-    id: string;
+export class ListCommentDTO {
+  @ApiProperty()
+  id: string;
 
-    @ApiProperty()
-    content: string;
+  @ApiProperty()
+  content: string;
 
-    @ApiProperty()
-    createdAt: Date;
+  @ApiProperty()
+  createdAt: Date;
 
-    @ApiProperty()
-    user: UserSummaryDTO;
+  @ApiProperty()
+  user: UserSummaryDTO;
 }

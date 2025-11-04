@@ -1,4 +1,3 @@
-import type { Comment } from "./comment";
 
 export type Post = {
     id: string;
@@ -14,7 +13,6 @@ export type Post = {
     user_name: string;
     user_email: string;
     user_photo?: string;
-    comments?: Comment[];
 }
 
 export type PostSearch = {
