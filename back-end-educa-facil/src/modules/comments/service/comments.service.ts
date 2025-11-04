@@ -6,6 +6,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository';
 import { CreateCommentDTO } from '../dto/create-comment.dto';
+import { PaginateDTO } from '../dto/get-comment.dto';
 import { ListCommentDTO } from '../dto/return-comment.dto';
 import { Comments } from '../entities/comment.entity';
 
@@ -58,7 +59,7 @@ export class CommentsService {
     };
   }
 
-  async findByPostId(postId: string): Promise<ListCommentDTO[]> {
+  async findByPostId(postId: string, paginate: PaginateDTO): Promise<ListCommentDTO[]> {
     const post = await this.postRepository.findOne({ where: { id: postId } });
     if (!post) throw new NotFoundException(systemMessage.ReturnMessage.errorPostNotFound);
 
@@ -66,6 +67,8 @@ export class CommentsService {
       where: { post: { id: postId } },
       relations: ['user'],
       order: { createdAt: 'ASC' },
+      skip: Number(paginate.offset) || 0,
+      take: Number(paginate.limit) || 10,
     });
 
     return comments.map((c: Comments) => ({

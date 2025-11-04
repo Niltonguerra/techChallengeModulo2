@@ -3,7 +3,7 @@ import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
@@ -14,6 +14,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CreateCommentDTO } from '../dto/create-comment.dto';
+import { PaginateDTO } from '../dto/get-comment.dto';
 import { ListCommentDTO } from '../dto/return-comment.dto';
 import { CommentsService } from '../service/comments.service';
 
@@ -50,8 +51,8 @@ export class CommentsController {
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
   @ApiOperation({ summary: 'Get comments by post ID' })
   @ApiOkResponse({ type: [ListCommentDTO] })
-  async getCommentsByPost(@Param('postId') postId: string) {
-    const comments = await this.commentsService.findByPostId(postId);
+  async getCommentsByPost(@Param('postId') postId: string, @Query() query: PaginateDTO) {
+    const comments = await this.commentsService.findByPostId(postId, query);
     return comments;
   }
 }
