@@ -48,13 +48,13 @@ function AppContent() {
     const allowedRoutes = ["/PostDetail"];
     const isAdmin = user?.permission === "admin" || user?.role === "admin";
     const isAdminRoute =
-  pathname.startsWith("/admin-") || pathname.startsWith("/(admin)") ||
-  pathname.includes("/post") ||
-  pathname.includes("/user");
+    currentRoute.startsWith("/admin-") || currentRoute.startsWith("/(admin)") ||
+    currentRoute.includes("/post") ||
+    currentRoute.includes("/user");
 
-    const isTabsRoute = pathname.startsWith("/(tabs)");
+    const isTabsRoute = currentRoute.startsWith("/(tabs)");
     const isAuthRoute =
-      pathname.includes("login") || pathname.includes("user-registration");
+      currentRoute === '/' || currentRoute.includes("login") || currentRoute.includes("user-registration");
 
     if (!isAuthenticated) {
       if (!isAuthRoute) {
@@ -72,7 +72,7 @@ function AppContent() {
       return;
     }
 
-    if (pathname.startsWith("/(auth)")) {
+    if (currentRoute.startsWith("/(auth)")) {
       router.replace("/(tabs)");
       return;
     }

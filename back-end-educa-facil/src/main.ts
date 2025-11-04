@@ -25,6 +25,7 @@ async function bootstrap() {
             process.env.FRONTEND_URL_PROD,
             process.env.FRONTEND_URL_PROFESSOR,
             process.env.FRONTEND_URL_MOBILE_PROD,
+            'http://localhost:8081'
           ]
         : [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_MOBILE_LOCAL, 'http://localhost:8081'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
