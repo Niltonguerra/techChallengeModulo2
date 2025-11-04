@@ -1,13 +1,13 @@
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
-import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { RolesGuardStudent } from '@modules/auth/guards/roles-student.guard';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { CanActivate } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommentsController } from '../controller/comments.controller';
 import { CreateCommentDTO } from '../dto/create-comment.dto';
+import { PaginateDTO } from '../dto/get-comment.dto';
 import { ListCommentDTO } from '../dto/return-comment.dto';
 import { CommentsService } from '../service/comments.service';
 
@@ -32,8 +32,6 @@ describe('CommentsController', () => {
       ],
     })
       .overrideGuard(JwtAuthGuardUser)
-      .useValue(mockGuard)
-      .overrideGuard(RolesGuardProfessor)
       .useValue(mockGuard)
       .overrideGuard(RolesGuardStudent)
       .useValue(mockGuard)
@@ -135,21 +133,25 @@ describe('CommentsController', () => {
         },
       ];
 
+      const query: PaginateDTO = { offset: '0', limit: '10' };
+
       jest.spyOn(service, 'findByPostId').mockResolvedValue(mockComments);
 
-      const result = await controller.getCommentsByPost('post-uuid-123');
+      const result = await controller.getCommentsByPost('post-uuid-123', query);
 
-      expect(service.findByPostId).toHaveBeenCalledWith('post-uuid-123');
+      expect(service.findByPostId).toHaveBeenCalledWith('post-uuid-123', query);
       expect(result).toEqual(mockComments);
     });
 
     it('should handle error when post is not found', async () => {
+      const query: PaginateDTO = { offset: '0', limit: '10' };
+
       jest.spyOn(service, 'findByPostId').mockRejectedValue(new Error('Post não encontrado'));
 
-      await expect(controller.getCommentsByPost('invalid-post-id')).rejects.toThrow(
+      await expect(controller.getCommentsByPost('invalid-post-id', query)).rejects.toThrow(
         'Post não encontrado',
       );
-      expect(service.findByPostId).toHaveBeenCalledWith('invalid-post-id');
+      expect(service.findByPostId).toHaveBeenCalledWith('invalid-post-id', query);
     });
   });
 });
