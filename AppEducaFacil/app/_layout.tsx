@@ -55,7 +55,9 @@ function AppContent() {
 
     const isTabsRoute = pathname.startsWith("/(tabs)");
     const isAuthRoute =
-      pathname.includes("login") || pathname.includes("user-registration");
+      pathname.includes("login") ||
+      pathname.includes("user-registration") ||
+      pathname.includes("faq");
 
     if (!isAuthenticated) {
       if (!isAuthRoute) {
