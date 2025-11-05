@@ -87,19 +87,16 @@ export default function TabOneScreen() {
       showsVerticalScrollIndicator={false}
       onScrollEndDrag={() => fetchMorePosts()}
     >
-      {/* 🔹 Carrossel sem bordas */}
       {posts.length > 0 && (
         <View style={{ width: screenWidth, marginBottom: 16 }}>
           <CarouselPosts posts={posts} />
         </View>
       )}
 
-      {/* 🔹 Filtro com padding lateral */}
       <View style={{ paddingHorizontal: 16 }}>
         <Filter onFilter={handleFilter} />
       </View>
 
-      {/* 🔹 Conteúdo */}
       <View style={{ paddingHorizontal: 16 }}>
         {loading && posts.length === 0 ? (
           <View style={styles.centered}>
