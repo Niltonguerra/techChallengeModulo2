@@ -1,11 +1,17 @@
 import styleGuide from "@/constants/styleGuide";
-import { createComment, deleteComment, getCommentsByPost } from "@/services/comments";
+import {
+    createComment,
+    deleteComment,
+    getCommentsByPost,
+} from "@/services/comments";
 import { getListById } from "@/services/post";
 import { RootState } from "@/store/store";
 import { Comments, Post } from "@/types/post";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+    Alert,
+    Animated,
     Linking,
     ScrollView,
     StyleSheet,
@@ -20,12 +26,15 @@ import {
     Card,
     Divider,
     IconButton,
+    Snackbar,
     Text,
 } from "react-native-paper";
 import { useSelector } from "react-redux";
 
 export default function PostDetail() {
+    const user = useSelector((state: RootState) => state.auth.user);
     const { id } = useLocalSearchParams<{ id: string }>();
+
     const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -33,10 +42,19 @@ export default function PostDetail() {
     const [comments, setComments] = useState<Comments[]>([]);
     const [newComment, setNewComment] = useState("");
     const [commentLoading, setCommentLoading] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
 
-    const user = useSelector((state: RootState) => state.auth.user);
+    const [offset, setOffset] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const COMMENTS_LIMIT = 10;
 
-    // Carrega o post e comentários
+    const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
+    const [snackbar, setSnackbar] = useState({
+        visible: false,
+        message: "",
+        type: "success" as "success" | "error",
+    });
+
     const fetchPostAndComments = async () => {
         if (!id) return;
         setLoading(true);
@@ -44,37 +62,6 @@ export default function PostDetail() {
             const data = await getListById(id);
             const postData = data.ListPost[0];
             setPost(postData);
-            // const commentsData = await getCommentsByPost(postData.id);
-            const commentsData: Comments[] = [
-                {
-                    "id": "9d691aab-0edc-461f-a89c-d9441c524790",
-                    "content": "Esse post é muito bom! Esse post é muito bom! Esse post é muito bom! Esse post é muito bom! Esse post é muito bom! Esse post é muito bom! ",
-                    "createdAt": "2025-11-02T15:52:52.134Z",
-                    "user": {
-                        "name": "Luis",
-                        "photo": "https://i.pinimg.com/736x/c6/a7/75/c6a7753e45950582ae36a7c8a87ad505.jpg"
-                    }
-                },
-                {
-                    "id": "2ee7d9a4-8385-4c4c-9243-8b8d785f03df",
-                    "content": "Esse post é muito bom!",
-                    "createdAt": "2025-11-02T15:53:43.499Z",
-                    "user": {
-                        "name": "Luis",
-                        "photo": "https://i.pinimg.com/736x/c6/a7/75/c6a7753e45950582ae36a7c8a87ad505.jpg"
-                    }
-                },
-                {
-                    "id": "9cd3da0c-63b5-4a28-978b-6fef3bb30cc2",
-                    "content": "Esse post é muito bom2!",
-                    "createdAt": "2025-11-02T15:53:48.265Z",
-                    "user": {
-                        "name": "Luis",
-                        "photo": "https://i.pinimg.com/736x/c6/a7/75/c6a7753e45950582ae36a7c8a87ad505.jpg"
-                    }
-                }
-            ]
-            setComments(commentsData);
         } catch (err) {
             console.error(err);
             setError(true);
@@ -83,19 +70,49 @@ export default function PostDetail() {
         }
     };
 
+    const fetchComments = async (reset = false, action = 'insert') => {
+        if (!post) return;
+        if (loadingMore || commentLoading) return;
+
+        const nextOffset = reset ? 0 : offset;
+        if (!reset) setLoadingMore(true);
+        else if (action === 'insert') setCommentLoading(true);
+
+        try {
+            const data = await getCommentsByPost(post.id, String(nextOffset), String(COMMENTS_LIMIT));
+
+            if (reset) {
+                setComments(data);
+                setOffset(data.length);
+            } else {
+                setComments((prev) => [...prev, ...data]);
+                setOffset((prev) => prev + data.length);
+            }
+
+            setHasMore(data.length === COMMENTS_LIMIT);
+        } catch (err) {
+            console.error("Erro ao buscar comentários:", err);
+        } finally {
+            if (reset) setCommentLoading(false);
+            else setLoadingMore(false);
+        }
+    };
+
     useEffect(() => {
         fetchPostAndComments();
     }, [id]);
 
-    // Adiciona comentário
+    useEffect(() => {
+        if (post) fetchComments(true);
+    }, [post]);
+
     const handleAddComment = async () => {
         if (!newComment.trim() || !post) return;
         setCommentLoading(true);
         try {
             await createComment({ postId: post.id, content: newComment.trim() });
             setNewComment("");
-            const commentsData = await getCommentsByPost(post.id);
-            setComments(commentsData);
+            await fetchComments(true);
         } catch (err) {
             console.error("Erro ao criar comentário", err);
         } finally {
@@ -103,19 +120,45 @@ export default function PostDetail() {
         }
     };
 
-    // Deleta comentário
-    const handleDeleteComment = async (commentId: string) => {
+    const performDelete = async (commentId: string) => {
         if (!post) return;
-        setCommentLoading(true);
+        setDeletingCommentId(commentId);
         try {
             await deleteComment(commentId);
-            const commentsData = await getCommentsByPost(post.id);
-
-            setComments(commentsData);
+            await fetchComments(true, 'delete');
+            setSnackbar({
+                visible: true,
+                message: "Comentário excluído com sucesso.",
+                type: "success",
+            });
         } catch (err) {
             console.error("Erro ao deletar comentário", err);
+            setSnackbar({
+                visible: true,
+                message: "Erro ao excluir comentário.",
+                type: "error",
+            });
         } finally {
-            setCommentLoading(false);
+            setDeletingCommentId(null);
+        }
+    };
+
+    const confirmDelete = (commentId: string, fadeOutAndDelete: () => void) => {
+        Alert.alert(
+            "Excluir comentário",
+            "Tem certeza que deseja excluir este comentário?",
+            [
+                { text: "Cancelar", style: "cancel" },
+                { text: "Excluir", style: "destructive", onPress: fadeOutAndDelete },
+            ]
+        );
+    };
+
+    const handleScroll = ({ nativeEvent }: any) => {
+        const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+        const distanceFromBottom = contentSize.height - (layoutMeasurement.height + contentOffset.y);
+        if (distanceFromBottom < 150 && hasMore && !loadingMore) {
+            fetchComments(false);
         }
     };
 
@@ -142,20 +185,19 @@ export default function PostDetail() {
             <ScrollView
                 contentContainerStyle={styles.container}
                 showsVerticalScrollIndicator={false}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
             >
-                {/* Imagem do post */}
                 {post.image && (
                     <Card style={styles.imageCard} mode="elevated" elevation={2}>
                         <Card.Cover source={{ uri: post.image }} style={styles.image} />
                     </Card>
                 )}
 
-                {/* Título */}
                 <Text variant="headlineLarge" style={styles.title}>
                     {post.title}
                 </Text>
 
-                {/* Autor e data */}
                 <View style={styles.authorRow}>
                     {post.user_photo ? (
                         <Avatar.Image
@@ -179,7 +221,6 @@ export default function PostDetail() {
                     </View>
                 </View>
 
-                {/* Tags */}
                 <View style={styles.tagsContainer}>
                     {post.content_hashtags.map((tag, idx) => (
                         <View key={`${tag}-${idx}`} style={styles.tag}>
@@ -192,7 +233,6 @@ export default function PostDetail() {
 
                 <Divider style={{ marginVertical: 12 }} />
 
-                {/* Introdução */}
                 {post.introduction && (
                     <View style={{ marginBottom: 12 }}>
                         <Text variant="titleMedium" style={styles.sectionTitle}>
@@ -204,7 +244,6 @@ export default function PostDetail() {
                     </View>
                 )}
 
-                {/* Descrição */}
                 {post.description && (
                     <View style={{ marginBottom: 12 }}>
                         <Text variant="titleMedium" style={styles.sectionTitle}>
@@ -216,7 +255,6 @@ export default function PostDetail() {
                     </View>
                 )}
 
-                {/* Links externos */}
                 {post.external_link &&
                     Object.entries(post.external_link).map(([key, value]) => {
                         if (!value) return null;
@@ -238,13 +276,11 @@ export default function PostDetail() {
                         );
                     })}
 
-                {/* Seção de comentários */}
                 <Divider style={{ marginVertical: 16 }} />
                 <Text variant="titleMedium" style={styles.sectionTitle}>
                     Comentários
                 </Text>
 
-                {/* Input para adicionar comentário */}
                 <View style={styles.commentInputContainer}>
                     <TextInput
                         style={styles.commentInput}
@@ -265,40 +301,101 @@ export default function PostDetail() {
                     </Button>
                 </View>
 
-                {/* Lista de comentários */}
                 {comments.length ? (
-                    comments.map((comment) => (
+                    comments.map((comment) => {
+                        const opacity = new Animated.Value(1);
 
-                        <View key={comment.id} style={styles.commentBubbleContainer}>
-                            {comment.user.photo ? (
-                                <Avatar.Image size={36} source={{ uri: comment.user.photo }} />
-                            ) : (
-                                <Avatar.Text
-                                    size={36}
-                                    label={comment.user.name?.[0]?.toUpperCase() ?? "?"}
-                                    style={{ backgroundColor: styleGuide.palette.main.primaryColor }}
-                                />
-                            )}
-                            <View style={styles.commentBubble}>
-                                <Text style={styles.commentAuthor}>{comment.user.name}</Text>
-                                <Text style={styles.commentText}>{comment.content}</Text>
-                                <Text style={styles.commentDate}>
-                                    {new Date(comment.createdAt).toLocaleDateString("pt-BR")}
-                                </Text>
-                            </View>
-                            <IconButton
-                                icon="delete"
-                                size={18}
-                                onPress={() => handleDeleteComment(comment.id)}
-                                iconColor={styleGuide.palette.error}
-                                style={{ marginLeft: 4 }}
-                            />
-                        </View>
-                    ))
+                        const fadeOutAndDelete = () => {
+                            Animated.timing(opacity, {
+                                toValue: 0,
+                                duration: 300,
+                                useNativeDriver: true,
+                            }).start(async () => {
+                                await performDelete(comment.id);
+                            });
+                        };
+
+                        return (
+                            <Animated.View key={comment.id} style={{ opacity }}>
+                                <Card
+                                    style={[
+                                        styles.commentCard,
+                                        deletingCommentId === comment.id && { opacity: 0.6 },
+                                    ]}
+                                    mode="contained"
+                                >
+                                    <View style={styles.commentHeader}>
+                                        {comment.user.photo ? (
+                                            <Avatar.Image
+                                                size={40}
+                                                source={{ uri: comment.user.photo }}
+                                                style={{
+                                                    backgroundColor: styleGuide.palette.main.fourthColor,
+                                                }}
+                                            />
+                                        ) : (
+                                            <Avatar.Text
+                                                size={40}
+                                                label={comment.user.name?.[0]?.toUpperCase() ?? "?"}
+                                                style={{
+                                                    backgroundColor:
+                                                        styleGuide.palette.main.primaryColor,
+                                                }}
+                                            />
+                                        )}
+
+                                        <View style={styles.commentHeaderText}>
+                                            <Text style={styles.authorName}>{comment.user.name}</Text>
+                                            <Text style={styles.authorDate}>
+                                                {new Date(comment.createdAt).toLocaleDateString("pt-BR")}
+                                            </Text>
+                                        </View>
+
+                                        {(user?.permission === "admin" || user?.id === comment.user.id) && (
+                                            deletingCommentId === comment.id ? (
+                                                <ActivityIndicator size="small" />
+                                            ) : (
+                                                <IconButton
+                                                    icon="delete"
+                                                    size={20}
+                                                    onPress={() => confirmDelete(comment.id, fadeOutAndDelete)}
+                                                    iconColor={styleGuide.palette.error}
+                                                />
+                                            )
+                                        )}
+                                    </View>
+
+                                    <Text variant="bodyMedium" style={styles.commentContent}>
+                                        {comment.content}
+                                    </Text>
+                                </Card>
+                            </Animated.View>
+                        );
+                    })
                 ) : (
                     <Text style={styles.bodyText}>Nenhum comentário ainda.</Text>
                 )}
+
+                {loadingMore && (
+                    <View style={{ paddingVertical: 16, alignItems: "center" }}>
+                        <ActivityIndicator size="small" />
+                    </View>
+                )}
             </ScrollView>
+
+            <Snackbar
+                visible={snackbar.visible}
+                onDismiss={() => setSnackbar({ ...snackbar, visible: false })}
+                duration={2500}
+                style={{
+                    backgroundColor:
+                        snackbar.type === "success"
+                            ? styleGuide.palette.success
+                            : styleGuide.palette.error,
+                }}
+            >
+                {snackbar.message}
+            </Snackbar>
         </View>
     );
 }
@@ -409,42 +506,46 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-
-    commentInputContainer: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 16 },
-    commentInput: { flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 10, padding: 8, backgroundColor: "#fff" },
-
     button: { backgroundColor: styleGuide.palette.main.primaryColor },
     buttonLabel: {
         color: styleGuide.palette.main.fourthColor,
     },
-
-    commentBubbleContainer: {
+    commentInputContainer: {
         flexDirection: "row",
-        alignItems: "flex-start",
-        marginBottom: 10,
-
+        alignItems: "center",
+        gap: 10,
+        marginBottom: 16,
     },
-    commentBubble: {
+    commentInput: {
         flex: 1,
-        marginLeft: 8,
+        borderWidth: 1,
+        borderColor: styleGuide.palette.main.primaryColor,
+        borderRadius: 10,
+        padding: 10,
         backgroundColor: styleGuide.palette.main.fourthColor,
-        borderRadius: 12,
-        padding: 8,
     },
-    commentAuthor: {
+    commentCard: {
+        marginBottom: 12,
+        borderRadius: 14,
+        backgroundColor: styleGuide.palette.main.fourthColor,
+        padding: 1,
+        elevation: 0,
+        shadowColor: "transparent",
+        borderWidth: 0,
+    },
+    commentHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 6,
+    },
+    commentHeaderText: {
+        flex: 1,
+        marginLeft: 10,
+    },
+    commentContent: {
         fontSize: 15,
-        lineHeight: 22,
-        marginBottom: 2,
-        color: styleGuide.palette.main.textSecondaryColor,
-    },
-    commentText: {
-        fontSize: 14,
-        color: styleGuide.palette.main.textSecondaryColor,
-    },
-    commentDate: {
-        fontSize: 12,
         color: styleGuide.palette.main.textSecondaryColor,
         marginTop: 4,
-        alignSelf: "flex-end",
+        lineHeight: 22,
     },
 });

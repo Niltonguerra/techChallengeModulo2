@@ -66,7 +66,7 @@ export class CommentsService {
     const comments = await this.repository.find({
       where: { post: { id: postId } },
       relations: ['user'],
-      order: { createdAt: 'ASC' },
+      order: { createdAt: 'DESC' },
       skip: Number(paginate.offset) || 0,
       take: Number(paginate.limit) || 10,
     });
@@ -76,6 +76,7 @@ export class CommentsService {
       content: c.content,
       createdAt: c.createdAt,
       user: {
+        id: c.user?.id,
         name: c.user?.name,
         photo: c.user?.photo,
       },

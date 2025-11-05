@@ -123,13 +123,13 @@ describe('CommentsController', () => {
           id: 'comment-1',
           content: 'Ótimo post!',
           createdAt: new Date('2025-11-03T12:00:00Z'),
-          user: { name: 'João Silva', photo: 'joao.jpg' },
+          user: { id: 'ddad12812e', name: 'João Silva', photo: 'joao.jpg' },
         },
         {
           id: 'comment-2',
           content: 'Muito informativo!',
           createdAt: new Date('2025-11-03T12:05:00Z'),
-          user: { name: 'Maria Souza', photo: 'maria.jpg' },
+          user: { id: 'ddad12812e', name: 'Maria Souza', photo: 'maria.jpg' },
         },
       ];
 

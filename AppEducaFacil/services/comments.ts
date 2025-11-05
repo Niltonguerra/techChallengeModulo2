@@ -49,8 +49,9 @@ export const deleteComment = async (commentId: string): Promise<void> => {
 };
 
 
-export const getCommentsByPost = async (postId: string): Promise<Comments[]> => {
+export const getCommentsByPost = async (postId: string, offset = '0',limit='10'): Promise<Comments[]> => {
     const api = getApi();
-    const response = await api.get<Comments[]>(`/post/${postId}`);
+    const params = {offset: offset, limit: limit}
+    const response = await api.get<Comments[]>(`/comments/post/${postId}`,{params});
     return response.data;
 };

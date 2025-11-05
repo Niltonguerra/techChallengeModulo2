@@ -22,6 +22,7 @@ describe('CommentsService', () => {
     content: 'Test comment',
     createdAt: new Date(),
     user: {
+      id: 'sad21e312c2',
       name: 'User Test',
       photo: 'photo.jpg',
     },
@@ -179,7 +180,7 @@ describe('CommentsService', () => {
       expect(commentsRepository.find).toHaveBeenCalledWith({
         where: { post: { id: 'post-uuid' } },
         relations: ['user'],
-        order: { createdAt: 'ASC' },
+        order: { createdAt: 'DESC' },
         skip: 5,
         take: 20,
       });
@@ -190,6 +191,7 @@ describe('CommentsService', () => {
           content: mockComment.content,
           createdAt: mockComment.createdAt,
           user: {
+            id: mockComment.user.id,
             name: mockComment.user.name,
             photo: mockComment.user.photo,
           },
@@ -206,7 +208,7 @@ describe('CommentsService', () => {
       expect(commentsRepository.find).toHaveBeenCalledWith({
         where: { post: { id: 'post-uuid' } },
         relations: ['user'],
-        order: { createdAt: 'ASC' },
+        order: { createdAt: 'DESC' },
         skip: 0,
         take: 10,
       });
