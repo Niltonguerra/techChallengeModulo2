@@ -203,7 +203,7 @@ export default function PostDetail() {
                         <Avatar.Image
                             size={36}
                             source={{ uri: post.user_photo }}
-                            style={{ backgroundColor: "#ccc" }}
+                            style={{ backgroundColor: styleGuide.palette.main.textSecondaryColor }}
                         />
                     ) : (
                         <Avatar.Text
