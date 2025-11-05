@@ -20,7 +20,7 @@ export default function AlunosScreen() {
     async function fetchStudents() {
       try {
         if (!token) return;
-        const users = await getAllUsers(token, "user");
+        const users = await getAllUsers("user");
         setStudents(users);
       } catch (err) {
         showSnackbar({

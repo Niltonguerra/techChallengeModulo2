@@ -2,18 +2,27 @@ import CardPost from "../../components/CardPost/CardPost";
 import styleGuide from "@/constants/styleGuide";
 import { Post } from "@/types/post";
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, TextStyle, View } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
 import { Filter } from "../../components/filter/Filter";
 import { fetchPosts } from "../../services/post";
+import CarouselPosts from "@/components/Carousel/Carousel";
 
 export default function TabOneScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false); // loading para filtros
-  const [loadingMore, setLoadingMore] = useState(false); // loading para paginação
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const limit = 10;
+  const screenWidth = Dimensions.get("window").width;
 
   useEffect(() => {
     handleFilter();
@@ -26,7 +35,6 @@ export default function TabOneScreen() {
     createdAtBefore?: string;
   };
 
-  // Função para filtrar posts
   const handleFilter = async (filters: PostFilters = {}) => {
     setLoading(true);
     try {
@@ -46,7 +54,6 @@ export default function TabOneScreen() {
     }
   };
 
-  // Função para carregar mais posts (infinite scroll)
   const fetchMorePosts = async () => {
     if (loading || loadingMore || !hasMore) return;
     setLoadingMore(true);
@@ -57,7 +64,7 @@ export default function TabOneScreen() {
         advanced: true,
       });
       if (data?.length) {
-        setPosts([...posts, ...data]);
+        setPosts((prev) => [...prev, ...data]);
         setOffset(offset + data.length);
         setHasMore(data.length === limit);
       } else {
@@ -71,13 +78,35 @@ export default function TabOneScreen() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16, backgroundColor: styleGuide.palette.main.fourthColor }}>
-      <Filter onFilter={handleFilter} />
+    <ScrollView
+      style={{
+        flex: 1,
+        backgroundColor: styleGuide.palette.main.fourthColor,
+      }}
+      contentContainerStyle={{ paddingBottom: 40 }}
+      showsVerticalScrollIndicator={false}
+      onScrollEndDrag={() => fetchMorePosts()}
+    >
+      {/* 🔹 Carrossel sem bordas */}
+      {posts.length > 0 && (
+        <View style={{ width: screenWidth, marginBottom: 16 }}>
+          <CarouselPosts posts={posts} />
+        </View>
+      )}
 
-      <View style={{ flex: 1, marginTop: 16 }}>
-        {posts.length === 0 && loading ? (
+      {/* 🔹 Filtro com padding lateral */}
+      <View style={{ paddingHorizontal: 16 }}>
+        <Filter onFilter={handleFilter} />
+      </View>
+
+      {/* 🔹 Conteúdo */}
+      <View style={{ paddingHorizontal: 16 }}>
+        {loading && posts.length === 0 ? (
           <View style={styles.centered}>
-            <ActivityIndicator size="large" color={styleGuide.palette.main.primaryColor} />
+            <ActivityIndicator
+              size="large"
+              color={styleGuide.palette.main.primaryColor}
+            />
           </View>
         ) : posts.length === 0 ? (
           <View style={styles.centered}>
@@ -94,39 +123,23 @@ export default function TabOneScreen() {
             </Text>
           </View>
         ) : (
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={posts}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => <CardPost isEditable={false} dataProperties={item} />}
-              onEndReached={fetchMorePosts}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={
-                loadingMore ? (
-                  <ActivityIndicator style={{ margin: 16 }} color={styleGuide.palette.main.primaryColor} />
-                ) : null
-              }
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 32 }}
-            />
-            {loading && (
-              <View style={styles.loadingOverlay}>
-                <ActivityIndicator size="large" color={styleGuide.palette.main.primaryColor} />
-              </View>
+          <>
+            {posts.map((item) => (
+              <CardPost key={item.id} isEditable={false} dataProperties={item} />
+            ))}
+            {loadingMore && (
+              <ActivityIndicator
+                style={{ marginTop: 16 }}
+                color={styleGuide.palette.main.primaryColor}
+              />
             )}
-          </View>
+          </>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-  loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.5)",
-  },
 });
