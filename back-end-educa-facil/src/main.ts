@@ -1,7 +1,10 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as crypto from 'crypto';
 import { setupDocumentation } from 'docs/documentation';
 import { AppModule } from './app.module';
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+(global as any).crypto = crypto;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
