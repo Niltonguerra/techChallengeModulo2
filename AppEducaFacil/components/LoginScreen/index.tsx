@@ -16,7 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { loginSuccess } from "@/store/authSlice";
 import { AppDispatch } from "@/store/store";
 import { RequestUser, ResponseAuthUser } from "@/types/login";
-import CardPost from '../CardPost/CardPost';
+import CardPost from "../CardPost/CardPost";
 import CardUser from "../CardUser/CardUser";
 
 export default function LoginScreen() {
@@ -117,8 +117,26 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       <Text style={styles.titleregister}>Faça o seu registro</Text>
-      <Text style={styles.text} onPress={() => { router.push('/user-registration') }}>Não Possui registro? Registre-se aqui</Text>
-      <Text style={styles.text}>Dúvidas ou precisa de alguma ajuda?</Text>
+      <Text
+        style={styles.text}
+        onPress={() => {
+          router.push("/user-registration");
+        }}
+      >
+        Não Possui registro? Registre-se aqui
+      </Text>
+
+      <Text
+        style={styles.text}
+        onPress={() => {
+          router.push("/faq");
+        }}
+      >
+        Dúvidas? Acesse nosso FAQ!
+      </Text>
+
+      <Text style={styles.text}>Entre em contato conosco:</Text>
+
       <Text style={styles.text}>
         <MaterialCommunityIcons
           name="phone"
@@ -128,6 +146,7 @@ export default function LoginScreen() {
         />
         (11) 93231-3383
       </Text>
+
       <Text style={styles.text}>
         <MaterialCommunityIcons
           name="email-outline"
@@ -138,14 +157,14 @@ export default function LoginScreen() {
         educacaofacilfiap@gmail.com
       </Text>
     </View>
-
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: styleGuide.light.background || styleGuide.palette.main.fourthColor,
+    backgroundColor:
+      styleGuide.light.background || styleGuide.palette.main.fourthColor,
     justifyContent: "center",
     padding: 24,
   },
