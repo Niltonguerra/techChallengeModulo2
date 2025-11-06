@@ -1,6 +1,6 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
+import { SplashScreen, Stack, usePathname, useRootNavigationState, useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
@@ -27,7 +27,9 @@ export default function RootLayout() {
     if (loaded) SplashScreen.hideAsync();
   }, [loaded]);
 
-  if (!loaded) return null;
+  if (!loaded) {
+    return <Stack screenOptions={{ headerShown: false }} />;
+  }
 
   return (
     <Provider store={store}>
@@ -42,22 +44,25 @@ function AppContent() {
   );
   const router = useRouter();
   const pathname = usePathname();
+  const nav = useRootNavigationState();
 
   useEffect(() => {
+    if (!nav?.key) return;
+
     const currentRoute = pathname;
     const allowedRoutes = ["/PostDetail"];
     const isAdmin = user?.permission === "admin" || user?.role === "admin";
     const isAdminRoute =
-      pathname.startsWith("/admin-") ||
-      pathname.startsWith("/(admin)") ||
-      pathname.includes("/post") ||
-      pathname.includes("/user");
+      currentRoute.startsWith("/admin-") ||
+      currentRoute.startsWith("/(admin)") ||
+      currentRoute.includes("/post") ||
+      currentRoute.includes("/user");
 
-    const isTabsRoute = pathname.startsWith("/(tabs)");
+    const isTabsRoute = currentRoute.startsWith("/(tabs)");
     const isAuthRoute =
-      pathname.includes("login") ||
-      pathname.includes("user-registration") ||
-      pathname.includes("faq");
+      currentRoute.includes("login") ||
+      currentRoute.includes("user-registration") ||
+      currentRoute.includes("faq");
 
     if (!isAuthenticated) {
       if (!isAuthRoute) {
@@ -75,7 +80,7 @@ function AppContent() {
       return;
     }
 
-    if (pathname.startsWith("/(auth)")) {
+    if (currentRoute.startsWith("/(auth)")) {
       router.replace("/(tabs)");
       return;
     }
