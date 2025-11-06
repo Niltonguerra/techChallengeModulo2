@@ -1,12 +1,13 @@
 
 export type UserSummary = {
+    id: string;
     name: string;
     photo: string;
 }
 
-export type Comment = {
+export type Comments = {
     id: string;
     content: string;
-    createdAt: Date;
+    createdAt: string;
     user: UserSummary;
 }

@@ -1,3 +1,6 @@
+import * as crypto from 'crypto';
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+(global as any).crypto = crypto;
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { setupDocumentation } from 'docs/documentation';
@@ -27,7 +30,11 @@ async function bootstrap() {
             process.env.FRONTEND_URL_MOBILE_PROD,
             'http://localhost:8081'
           ]
-        : [process.env.FRONTEND_URL_LOCAL, process.env.FRONTEND_URL_MOBILE_LOCAL, 'http://localhost:8081'],
+        : [
+            process.env.FRONTEND_URL_LOCAL,
+            process.env.FRONTEND_URL_MOBILE_LOCAL,
+            'http://localhost:8081',
+          ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
