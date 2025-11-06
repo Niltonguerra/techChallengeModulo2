@@ -1,6 +1,6 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack, usePathname, useRouter } from "expo-router";
+import { SplashScreen, Stack, usePathname, useRootNavigationState, useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
@@ -27,7 +27,9 @@ export default function RootLayout() {
     if (loaded) SplashScreen.hideAsync();
   }, [loaded]);
 
-  if (!loaded) return null;
+  if (!loaded) {
+    return <Stack screenOptions={{ headerShown: false }} />;
+  }
 
   return (
     <Provider store={store}>
@@ -42,8 +44,11 @@ function AppContent() {
   );
   const router = useRouter();
   const pathname = usePathname();
+  const nav = useRootNavigationState();
 
   useEffect(() => {
+    if (!nav?.key) return;
+
     const currentRoute = pathname;
     const allowedRoutes = ["/PostDetail"];
     const isAdmin = user?.permission === "admin" || user?.role === "admin";
