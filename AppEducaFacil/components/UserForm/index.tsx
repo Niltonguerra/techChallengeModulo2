@@ -170,8 +170,6 @@ const UserForm: React.FC<FormUserProps> = ({
       permission: userType,
     };
 
-    console.log('full form data: ', formData);
-
     actionFunction(formData).then((response) => {
       setIsSubmitting(false);
       Alert.alert("Sucesso", response.message);
