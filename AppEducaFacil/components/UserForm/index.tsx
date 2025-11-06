@@ -112,14 +112,14 @@ const UserForm: React.FC<FormUserProps> = ({
       photo?: string;
     } = {};
     // Name: required, min 2, max 100 characters
-    const trimmedName = name.trim();
+    const trimmedName = name?.trim();
     if (!trimmedName) {
       newErrors.name = 'O campo Nome é obrigatório';
     } else if (trimmedName.length < 2 || trimmedName.length > 100) {
       newErrors.name = 'O campo Nome deve ter entre 2 e 100 caracteres';
     }
     // Email: required and must match be withing email regex
-    const trimmedEmail = email.trim();
+    const trimmedEmail = email?.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!trimmedEmail) {
       newErrors.email = 'O campo Email é obrigatório';
@@ -144,6 +144,8 @@ const UserForm: React.FC<FormUserProps> = ({
       newErrors.photo = 'O campo Foto é obrigatório';
     }
 
+    console.log('set errors: ', newErrors);
+
     setErrors(newErrors);
     // if there are no errors, the form is valid, returns true.
     return Object.keys(newErrors).length === 0;
@@ -161,12 +163,14 @@ const UserForm: React.FC<FormUserProps> = ({
     const actionFunction = userId ? EditUser : createUser;
     const formData: FormUserData = {
       id: userId || undefined,
-      name: name.trim(),
-      email: email.trim(),
+      name: name,
+      email: email,
       password: password.length > 0 ? password : undefined, // only send password if it's been set
       photo: imageUri,
       permission: userType,
     };
+
+    console.log('full form data: ', formData);
 
     actionFunction(formData).then((response) => {
       setIsSubmitting(false);
