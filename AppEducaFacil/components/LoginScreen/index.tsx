@@ -116,7 +116,24 @@ export default function LoginScreen() {
 
       <Text style={styles.titleregister}>Faça o seu registro</Text>
       <Text style={styles.text} onPress={() => { router.push('/user-registration') }}>Não Possui registro? Registre-se aqui</Text>
-      <Text style={styles.text}>Dúvidas ou precisa de alguma ajuda?</Text>
+      <Text
+        style={styles.text}
+        onPress={() => {
+          router.push("/user-registration");
+        }}
+      >
+        Não Possui registro? Registre-se aqui
+      </Text>
+
+      <Text
+        style={styles.text}
+        onPress={() => {
+          router.push("/faq");
+        }}
+      >
+        Dúvidas? Acesse nosso FAQ!
+      </Text>
+      <Text style={styles.text}>Entre em contato conosco:</Text>
       <Text style={styles.text}>
         <MaterialCommunityIcons
           name="phone"
