@@ -1,5 +1,6 @@
 
 export type UserSummary = {
+    id: string;
     name: string;
     photo: string;
 }
@@ -7,6 +8,6 @@ export type UserSummary = {
 export type Comments = {
     id: string;
     content: string;
-    createdAt: Date;
+    createdAt: string;
     user: UserSummary;
 }
