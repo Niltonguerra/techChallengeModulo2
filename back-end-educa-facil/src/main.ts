@@ -21,23 +21,23 @@ async function bootstrap() {
   );
 
   // Habilitando CORS
-  app.enableCors({
-    origin:
-      process.env.AMBIENTE === 'PROD'
-        ? [
-            process.env.FRONTEND_URL_PROD,
-            process.env.FRONTEND_URL_PROFESSOR,
-            process.env.FRONTEND_URL_MOBILE_PROD,
-            'http://localhost:8081'
-          ]
-        : [
-            process.env.FRONTEND_URL_LOCAL,
-            process.env.FRONTEND_URL_MOBILE_LOCAL,
-            'http://localhost:8081',
-          ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin:
+  //     process.env.AMBIENTE === 'PROD'
+  //       ? [
+  //           process.env.FRONTEND_URL_PROD,
+  //           process.env.FRONTEND_URL_PROFESSOR,
+  //           process.env.FRONTEND_URL_MOBILE_PROD,
+  //           'http://localhost:8081'
+  //         ]
+  //       : [
+  //           process.env.FRONTEND_URL_LOCAL,
+  //           process.env.FRONTEND_URL_MOBILE_LOCAL,
+  //           'http://localhost:8081',
+  //         ],
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  //   credentials: true,
+  // });
 
   await app.listen(process.env.PORT ?? 3000);
   console.log('==========================');
