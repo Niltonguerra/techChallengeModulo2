@@ -173,7 +173,10 @@ npm run type-check
 `pnpm install`
 
 2. rode o projeto:
-``pnpm start`
+`pnpm start`
+
+2.1 Outra opção de rodar o projeto mas sem cache:
+`pnpm expo start -c`
 
 ---
 

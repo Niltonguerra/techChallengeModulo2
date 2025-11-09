@@ -2,15 +2,15 @@ import CardPost from "../../components/CardPost/CardPost";
 import styleGuide from "@/constants/styleGuide";
 import { Post } from "@/types/post";
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, TextStyle, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextStyle, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { Filter } from "../../components/filter/Filter";
 import { fetchPosts } from "../../services/post";
 
 export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false); // loading para filtros
-  const [loadingMore, setLoadingMore] = useState(false); // loading para paginação
+  const [loading, setLoading] = useState(false); // loading inicial/filtros
+  const [loadingMore, setLoadingMore] = useState(false); // loading paginação
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const limit = 10;
@@ -26,7 +26,6 @@ export default function HomePage() {
     createdAtBefore?: string;
   };
 
-  // Função para filtrar posts
   const handleFilter = async (filters: PostFilters = {}) => {
     setLoading(true);
     try {
@@ -46,7 +45,6 @@ export default function HomePage() {
     }
   };
 
-  // Função para carregar mais posts (infinite scroll)
   const fetchMorePosts = async () => {
     if (loading || loadingMore || !hasMore) return;
     setLoadingMore(true);
@@ -57,8 +55,8 @@ export default function HomePage() {
         advanced: true,
       });
       if (data?.length) {
-        setPosts([...posts, ...data]);
-        setOffset(offset + data.length);
+        setPosts((prev) => [...prev, ...data]);
+        setOffset((prev) => prev + data.length);
         setHasMore(data.length === limit);
       } else {
         setHasMore(false);
@@ -71,58 +69,72 @@ export default function HomePage() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16, backgroundColor: styleGuide.palette.main.fourthColor }}>
-      <Filter onFilter={handleFilter} />
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        onMomentumScrollEnd={({ nativeEvent }) => {
+          const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+          const isCloseToBottom =
+            layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
+          if (isCloseToBottom) fetchMorePosts();
+        }}
+      >
+        <Filter onFilter={handleFilter} />
+        <View style={{ marginTop: 16 }}>
+          {posts.length === 0 && !loading ? (
+            <View style={styles.centered}>
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 24,
+                  ...(styleGuide.typography.h5 as TextStyle),
+                  fontSize: 16,
+                  marginBottom: 8,
+                }}
+              >
+                Nenhum post encontrado.
+              </Text>
+            </View>
+          ) : (
+            posts.map((item) => (
+              <CardPost key={item.id} isEditable={false} dataProperties={item} />
+            ))
+          )}
 
-      <View style={{ flex: 1, marginTop: 16 }}>
-        {posts.length === 0 && loading ? (
-          <View style={styles.centered}>
-            <ActivityIndicator size="large" color={styleGuide.palette.main.primaryColor} />
-          </View>
-        ) : posts.length === 0 ? (
-          <View style={styles.centered}>
-            <Text
-              style={{
-                textAlign: "center",
-                marginTop: 24,
-                ...(styleGuide.typography.h5 as TextStyle),
-                fontSize: 16,
-                marginBottom: 8,
-              }}
-            >
-              Nenhum post encontrado.
-            </Text>
-          </View>
-        ) : (
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={posts}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => <CardPost isEditable={false} dataProperties={item} />}
-              onEndReached={fetchMorePosts}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={
-                loadingMore ? (
-                  <ActivityIndicator style={{ margin: 16 }} color={styleGuide.palette.main.primaryColor} />
-                ) : null
-              }
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 32 }}
+          {loadingMore && (
+            <ActivityIndicator
+              style={{ marginVertical: 16 }}
+              color={styleGuide.palette.main.primaryColor}
             />
-            {loading && (
-              <View style={styles.loadingOverlay}>
-                <ActivityIndicator size="large" color={styleGuide.palette.main.primaryColor} />
-              </View>
-            )}
-          </View>
-        )}
-      </View>
+          )}
+        </View>
+      </ScrollView>
+
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={styleGuide.palette.main.primaryColor} />
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    backgroundColor: styleGuide.palette.main.fourthColor,
+  },
+  scrollContent: {
+    paddingVertical: 16,
+    paddingBottom: 40,
+  },
+  centered: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 40,
+  },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
