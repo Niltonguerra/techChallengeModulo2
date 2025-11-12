@@ -15,6 +15,8 @@ import {
   getListById,
   updatePost,
 } from "@/services/post";
+import { imgbbUmaImagem } from "@/services/imgbb";
+import Loading from "../Loading";
 
 /**
  * @param postId: for editing existing posts
@@ -33,6 +35,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
 
   // image
   const [imageUri, setImageUri] = useState<File | string | null>(null);
+  const [photoAsset, setPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [hashtagOptions, setHashtagOptions] = useState<string[]>();
@@ -87,7 +90,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         .catch((err) => {
           console.error("err getting post data:", err);
           Alert.alert(
-            "Erro",
+            "Erro", 
             err.message ||
             "Não foi possível carregar os dados do post para edição."
           );
@@ -122,7 +125,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
    */
   const handlePickImage = async (): Promise<void> => {
     try {
-      // Requesting permissions to use library
+      // requesting permissions to use library
       const permission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (permission.status !== "granted") {
@@ -139,11 +142,11 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         quality: 0.7, // i might just be old but i remember a bug if you set quality to 1
       });
 
-      // only update the state if the user actually selects an image
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const uri = result.assets[0].uri;
-        setImageUri(uri);
-      }
+      if (result.canceled || !result.assets?.length) return;
+
+      const photoAsset = result.assets[0];
+      setImageUri(photoAsset.uri);
+      setPhotoAsset(photoAsset);
     } catch (error) {
       console.warn("Error picking image:", error);
     }
@@ -312,7 +315,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<void> => {
     // parses link data
     const linkData: Record<string, string> = {};
     externalLinks.forEach((externalLink) => {
@@ -336,8 +339,16 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       content_hashtags: hashtags,
     };
 
-    console.log('executing action: ', postId ? 'updatePost' : 'createPost');
-    console.log('final post payload:', payload);
+    if(photoAsset) {
+      try {
+        const cdn = await imgbbUmaImagem(photoAsset);
+        payload.image = cdn.data?.url || cdn.data?.display_url;
+      } catch {
+        Alert.alert("Erro", "Erro ao fazer upload da imagem! Favor contactar o suporte.");
+        return;
+      }
+    }
+    
 
     const actionFunction = postId ? updatePost : createPost;
 
@@ -359,6 +370,10 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         );
       });
   };
+
+  if(loading) {
+    return <Loading />;
+  }
 
   return (
     <ScrollView
@@ -485,7 +500,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         </View>
       ))}
 
-      {/* hashtags */}
+      {/* hashtags (select/autocomplete and free text) */}
       <View style={styles.hashtagContainer}>
         <Text style={{ marginBottom: 4, fontWeight: "bold" }}>Hashtags*</Text>
         <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8, width: auxScreenWidth * 0.92 }}>
@@ -509,7 +524,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
           style={[styles.input, { width: auxScreenWidth * 0.92 }]}
           returnKeyType="done"
         />
-        {/* sugestões de hashtags */}
         {filteredOptions.length > 0 && (
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8 }}>
             {filteredOptions.map((option, idx) => (
@@ -524,7 +538,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
             ))}
           </View>
         )}
-        {/* “Use typed text” quick action when there’s no matching suggestion */}
         {query.trim().length > 0 && filteredOptions.length === 0 && (
           <Button mode="text" onPress={() => addTypedHashtag(query)}>
             Usar “{standardizeTagName(query)}”
