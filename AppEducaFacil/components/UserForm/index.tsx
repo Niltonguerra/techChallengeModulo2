@@ -205,9 +205,9 @@ const UserForm: React.FC<FormUserProps> = ({
                 {imageUri ? "Alterar Foto" : "Selecione uma Foto"}
             </Button>
             {errors.photo && (
-                <HelperText type="error" style={styles.errorText} visible>
-                    {errors.photo}
-                </HelperText>
+              <HelperText type="error" style={styles.errorText} visible>
+                  {errors.photo}
+              </HelperText>
             )}
         </View>
         <TextInput

@@ -85,4 +85,8 @@ export const styles = StyleSheet.create({
   submitContent: {
     paddingVertical: 8,
   },
+  errorText: {
+    color: '#d32f2f',
+    marginBottom: 12,
+  },
 });

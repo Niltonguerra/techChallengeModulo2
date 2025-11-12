@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Stack, usePathname, useRootNavigationState, useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { PaperProvider } from "react-native-paper";
+import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
 
@@ -59,8 +59,13 @@ export default function AppContent() {
     }
   }, [isAuthenticated, pathname, user, router]);
 
+  // trying to force it to light theme
+  const theme = {
+    ...MD3LightTheme,
+  };
+
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <ConfirmModalProvider>
         <SnackbarProvider>
           <Stack screenOptions={{ headerShown: false }} />
