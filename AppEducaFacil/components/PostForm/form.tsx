@@ -125,7 +125,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
    */
   const handlePickImage = async (): Promise<void> => {
     try {
-      // requesting permissions to use library
+      // Requesting permissions to use library
       const permission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (permission.status !== "granted") {
@@ -304,11 +304,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     }
 
     // Image: required, valid URL with 1–2048
-    if (!imageUri || (typeof imageUri === "string" && imageUri.length === 0)) {
+    if (!imageUri) {
       newErrors.image = "A imagem é obrigatória.";
-    } else if (typeof imageUri === "string" && (imageUri.length < 1 || imageUri.length > 2048 || !isUrl(imageUri))
-    ) {
-      newErrors.image = "Imagem deve ser uma URL válida (1–2048 caracteres).";
     }
 
     setErrors(newErrors);
