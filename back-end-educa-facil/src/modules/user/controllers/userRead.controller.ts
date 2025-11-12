@@ -62,7 +62,7 @@ export class UserReadController {
   @Get('list-all')
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   @ApiBearerAuth('JWT-Auth')
-  @ApiOperation({ summary: 'List all registered users (for admins/professors)' })
+  @ApiOperation({ summary: 'List all registered users (for admins/professores)' })
   @ApiOkResponse({ description: 'List of users', type: [User] })
   async findAllUsers(@Query('permission') permission?: UserPermissionEnum): Promise<UserListDTO[]> {
     return this.listAllUsersUseCase.execute(permission);

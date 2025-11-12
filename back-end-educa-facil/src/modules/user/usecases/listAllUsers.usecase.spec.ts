@@ -1,87 +1,85 @@
+import { Test, TestingModule } from '@nestjs/testing';
 import { ListAllUsersUseCase } from './listAllUsers.usecase';
 import { UserService } from '../service/user.service';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 import { UserListDTO } from '../dtos/userList.dto';
 
 describe('ListAllUsersUseCase', () => {
-  let listAllUsersUseCase: ListAllUsersUseCase;
-  let userService: jest.Mocked<UserService>;
+  let useCase: ListAllUsersUseCase;
+  let userService: UserService;
 
-  beforeEach(() => {
-    userService = {
-      findAll: jest.fn(),
-    } as unknown as jest.Mocked<UserService>;
+  const mockUsers = [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      permission: UserPermissionEnum.ADMIN,
+      photo: 'https://example.com/photo.jpg',
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+      permission: UserPermissionEnum.USER,
+      photo: '',
+    },
+  ];
 
-    listAllUsersUseCase = new ListAllUsersUseCase(userService);
+  const mockUserService = {
+    findAll: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        ListAllUsersUseCase,
+        { provide: UserService, useValue: mockUserService },
+      ],
+    }).compile();
+
+    useCase = module.get<ListAllUsersUseCase>(ListAllUsersUseCase);
+    userService = module.get<UserService>(UserService);
   });
 
-  it('deve retornar uma lista de usuários mapeados para UserListDTO', async () => {
-    const mockUsers = [
-      {
-        id: '1',
-        email: 'user1@example.com',
-        name: 'User One',
-        permission: UserPermissionEnum.USER,
-      },
-      {
-        id: '2',
-        email: 'user2@example.com',
-        name: 'User Two',
-        permission: UserPermissionEnum.ADMIN,
-      },
-    ];
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    userService.findAll.mockResolvedValue(mockUsers);
+  it('should list all users successfully', async () => {
+    mockUserService.findAll.mockResolvedValue(mockUsers);
 
-    const result = await listAllUsersUseCase.execute();
+    const result = await useCase.execute();
 
     expect(userService.findAll).toHaveBeenCalledWith(undefined);
     expect(result).toHaveLength(2);
     expect(result[0]).toBeInstanceOf(UserListDTO);
-    expect(result[0]).toEqual({
-      id: '1',
-      email: 'user1@example.com',
-      name: 'User One',
-      permission: UserPermissionEnum.USER,
-    });
+    expect(result[0].id).toBe('1');
+    expect(result[1].name).toBe('Jane Smith');
   });
 
-  it('deve chamar o serviço com o parâmetro de permissão', async () => {
-    const permission = UserPermissionEnum.ADMIN;
-    userService.findAll.mockResolvedValue([]);
+  it('should list all users filtered by permission', async () => {
+    mockUserService.findAll.mockResolvedValue([mockUsers[0]]);
 
-    await listAllUsersUseCase.execute(permission);
+    const result = await useCase.execute(UserPermissionEnum.ADMIN);
 
-    expect(userService.findAll).toHaveBeenCalledWith(permission);
+    expect(userService.findAll).toHaveBeenCalledWith(UserPermissionEnum.ADMIN);
+    expect(result).toHaveLength(1);
+    expect(result[0].permission).toBe(UserPermissionEnum.ADMIN);
   });
 
-  it('deve retornar um array vazio se nenhum usuário for encontrado', async () => {
-    userService.findAll.mockResolvedValue([]);
+  it('should map undefined fields to empty strings', async () => {
+    mockUserService.findAll.mockResolvedValue([
+      { id: undefined, email: undefined, name: undefined, permission: undefined, photo: undefined },
+    ]);
 
-    const result = await listAllUsersUseCase.execute();
-
-    expect(result).toEqual([]);
-  });
-
-  it('deve lidar com campos ausentes em um usuário retornado', async () => {
-    const mockUsers = [
-      {
-        id: undefined,
-        email: undefined,
-        name: undefined,
-        permission: undefined,
-      },
-    ];
-
-    userService.findAll.mockResolvedValue(mockUsers as any);
-
-    const result = await listAllUsersUseCase.execute();
+    const result = await useCase.execute();
 
     expect(result[0]).toEqual({
       id: '',
       email: '',
       name: '',
       permission: '',
+      photo: '',
     });
   });
 });

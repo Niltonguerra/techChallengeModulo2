@@ -10,13 +10,13 @@ export class ListAllUsersUseCase {
   async execute(permission?: UserPermissionEnum): Promise<UserListDTO[]> {
     const users = await this.userService.findAll(permission);
 
-    // Mapeando usuários para UserListDTO
     return users.map((user) => {
       const userListDTO = new UserListDTO();
       userListDTO.id = user.id || '';
       userListDTO.email = user.email || '';
       userListDTO.name = user.name || '';
       userListDTO.permission = user.permission || '';
+      userListDTO.photo = user.photo || '';
       return userListDTO;
     });
   }

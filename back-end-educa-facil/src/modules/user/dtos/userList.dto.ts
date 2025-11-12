@@ -12,4 +12,7 @@ export class UserListDTO {
 
   @ApiProperty()
   name: string;
+
+  @ApiProperty()
+  photo: string;
 }
