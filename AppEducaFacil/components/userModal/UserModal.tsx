@@ -21,7 +21,7 @@ interface UserModalProps {
 }
 
 type AppRoutes =
-  | "/(tabs)/edit-user-data"
+  | "/edit-user-data"
   | "/(tabs)/persona-info"
   | "/(tabs)/admin-teacher"
   | "/(tabs)/admin-student"
@@ -37,15 +37,14 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
   if (!user) return null;
 
   const userLinks = [
-    { label: "Editar Dados", pathname: "/(tabs)/edit-user-data" },
-    { label: "Informações Pessoais", pathname: "/(tabs)/persona-info" },
+    { label: "Editar Dados", pathname: "/edit-user-data" },
   ];
 
   const adminLinks = [
-    { label: "Administrador de Professor", pathname: "/(admin)/admin-teacher" },    
+    { label: "Administrador de Professor", pathname: "/(admin)/admin-teacher" },
     { label: "Administrador de Aluno", pathname: "/(admin)/admin-student" },
     { label: "Administrador de Postagens", pathname: "/(admin)/admin-post" },
-    { label: "Editar Dados", pathname: "/(tabs)/edit-user-data" },
+    { label: "Editar Dados", pathname: "/edit-user-data" },
     { label: "Informações Pessoais", pathname: "/(tabs)/persona-info" },
   ];
 
@@ -54,7 +53,7 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
 
   const handleNavigate = (pathname: string) => {
     onClose();
-    router.replace(pathname as any );
+    router.push(pathname as any);
   };
 
   const handleLogout = () => {
