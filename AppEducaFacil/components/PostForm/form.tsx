@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, ScrollView, Image, Alert, Pressable } from "react-native";
-import { TextInput, Button, IconButton, Text, Menu } from "react-native-paper";
+import { TextInput, Button, IconButton, Text, Menu, HelperText } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
+import { Chip } from 'react-native-paper';
 
 
 import type { FormPostData, FormPostProps } from "@/types/form-post";
@@ -14,6 +15,8 @@ import {
   getListById,
   updatePost,
 } from "@/services/post";
+import { imgbbUmaImagem } from "@/services/imgbb";
+import Loading from "../Loading";
 
 /**
  * @param postId: for editing existing posts
@@ -32,13 +35,20 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
 
   // image
   const [imageUri, setImageUri] = useState<File | string | null>(null);
+  const [photoAsset, setPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
-  const [hashtags, setHashtags] = useState<string[]>([""]);
+  const [hashtags, setHashtags] = useState<string[]>([]);
   const [hashtagOptions, setHashtagOptions] = useState<string[]>();
-  const [hashTagSelectMenu, setHashTagSelectMenu] = useState<{
-    isOpen: boolean;
-    selectedTag: number;
-  }>({ isOpen: false, selectedTag: -1 });
+
+  // displays the validation errors for each field - populated by the validate()
+  const [errors, setErrors] = useState<{
+    title?: string;
+    description?: string;
+    introduction?: string;
+    content_hashtags?: string;
+    image?: string;
+    links?: string[];
+  }>({});
 
   // getting the info of the existing post, if we are editing
   useEffect(() => {
@@ -80,7 +90,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         .catch((err) => {
           console.error("err getting post data:", err);
           Alert.alert(
-            "Erro",
+            "Erro", 
             err.message ||
             "Não foi possível carregar os dados do post para edição."
           );
@@ -132,11 +142,11 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         quality: 0.7, // i might just be old but i remember a bug if you set quality to 1
       });
 
-      // only update the state if the user actually selects an image
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const uri = result.assets[0].uri;
-        setImageUri(uri);
-      }
+      if (result.canceled || !result.assets?.length) return;
+
+      const photoAsset = result.assets[0];
+      setImageUri(photoAsset.uri);
+      setPhotoAsset(photoAsset);
     } catch (error) {
       console.warn("Error picking image:", error);
     }
@@ -149,13 +159,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   };
 
   /**
-   * Adding a new empty hashtag if the user clicks the add new button
-   */
-  const addHashtag = (): void => {
-    setHashtags((prevTags) => [...prevTags, ""]);
-  };
-
-  /**
    * Removing a link entry using the index
    *
    * @param index: index of the link to be removed (starting from 0)
@@ -164,62 +167,152 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     setExternalLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
   };
 
-  /**
-   * Removing a hashtag entry using the index
-   *
-   * @param index: index of the hashtag to be removed (starting from 0)
-   */
-  const removeHashtag = (index: number): void => {
-    setHashtags((prevTags) => prevTags.filter((_, i) => i !== index));
+  // aux functions for hashtags
+  const standardizeTagName= (t: string) => {
+    const s = t.trim().replace(/\s+/g, '-'); // no spaces
+    if (!s) return '';
+    const prefixed = s.startsWith('#') ? s : `#${s}`;
+    return prefixed.toLowerCase();
   };
 
-  /**
-   * Toggle the visibility of a hashtag's dropdown menu.  only one can be open at a time
-   */
-  const toggleHashtagMenu = (index: number): void => {
-    setHashTagSelectMenu((prev) => ({
-      isOpen: prev.isOpen && prev.selectedTag === index ? false : true,
-      selectedTag: index,
-    }));
+  const [query, setQuery] = useState('');
+
+  // suggestions that match the current query and aren’t already chosen
+  const filteredOptions = (hashtagOptions ?? [])
+    .filter(o =>
+      o.toLowerCase().includes(query.trim().toLowerCase())
+    )
+    .filter(o => !hashtags.some(h => h.toLowerCase() === o.toLowerCase()))
+    .slice(0, 8);
+
+  // add the current text as a free option
+  const addTypedHashtag = (text: string) => {
+    const tag = standardizeTagName(text);
+    if (!tag) return;
+    // dont allow duplicates
+    if (hashtags.some(h => h.toLowerCase() === tag.toLowerCase())) return;
+
+    setHashtags(prev => [...prev, tag]);
+
+    // reset the query afterwards
+    setQuery('');
   };
 
   // if a link has either only the name or the url filled, we throw an error
   // also there cant be repeated or empty names since they are used as keys in the backend
   const verifyLinks = (): boolean => {
     const auxLinkNames = new Set<string>();
+    let auxCount = 0;    
+    let auxLinkErrors: string[] = [];
+    let anyError = false;
     for (const externalLink of externalLinks) {
+      auxLinkErrors.push("");
       if (
         (externalLink.name && !externalLink.url) ||
         (!externalLink.name && externalLink.url)
       ) {
         if (!externalLink.name) {
-          Alert.alert(
-            "Todos os links externos devem ter um nome.",
-            "Por favor, preencha o nome do link externo ou deixe ambos os campos vazios."
-          );
-          return false;
+          auxLinkErrors[auxCount] =
+            "Todos os links externos devem ter um nome.";
+          anyError = true;
         }
         if (!externalLink.url) {
-          Alert.alert(
-            "Todos os links externos devem ter uma URL.",
-            "Por favor, preencha a URL do link externo ou deixe ambos os campos vazios."
-          );
-          return false;
+          auxLinkErrors[auxCount] =
+            "Todos os links externos devem ter uma URL.";
+          anyError = true;
         }
       }
       if (auxLinkNames.has(externalLink.name)) {
-        Alert.alert(
-          "Nome de link duplicado",
-          `O nome do link "${externalLink.name}" já está em uso.`
-        );
-        return false;
+        auxLinkErrors[auxCount] =
+          "Nomes de links externos não podem se repetir.";
+        anyError = true;
       }
+      auxCount++;
       auxLinkNames.add(externalLink.name);
     }
-    return true;
+    if(anyError) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        links: auxLinkErrors,
+      }));
+    }
+
+    return !anyError;
   };
 
-  const handleSubmit = (): void => {
+   const validate = (): boolean => {
+    const linksOk = verifyLinks();
+    if (!linksOk) return false;
+
+    const newErrors: {
+      title?: string;
+      description?: string;
+      introduction?: string;
+      content_hashtags?: string;
+      image?: string;
+    } = {};
+
+    // aux functions
+    const withingLen = (s: string, min: number, max: number) => {
+      const t = s.trim();
+      return t.length >= min && t.length <= max;
+    };
+    const isUrl = (v: string) => {
+      try {
+        const u = new URL(v);
+        return !!u.protocol && !!u.host;
+      } catch {
+        return false;
+      }
+    };
+
+    // Title: required, 20–70
+    if (!title) {
+      newErrors.title = "O campo Título é obrigatório.";
+    } else if (!withingLen(title, 20, 70)) {
+      newErrors.title = "O Título deve ter entre 20 e 70 caracteres.";
+    }
+
+    // Description: required, 50–500
+    if (!description) {
+      newErrors.description = "O campo Descrição é obrigatório.";
+    } else if (!withingLen(description, 50, 500)) {
+      newErrors.description = "A Descrição deve ter entre 50 e 500 caracteres.";
+    }
+
+    // Introduction: opcional, 50–500
+    if (introduction != null && introduction !== "") {
+      if (typeof introduction !== "string") {
+        newErrors.introduction = "Introdução deve ser um texto.";
+      } else if (!withingLen(introduction, 50, 500)) {
+        newErrors.introduction =
+          "A Introdução deve ter entre 50 e 500 caracteres.";
+      }
+    }
+
+    // Hashtags: required, array with at least one
+    if (!Array.isArray(hashtags) || hashtags.length === 0) {
+      newErrors.content_hashtags = "Informe ao menos uma hashtag de conteúdo.";
+    } else {
+      // none can be empty
+      for (const tag of hashtags) {
+        if (typeof tag !== "string" || tag.trim() === "") {
+          newErrors.content_hashtags = "Todas as hashtags de conteúdo devem ser válidas.";
+          break;
+        }
+      }
+    }
+
+    // Image: required, valid URL with 1–2048
+    if (!imageUri) {
+      newErrors.image = "A imagem é obrigatória.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (): Promise<void> => {
     // parses link data
     const linkData: Record<string, string> = {};
     externalLinks.forEach((externalLink) => {
@@ -228,8 +321,10 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       }
     });
 
-    let auxLinkVerification = verifyLinks();
-    if (!auxLinkVerification) return;
+    if (!validate()) {
+      // When validation fails, don't proceed with submission
+      return;
+    }
 
     // Compose final submission payload
     const payload = {
@@ -240,6 +335,17 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       external_link: linkData,
       content_hashtags: hashtags,
     };
+
+    if(photoAsset) {
+      try {
+        const cdn = await imgbbUmaImagem(photoAsset);
+        payload.image = cdn.data?.url || cdn.data?.display_url;
+      } catch {
+        Alert.alert("Erro", "Erro ao fazer upload da imagem! Favor contactar o suporte.");
+        return;
+      }
+    }
+    
 
     const actionFunction = postId ? updatePost : createPost;
 
@@ -261,6 +367,10 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         );
       });
   };
+
+  if(loading) {
+    return <Loading />;
+  }
 
   return (
     <ScrollView
@@ -285,6 +395,11 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         >
           {imageUri ? "Change Image" : "Select Image"}
         </Button>
+        {errors.image && (
+          <HelperText type="error" style={styles.errorText} visible>
+            {errors.image}
+          </HelperText>
+        )}
       </View>
 
       <TextInput
@@ -298,6 +413,11 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         style={styles.input}
         returnKeyType="next"
       />
+      {errors.title && (
+        <HelperText type="error" style={styles.errorText} visible>
+          {errors.title}
+        </HelperText>
+      )}
       <TextInput
         label="Introdução *"
         placeholder="Digite uma introdução"
@@ -309,6 +429,11 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         style={styles.input}
         returnKeyType="next"
       />
+      {errors.introduction && (
+        <HelperText type="error" style={styles.errorText} visible>
+          {errors.introduction}
+        </HelperText>
+      )}
 
       {/* external links */}
       <View style={styles.sectionHeaderContainer}>
@@ -364,72 +489,63 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
               accessibilityLabel="Remover link"
             />
           )}
+          {errors.links && errors.links[index] && (
+            <HelperText type="error" style={styles.errorText} visible>
+              {errors.links[index]}
+            </HelperText>
+          )}
         </View>
       ))}
 
-      {/* hashtags */}
+      {/* hashtags (select/autocomplete and free text) */}
       <View style={styles.hashtagContainer}>
-        <Button
-          mode="text"
-          onPress={addHashtag}
-          icon="plus"
-          contentStyle={styles.addButtonContent}
-        >
-          Add hashtag
-        </Button>
-        {hashtags.map((hashtag, index) => (
-          <View key={`hashtag-${index}`} style={styles.hashtagRow}>
-            <Menu
-              visible={
-                hashTagSelectMenu.isOpen &&
-                hashTagSelectMenu.selectedTag === index
-              }
-              onDismiss={() => toggleHashtagMenu(index)}
-              anchor={
-                <Pressable
-                  style={styles.hashtagAnchor}
-                  onPress={() => toggleHashtagMenu(index)}
-                >
-                  <TextInput
-                    label="Hashtag*"
-                    placeholder="Selecione uma opção"
-                    value={hashtag}
-                    editable={false}
-                    mode="outlined"
-                    style={[{ width: auxScreenWidth * 0.92 }, styles.input]}
-                    right={
-                      hashtags.length > 1 && (
-                        <TextInput.Icon
-                          icon="delete"
-                          onPress={() => removeHashtag(index)}
-                          forceTextInputFocus={false}
-                          accessibilityLabel="Remover hashtag"
-                        />
-                      )
-                    }
-                  />
-                </Pressable>
-              }
+        <Text style={{ marginBottom: 4, fontWeight: "bold" }}>Hashtags*</Text>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8, width: auxScreenWidth * 0.92 }}>
+          {hashtags.map((tag, idx) => (
+            <Chip
+              key={tag + idx}
+              style={{ margin: 4 }}
+              onClose={() => setHashtags(hashtags.filter((_, i) => i !== idx))}
+              mode="outlined"
             >
-              {hashtagOptions &&
-                hashtagOptions.map((option) => (
-                  <Menu.Item
-                    key={option}
-                    title={option}
-                    style={{ width: auxScreenWidth }}
-                    onPress={() => {
-                      setHashtags((prevTags) => {
-                        const newTags = [...prevTags];
-                        newTags[index] = option;
-                        return newTags;
-                      });
-                      toggleHashtagMenu(index);
-                    }}
-                  />
-                ))}
-            </Menu>
+              {tag}
+            </Chip>
+          ))}
+        </View>
+        <TextInput
+          label="Adicionar hashtag"
+          placeholder="Digite para buscar ou criar uma hashtag…"
+          value={query}
+          onChangeText={setQuery}
+          onSubmitEditing={(e) => addTypedHashtag(e.nativeEvent.text)}
+          style={[styles.input, { width: auxScreenWidth * 0.92 }]}
+          returnKeyType="done"
+        />
+        {filteredOptions.length > 0 && (
+          <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8 }}>
+            {filteredOptions.map((option, idx) => (
+              <Chip
+                key={option + idx}
+                style={{ margin: 4 }}
+                onPress={() => addTypedHashtag(option)}
+                mode="outlined"
+              >
+                {option}
+              </Chip>
+            ))}
           </View>
-        ))}
+        )}
+        {query.trim().length > 0 && filteredOptions.length === 0 && (
+          <Button mode="text" onPress={() => addTypedHashtag(query)}>
+            Usar “{standardizeTagName(query)}”
+          </Button>
+        )}
+
+        {errors.content_hashtags && (
+          <HelperText type="error" style={styles.errorText} visible>
+            {errors.content_hashtags}
+          </HelperText>
+        )}
       </View>
 
       <TextInput
@@ -444,7 +560,11 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         multiline
         numberOfLines={4}
       />
-
+      {errors.description && (
+        <HelperText type="error" style={styles.errorText} visible>
+          {errors.description}
+        </HelperText>
+      )}
       <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 16 }}>
         <Button
           mode="contained"

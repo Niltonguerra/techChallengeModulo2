@@ -1,3 +1,4 @@
+import { styleGuide } from '@/constants/styleGuide';
 import { StyleSheet } from 'react-native';
 
 export const userFormStyles = StyleSheet.create({
@@ -31,6 +32,7 @@ export const userFormStyles = StyleSheet.create({
   submitButton: {
     marginTop: 24,
     marginBottom: 32,
+    backgroundColor: styleGuide.palette.main.primaryColor
   },
   submitContent: {
     paddingVertical: 8,
