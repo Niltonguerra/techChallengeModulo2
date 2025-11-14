@@ -2,10 +2,8 @@ import Constants from "expo-constants";
 import { Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-const URL_IMGBB = Constants?.expoConfig?.extra?.apiUrl || 'https://api.imgbb.com/1/upload';
-const URL_KEY_IMGBB = Constants?.expoConfig?.extra?.imgBB;
-// const URL_IMGBB = 'https://api.imgbb.com/1/upload';
-// const URL_KEY_IMGBB = '676c0bd4e17dba1ee3c06b04c599f085';
+const URL_IMGBB = Constants?.expoConfig?.extra?.imgBB || 'https://api.imgbb.com/1/upload';
+const URL_KEY_IMGBB = Constants?.expoConfig?.extra?.keyImgBB;
 
 const fileNameFrom = (uri: string) => uri.split('/').pop() || `image_${Date.now()}.jpg`;
 
@@ -44,7 +42,7 @@ export async function imgbbUmaImagem(
   asset: ImagePicker.ImagePickerAsset
 ) {
   if (!asset?.uri) {
-    console.log('no asset.uri found', asset);
+    console.error('no asset.uri found', asset);
     throw new Error('No image asset provided for upload');
   }
 

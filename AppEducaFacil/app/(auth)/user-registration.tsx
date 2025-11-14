@@ -8,7 +8,7 @@ export default function UserRegistration() {
         <View>
             <Header title="Cadastro de Usuário" />
             <View style={{marginBottom: 20}} />
-            <UserForm afterSubmit={() => {router.replace("/")}} userType="user" />;
+            <UserForm afterSubmit={() => {router.replace("/")}} userType="user" />
         </View>
     )
 }
