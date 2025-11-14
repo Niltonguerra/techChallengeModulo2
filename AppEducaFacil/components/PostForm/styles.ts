@@ -1,3 +1,4 @@
+import styleGuide from '@/constants/styleGuide';
 import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
@@ -84,5 +85,10 @@ export const styles = StyleSheet.create({
   },
   submitContent: {
     paddingVertical: 8,
+    backgroundColor: styleGuide.palette.main.primaryColor
+  },
+  errorText: {
+    color: '#d32f2f',
+    marginBottom: 12,
   },
 });
