@@ -61,7 +61,6 @@ const UserForm: React.FC<FormUserProps> = ({
     if (userId) {
       getUser('id', userId)
         .then((userData: FormUserData) => {
-          console.log('inc userData: ', userData);
           setName(userData.name);
           setPassword(''); // we don't fetch the password for security reasons (especially since teachers can also edit users)
           setEmail(userData.email);
@@ -155,7 +154,7 @@ const UserForm: React.FC<FormUserProps> = ({
       newErrors.photo = 'O campo Foto é obrigatório';
     }
 
-    console.log('set errors: ', newErrors);
+    console.error('set errors: ', newErrors);
 
     setErrors(newErrors);
     // if there are no errors, the form is valid, returns true.
