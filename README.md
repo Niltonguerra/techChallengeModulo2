@@ -252,7 +252,6 @@ VITE_API_URL=https://techchallengemodulo2.onrender.com
 EXPO_ROUTER_APP_ROOT=app
 EXPO_URL_IMGBB=https://api.imgbb.com/1/upload
 EXPO_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
-# url nova com as atualizações implementadas contendo mais recursos que o backend de web
 EXPO_API_URL=https://techchallengemodulo2-emdn.onrender.com
 ```
 
