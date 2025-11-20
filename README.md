@@ -18,9 +18,13 @@
     - [Lint / format / tipos](#lint--format--tipos)
 - [Configuração do Mobile](#configuração-do-mobile)
     - [Rodando local (desenvolvimento)](#rodando-local-desenvolvimento-1)
+      - [Stack principal](#stack-principal)
+      - [Pré-requisitos](#pré-requisitos)
+      - [Rodando local (desenvolvimento)](#rodando-local-desenvolvimento-2)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
     - [Variáveis do backend:](#variáveis-do-backend)
     - [Variáveis de frontend:](#variáveis-de-frontend)
+    - [Variáveis do mobile:](#variáveis-do-mobile)
 - [Comandos úteis (resumo)](#comandos-úteis-resumo)
 - [Estrutura do projeto (backend)](#estrutura-do-projeto-backend)
 - [Credenciais](#credenciais)
@@ -169,8 +173,26 @@ npm run type-check
 
 ### Rodando local (desenvolvimento)
 
+#### Stack principal
+
+Node 18 (recomendado)
+pnpm
+ESLint, Prettier, passport-jwt
+Expo
+React Native papers
+Redux
+
+#### Pré-requisitos
+instalar e usar a versão correta do node:
+``nvm install 20.19.2``
+``nvm use 20.19.2``
+
+instalar o pnpm:
+``pnpm: npm i -g pnpm``
+
+#### Rodando local (desenvolvimento)
 1. Instale dependências:
-`pnpm install`
+``pnpm install``
 
 2. rode o projeto:
 `pnpm start`
@@ -178,6 +200,7 @@ npm run type-check
 2.1 Outra opção de rodar o projeto mas sem cache:
 `pnpm expo start -c`
 
+3. após o projeto carregar preciose a tela 'a' para abrir o emulador com o projeto rodando.
 ---
 
 # Variáveis de ambiente
@@ -226,6 +249,15 @@ VITE_URL_IMGBB=https://api.imgbb.com/1/upload
 VITE_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
 VITE_API_URL=https://techchallengemodulo2.onrender.com
 ```
+
+### Variáveis do mobile:
+```
+EXPO_ROUTER_APP_ROOT=app
+EXPO_URL_IMGBB=https://api.imgbb.com/1/upload
+EXPO_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
+EXPO_API_URL=https://techchallengemodulo2-emdn.onrender.com
+```
+
 
 ---
 
