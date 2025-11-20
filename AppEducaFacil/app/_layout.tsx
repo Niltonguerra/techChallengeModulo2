@@ -1,13 +1,14 @@
+// app/_layout.tsx
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack, usePathname, useRootNavigationState, useRouter } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import React, { useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
-import { store, RootState } from "@/store/store";
+import { store } from "@/store/store";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -27,79 +28,17 @@ export default function RootLayout() {
     if (loaded) SplashScreen.hideAsync();
   }, [loaded]);
 
-  if (!loaded) {
-    return <Stack screenOptions={{ headerShown: false }} />;
-  }
+  if (!loaded) return null;
 
   return (
     <Provider store={store}>
-      <AppContent />
+      <PaperProvider>
+        <ConfirmModalProvider>
+          <SnackbarProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+          </SnackbarProvider>
+        </ConfirmModalProvider>
+      </PaperProvider>
     </Provider>
-  );
-}
-
-function AppContent() {
-  const { isAuthenticated, user } = useSelector(
-    (state: RootState) => state.auth
-  );
-  const router = useRouter();
-  const pathname = usePathname();
-  const nav = useRootNavigationState();
-
-  useEffect(() => {
-    if (!nav?.key) return;
-
-    const currentRoute = pathname;
-    const allowedRoutes = ["/PostDetail"];
-    const isAdmin = user?.permission === "admin" || user?.role === "admin";
-    const isAdminRoute =
-      currentRoute.startsWith("/admin-") ||
-      currentRoute.startsWith("/(admin)") ||
-      currentRoute.includes("/post") ||
-      currentRoute.includes("/user");
-
-    const isTabsRoute = currentRoute.startsWith("/(tabs)");
-    const isAuthRoute =
-      currentRoute.includes("login") ||
-      currentRoute.includes("user-registration") ||
-      currentRoute.includes("faq");
-
-    if (!isAuthenticated) {
-      if (!isAuthRoute) {
-        router.replace("/login");
-      }
-      return;
-    }
-
-    if (isAdminRoute && !isAdmin) {
-      router.replace("/(tabs)");
-      return;
-    }
-
-    if (isAdminRoute && isAdmin) {
-      return;
-    }
-
-    if (currentRoute.startsWith("/(auth)")) {
-      router.replace("/(tabs)");
-      return;
-    }
-
-    const isAllowed =
-      isTabsRoute || isAdminRoute || allowedRoutes.includes(currentRoute);
-
-    if (!isAllowed) {
-      router.replace("/(tabs)");
-    }
-  }, [isAuthenticated, pathname, user, router]);
-
-  return (
-    <PaperProvider>
-      <ConfirmModalProvider>
-        <SnackbarProvider>
-          <Stack screenOptions={{ headerShown: false }} />
-        </SnackbarProvider>
-      </ConfirmModalProvider>
-    </PaperProvider>
   );
 }

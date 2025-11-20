@@ -5,7 +5,7 @@ import { FormUserData } from "@/types/form-post";
 import { ReturnMessage } from "@/types/returnMessaget";
 import { store } from "@/store/store";
 
-const API_URL = Constants.expoConfig!.extra!.apiUrl; 
+const API_URL = Constants.expoConfig!.extra!.apiUrl;
 let api: AxiosInstance | null = null;
 
 export function getApi(): AxiosInstance {
@@ -19,21 +19,24 @@ export function getApi(): AxiosInstance {
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
-
+  console.log("🚀 API_URL:", API_URL);
   const api = axios.create({
     baseURL: API_URL,
     headers: headers,
   });
   return api;
 }
-export const loginUserService = async (data: RequestUser): Promise<ResponseAuthUser> => {
+export const loginUserService = async (
+  data: RequestUser
+): Promise<ResponseAuthUser> => {
   const api = getApi();
   const response = await api.post("user/login", data);
   return response.data;
 };
 
-export const createUser = async (data: FormUserData)
-  : Promise<ReturnMessage> => {
+export const createUser = async (
+  data: FormUserData
+): Promise<ReturnMessage> => {
   const api = getApi();
   const response = await api.post("user/create", data);
   return response.data;
@@ -48,7 +51,7 @@ export const getUser = async (field: string, value: string) => {
       value,
     },
   });
-  
+
   return response.data;
 };
 
@@ -58,26 +61,36 @@ export const getAuthors = async () => {
   return response.data;
 };
 
-export const getAllUsers = async (permission?: 'user' | 'admin') => {
+export const getAllUsers = async (permission?: "user" | "admin") => {
   const api = getApi();
-  const response = await api.get('user/list-all', {
+  const response = await api.get("user/list-all", {
     params: permission ? { permission } : {},
   });
-  return response.data; 
+  return response.data;
 };
 
-export const EditUser = async (data: FormUserData)
-  : Promise<ReturnMessage> => {
+export const EditUser = async (data: FormUserData): Promise<ReturnMessage> => {
   const api = getApi();
   const response = await api.put("user/edit", data);
   // const response = await api.put(`/user/edit/${data.id}`, data);
   return response.data;
 };
 
-export const deleteUser = async (id: string)
-  : Promise<ReturnMessage> => {
+export const deleteUser = async (id: string): Promise<ReturnMessage> => {
   const api = getApi();
   const response = await api.delete(`user/delete/${id}`);
   return response.data;
 };
-  
+
+export const sendResetPasswordEmail = async (
+  email: string
+): Promise<ReturnMessage> => {
+  const api = getApi();
+  try {
+    const response = await api.post("auth-password/forgot-password", { email });
+    return response.data;
+  } catch (error: any) {
+    console.error("Erro ao enviar email de redefinição:", error);
+    throw error;
+  }
+};
