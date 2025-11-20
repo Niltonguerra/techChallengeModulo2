@@ -33,6 +33,9 @@ export class ListPost {
 
   @ApiProperty()
   user_email: string;
+
+  @ApiProperty()
+  user_photo?: string;
 }
 export class ReturnListPost {
   @ApiProperty()

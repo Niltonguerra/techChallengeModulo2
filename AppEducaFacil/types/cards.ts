@@ -3,6 +3,8 @@ import { Post } from "./post";
 export type CardPostProps = {
   isEditable: boolean;
   dataProperties: Post;
+  onEdit?: (id: string, updatedData: Partial<Post>) => void;
+  onDelete?: (id: string) => void;
 };
 
 export type CardUserProps = {
@@ -12,5 +14,6 @@ export type CardUserProps = {
     name: string;
     photo: string;
     email: string;
+    permission?: "user" | "admin";
   };
 }

@@ -161,7 +161,7 @@ export class PostService {
     const post: Post | null = await this.postRepository
       .createQueryBuilder('p')
       .leftJoinAndSelect('p.user', 'u')
-      .select(['p', 'u'])
+      .select(['p', 'u']) // seleciona os campos que quer
       .where('p.id = :id', { id })
       .getOne();
 
@@ -171,7 +171,6 @@ export class PostService {
       this.logger.error(`${message}: ${status}`);
       throw new HttpException(`${message}: ${status}`, status);
     }
-
     const postDataReturn: ReturnListPost = {
       message: systemMessage.ReturnMessage.sucessGetPostById,
       statusCode: 200,
@@ -191,6 +190,7 @@ export class PostService {
           updated_at: post.updated_at,
           user_name: post.user.name,
           user_email: post.user.email,
+          user_photo: post.user.photo,
         },
       ],
     };

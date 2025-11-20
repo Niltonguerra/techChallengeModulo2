@@ -15,6 +15,7 @@ export const mockUser: User = {
   is_active: UserStatusEnum.PENDING,
   permission: UserPermissionEnum.USER,
   posts: [],
+  comments: [],
 };
 
 export const mockPost: Post = {
@@ -29,6 +30,7 @@ export const mockPost: Post = {
   updated_at: new Date(),
   user: mockUser,
   updateSearchField: jest.fn(),
+  comments: [],
 };
 
 export const mockPostRepository = () => ({

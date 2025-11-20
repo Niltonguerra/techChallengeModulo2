@@ -45,5 +45,9 @@ export type SystemMessageType = {
     errorGetPostById: string;
     errorUserNotFound: string;
     errorSendEmail: string;
+    successDeleteComment: string;
+    errorCommentNotFound: string;
+    successCreatedComment: string;
+    errorPostNotFound: string;
   };
 };

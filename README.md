@@ -195,7 +195,10 @@ instalar o pnpm:
 ``pnpm install``
 
 2. rode o projeto:
-``pnpm start``
+`pnpm start`
+
+2.1 Outra opção de rodar o projeto mas sem cache:
+`pnpm expo start -c`
 
 3. após o projeto carregar preciose a tela 'a' para abrir o emulador com o projeto rodando.
 ---

@@ -22,7 +22,13 @@ export interface FormUserData {
   email: string;
   password?: string;
   photo: File | null | string;
-  permission?: string;
+  permission?: 'admin' | 'user' // teacher or student
+}
+
+export type FormUserProps = {
+  userId?: string
+  afterSubmit?: () => void
+  userType?: 'admin' | 'user' // teacher or student
 }
 
 export type LinkItem = { key: string; value: string };

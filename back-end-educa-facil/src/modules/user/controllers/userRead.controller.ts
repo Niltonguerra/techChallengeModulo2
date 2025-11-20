@@ -22,6 +22,7 @@ import {
 import { FindOneUserUseCase } from '../usecases/FindOneUser.usecase';
 import { listAuthorsUseCase } from '../usecases/listAuthors.usecase';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
+import { UserListDTO } from '../dtos/userList.dto';
 
 @ApiInternalServerErrorResponse({ description: 'Internal Server Error', type: ReturnMessageDTO })
 @ApiNotFoundResponse({ description: 'Not found', type: ReturnMessageDTO })
@@ -61,11 +62,9 @@ export class UserReadController {
   @Get('list-all')
   @UseGuards(JwtAuthGuardUser, RolesGuardProfessor)
   @ApiBearerAuth('JWT-Auth')
-  @ApiOperation({ summary: 'List all registered users (for admins/professors)' })
+  @ApiOperation({ summary: 'List all registered users (for admins/professores)' })
   @ApiOkResponse({ description: 'List of users', type: [User] })
-  async findAllUsers(
-    @Query('permission') permission?: UserPermissionEnum,
-  ): Promise<Partial<User>[]> {
+  async findAllUsers(@Query('permission') permission?: UserPermissionEnum): Promise<UserListDTO[]> {
     return this.listAllUsersUseCase.execute(permission);
   }
 }

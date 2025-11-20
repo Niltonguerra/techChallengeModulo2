@@ -47,6 +47,7 @@ export class UserWriteController {
 
   @Post('create')
   @UsePipes(HashPasswordPipe)
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({ summary: 'Register new user' })
   @ApiCreatedResponse({ type: ReturnMessageDTO })
   @ApiConflictResponse({ description: 'Conflit', type: ReturnMessageDTO })
@@ -66,6 +67,7 @@ export class UserWriteController {
 
   @Put('edit/:id')
   @UsePipes(HashPasswordPipe)
+  @ApiBearerAuth('JWT-Auth')
   @ApiOperation({ summary: 'Edit user by id' })
   @ApiCreatedResponse({ type: ReturnMessageDTO })
   @UseGuards(JwtAuthGuardUser, RolesGuardStudent)

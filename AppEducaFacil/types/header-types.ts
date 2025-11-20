@@ -10,7 +10,8 @@ export interface UserDataReceived {
   email: string;
   photo: string;
   id: string;
-  permission: string;
+  permission: "admin" | "user";
+  role: "admin" | "user";
 }
 
 export interface NavigationItem {

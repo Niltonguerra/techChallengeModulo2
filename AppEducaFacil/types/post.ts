@@ -1,3 +1,5 @@
+import { Comments } from "./comment";
+
 export type Post = {
     id: string;
     title: string;
@@ -11,7 +13,7 @@ export type Post = {
     updated_at: Date;
     user_name: string;
     user_email: string;
-    user_social_media: { [key: string]: string | undefined; };
+    user_photo?: string;
 }
 
 export type PostSearch = {
@@ -40,3 +42,5 @@ export type DeleteResponse = {
     statusCode: number;
     deletedId?: string;
 }
+export { Comments };
+
