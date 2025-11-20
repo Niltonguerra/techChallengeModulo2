@@ -6,6 +6,11 @@ import { JwtAuthGuardUser } from './guards/jwt-auth-user.guard';
 import { HashPasswordPipe } from './pipe/passwordEncryption.pipe';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesGuardStudent } from './guards/roles-student.guard';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '@modules/user/entities/user.entity';
+import { EmailModule } from '@modules/email/email.module';
+import { AuthPasswordService } from './auth-password.service';
+import { AuthPasswordController } from './auth-password.controller';
 
 @Module({
   imports: [
@@ -19,6 +24,8 @@ import { RolesGuardStudent } from './guards/roles-student.guard';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([User]),
+    EmailModule,
   ],
   providers: [
     JwtStrategyUser,
@@ -26,7 +33,9 @@ import { RolesGuardStudent } from './guards/roles-student.guard';
     RolesGuardProfessor,
     JwtAuthGuardUser,
     HashPasswordPipe,
+    AuthPasswordService,
   ],
+  controllers: [AuthPasswordController],
   exports: [
     JwtStrategyUser,
     RolesGuardStudent,
@@ -35,6 +44,5 @@ import { RolesGuardStudent } from './guards/roles-student.guard';
     JwtModule,
     HashPasswordPipe,
   ],
-  controllers: [],
 })
 export class AuthModule {}

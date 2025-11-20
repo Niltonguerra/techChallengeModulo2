@@ -27,6 +27,7 @@ import SnackBarComponent from './components/Snackbar/Snackbar';
 import { loginSuccess, logout } from './store/userSlice';
 import { CreateEditUserFormPage } from './pages/createUserForm/CreateUserForm';
 import Home from './pages/home/Home';
+import ResetPassword from './pages/resetPassword/ResetPassword';
 
 function App() {
   const dispatch = useDispatch();
@@ -59,6 +60,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin">
             <Route path="post">
               <Route path="create" element={<CreateEditPostFormPage />} />

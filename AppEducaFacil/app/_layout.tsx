@@ -1,10 +1,14 @@
+// app/_layout.tsx
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { SplashScreen } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import React, { useEffect } from "react";
+import { PaperProvider } from "react-native-paper";
+import "react-native-reanimated";
 import { Provider } from "react-redux";
+import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
+import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
 import { store } from "@/store/store";
-import AppContent from "./AppContent";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -28,7 +32,13 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <AppContent />
+      <PaperProvider>
+        <ConfirmModalProvider>
+          <SnackbarProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+          </SnackbarProvider>
+        </ConfirmModalProvider>
+      </PaperProvider>
     </Provider>
   );
 }
