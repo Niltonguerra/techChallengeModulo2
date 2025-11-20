@@ -4,7 +4,8 @@ import {
   View,
   ScrollView,
   Alert,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -12,12 +13,15 @@ import {
   Button,
   HelperText,
   Text,
-  List
+  List,
+  ActivityIndicator
 } from 'react-native-paper';
 import { userFormStyles as styles } from './styles'
 import type { FormUserData, FormUserProps } from '@/types/form-post';
 import { createUser, EditUser, getUser } from '@/services/user';
 import { router } from 'expo-router';
+import Loading from '../Loading';
+import { imgbbUmaImagem } from '@/services/imgbb';
 
 
 const UserForm: React.FC<FormUserProps> = ({
@@ -39,6 +43,10 @@ const UserForm: React.FC<FormUserProps> = ({
   const [editPassword, setEditPassword] = useState(false);
 
   const [imageUri, setImageUri] = useState<File | string | null>(null);
+  const [photoAsset, setPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
+
+  // loading state for fetching existing user data in case of editing
+  const [loading, setLoading] = useState(!!userId);
 
   // displays the validation errors for each field - populated by the validate()
   const [errors, setErrors] = useState<{
@@ -61,6 +69,8 @@ const UserForm: React.FC<FormUserProps> = ({
         .catch((error) => {
           console.error("Error fetching user data:", error);
           Alert.alert("Error", "Could not load user data.");
+        }).finally(() => {
+          setLoading(false);
         });
     }
   }, [userId]);
@@ -88,11 +98,11 @@ const UserForm: React.FC<FormUserProps> = ({
         quality: 0.7, // i might just be old but i remember a bug if you set quality to 1
       });
 
-      // only update the state if the user actually selects an image
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        const uri = result.assets[0].uri;
-        setImageUri(uri);
-      }
+      if (result.canceled || !result.assets?.length) return;
+
+      const photoAsset = result.assets[0];
+      setImageUri(photoAsset.uri);
+      setPhotoAsset(photoAsset);
     } catch (error) {
       console.warn("Error picking image:", error);
     }
@@ -144,7 +154,7 @@ const UserForm: React.FC<FormUserProps> = ({
       newErrors.photo = 'O campo Foto é obrigatório';
     }
 
-    console.log('set errors: ', newErrors);
+    console.error('set errors: ', newErrors);
 
     setErrors(newErrors);
     // if there are no errors, the form is valid, returns true.
@@ -154,9 +164,8 @@ const UserForm: React.FC<FormUserProps> = ({
   /**
    * Handles form submission. Validates the form then creates/updates a teacher/student
    */
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<void> => {
     if (!validate()) {
-      // When validation fails, don't proceed with submission
       return;
     }
     setIsSubmitting(true);
@@ -170,6 +179,17 @@ const UserForm: React.FC<FormUserProps> = ({
       permission: userType,
     };
 
+    if(photoAsset) {
+      try {
+        const cdn = await imgbbUmaImagem(photoAsset);
+        formData.photo = cdn.data?.url || cdn.data?.display_url;
+      } catch {
+        setIsSubmitting(false);
+        Alert.alert("Erro", "Erro ao fazer upload da imagem! Favor contactar o suporte.");
+        return;
+      }
+    }
+
     actionFunction(formData).then((response) => {
       setIsSubmitting(false);
       Alert.alert("Sucesso", response.message);
@@ -180,6 +200,12 @@ const UserForm: React.FC<FormUserProps> = ({
       Alert.alert("Erro", "Ocorreu um erro ao enviar o formulário.");
     });
   };
+
+  if(loading) {
+    return (
+      <Loading />
+    );
+  }
 
   return (
     <View>
@@ -205,9 +231,9 @@ const UserForm: React.FC<FormUserProps> = ({
                 {imageUri ? "Alterar Foto" : "Selecione uma Foto"}
             </Button>
             {errors.photo && (
-                <HelperText type="error" style={styles.errorText} visible>
-                    {errors.photo}
-                </HelperText>
+              <HelperText type="error" style={styles.errorText} visible>
+                  {errors.photo}
+              </HelperText>
             )}
         </View>
         <TextInput
@@ -282,7 +308,7 @@ const UserForm: React.FC<FormUserProps> = ({
                   onChangeText={setPassword}
                   mode="outlined"
                   secureTextEntry={!showPassword}
-                  style={{ padding: 0, ...styles.input }}
+                  style={{ padding: 0, ...styles.input, marginRight: 15 }}
                   error={!!errors.password}
                   right={
                     <TextInput.Icon

@@ -1,6 +1,14 @@
+import Header from "@/components/header/header";
 import UserForm from "@/components/UserForm";
 import { router } from "expo-router";
+import { View } from "react-native";
 
 export default function UserRegistration() {
-    return <UserForm afterSubmit={() => {router.replace("/")}} userType="user" />;
+    return (
+        <View>
+            <Header title="Cadastro de Usuário" />
+            <View style={{marginBottom: 20}} />
+            <UserForm afterSubmit={() => {router.replace("/")}} userType="user" />
+        </View>
+    )
 }

@@ -52,7 +52,7 @@ export const getUser = async (field: string, value: string) => {
     },
   });
 
-  return response.data;
+  return response.data.user;
 };
 
 export const getAuthors = async () => {
@@ -71,8 +71,7 @@ export const getAllUsers = async (permission?: "user" | "admin") => {
 
 export const EditUser = async (data: FormUserData): Promise<ReturnMessage> => {
   const api = getApi();
-  const response = await api.put("user/edit", data);
-  // const response = await api.put(`/user/edit/${data.id}`, data);
+  const response = await api.put(`/user/edit/${data.id}`, data);
   return response.data;
 };
 
