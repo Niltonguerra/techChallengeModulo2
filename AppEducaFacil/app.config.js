@@ -18,6 +18,7 @@ export default {
     supportsTablet: true
     },
   android: {
+    package: "com.niltonguerra.appeducafacil",
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#ffffff"
@@ -43,7 +44,10 @@ export default {
     routerAppRoot:process.env.EXPO_ROUTER_APP_ROOT,
     router: {
       appRoot: "app"
-      }
+    },
+    eas: {
+      projectId: "99d76f78-8f76-4d73-a0b1-2c6b4bc7d8c8"
+    }
     }
   }
 }
