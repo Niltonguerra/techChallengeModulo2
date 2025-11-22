@@ -2,10 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserDeleteService } from './userDelete.service';
 import { User } from '../entities/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { mockUser } from '@modules/post/service/__mocks__/post.service.mock';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { UserStatusEnum } from '../enum/status.enum';
 
 const mockReturnMessageDTO: ReturnMessageDTO = {
   statusCode: 200,
@@ -39,12 +40,19 @@ describe('UserDeleteService', () => {
 
   it('should delete a user successfully', async () => {
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
-    jest.spyOn(userRepository, 'remove').mockResolvedValue(mockUser);
+    userRepository.update = jest.fn();
+    jest.spyOn(userRepository, 'update').mockResolvedValue({} as UpdateResult);
 
     const result = await userDeleteService.deleteUser('test-id');
 
     expect(userRepository.findOne).toHaveBeenCalledWith({ where: { id: 'test-id' } });
-    expect(userRepository.remove).toHaveBeenCalledWith(mockUser);
+    expect(userRepository.update).toHaveBeenCalledWith(
+      { id: 'test-id' },
+      {
+        is_active: UserStatusEnum.INACTIVE,
+        updated_at: expect.any(Date) as unknown as Date,
+      },
+    );
     expect(result).toEqual(mockReturnMessageDTO);
   });
 

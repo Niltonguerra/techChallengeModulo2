@@ -88,7 +88,11 @@ describe('CreateUserUseCase', () => {
       statusCode: HttpStatus.CREATED,
       message: systemMessage.ReturnMessage.sucessCreateUser,
     });
-    expect(mockUserService.findOneUser).toHaveBeenCalledWith('email', 'token');
+    expect(mockUserService.findOneUser).toHaveBeenCalledWith(
+      'email',
+      'token',
+      UserStatusEnum.PENDING,
+    );
     expect(mockUserService.createUpdateUser).toHaveBeenCalledWith({
       id: foundUserResponse.user?.id,
       is_active: UserStatusEnum.ACTIVE,

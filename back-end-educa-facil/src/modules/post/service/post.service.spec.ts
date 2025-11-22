@@ -9,6 +9,7 @@ import { Post } from '../entities/post.entity';
 import { mockPost, mockPostRepository } from './__mocks__/post.service.mock';
 import { PostService } from './post.service';
 import { PostStatusEnum } from '../controller/enum/status.enum';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('PostService', () => {
   let service: PostService;
@@ -38,6 +39,7 @@ describe('PostService', () => {
         skip: jest.fn().mockReturnThis(),
         take: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
         getManyAndCount: jest.fn().mockResolvedValue([[mockPost], 1]),
       };
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(
@@ -57,6 +59,7 @@ describe('PostService', () => {
         skip: jest.fn().mockReturnThis(),
         take: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
         getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
       };
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(
@@ -81,6 +84,7 @@ describe('PostService', () => {
         skip: jest.fn().mockReturnThis(),
         take: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
         getManyAndCount: jest.fn().mockResolvedValue([[mockPost], 1]),
       };
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(
@@ -270,6 +274,7 @@ describe('PostService', () => {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getOne: jest.fn().mockResolvedValue(mockPost),
       };
@@ -291,17 +296,24 @@ describe('PostService', () => {
     });
 
     it('deve chamar logger em caso de erro', async () => {
-      const loggerErrorSpy = jest.spyOn(service['logger'], 'error');
+      const loggerErrorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {});
+
       const mockQueryBuilder: Partial<SelectQueryBuilder<Post>> = {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
         select: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         getOne: jest.fn().mockResolvedValue(null),
       };
+
       (postRepository.createQueryBuilder as jest.Mock).mockReturnValue(mockQueryBuilder);
-      await expect(service.getById('1')).rejects.toThrow();
-      expect(loggerErrorSpy).toHaveBeenCalled();
+
+      await expect(service.getById('1')).rejects.toThrow(HttpException);
+
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        `${systemMessage.ReturnMessage.errorGetPostById}: ${HttpStatus.NOT_FOUND}`,
+      );
     });
   });
 
