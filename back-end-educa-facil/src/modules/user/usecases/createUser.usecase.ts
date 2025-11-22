@@ -6,6 +6,7 @@ import { EmailService } from '@modules/email/service/email.service';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { UserStatusEnum } from '../enum/status.enum';
 import { IUser } from '../interfaces/user.interface';
+import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
 
 @Injectable()
 export class CreateUserUseCase {
@@ -17,15 +18,21 @@ export class CreateUserUseCase {
 
   async validationEmailCreateUser(createUserData: CreateUserDTO): Promise<ReturnMessageDTO> {
     try {
-      const existingUser = await this.userService.findOneUser('email', createUserData.email);
+      // Verifica se já existe usuário com o mesmo email
+      const existingUser = await this.userService.findOneUser(
+        searchByFieldUserEnum.EMAIL,
+        createUserData.email,
+      );
 
       if (existingUser.statusCode === 200) {
+        // Se já existe, lança conflito (não importa se está inativo)
         const message = systemMessage.ReturnMessage.errorCreateUser;
         const status = HttpStatus.CONFLICT;
         this.logger.error(`${message}: ${status}`);
         throw new HttpException(`${message}: ${status}`, status);
       }
 
+      // Envia email de verificação
       const emailStatus = await this.emailService.enviaVerificacaoEmail(
         createUserData.email,
         'user/validationEmail',
@@ -36,9 +43,10 @@ export class CreateUserUseCase {
         throw new HttpException(systemMessage.ReturnMessage.errorSendEmail, HttpStatus.BAD_GATEWAY);
       }
 
+      // Cria usuário novo
       const createUser: Omit<IUser, 'id'> = {
         ...createUserData,
-        is_active: UserStatusEnum.PENDING,
+        is_active: UserStatusEnum.PENDING, // pendente até validar email
       };
 
       await this.userService.createUpdateUser(createUser);
@@ -59,9 +67,13 @@ export class CreateUserUseCase {
     }
   }
 
-  async create(token: string): Promise<ReturnMessageDTO> {
+  async updateStatus(token: string): Promise<ReturnMessageDTO> {
     try {
-      const userData = await this.userService.findOneUser('email', token);
+      const userData = await this.userService.findOneUser(
+        searchByFieldUserEnum.EMAIL,
+        token,
+        UserStatusEnum.PENDING,
+      );
 
       if (userData.statusCode !== 200 || !userData.user) {
         this.logger.error(systemMessage.ReturnMessage.errorUserNotFound);

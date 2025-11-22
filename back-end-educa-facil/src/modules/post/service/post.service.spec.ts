@@ -8,6 +8,7 @@ import { UpdatePostDTO } from '../dtos/updatePost.dto';
 import { Post } from '../entities/post.entity';
 import { mockPost, mockPostRepository } from './__mocks__/post.service.mock';
 import { PostService } from './post.service';
+import { PostStatusEnum } from '../controller/enum/status.enum';
 
 describe('PostService', () => {
   let service: PostService;
@@ -110,7 +111,8 @@ describe('PostService', () => {
         updated_at: new Date(),
         user: mockUser,
         comments: [],
-        updateSearchField: jest.fn(), // <-- aqui
+        updateSearchField: jest.fn(),
+        is_active: PostStatusEnum.ACTIVE,
       };
 
       // Mock do QueryBuilder, tipado com Partial

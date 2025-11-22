@@ -89,7 +89,7 @@ describe('UserWriteController', () => {
       mockCreateUserUseCase.create.mockResolvedValue(mockReturnMessageDTOValid);
       const result = await controller.validationEmail(mockToken);
       expect(result).toBe(mockReturnMessageDTOValid);
-      expect(createUserUseCase.create).toHaveBeenCalledWith(mockToken);
+      expect(createUserUseCase.updateStatus).toHaveBeenCalledWith(mockToken);
     });
 
     it('should propagate error when validating email', async () => {
