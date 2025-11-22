@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { PostStatusEnum } from '../controller/enum/status.enum';
 
 @Entity({
   name: 'Post',
@@ -83,6 +84,9 @@ export class Post {
 
   @OneToMany(() => Comments, (comment) => comment.post)
   comments: Comment[];
+
+  @Column({ name: 'is_active', type: 'varchar', default: 'active' })
+  is_active: PostStatusEnum;
 
   @BeforeInsert()
   @BeforeUpdate()

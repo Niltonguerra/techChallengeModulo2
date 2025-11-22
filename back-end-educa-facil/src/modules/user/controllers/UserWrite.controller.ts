@@ -61,7 +61,7 @@ export class UserWriteController {
   @ApiOperation({ summary: 'Validation email' })
   @ApiOkResponse({ type: ReturnMessageDTO })
   async validationEmail(@Query('token') token: string): Promise<ReturnMessageDTO> {
-    const createUser: ReturnMessageDTO = await this.createUserUseCase.create(token);
+    const createUser: ReturnMessageDTO = await this.createUserUseCase.updateStatus(token);
     return createUser;
   }
 

@@ -4,6 +4,7 @@ import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
+import { UserStatusEnum } from '../enum/status.enum';
 
 @Injectable()
 export class UserDeleteService {
@@ -22,7 +23,14 @@ export class UserDeleteService {
         message: systemMessage.ReturnMessage.errorUserNotFound,
       };
     }
-    await this.userRepository.remove(user);
+    await this.userRepository.update(
+      { id: idUser },
+      {
+        is_active: UserStatusEnum.INACTIVE,
+        updated_at: new Date(),
+      },
+    );
+
     return {
       statusCode: 200,
       message: systemMessage.ReturnMessage.successDeleteUser,

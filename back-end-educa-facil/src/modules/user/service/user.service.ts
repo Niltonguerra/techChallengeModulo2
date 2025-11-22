@@ -12,6 +12,8 @@ import { LoginUsuarioInternoDTO } from '@modules/user/dtos/AuthUser.dto';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 import { IUser } from '../interfaces/user.interface';
+import { UserStatusEnum } from '../enum/status.enum';
+import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
 
 @Injectable()
 export class UserService {
@@ -36,10 +38,18 @@ export class UserService {
     return returnService;
   }
 
-  async findOneUser(field: string, value: string): Promise<FindOneUserReturnMessageDTO> {
-    const user = await this.userRepository.findOne({
-      where: { [field]: value },
-    });
+  async findOneUser(
+    field: searchByFieldUserEnum,
+    value: string,
+    isActive?: UserStatusEnum,
+  ): Promise<FindOneUserReturnMessageDTO> {
+    const where: Record<string, string> = { [field]: value };
+
+    if (isActive) {
+      where.is_active = isActive;
+    }
+
+    const user = await this.userRepository.findOne({ where });
 
     if (!user) {
       const returnMessage: FindOneUserReturnMessageDTO = {
@@ -65,7 +75,7 @@ export class UserService {
 
   async findOneUserLogin(value: string): Promise<LoginUsuarioInternoDTO | false> {
     const user = await this.userRepository.findOne({
-      where: { email: value },
+      where: { email: value, is_active: UserStatusEnum.ACTIVE },
     });
 
     if (!user) {
@@ -93,7 +103,7 @@ export class UserService {
       .take(20);
 
     qb.andWhere('user.permission = :perm', { perm: UserPermissionEnum.ADMIN });
-
+    qb.andWhere('user.is_active = :is_active', { is_active: UserStatusEnum.ACTIVE });
     if (field && value) {
       qb.andWhere(`user.${field} = :value`, { value });
     }
@@ -110,12 +120,11 @@ export class UserService {
   async findAll(permission?: UserPermissionEnum): Promise<Partial<User>[]> {
     const options: FindManyOptions<User> = {
       select: ['id', 'name', 'email', 'permission', 'photo', 'is_active'],
+      where: {
+        is_active: UserStatusEnum.ACTIVE,
+        ...(permission ? { permission } : {}),
+      },
     };
-
-    if (permission) {
-      options.where = { permission };
-    }
-
     return this.userRepository.find(options);
   }
 }

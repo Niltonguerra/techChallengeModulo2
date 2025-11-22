@@ -10,6 +10,8 @@ import { ListPostDTO } from '../dtos/listPost.dto';
 import { ReturnListPost } from '../dtos/returnlistPost.dto';
 import { UpdatePostDTO } from '../dtos/updatePost.dto';
 import { Post } from '../entities/post.entity';
+import { PostStatusEnum } from '../controller/enum/status.enum';
+import { UserStatusEnum } from '@modules/user/enum/status.enum';
 
 @Injectable()
 export class PostService {
@@ -47,7 +49,7 @@ export class PostService {
   async listPosts(listPostData: ListPostDTO): Promise<ReturnListPost> {
     const offsetNumber = listPostData?.offset ? Number(listPostData.offset) : 0;
     const limitNumber = listPostData?.limit ? Number(listPostData.limit) : 10;
-    // const { search, content: contentHashtags, createdAt, userId } = listPostData;
+
     const {
       search,
       content: contentHashtags,
@@ -92,25 +94,27 @@ export class PostService {
     }
 
     if (createdAtBefore) {
-      if (!isNaN(new Date(createdAtBefore).getTime())) {
-        const auxDate = new Date(createdAtBefore);
-        auxDate.setHours(0, 0, 0, 0);
-        query.andWhere('p.created_at <= :createdAtBefore', {
-          createdAtBefore: auxDate.toISOString(),
+      const auxDate = new Date(createdAtBefore);
+      if (!isNaN(auxDate.getTime())) {
+        const formattedDate = auxDate.toISOString().split('T')[0];
+        query.andWhere('DATE(p.created_at) <= :createdAtBefore', {
+          createdAtBefore: formattedDate,
         });
       }
     }
 
     if (createdAtAfter) {
+      const auxDate = new Date(createdAtAfter);
       if (!isNaN(new Date(createdAtAfter).getTime())) {
-        const auxDate = new Date(createdAtAfter);
-        auxDate.setHours(23, 59, 59, 999);
+        const formattedDate = auxDate.toISOString().split('T')[0];
         query.andWhere('p.created_at >= :createdAtAfter', {
-          createdAtAfter: auxDate.toISOString(),
+          createdAtAfter: formattedDate,
         });
       }
     }
-
+    query.andWhere('p.is_active <= :is_active', {
+      is_active: PostStatusEnum.ACTIVE,
+    });
     const [posts, total_post] = await query.getManyAndCount();
 
     const postDataReturn: ReturnListPost = {
@@ -119,19 +123,34 @@ export class PostService {
       limit: limitNumber,
       offset: offsetNumber,
       total: total_post,
-      ListPost: posts.map((p) => ({
-        id: p.id,
-        title: p.title,
-        description: p.description,
-        image: p.image,
-        introduction: p.introduction ?? (p.description?.substring(0, 100) || ''),
-        content_hashtags: p.content_hashtags,
-        external_link: p.external_link ?? { url: '' },
-        created_at: p.created_at,
-        updated_at: p.updated_at,
-        user_name: p.user?.name,
-        user_email: p.user?.email,
-      })),
+      ListPost: posts.map((p) => {
+        const userData =
+          p.user?.is_active === UserStatusEnum.INACTIVE
+            ? {
+                name: 'Autor indisponível',
+                email: 'Autor indisponível',
+                photo: null,
+              }
+            : {
+                name: p.user?.name,
+                email: p.user?.email,
+                photo: p.user?.photo,
+              };
+        return {
+          id: p.id,
+          title: p.title,
+          description: p.description,
+          image: p.image,
+          introduction: p.introduction ?? (p.description?.substring(0, 100) || ''),
+          content_hashtags: p.content_hashtags,
+          external_link: p.external_link ?? { url: '' },
+          created_at: p.created_at,
+          updated_at: p.updated_at,
+          user_name: userData.name,
+          user_email: userData.email,
+          user_photo: userData.photo,
+        };
+      }),
     };
     return postDataReturn;
   }
@@ -161,8 +180,9 @@ export class PostService {
     const post: Post | null = await this.postRepository
       .createQueryBuilder('p')
       .leftJoinAndSelect('p.user', 'u')
-      .select(['p', 'u']) // seleciona os campos que quer
+      .select(['p', 'u'])
       .where('p.id = :id', { id })
+      .andWhere('p.is_active = :active', { active: PostStatusEnum.ACTIVE })
       .getOne();
 
     if (!post) {
@@ -171,6 +191,20 @@ export class PostService {
       this.logger.error(`${message}: ${status}`);
       throw new HttpException(`${message}: ${status}`, status);
     }
+
+    const userData =
+      post.user?.is_active === UserStatusEnum.INACTIVE
+        ? {
+            name: 'Autor indisponível',
+            email: 'Autor indisponível',
+            photo: null,
+          }
+        : {
+            name: post.user.name,
+            email: post.user.email,
+            photo: post.user.photo,
+          };
+
     const postDataReturn: ReturnListPost = {
       message: systemMessage.ReturnMessage.sucessGetPostById,
       statusCode: 200,
@@ -188,9 +222,9 @@ export class PostService {
           external_link: post.external_link ?? { url: '' },
           created_at: post.created_at,
           updated_at: post.updated_at,
-          user_name: post.user.name,
-          user_email: post.user.email,
-          user_photo: post.user.photo,
+          user_name: userData.name,
+          user_email: userData.email,
+          user_photo: userData.photo,
         },
       ],
     };
@@ -212,11 +246,11 @@ export class PostService {
   }
 
   async getUniqueHashtags(): Promise<string[]> {
-    // TODO ordernar pelo mais acessados depois
     const result: { hashtag: string }[] = await this.postRepository
       .createQueryBuilder('p')
       .select('DISTINCT unnest(p.content_hashtags)', 'hashtag')
       .where('p.content_hashtags IS NOT NULL')
+      .andWhere('p.is_active <= :is_active', { is_active: PostStatusEnum.ACTIVE })
       .limit(10)
       .getRawMany();
     return result.map((row) => row.hashtag);

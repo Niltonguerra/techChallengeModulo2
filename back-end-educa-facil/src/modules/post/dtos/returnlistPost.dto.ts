@@ -35,7 +35,7 @@ export class ListPost {
   user_email: string;
 
   @ApiProperty()
-  user_photo?: string;
+  user_photo?: string | null;
 }
 export class ReturnListPost {
   @ApiProperty()
