@@ -18,21 +18,18 @@ export class CreateUserUseCase {
 
   async validationEmailCreateUser(createUserData: CreateUserDTO): Promise<ReturnMessageDTO> {
     try {
-      // Verifica se já existe usuário com o mesmo email
       const existingUser = await this.userService.findOneUser(
         searchByFieldUserEnum.EMAIL,
         createUserData.email,
       );
 
       if (existingUser.statusCode === 200) {
-        // Se já existe, lança conflito (não importa se está inativo)
         const message = systemMessage.ReturnMessage.errorCreateUser;
         const status = HttpStatus.CONFLICT;
         this.logger.error(`${message}: ${status}`);
         throw new HttpException(`${message}: ${status}`, status);
       }
 
-      // Envia email de verificação
       const emailStatus = await this.emailService.enviaVerificacaoEmail(
         createUserData.email,
         'user/validationEmail',
@@ -43,7 +40,6 @@ export class CreateUserUseCase {
         throw new HttpException(systemMessage.ReturnMessage.errorSendEmail, HttpStatus.BAD_GATEWAY);
       }
 
-      // Cria usuário novo
       const createUser: Omit<IUser, 'id'> = {
         ...createUserData,
         is_active: UserStatusEnum.PENDING, // pendente até validar email
