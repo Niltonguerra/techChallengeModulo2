@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Linking,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
@@ -143,24 +144,31 @@ export default function LoginScreen() {
         Dúvidas? Acesse nosso FAQ!
       </Text>
       <Text style={styles.text}>Entre em contato conosco:</Text>
-      <Text style={styles.text}>
+      <TouchableOpacity
+        onPress={() => Linking.openURL("tel:11932313383")}
+        style={{ flexDirection: "row", justifyContent: "center", marginTop: 20 }}
+      >
         <MaterialCommunityIcons
           name="phone"
           size={16}
           color={styleGuide.palette.main.primaryColor}
           style={styles.contactIcon}
         />
-        (11) 93231-3383
-      </Text>
-      <Text style={styles.text}>
+        <Text style={styles.text}>(11) 93231-3383</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => Linking.openURL("mailto:educacaofacilfiap@gmail.com")}
+        style={{ flexDirection: "row", justifyContent: "center", marginTop: 10 }}
+      >
         <MaterialCommunityIcons
           name="email-outline"
           size={16}
           color={styleGuide.palette.main.primaryColor}
           style={styles.contactIcon}
         />
-        educacaofacilfiap@gmail.com
-      </Text>
+        <Text style={styles.text}>educacaofacilfiap@gmail.com</Text>
+      </TouchableOpacity>
     </View>
   );
 }
