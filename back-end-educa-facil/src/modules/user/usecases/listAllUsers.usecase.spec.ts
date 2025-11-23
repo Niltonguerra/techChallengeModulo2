@@ -31,10 +31,7 @@ describe('ListAllUsersUseCase', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ListAllUsersUseCase,
-        { provide: UserService, useValue: mockUserService },
-      ],
+      providers: [ListAllUsersUseCase, { provide: UserService, useValue: mockUserService }],
     }).compile();
 
     useCase = module.get<ListAllUsersUseCase>(ListAllUsersUseCase);

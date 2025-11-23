@@ -115,8 +115,25 @@ export default function LoginScreen() {
         )}
       </TouchableOpacity>
 
+      <Text
+        style={[
+          styles.text,
+          { marginTop: 12, textDecorationLine: "underline" },
+        ]}
+        onPress={() => router.push("/reset-password")}
+      >
+        Esqueci minha senha
+      </Text>
+
       <Text style={styles.titleregister}>Faça o seu registro</Text>
-      <Text style={styles.text} onPress={() => { router.push('/user-registration') }}>Não Possui registro? Registre-se aqui</Text>
+      <Text
+        style={styles.text}
+        onPress={() => {
+          router.push("/user-registration");
+        }}
+      >
+        Não Possui registro? Registre-se aqui
+      </Text>
 
       <Text
         style={styles.text}
@@ -153,14 +170,14 @@ export default function LoginScreen() {
         <Text style={styles.text}>educacaofacilfiap@gmail.com</Text>
       </TouchableOpacity>
     </View>
-
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: styleGuide.light.background || styleGuide.palette.main.fourthColor,
+    backgroundColor:
+      styleGuide.light.background || styleGuide.palette.main.fourthColor,
     justifyContent: "center",
     padding: 24,
   },
