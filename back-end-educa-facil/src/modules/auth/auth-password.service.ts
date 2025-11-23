@@ -54,7 +54,7 @@ export class AuthPasswordService {
     const { token, newPassword } = dto;
 
     try {
-      const { email } = this.jwtService.verify(token, {
+      const { email } = this.jwtService.verify<{ email: string }>(token, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
 
@@ -70,7 +70,10 @@ export class AuthPasswordService {
       this.logger.log(`Senha redefinida com sucesso para ${email}`);
       return { message: 'Senha redefinida com sucesso.' };
     } catch (error) {
-      this.logger.error('Erro ao redefinir senha', error instanceof Error ? error.stack : error);
+      this.logger.error(
+        'Erro ao redefinir senha',
+        error instanceof Error ? error.stack : String(error),
+      );
 
       throw new BadRequestException('Token inválido ou expirado.');
     }
