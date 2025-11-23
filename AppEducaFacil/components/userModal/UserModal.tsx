@@ -37,14 +37,14 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
   if (!user) return null;
 
   const userLinks = [
-    { label: "Editar Dados", pathname: "/edit-user-data" },
+    { label: "Editar Meu Perfil", pathname: "/edit-user-data" },
   ];
 
   const adminLinks = [
     { label: "Administrador de Professor", pathname: "/(admin)/admin-teacher" },
     { label: "Administrador de Aluno", pathname: "/(admin)/admin-student" },
     { label: "Administrador de Postagens", pathname: "/(admin)/admin-post" },
-    { label: "Editar Dados", pathname: "/edit-user-data" },
+    { label: "Editar Meu Perfl", pathname: "/edit-user-data" },
   ];
 
   const links =
