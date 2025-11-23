@@ -6,6 +6,8 @@ import { User } from '../entities/user.entity';
 import { userCreateMock, userMock } from './__mocks__/user-service.mock';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
+import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
+import { UserStatusEnum } from '../enum/status.enum';
 
 describe('UserService', () => {
   let service: UserService;
@@ -56,9 +58,15 @@ describe('UserService', () => {
   it('deve retornar usuário encontrado', async () => {
     repository.findOne.mockResolvedValue(userMock as any);
 
-    const result = await service.findOneUser('email', userMock.email);
+    const result = await service.findOneUser(
+      searchByFieldUserEnum.EMAIL,
+      userMock.email,
+      UserStatusEnum.ACTIVE,
+    );
 
-    expect(repository.findOne).toHaveBeenCalledWith({ where: { email: userMock.email } });
+    expect(repository.findOne).toHaveBeenCalledWith({
+      where: { email: userMock.email, is_active: UserStatusEnum.ACTIVE },
+    });
     expect(result).toEqual({
       statusCode: 200,
       message: systemMessage.ReturnMessage.sucessFindOneUser,
@@ -74,9 +82,15 @@ describe('UserService', () => {
   it('deve retornar erro se usuário não encontrado', async () => {
     repository.findOne.mockResolvedValue(null);
 
-    const result = await service.findOneUser('email', 'notfound@email.com');
+    const result = await service.findOneUser(
+      searchByFieldUserEnum.EMAIL,
+      'notfound@email.com',
+      UserStatusEnum.ACTIVE,
+    );
 
-    expect(repository.findOne).toHaveBeenCalledWith({ where: { email: 'notfound@email.com' } });
+    expect(repository.findOne).toHaveBeenCalledWith({
+      where: { email: 'notfound@email.com', is_active: UserStatusEnum.ACTIVE },
+    });
     expect(result).toEqual({
       statusCode: 400,
       message: systemMessage.ReturnMessage.errorUserNotFound,
@@ -88,7 +102,9 @@ describe('UserService', () => {
 
     const result = await service.findOneUserLogin(userMock.email);
 
-    expect(repository.findOne).toHaveBeenCalledWith({ where: { email: userMock.email } });
+    expect(repository.findOne).toHaveBeenCalledWith({
+      where: { email: userMock.email, is_active: UserStatusEnum.ACTIVE },
+    });
     expect(result).toEqual({
       id: userMock.id,
       password: userMock.password,
@@ -105,7 +121,9 @@ describe('UserService', () => {
 
     const result = await service.findOneUserLogin('notfound@email.com');
 
-    expect(repository.findOne).toHaveBeenCalledWith({ where: { email: 'notfound@email.com' } });
+    expect(repository.findOne).toHaveBeenCalledWith({
+      where: { email: 'notfound@email.com', is_active: UserStatusEnum.ACTIVE },
+    });
     expect(result).toBe(false);
   });
 
@@ -127,7 +145,7 @@ describe('UserService', () => {
 
     expect(repository.find).toHaveBeenCalledWith({
       select: ['id', 'name', 'email', 'permission', 'photo', 'is_active'],
-      where: { permission: UserPermissionEnum.ADMIN },
+      where: { permission: UserPermissionEnum.ADMIN, is_active: UserStatusEnum.ACTIVE },
     });
     expect(result).toEqual([userMock]);
   });

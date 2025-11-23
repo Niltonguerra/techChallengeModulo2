@@ -1,5 +1,6 @@
 // Mocks para post.service.spec.ts
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
+import { PostStatusEnum } from '@modules/post/controller/enum/status.enum';
 import { Post } from '@modules/post/entities/post.entity';
 import { User } from '@modules/user/entities/user.entity';
 import { UserStatusEnum } from '@modules/user/enum/status.enum';
@@ -31,6 +32,7 @@ export const mockPost: Post = {
   user: mockUser,
   updateSearchField: jest.fn(),
   comments: [],
+  is_active: PostStatusEnum.ACTIVE,
 };
 
 export const mockPostRepository = () => ({

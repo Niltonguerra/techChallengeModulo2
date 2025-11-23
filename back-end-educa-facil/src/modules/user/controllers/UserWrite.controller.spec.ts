@@ -32,6 +32,7 @@ describe('UserWriteController', () => {
   const mockCreateUserUseCase = {
     validationEmailCreateUser: jest.fn(),
     create: jest.fn(),
+    updateStatus: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -86,14 +87,15 @@ describe('UserWriteController', () => {
 
   describe('validationEmail', () => {
     it('should validate email successfully', async () => {
-      mockCreateUserUseCase.create.mockResolvedValue(mockReturnMessageDTOValid);
+      mockCreateUserUseCase.updateStatus.mockResolvedValue(mockReturnMessageDTOValid);
       const result = await controller.validationEmail(mockToken);
       expect(result).toBe(mockReturnMessageDTOValid);
-      expect(createUserUseCase.create).toHaveBeenCalledWith(mockToken);
+      expect(createUserUseCase.updateStatus).toHaveBeenCalledWith(mockToken);
     });
 
     it('should propagate error when validating email', async () => {
-      mockCreateUserUseCase.create.mockRejectedValue(new Error('erro'));
+      mockCreateUserUseCase.updateStatus.mockRejectedValue(new Error('erro'));
+
       await expect(controller.validationEmail(mockToken)).rejects.toThrow('erro');
     });
   });

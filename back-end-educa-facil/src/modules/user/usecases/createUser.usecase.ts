@@ -6,6 +6,7 @@ import { EmailService } from '@modules/email/service/email.service';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { UserStatusEnum } from '../enum/status.enum';
 import { IUser } from '../interfaces/user.interface';
+import { searchByFieldUserEnum } from '../enum/searchByFieldUser.enum';
 
 @Injectable()
 export class CreateUserUseCase {
@@ -17,7 +18,10 @@ export class CreateUserUseCase {
 
   async validationEmailCreateUser(createUserData: CreateUserDTO): Promise<ReturnMessageDTO> {
     try {
-      const existingUser = await this.userService.findOneUser('email', createUserData.email);
+      const existingUser = await this.userService.findOneUser(
+        searchByFieldUserEnum.EMAIL,
+        createUserData.email,
+      );
 
       if (existingUser.statusCode === 200) {
         const message = systemMessage.ReturnMessage.errorCreateUser;
@@ -38,7 +42,7 @@ export class CreateUserUseCase {
 
       const createUser: Omit<IUser, 'id'> = {
         ...createUserData,
-        is_active: UserStatusEnum.PENDING,
+        is_active: UserStatusEnum.PENDING, // pendente até validar email
       };
 
       await this.userService.createUpdateUser(createUser);
@@ -59,9 +63,13 @@ export class CreateUserUseCase {
     }
   }
 
-  async create(token: string): Promise<ReturnMessageDTO> {
+  async updateStatus(token: string): Promise<ReturnMessageDTO> {
     try {
-      const userData = await this.userService.findOneUser('email', token);
+      const userData = await this.userService.findOneUser(
+        searchByFieldUserEnum.EMAIL,
+        token,
+        UserStatusEnum.PENDING,
+      );
 
       if (userData.statusCode !== 200 || !userData.user) {
         this.logger.error(systemMessage.ReturnMessage.errorUserNotFound);

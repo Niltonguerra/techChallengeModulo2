@@ -23,7 +23,7 @@ describe('FindOneUserUseCase (simple)', () => {
     mockUserService.findOneUser.mockResolvedValue(userMock);
     const result = await useCase.findOneUserUseCase(params);
     expect(result).toEqual(userMock);
-    expect(mockUserService.findOneUser).toHaveBeenCalledWith(params.field, params.value);
+    expect(mockUserService.findOneUser).toHaveBeenCalledWith(params.field, params.value, 'active');
   });
 
   it('deve retornar erro padrão se lançar HttpException', async () => {

@@ -77,18 +77,22 @@ describe('CreateUserUseCase', () => {
 
   it('deve lançar erro se usuário não encontrado ao ativar', async () => {
     mockUserService.findOneUser.mockResolvedValue(notFoundResponse);
-    await expect(useCase.create('token')).rejects.toThrow(HttpException);
+    await expect(useCase.updateStatus('token')).rejects.toThrow(HttpException);
   });
 
   it('deve ativar usuário e retornar sucesso', async () => {
     mockUserService.findOneUser.mockResolvedValue(foundUserResponse);
     mockUserService.createUpdateUser.mockResolvedValue(successResponse);
-    const result = await useCase.create('token');
+    const result = await useCase.updateStatus('token');
     expect(result).toEqual({
       statusCode: HttpStatus.CREATED,
       message: systemMessage.ReturnMessage.sucessCreateUser,
     });
-    expect(mockUserService.findOneUser).toHaveBeenCalledWith('email', 'token');
+    expect(mockUserService.findOneUser).toHaveBeenCalledWith(
+      'email',
+      'token',
+      UserStatusEnum.PENDING,
+    );
     expect(mockUserService.createUpdateUser).toHaveBeenCalledWith({
       id: foundUserResponse.user?.id,
       is_active: UserStatusEnum.ACTIVE,
@@ -97,6 +101,6 @@ describe('CreateUserUseCase', () => {
 
   it('deve lançar erro se resposta não tem user', async () => {
     mockUserService.findOneUser.mockResolvedValue(responseWithoutUser);
-    await expect(useCase.create('token')).rejects.toThrow(HttpException);
+    await expect(useCase.updateStatus('token')).rejects.toThrow(HttpException);
   });
 });

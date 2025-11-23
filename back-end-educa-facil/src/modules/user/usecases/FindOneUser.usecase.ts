@@ -3,6 +3,7 @@ import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { UserService } from '../service/user.service';
 import { FindOneUserReturnMessageDTO } from '../dtos/returnMessageCRUD.dto';
 import { FindOneUserQueryParamsDTO } from '../dtos/findOneQueryParams.dto';
+import { UserStatusEnum } from '../enum/status.enum';
 
 @Injectable()
 export class FindOneUserUseCase {
@@ -13,7 +14,11 @@ export class FindOneUserUseCase {
     params: FindOneUserQueryParamsDTO,
   ): Promise<FindOneUserReturnMessageDTO> {
     try {
-      const user = await this.userService.findOneUser(params.field, params.value);
+      const user = await this.userService.findOneUser(
+        params.field,
+        params.value,
+        UserStatusEnum.ACTIVE,
+      );
       return user;
     } catch (error) {
       const message =
