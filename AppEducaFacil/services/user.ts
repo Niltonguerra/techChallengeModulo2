@@ -19,7 +19,6 @@ export function getApi(): AxiosInstance {
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
-  console.log("🚀 API_URL:", API_URL);
   const api = axios.create({
     baseURL: API_URL,
     headers: headers,
