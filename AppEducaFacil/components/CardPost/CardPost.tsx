@@ -34,12 +34,13 @@ const CardPost = (dataCard: CardPostProps) => {
   };
 
   return (
-    <Card style={styles.card} mode="elevated" elevation={2}>
-      <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
-      <Pressable
-        onPress={handleOpenDetail}
-        style={styles.cardContentLinkPressable}
-      >
+    <Pressable
+      onPress={handleOpenDetail}
+      style={styles.cardContentLinkPressable}
+    >
+      <Card style={styles.card} mode="elevated" elevation={2}>
+        <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
+
         <Card.Content style={styles.cardContent}>
           <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
           <View style={styles.tagsContainer}>
@@ -72,26 +73,27 @@ const CardPost = (dataCard: CardPostProps) => {
             </View>
           </View>
         </Card.Content>
-      </Pressable>
-      {dataCard.isEditable && (
-        <Card.Actions style={styles.btnContainer}>
-          <Button
-            labelStyle={styles.btnLabel}
-            style={styles.btnEdit}
-            onPress={handleOpenEdit}
-          >
-            Editar
-          </Button>
-          <Button
-            labelStyle={styles.btnLabel}
-            style={styles.btnDelete}
-            onPress={onDeletePress}
-          >
-            Deletar
-          </Button>
-        </Card.Actions>
-      )}
-    </Card>
+
+        {dataCard.isEditable && (
+          <Card.Actions style={styles.btnContainer}>
+            <Button
+              labelStyle={styles.btnLabel}
+              style={styles.btnEdit}
+              onPress={handleOpenEdit}
+            >
+              Editar
+            </Button>
+            <Button
+              labelStyle={styles.btnLabel}
+              style={styles.btnDelete}
+              onPress={onDeletePress}
+            >
+              Deletar
+            </Button>
+          </Card.Actions>
+        )}
+      </Card>
+    </Pressable>
   );
 };
 
