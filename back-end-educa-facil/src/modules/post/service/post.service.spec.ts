@@ -296,7 +296,7 @@ describe('PostService', () => {
     });
 
     it('deve chamar logger em caso de erro', async () => {
-      const loggerErrorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {});
+      const loggerErrorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => { });
 
       const mockQueryBuilder: Partial<SelectQueryBuilder<Post>> = {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
@@ -319,19 +319,37 @@ describe('PostService', () => {
 
   describe('deletePostService', () => {
     it('deve deletar post com sucesso', async () => {
-      postRepository.delete.mockResolvedValue({ raw: {}, affected: 1 });
+      postRepository.update.mockResolvedValue({
+        affected: 1,
+        raw: {},
+        generatedMaps: [],
+      });
+
       const result = await service.deletePostService('1');
+
       expect(result.message).toBe(systemMessage.ReturnMessage.sucessDeletePost);
       expect(result.statusCode).toBe(200);
     });
-    it('deve lançar exceção se não encontrar post para deletar', async () => {
-      postRepository.delete.mockResolvedValue({ raw: {}, affected: 0 });
+
+    it('deve lançar exceção se não encontrar post', async () => {
+      postRepository.update.mockResolvedValue({
+        affected: 0,
+        raw: {},
+        generatedMaps: [],
+      });
+
       await expect(service.deletePostService('1')).rejects.toThrow();
     });
 
-    it('deve chamar logger em caso de erro ao deletar', async () => {
+    it('deve chamar logger em caso de erro', async () => {
       const loggerErrorSpy = jest.spyOn(service['logger'], 'error');
-      postRepository.delete.mockResolvedValue({ raw: {}, affected: 0 });
+
+      postRepository.update.mockResolvedValue({
+        affected: 0,
+        raw: {},
+        generatedMaps: [],
+      });
+
       await expect(service.deletePostService('1')).rejects.toThrow();
       expect(loggerErrorSpy).toHaveBeenCalled();
     });

@@ -232,7 +232,13 @@ export class PostService {
   }
 
   async deletePostService(id: string): Promise<ReturnMessageDTO> {
-    const result = await this.postRepository.delete(id);
+    const result = await this.postRepository.update(
+      { id: id },
+      {
+        is_active: PostStatusEnum.INACTIVE,
+        updated_at: new Date(),
+      },
+    );
     if (result.affected === 0) {
       const message = systemMessage.ReturnMessage.errorDeletePost;
       const status = HttpStatus.NOT_FOUND;
