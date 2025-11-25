@@ -12,7 +12,8 @@ import React, { useEffect, useState } from "react";
 import {
     Alert,
     Animated,
-    Linking,
+    KeyboardAvoidingView,
+    Platform,
     ScrollView,
     StyleSheet,
     TextInput,
@@ -173,230 +174,225 @@ export default function PostDetail() {
         );
 
     return (
-        <View style={styles.wrapper}>
-            <IconButton
-                icon="close"
-                size={22}
-                style={styles.closeButton}
-                onPress={() => router.back()}
-                iconColor={styleGuide.palette.main.fourthColor}
-            />
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+        >
+            <View style={styles.wrapper}>
 
-            <ScrollView
-                contentContainerStyle={styles.container}
-                showsVerticalScrollIndicator={false}
-                onScroll={handleScroll}
-                scrollEventThrottle={16}
-            >
-                {post.image && (
-                    <Card style={styles.imageCard} mode="elevated" elevation={2}>
-                        <Card.Cover source={{ uri: post.image }} style={styles.image} />
-                    </Card>
-                )}
-
-                <Text variant="headlineLarge" style={styles.title}>
-                    {post.title}
-                </Text>
-
-                <View style={styles.authorRow}>
-                    {post.user_photo ? (
-                        <Avatar.Image
-                            size={36}
-                            source={{ uri: post.user_photo }}
-                            style={{ backgroundColor: styleGuide.palette.main.textSecondaryColor }}
-                        />
-                    ) : (
-                        <Avatar.Text
-                            size={42}
-                            label={post.user_name?.[0]?.toUpperCase() ?? "?"}
-                            style={{ backgroundColor: styleGuide.palette.main.primaryColor }}
-                        />
+                <IconButton
+                    icon="close"
+                    size={22}
+                    style={styles.closeButton}
+                    onPress={() => router.back()}
+                    iconColor={styleGuide.palette.main.fourthColor}
+                />
+                <ScrollView
+                    contentContainerStyle={[styles.container, { paddingBottom: 120 }]}
+                    showsVerticalScrollIndicator={false}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16}
+                >
+                    {post.image && (
+                        <Card style={styles.imageCard} mode="elevated" elevation={2}>
+                            <Card.Cover source={{ uri: post.image }} style={styles.image} />
+                        </Card>
                     )}
 
-                    <View style={styles.authorTextRow}>
-                        <Text style={styles.authorName}>{post.user_name}</Text>
-                        <Text style={styles.authorDate}>
-                            {new Date(post.updated_at).toLocaleDateString("pt-BR")}
-                        </Text>
-                    </View>
-                </View>
+                    <Text variant="headlineLarge" style={styles.title}>
+                        {post.title}
+                    </Text>
 
-                <View style={styles.tagsContainer}>
-                    {post.content_hashtags.map((tag, idx) => (
-                        <View key={`${tag}-${idx}`} style={styles.tag}>
-                            <Text style={styles.tagText}>
-                                {tag.startsWith("#") ? tag : `#${tag}`}
+                    <View style={styles.authorRow}>
+                        {post.user_photo ? (
+                            <Avatar.Image
+                                size={36}
+                                source={{ uri: post.user_photo }}
+                                style={{ backgroundColor: styleGuide.palette.main.textSecondaryColor }}
+                            />
+                        ) : (
+                            <Avatar.Text
+                                size={42}
+                                label={post.user_name?.[0]?.toUpperCase() ?? "?"}
+                                style={{ backgroundColor: styleGuide.palette.main.primaryColor }}
+                            />
+                        )}
+
+                        <View style={styles.authorTextRow}>
+                            <Text style={styles.authorName}>{post.user_name}</Text>
+                            <Text style={styles.authorDate}>
+                                {new Date(post.created_at)
+                                    .toISOString()
+                                    .split("T")[0]
+                                    .split("-")
+                                    .reverse()
+                                    .join("/")}
                             </Text>
                         </View>
-                    ))}
-                </View>
-
-                <Divider style={{ marginVertical: 12 }} />
-
-                {post.introduction && (
-                    <View style={{ marginBottom: 12 }}>
-                        <Text variant="titleMedium" style={styles.sectionTitle}>
-                            Introdução
-                        </Text>
-                        <Text variant="bodyMedium" style={styles.bodyText}>
-                            {post.introduction}
-                        </Text>
                     </View>
-                )}
 
-                {post.description && (
-                    <View style={{ marginBottom: 12 }}>
-                        <Text variant="titleMedium" style={styles.sectionTitle}>
-                            Descrição
-                        </Text>
-                        <Text variant="bodyMedium" style={styles.bodyText}>
-                            {post.description}
-                        </Text>
-                    </View>
-                )}
-
-                {post.external_link &&
-                    Object.entries(post.external_link).map(([key, value]) => {
-                        if (!value) return null;
-                        return (
-                            <View key={key} style={styles.linkContainer}>
-                                <Text variant="titleMedium" style={styles.linkLabel}>
-                                    Material de apoio:
+                    <View style={styles.tagsContainer}>
+                        {post.content_hashtags.map((tag, idx) => (
+                            <View key={`${tag}-${idx}`} style={styles.tag}>
+                                <Text style={styles.tagText}>
+                                    {tag.startsWith("#") ? tag : `#${tag}`}
                                 </Text>
-                                <Button
-                                    icon="link"
-                                    mode="contained-tonal"
-                                    onPress={() => Linking.openURL(value)}
-                                    style={styles.linkButton}
-                                    labelStyle={{ textTransform: "none" }}
-                                >
-                                    {key}
-                                </Button>
                             </View>
-                        );
-                    })}
+                        ))}
+                    </View>
 
-                <Divider style={{ marginVertical: 16 }} />
-                <Text variant="titleMedium" style={styles.sectionTitle}>
-                    Comentários
-                </Text>
+                    <Divider style={{ marginVertical: 12 }} />
 
-                <View style={styles.commentInputContainer}>
-                    <TextInput
-                        style={styles.commentInput}
-                        placeholder="Escreva um comentário..."
-                        value={newComment}
-                        onChangeText={setNewComment}
-                        editable={!commentLoading}
-                    />
-                    <Button
-                        mode="contained"
-                        onPress={handleAddComment}
-                        loading={commentLoading}
-                        disabled={commentLoading}
-                        style={styles.button}
-                        labelStyle={styles.buttonLabel}
-                    >
-                        Enviar
-                    </Button>
-                </View>
+                    {post.introduction && (
+                        <View style={{ marginBottom: 12 }}>
+                            <Text variant="titleMedium" style={styles.sectionTitle}>
+                                Introdução
+                            </Text>
+                            <Text variant="bodyMedium" style={styles.bodyText}>
+                                {post.introduction}
+                            </Text>
+                        </View>
+                    )}
 
-                {comments.length ? (
-                    comments.map((comment) => {
-                        const opacity = new Animated.Value(1);
+                    {post.description && (
+                        <View style={{ marginBottom: 12 }}>
+                            <Text variant="titleMedium" style={styles.sectionTitle}>
+                                Descrição
+                            </Text>
+                            <Text variant="bodyMedium" style={styles.bodyText}>
+                                {post.description}
+                            </Text>
+                        </View>
+                    )}
 
-                        const fadeOutAndDelete = () => {
-                            Animated.timing(opacity, {
-                                toValue: 0,
-                                duration: 300,
-                                useNativeDriver: true,
-                            }).start(async () => {
-                                await performDelete(comment.id);
-                            });
-                        };
+                    <Divider style={{ marginVertical: 16 }} />
 
-                        return (
-                            <Animated.View key={comment.id} style={{ opacity }}>
-                                <Card
-                                    style={[
-                                        styles.commentCard,
-                                        deletingCommentId === comment.id && { opacity: 0.6 },
-                                    ]}
-                                    mode="contained"
-                                >
-                                    <View style={styles.commentHeader}>
-                                        {comment.user.photo ? (
-                                            <Avatar.Image
-                                                size={40}
-                                                source={{ uri: comment.user.photo }}
-                                                style={{
-                                                    backgroundColor: styleGuide.palette.main.fourthColor,
-                                                }}
-                                            />
-                                        ) : (
-                                            <Avatar.Text
-                                                size={40}
-                                                label={comment.user.name?.[0]?.toUpperCase() ?? "?"}
-                                                style={{
-                                                    backgroundColor:
-                                                        styleGuide.palette.main.primaryColor,
-                                                }}
-                                            />
-                                        )}
+                    <Text variant="titleMedium" style={styles.sectionTitle}>
+                        Comentários
+                    </Text>
 
-                                        <View style={styles.commentHeaderText}>
-                                            <Text style={styles.authorName}>{comment.user.name}</Text>
-                                            <Text style={styles.authorDate}>
-                                                {new Date(comment.createdAt).toLocaleDateString("pt-BR")}
-                                            </Text>
+                    {comments.length ? (
+                        comments.map((comment) => {
+                            const opacity = new Animated.Value(1);
+
+                            const fadeOutAndDelete = () => {
+                                Animated.timing(opacity, {
+                                    toValue: 0,
+                                    duration: 300,
+                                    useNativeDriver: true,
+                                }).start(async () => {
+                                    await performDelete(comment.id);
+                                });
+                            };
+
+                            return (
+                                <Animated.View key={comment.id} style={{ opacity }}>
+                                    <Card
+                                        style={[
+                                            styles.commentCard,
+                                            deletingCommentId === comment.id && { opacity: 0.6 },
+                                        ]}
+                                        mode="contained"
+                                    >
+                                        <View style={styles.commentHeader}>
+                                            {comment.user.photo ? (
+                                                <Avatar.Image
+                                                    size={40}
+                                                    source={{ uri: comment.user.photo }}
+                                                    style={{
+                                                        backgroundColor: styleGuide.palette.main.fourthColor,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Avatar.Text
+                                                    size={40}
+                                                    label={comment.user.name?.[0]?.toUpperCase() ?? "?"}
+                                                    style={{
+                                                        backgroundColor:
+                                                            styleGuide.palette.main.primaryColor,
+                                                    }}
+                                                />
+                                            )}
+
+                                            <View style={styles.commentHeaderText}>
+                                                <Text style={styles.authorName}>{comment.user.name}</Text>
+                                                <Text style={styles.authorDate}>
+                                                    {new Date(comment.createdAt).toLocaleDateString("pt-BR")}
+                                                </Text>
+                                            </View>
+
+                                            {(user?.permission === "admin" ||
+                                                user?.id === comment.user.id) &&
+                                                (deletingCommentId === comment.id ? (
+                                                    <ActivityIndicator size="small" />
+                                                ) : (
+                                                    <IconButton
+                                                        icon="delete"
+                                                        size={20}
+                                                        onPress={() =>
+                                                            confirmDelete(comment.id, fadeOutAndDelete)
+                                                        }
+                                                        iconColor={styleGuide.palette.error}
+                                                    />
+                                                ))}
                                         </View>
 
-                                        {(user?.permission === "admin" || user?.id === comment.user.id) && (
-                                            deletingCommentId === comment.id ? (
-                                                <ActivityIndicator size="small" />
-                                            ) : (
-                                                <IconButton
-                                                    icon="delete"
-                                                    size={20}
-                                                    onPress={() => confirmDelete(comment.id, fadeOutAndDelete)}
-                                                    iconColor={styleGuide.palette.error}
-                                                />
-                                            )
-                                        )}
-                                    </View>
+                                        <Text variant="bodyMedium" style={styles.commentContent}>
+                                            {comment.content}
+                                        </Text>
+                                    </Card>
+                                </Animated.View>
+                            );
+                        })
+                    ) : (
+                        <Text style={styles.bodyText}>Nenhum comentário ainda.</Text>
+                    )}
 
-                                    <Text variant="bodyMedium" style={styles.commentContent}>
-                                        {comment.content}
-                                    </Text>
-                                </Card>
-                            </Animated.View>
-                        );
-                    })
-                ) : (
-                    <Text style={styles.bodyText}>Nenhum comentário ainda.</Text>
-                )}
+                    {loadingMore && (
+                        <View style={{ paddingVertical: 16, alignItems: "center" }}>
+                            <ActivityIndicator size="small" />
+                        </View>
+                    )}
+                </ScrollView>
 
-                {loadingMore && (
-                    <View style={{ paddingVertical: 16, alignItems: "center" }}>
-                        <ActivityIndicator size="small" />
+                <View style={styles.commentInputWrapper}>
+                    <View style={styles.commentInputContainer}>
+                        <TextInput
+                            style={styles.commentInput}
+                            placeholder="Escreva um comentário..."
+                            value={newComment}
+                            onChangeText={setNewComment}
+                            editable={!commentLoading}
+                        />
+                        <Button
+                            mode="contained"
+                            onPress={handleAddComment}
+                            loading={commentLoading}
+                            disabled={commentLoading}
+                            style={styles.button}
+                            labelStyle={styles.buttonLabel}
+                        >
+                            Enviar
+                        </Button>
                     </View>
-                )}
-            </ScrollView>
+                </View>
 
-            <Snackbar
-                visible={snackbar.visible}
-                onDismiss={() => setSnackbar({ ...snackbar, visible: false })}
-                duration={2500}
-                style={{
-                    backgroundColor:
-                        snackbar.type === "success"
-                            ? styleGuide.palette.success
-                            : styleGuide.palette.error,
-                }}
-            >
-                {snackbar.message}
-            </Snackbar>
-        </View>
+                <Snackbar
+                    visible={snackbar.visible}
+                    onDismiss={() => setSnackbar({ ...snackbar, visible: false })}
+                    duration={2500}
+                    style={{
+                        backgroundColor:
+                            snackbar.type === "success"
+                                ? styleGuide.palette.success
+                                : styleGuide.palette.error,
+                    }}
+                >
+                    {snackbar.message}
+                </Snackbar>
+            </View>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -408,7 +404,7 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 18,
         paddingTop: 80,
-        paddingBottom: 40,
+        paddingBottom: 120,
     },
     closeButton: {
         position: "absolute",
@@ -440,11 +436,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginBottom: 14,
-        backgroundColor: styleGuide.palette.main.fourthColor,
     },
     authorTextRow: {
         marginLeft: 10,
-        backgroundColor: styleGuide.palette.main.fourthColor,
     },
     authorName: {
         fontSize: 16,
@@ -459,7 +453,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap",
         marginBottom: 10,
-        backgroundColor: styleGuide.palette.main.fourthColor,
     },
     tag: {
         backgroundColor: styleGuide.palette.main.primaryColor,
@@ -478,20 +471,18 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: styleGuide.palette.main.textPrimaryColor,
         marginBottom: 4,
-        backgroundColor: styleGuide.palette.main.fourthColor,
     },
     bodyText: {
         fontSize: 15,
         lineHeight: 22,
         color: styleGuide.palette.main.textSecondaryColor,
-        backgroundColor: styleGuide.palette.main.fourthColor,
     },
     linkContainer: {
         marginTop: 10,
         marginBottom: 6,
-        backgroundColor: styleGuide.palette.main.fourthColor,
         borderRadius: 10,
         padding: 10,
+        backgroundColor: styleGuide.palette.main.fourthColor,
     },
     linkLabel: {
         fontWeight: "bold",
@@ -506,23 +497,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    button: { backgroundColor: styleGuide.palette.main.primaryColor },
+    button: {
+        backgroundColor: styleGuide.palette.main.primaryColor,
+    },
     buttonLabel: {
         color: styleGuide.palette.main.fourthColor,
-    },
-    commentInputContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-        marginBottom: 16,
-    },
-    commentInput: {
-        flex: 1,
-        borderWidth: 1,
-        borderColor: styleGuide.palette.main.primaryColor,
-        borderRadius: 10,
-        padding: 10,
-        backgroundColor: styleGuide.palette.main.fourthColor,
     },
     commentCard: {
         marginBottom: 12,
@@ -548,4 +527,31 @@ const styles = StyleSheet.create({
         marginTop: 4,
         lineHeight: 22,
     },
+    commentInputWrapper: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: 12,
+        backgroundColor: styleGuide.palette.main.fourthColor,
+        borderTopWidth: 1,
+        borderTopColor: styleGuide.palette.main.fourthColor,
+    },
+
+    commentInputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+    },
+
+    commentInput: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: styleGuide.palette.main.primaryColor,
+        borderRadius: 10,
+        padding: 10,
+        backgroundColor: styleGuide.palette.main.fourthColor,
+    },
+
 });
+

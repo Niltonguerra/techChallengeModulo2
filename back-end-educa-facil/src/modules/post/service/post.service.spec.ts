@@ -296,7 +296,7 @@ describe('PostService', () => {
     });
 
     it('deve chamar logger em caso de erro', async () => {
-      const loggerErrorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => { });
+      const loggerErrorSpy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {});
 
       const mockQueryBuilder: Partial<SelectQueryBuilder<Post>> = {
         leftJoinAndSelect: jest.fn().mockReturnThis(),

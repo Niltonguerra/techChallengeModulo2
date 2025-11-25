@@ -66,9 +66,12 @@ const CardPost = (dataCard: CardPostProps) => {
                 color="#9ca3af"
               />
               <Text style={styles.date}>
-                {new Date(
-                  dataCard.dataProperties.updated_at
-                ).toLocaleDateString("pt-BR")}
+                {new Date(dataCard.dataProperties.created_at)
+                  .toISOString()
+                  .split("T")[0]
+                  .split("-")
+                  .reverse()
+                  .join("/")}
               </Text>
             </View>
           </View>
