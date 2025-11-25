@@ -17,6 +17,7 @@ export class EmailService {
   ) {
     this.resend = new Resend(this.configService.get<string>('RESEND_API_KEY'));
   }
+
   // constructor(
   //   private readonly jwtService: JwtService,
   //   private configService: ConfigService,
