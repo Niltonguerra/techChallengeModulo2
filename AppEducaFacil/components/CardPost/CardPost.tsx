@@ -1,3 +1,4 @@
+import { fitString } from "@/app/helpers/helper-functions";
 import styleGuide from "@/constants/styleGuide";
 import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
 import { CardPostProps } from "@/types/cards";
@@ -56,7 +57,7 @@ const CardPost = (dataCard: CardPostProps) => {
           </Text>
           <View style={styles.metaRow}>
             <Text style={styles.authorName}>
-              Autor: {dataCard.dataProperties.user_name}
+              Autor: {fitString(dataCard.dataProperties.user_name, 20)}
             </Text>
             <View style={styles.dateRow}>
               <MaterialCommunityIcons
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
   },
   authorName: {
     ...(styleGuide.typography.h5 as TextStyle),
+    flexShrink: 1,
   },
   dateRow: {
     flexDirection: "row",

@@ -326,6 +326,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       return;
     }
 
+    setLoading(true);
+
     // Compose final submission payload
     const payload = {
       title,
@@ -365,11 +367,13 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
           `Houve um erro ao ${postId ? "atualizar" : "criar"
           } o post. Por favor, tente novamente.`
         );
+      }).finally(() => {
+        setLoading(false);
       });
   };
 
   if(loading) {
-    return <Loading />;
+    return <Loading loadingText={postId ? 'Carregando dados...' : 'Carregando...'} />;
   }
 
   return (
