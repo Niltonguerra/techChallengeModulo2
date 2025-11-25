@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import type { User } from '../../types/header-types';
 
 import {
@@ -8,6 +8,7 @@ import {
   TextField,
   Button,
   CircularProgress,
+  Link,
 } from '@mui/material';
 import { loginUser } from '../../service/user';
 
@@ -109,6 +110,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           },
         }}
       />
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: -1 }}>
+        <Link
+          component={RouterLink}
+          to="/forgot-password"
+          variant="body2"
+          underline="hover"
+          sx={{
+            fontWeight: 500,
+            color: 'primary.main',
+            cursor: 'pointer',
+          }}
+        >
+          Esqueci minha senha
+        </Link>
+      </Box>
 
       {error && (
         <Typography color="error" textAlign="center">
