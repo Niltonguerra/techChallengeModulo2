@@ -69,16 +69,28 @@ export default function CreateUserForm({ permission, userId, afterSubmit }: Prop
     }
   };
 
-  const handleSubmit = async () => {
-    setErrors({});
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
 
-    if (!form.name || !form.email || !form.password) {
+    if (!form.name.trim()) newErrors.name = "Nome é obrigatório.";
+    if (!form.email.trim()) newErrors.email = "E-mail é obrigatório.";
+    if (!form.password?.trim()) newErrors.password = "Senha é obrigatória.";
+
+    return newErrors;
+  };
+
+  const handleSubmit = async () => {
+    const validation = validate();
+    setErrors(validation);
+
+    if (Object.keys(validation).length > 0) {
       showSnackbar({
         message: "Preencha todos os campos obrigatórios!",
         duration: 3000,
       });
       return;
     }
+
 
     try {
       setLoading(true);

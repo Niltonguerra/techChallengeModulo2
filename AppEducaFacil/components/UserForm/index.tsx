@@ -42,7 +42,7 @@ const UserForm: React.FC<FormUserProps> = ({
   // in case of editing, if we are going to open the password field or not
   const [editPassword, setEditPassword] = useState(false);
 
-  const [imageUri, setImageUri] = useState<File | string | null>(null);
+  const [imageUri, setImageUri] = useState<string | null>(null);
   const [photoAsset, setPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   // loading state for fetching existing user data in case of editing
@@ -64,7 +64,7 @@ const UserForm: React.FC<FormUserProps> = ({
           setName(userData.name);
           setPassword(''); // we don't fetch the password for security reasons (especially since teachers can also edit users)
           setEmail(userData.email);
-          setImageUri(userData.photo);
+          setImageUri(typeof userData.photo === "string" ? userData.photo : null);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -154,7 +154,7 @@ const UserForm: React.FC<FormUserProps> = ({
       newErrors.photo = 'O campo Foto é obrigatório';
     }
 
-    console.error('set errors: ', newErrors);
+    console.log('set errors: ', newErrors);
 
     setErrors(newErrors);
     // if there are no errors, the form is valid, returns true.

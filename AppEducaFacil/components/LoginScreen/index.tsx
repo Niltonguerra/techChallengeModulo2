@@ -116,59 +116,49 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       <Text
-        style={[
-          styles.text,
-          { marginTop: 12, textDecorationLine: "underline" },
-        ]}
+        style={[styles.text, { marginTop: 12, textDecorationLine: "underline" }]}
         onPress={() => router.push("/reset-password")}
       >
         Esqueci minha senha
       </Text>
 
       <Text style={styles.titleregister}>Faça o seu registro</Text>
-      <Text
-        style={styles.text}
-        onPress={() => {
-          router.push("/user-registration");
-        }}
-      >
+      <Text style={styles.text} onPress={() => router.push("/user-registration")}>
         Não Possui registro? Registre-se aqui
       </Text>
 
-      <Text
-        style={styles.text}
-        onPress={() => {
-          router.push("/faq");
-        }}
-      >
+      <Text style={styles.text} onPress={() => router.push("/faq")}>
         Dúvidas? Acesse nosso FAQ!
       </Text>
+
       <Text style={styles.text}>Entre em contato conosco:</Text>
-      <TouchableOpacity
-        onPress={() => Linking.openURL("tel:11932313383")}
-        style={{ flexDirection: "row", justifyContent: "center", marginTop: 20 }}
-      >
+
+      <View style={styles.contactRow}>
         <MaterialCommunityIcons
           name="phone"
           size={16}
           color={styleGuide.palette.main.primaryColor}
           style={styles.contactIcon}
         />
-        <Text style={styles.text}>(11) 93231-3383</Text>
-      </TouchableOpacity>
+        <Text style={styles.text} onPress={() => Linking.openURL("tel:11932313383")}>
+          (11) 93231-3383
+        </Text>
+      </View>
 
-      <TouchableOpacity
-        onPress={() => Linking.openURL("mailto:educacaofacilfiap@gmail.com")}
-        style={{ flexDirection: "row", justifyContent: "center", marginTop: 10 }}
-      >
+      <View style={styles.contactRow}>
         <MaterialCommunityIcons
           name="email-outline"
           size={16}
           color={styleGuide.palette.main.primaryColor}
           style={styles.contactIcon}
         />
-        <Text style={styles.text}>educacaofacilfiap@gmail.com</Text>
-      </TouchableOpacity>
+        <Text
+          style={styles.text}
+          onPress={() => Linking.openURL("mailto:educacaofacilfiap@gmail.com")}
+        >
+          educacaofacilfiap@gmail.com
+        </Text>
+      </View>
     </View>
   );
 }
@@ -253,6 +243,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   contactIcon: {
+    marginTop: 20,
     marginRight: 8,
   },
 });
