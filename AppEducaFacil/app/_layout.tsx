@@ -3,7 +3,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import React, { useEffect } from "react";
-import { PaperProvider } from "react-native-paper";
+import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { Provider } from "react-redux";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
@@ -30,9 +30,14 @@ export default function RootLayout() {
 
   if (!loaded) return null;
 
+  // trying to force it to light theme
+  const theme = {
+    ...MD3LightTheme,
+  };
+
   return (
     <Provider store={store}>
-      <PaperProvider>
+      <PaperProvider theme={theme}>
         <ConfirmModalProvider>
           <SnackbarProvider>
             <Stack screenOptions={{ headerShown: false }} />

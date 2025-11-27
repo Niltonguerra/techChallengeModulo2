@@ -1,3 +1,4 @@
+import { fitString } from "@/app/helpers/helper-functions";
 import styleGuide from "@/constants/styleGuide";
 import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
 import { CardPostProps } from "@/types/cards";
@@ -34,12 +35,13 @@ const CardPost = (dataCard: CardPostProps) => {
   };
 
   return (
-    <Card style={styles.card} mode="elevated" elevation={2}>
-      <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
-      <Pressable
-        onPress={handleOpenDetail}
-        style={styles.cardContentLinkPressable}
-      >
+    <Pressable
+      onPress={handleOpenDetail}
+      style={styles.cardContentLinkPressable}
+    >
+      <Card style={styles.card} mode="elevated" elevation={2}>
+        <Card.Cover source={{ uri: dataCard.dataProperties.image ?? "" }} />
+
         <Card.Content style={styles.cardContent}>
           <Text style={styles.title}>{dataCard.dataProperties.title}</Text>
           <View style={styles.tagsContainer}>
@@ -56,7 +58,7 @@ const CardPost = (dataCard: CardPostProps) => {
           </Text>
           <View style={styles.metaRow}>
             <Text style={styles.authorName}>
-              Autor: {dataCard.dataProperties.user_name}
+              Autor: {fitString(dataCard.dataProperties.user_name, 20)}
             </Text>
             <View style={styles.dateRow}>
               <MaterialCommunityIcons
@@ -65,33 +67,37 @@ const CardPost = (dataCard: CardPostProps) => {
                 color="#9ca3af"
               />
               <Text style={styles.date}>
-                {new Date(
-                  dataCard.dataProperties.updated_at
-                ).toLocaleDateString("pt-BR")}
+                {new Date(dataCard.dataProperties.created_at)
+                  .toISOString()
+                  .split("T")[0]
+                  .split("-")
+                  .reverse()
+                  .join("/")}
               </Text>
             </View>
           </View>
         </Card.Content>
-      </Pressable>
-      {dataCard.isEditable && (
-        <Card.Actions style={styles.btnContainer}>
-          <Button
-            labelStyle={styles.btnLabel}
-            style={styles.btnEdit}
-            onPress={handleOpenEdit}
-          >
-            Editar
-          </Button>
-          <Button
-            labelStyle={styles.btnLabel}
-            style={styles.btnDelete}
-            onPress={onDeletePress}
-          >
-            Deletar
-          </Button>
-        </Card.Actions>
-      )}
-    </Card>
+
+        {dataCard.isEditable && (
+          <Card.Actions style={styles.btnContainer}>
+            <Button
+              labelStyle={styles.btnLabel}
+              style={styles.btnEdit}
+              onPress={handleOpenEdit}
+            >
+              Editar
+            </Button>
+            <Button
+              labelStyle={styles.btnLabel}
+              style={styles.btnDelete}
+              onPress={onDeletePress}
+            >
+              Deletar
+            </Button>
+          </Card.Actions>
+        )}
+      </Card>
+    </Pressable>
   );
 };
 
@@ -146,6 +152,7 @@ const styles = StyleSheet.create({
   },
   authorName: {
     ...(styleGuide.typography.h5 as TextStyle),
+    flexShrink: 1,
   },
   dateRow: {
     flexDirection: "row",

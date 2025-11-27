@@ -1,7 +1,7 @@
 import CardPost from "../../components/CardPost/CardPost";
 import styleGuide from "@/constants/styleGuide";
 import { Post } from "@/types/post";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextStyle, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { Filter } from "../../components/filter/Filter";
@@ -26,7 +26,7 @@ export default function HomePage() {
     createdAtBefore?: string;
   };
 
-  const handleFilter = async (filters: PostFilters = {}) => {
+  const handleFilter = useCallback(async (filters: PostFilters = {}) => {
     setLoading(true);
     try {
       const data = await fetchPosts({
@@ -43,7 +43,7 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const fetchMorePosts = async () => {
     if (loading || loadingMore || !hasMore) return;
