@@ -39,6 +39,7 @@ export const mockPostRepository = () => ({
   findOneBy: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
+  update: jest.fn(),
   createQueryBuilder: jest.fn(),
   delete: jest.fn(),
 });

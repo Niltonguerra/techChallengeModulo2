@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View, ScrollView, Image, Alert, Pressable } from "react-native";
-import { TextInput, Button, IconButton, Text, Menu, HelperText } from "react-native-paper";
+import React, { useState, useEffect } from "react";
+import { View, Image, Alert } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { TextInput, Button, IconButton, Text, HelperText } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { Chip } from 'react-native-paper';
 
 
-import type { FormPostData, FormPostProps } from "@/types/form-post";
+import type { FormPostProps } from "@/types/form-post";
 
 import { styles } from "./styles";
 import {
@@ -373,11 +374,16 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   }
 
   return (
-    <ScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
-      keyboardShouldPersistTaps="handled"
-    >
+     <KeyboardAwareScrollView
+    style={{ flex: 1 }}
+    contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+    enableOnAndroid={true}
+    keyboardOpeningTime={0}
+    extraScrollHeight={45}
+    enableAutomaticScroll
+    showsVerticalScrollIndicator={false}
+    keyboardShouldPersistTaps="handled"
+  >
       {/* image selection and preview */}
       <View style={styles.imagePickerSection}>
         {imageUri && (
@@ -584,7 +590,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
           {postId ? "Atualizar Post" : "Criar"}
         </Button>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
