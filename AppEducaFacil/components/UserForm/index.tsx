@@ -28,7 +28,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 const UserForm: React.FC<FormUserProps> = ({
   userId,
   userType = 'user',
-  afterSubmit = () => {}, // function of redirect, refresh, etc goes here
+  afterSubmit = () => { }, // function of redirect, refresh, etc goes here
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -43,7 +43,7 @@ const UserForm: React.FC<FormUserProps> = ({
   // in case of editing, if we are going to open the password field or not
   const [editPassword, setEditPassword] = useState(false);
 
-  const [imageUri, setImageUri] = useState<File | string | null>(null);
+  const [imageUri, setImageUri] = useState<string | null>(null);
   const [photoAsset, setPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   // loading state for fetching existing user data in case of editing
@@ -65,7 +65,7 @@ const UserForm: React.FC<FormUserProps> = ({
           setName(userData.name);
           setPassword(''); // we don't fetch the password for security reasons (especially since teachers can also edit users)
           setEmail(userData.email);
-          setImageUri(userData.photo);
+          setImageUri(typeof userData.photo === "string" ? userData.photo : null);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -155,13 +155,16 @@ const UserForm: React.FC<FormUserProps> = ({
       newErrors.photo = 'O campo Foto é obrigatório';
     }
 
-    console.error('set errors: ', newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      console.error("Erros encontrados:", newErrors);
+    }
 
+    // Atualiza o estado normal
     setErrors(newErrors);
-    // if there are no errors, the form is valid, returns true.
+
+    // Retorna true se NÃO houver erros
     return Object.keys(newErrors).length === 0;
   };
-
   /**
    * Handles form submission. Validates the form then creates/updates a teacher/student
    */
