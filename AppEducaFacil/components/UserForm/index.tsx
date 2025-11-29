@@ -27,7 +27,7 @@ import { imgbbUmaImagem } from '@/services/imgbb';
 const UserForm: React.FC<FormUserProps> = ({
   userId,
   userType = 'user',
-  afterSubmit = () => {}, // function of redirect, refresh, etc goes here
+  afterSubmit = () => { }, // function of redirect, refresh, etc goes here
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -144,7 +144,7 @@ const UserForm: React.FC<FormUserProps> = ({
         newErrors.password = 'O campo Senha deve ter entre 6 e 48 caracteres';
       }
     } else {
-      if(password?.length > 0 && (password.length < 6 || password.length > 48)) {
+      if (password?.length > 0 && (password.length < 6 || password.length > 48)) {
         newErrors.password = 'O campo Senha deve ter entre 6 e 48 caracteres';
       }
     }
@@ -154,13 +154,16 @@ const UserForm: React.FC<FormUserProps> = ({
       newErrors.photo = 'O campo Foto é obrigatório';
     }
 
-    console.log('set errors: ', newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      console.error("Erros encontrados:", newErrors);
+    }
 
+    // Atualiza o estado normal
     setErrors(newErrors);
-    // if there are no errors, the form is valid, returns true.
+
+    // Retorna true se NÃO houver erros
     return Object.keys(newErrors).length === 0;
   };
-
   /**
    * Handles form submission. Validates the form then creates/updates a teacher/student
    */
@@ -179,7 +182,7 @@ const UserForm: React.FC<FormUserProps> = ({
       permission: userType,
     };
 
-    if(photoAsset) {
+    if (photoAsset) {
       try {
         const cdn = await imgbbUmaImagem(photoAsset);
         formData.photo = cdn.data?.url || cdn.data?.display_url;
@@ -201,7 +204,7 @@ const UserForm: React.FC<FormUserProps> = ({
     });
   };
 
-  if(loading) {
+  if (loading) {
     return (
       <Loading />
     );
@@ -215,26 +218,26 @@ const UserForm: React.FC<FormUserProps> = ({
       >
         {/* image selection and preview */}
         <View style={styles.imagePickerSection}>
-            {imageUri && (
-                <Image
-                  source={{ uri: imageUri ? imageUri.toString() : "" }}
-                  style={styles.imagePreview}
-                  resizeMode="cover"
-                />
-            )}
-            <Button
-                mode="outlined"
-                onPress={handlePickImage}
-                icon="image"
-                style={styles.pickImageButton}
-            >
-                {imageUri ? "Alterar Foto" : "Selecione uma Foto"}
-            </Button>
-            {errors.photo && (
-              <HelperText type="error" style={styles.errorText} visible>
-                  {errors.photo}
-              </HelperText>
-            )}
+          {imageUri && (
+            <Image
+              source={{ uri: imageUri ? imageUri.toString() : "" }}
+              style={styles.imagePreview}
+              resizeMode="cover"
+            />
+          )}
+          <Button
+            mode="outlined"
+            onPress={handlePickImage}
+            icon="image"
+            style={styles.pickImageButton}
+          >
+            {imageUri ? "Alterar Foto" : "Selecione uma Foto"}
+          </Button>
+          {errors.photo && (
+            <HelperText type="error" style={styles.errorText} visible>
+              {errors.photo}
+            </HelperText>
+          )}
         </View>
         <TextInput
           label="Nome *"
@@ -322,7 +325,7 @@ const UserForm: React.FC<FormUserProps> = ({
             </List.Accordion>
           </View>
         )}
-        
+
         {errors.password && (
           <HelperText type="error" style={styles.errorText} visible>
             {errors.password}
@@ -334,7 +337,7 @@ const UserForm: React.FC<FormUserProps> = ({
             onPress={() => {
               router.back();
             }}
-            style={{...styles.submitButton, ...styles.halfButton}}
+            style={{ ...styles.submitButton, ...styles.halfButton }}
             contentStyle={styles.submitContent}
             disabled={isSubmitting}
           >
@@ -343,7 +346,7 @@ const UserForm: React.FC<FormUserProps> = ({
           <Button
             mode="contained"
             onPress={handleSubmit}
-            style={{...styles.submitButton, ...styles.halfButton}}
+            style={{ ...styles.submitButton, ...styles.halfButton }}
             contentStyle={styles.submitContent}
             loading={isSubmitting}
             disabled={isSubmitting}
