@@ -22,6 +22,7 @@ import { createUser, EditUser, getUser } from '@/services/user';
 import { router } from 'expo-router';
 import Loading from '../Loading';
 import { imgbbUmaImagem } from '@/services/imgbb';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 const UserForm: React.FC<FormUserProps> = ({
@@ -211,151 +212,152 @@ const UserForm: React.FC<FormUserProps> = ({
   }
 
   return (
-    <View>
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* image selection and preview */}
-        <View style={styles.imagePickerSection}>
-          {imageUri && (
-            <Image
-              source={{ uri: imageUri ? imageUri.toString() : "" }}
-              style={styles.imagePreview}
-              resizeMode="cover"
-            />
-          )}
-          <Button
-            mode="outlined"
-            onPress={handlePickImage}
-            icon="image"
-            style={styles.pickImageButton}
-          >
-            {imageUri ? "Alterar Foto" : "Selecione uma Foto"}
-          </Button>
-          {errors.photo && (
-            <HelperText type="error" style={styles.errorText} visible>
-              {errors.photo}
-            </HelperText>
-          )}
-        </View>
-        <TextInput
-          label="Nome *"
-          placeholder="Digite o nome completo"
-          value={name}
-          onChangeText={setName}
-          mode="outlined"
-          style={styles.input}
-          error={!!errors.name}
-          returnKeyType="next"
-        />
-        {errors.name && (
-          <HelperText type="error" style={styles.errorText} visible>
-            {errors.name}
-          </HelperText>
-        )}
-        <TextInput
-          label="Email *"
-          placeholder="Digite o endereço de email"
-          value={email}
-          onChangeText={setEmail}
-          mode="outlined"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          style={styles.input}
-          error={!!errors.email}
-          returnKeyType="next"
-        />
-        {errors.email && (
-          <HelperText type="error" style={styles.errorText} visible>
-            {errors.email}
-          </HelperText>
-        )}
-
-        {/* if the user is being edited, we don't show the existing password. but we still allow the user to change it */}
-        {/* creating a new user - should always show the password field normally */}
-        {!userId && (
-          <TextInput
-            label="Senha *"
-            placeholder="Digite a senha"
-            value={password}
-            onChangeText={setPassword}
-            mode="outlined"
-            secureTextEntry={!showPassword}
-            style={styles.input}
-            error={!!errors.password}
-            right={
-              <TextInput.Icon
-                icon={showPassword ? "eye-off" : "eye"}
-                onPress={() => setShowPassword(!showPassword)}
-              />
-            }
-            returnKeyType="next"
+    <KeyboardAwareScrollView
+      extraScrollHeight={62}
+      enableOnAndroid={true}
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={styles.container}
+    >
+      {/* image selection and preview */}
+      <View style={styles.imagePickerSection}>
+        {imageUri && (
+          <Image
+            source={{ uri: imageUri ? imageUri.toString() : "" }}
+            style={styles.imagePreview}
+            resizeMode="cover"
           />
         )}
-
-        {userId && (
-          <View style={styles.accordionContainer}>
-            <List.Accordion
-              title="Alterar senha"
-              description="Opcional"
-              expanded={editPassword}
-              onPress={() => setEditPassword(!editPassword)}
-              left={(props) => <List.Icon {...props} icon="lock-reset" />}
-            >
-              <View>
-                <TextInput
-                  label="Nova senha"
-                  placeholder="Digite a nova senha"
-                  value={password}
-                  onChangeText={setPassword}
-                  mode="outlined"
-                  secureTextEntry={!showPassword}
-                  style={{ padding: 0, ...styles.input, marginRight: 15 }}
-                  error={!!errors.password}
-                  right={
-                    <TextInput.Icon
-                      icon={showPassword ? "eye-off" : "eye"}
-                      onPress={() => setShowPassword(!showPassword)}
-                    />
-                  }
-                  returnKeyType="next"
-                />
-              </View>
-            </List.Accordion>
-          </View>
-        )}
-
-        {errors.password && (
+        <Button
+          mode="outlined"
+          onPress={handlePickImage}
+          icon="image"
+          style={styles.pickImageButton}
+        >
+          {imageUri ? "Alterar Foto" : "Selecione uma Foto"}
+        </Button>
+        {errors.photo && (
           <HelperText type="error" style={styles.errorText} visible>
-            {errors.password}
+            {errors.photo}
           </HelperText>
         )}
-        <View style={styles.buttonRow}>
-          <Button
-            mode="contained"
-            onPress={() => {
-              router.back();
-            }}
-            style={{ ...styles.submitButton, ...styles.halfButton }}
-            contentStyle={styles.submitContent}
-            disabled={isSubmitting}
+      </View>
+      <TextInput
+        label="Nome *"
+        placeholder="Digite o nome completo"
+        value={name}
+        onChangeText={setName}
+        mode="outlined"
+        style={styles.input}
+        error={!!errors.name}
+        returnKeyType="next"
+      />
+      {errors.name && (
+        <HelperText type="error" style={styles.errorText} visible>
+          {errors.name}
+        </HelperText>
+      )}
+      <TextInput
+        label="Email *"
+        placeholder="Digite o endereço de email"
+        value={email}
+        onChangeText={setEmail}
+        mode="outlined"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        style={styles.input}
+        error={!!errors.email}
+        returnKeyType="next"
+      />
+      {errors.email && (
+        <HelperText type="error" style={styles.errorText} visible>
+          {errors.email}
+        </HelperText>
+      )}
+
+      {/* if the user is being edited, we don't show the existing password. but we still allow the user to change it */}
+      {/* creating a new user - should always show the password field normally */}
+      {!userId && (
+        <TextInput
+          label="Senha *"
+          placeholder="Digite a senha"
+          value={password}
+          onChangeText={setPassword}
+          mode="outlined"
+          secureTextEntry={!showPassword}
+          style={styles.input}
+          error={!!errors.password}
+          right={
+            <TextInput.Icon
+              icon={showPassword ? "eye-off" : "eye"}
+              onPress={() => setShowPassword(!showPassword)}
+            />
+          }
+          returnKeyType="next"
+        />
+      )}
+
+      {userId && (
+        <View style={styles.accordionContainer}>
+          <List.Accordion
+            title="Alterar senha"
+            description="Opcional"
+            expanded={editPassword}
+            onPress={() => setEditPassword(!editPassword)}
+            left={(props) => <List.Icon {...props} icon="lock-reset" />}
           >
-            Voltar
-          </Button>
-          <Button
-            mode="contained"
-            onPress={handleSubmit}
-            style={{ ...styles.submitButton, ...styles.halfButton }}
-            contentStyle={styles.submitContent}
-            loading={isSubmitting}
-            disabled={isSubmitting}
-          >
-            {userId ? 'Atualizar Usuário' : 'Criar Usuário'}
-          </Button>
+            <View>
+              <TextInput
+                label="Nova senha"
+                placeholder="Digite a nova senha"
+                value={password}
+                onChangeText={setPassword}
+                mode="outlined"
+                secureTextEntry={!showPassword}
+                style={{ padding: 0, ...styles.input, marginRight: 15 }}
+                error={!!errors.password}
+                right={
+                  <TextInput.Icon
+                    icon={showPassword ? "eye-off" : "eye"}
+                    onPress={() => setShowPassword(!showPassword)}
+                  />
+                }
+                returnKeyType="next"
+              />
+            </View>
+          </List.Accordion>
         </View>
-      </ScrollView>
-    </View>
+      )}
+
+      {errors.password && (
+        <HelperText type="error" style={styles.errorText} visible>
+          {errors.password}
+        </HelperText>
+      )}
+      <View style={styles.buttonRow}>
+        <Button
+          mode="contained"
+          onPress={() => {
+            router.back();
+          }}
+          style={{ ...styles.submitButton, ...styles.halfButton }}
+          contentStyle={styles.submitContent}
+          disabled={isSubmitting}
+        >
+          Voltar
+        </Button>
+        <Button
+          mode="contained"
+          onPress={handleSubmit}
+          style={{ ...styles.submitButton, ...styles.halfButton }}
+          contentStyle={styles.submitContent}
+          loading={isSubmitting}
+          disabled={isSubmitting}
+        >
+          {userId ? 'Atualizar Usuário' : 'Criar Usuário'}
+        </Button>
+      </View>
+    </KeyboardAwareScrollView>
+
   );
 };
 

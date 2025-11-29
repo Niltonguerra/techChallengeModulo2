@@ -2,7 +2,11 @@ import React from "react";
 import { ActivityIndicator, View, StyleSheet } from "react-native"
 import { Text } from "react-native-paper";
 
-const Loading: React.FC = () => {
+type LoadingProps = {
+	loadingText?: string;
+}
+
+const Loading: React.FC<LoadingProps> = ({ loadingText = 'Carregando dados...' }) => {
 	const styles = StyleSheet.create({
 		loading: {
 			justifyContent: 'center', 
@@ -16,7 +20,7 @@ const Loading: React.FC = () => {
 
 	return (
 		<View style={styles.loading}>
-			<Text>Carregando  dados...</Text>
+			<Text>{loadingText}</Text>
 			<ActivityIndicator size="large" />
 		</View>
 	);
