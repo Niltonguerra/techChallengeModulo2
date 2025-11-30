@@ -10,12 +10,14 @@ import { createUser, EditUser, getUser } from "@/services/user";
 import { router } from "expo-router";
 import Loading from "../Loading";
 import { imgbbUmaImagem } from "@/services/imgbb";
+import { useSnackbar } from "@/hooks/snackbar/snackbar";
 
 const UserForm: React.FC<FormUserProps> = ({
   userId,
   userType = "user",
   afterSubmit = () => {},
 }) => {
+  const { showSnackbar } = useSnackbar();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [name, setName] = useState("");
@@ -167,19 +169,26 @@ const UserForm: React.FC<FormUserProps> = ({
     actionFunction(formData)
       .then(() => {
         setIsSubmitting(false);
-
         const message = userId
           ? "Usuário editado com sucesso!\nFaça login novamente para aplicar as alterações."
           : "Usuário criado com sucesso!";
 
-        Alert.alert("Sucesso", message);
+        showSnackbar({
+          message: message,
+          duration: 5000,
+          actionLabel: "OK",
+        });
 
         if (afterSubmit) afterSubmit();
       })
       .catch((error) => {
         setIsSubmitting(false);
         console.error("user form error:", error);
-        Alert.alert("Erro", "Ocorreu um erro ao enviar o formulário.");
+
+        showSnackbar({
+          message: "Ocorreu um erro ao enviar o formulário.",
+          duration: 4000,
+        });
       });
   };
 
