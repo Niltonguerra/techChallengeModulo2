@@ -28,8 +28,7 @@ const UserForm: React.FC<FormUserProps> = ({
   const [editPassword, setEditPassword] = useState(false);
 
   const [imageUri, setImageUri] = useState<string | null>(null);
-  const [photoAsset, setPhotoAsset] =
-    useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [photoAsset, setPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   const [loading, setLoading] = useState(!!userId);
 
@@ -47,9 +46,7 @@ const UserForm: React.FC<FormUserProps> = ({
           setName(userData.name);
           setPassword("");
           setEmail(userData.email);
-          setImageUri(
-            typeof userData.photo === "string" ? userData.photo : null
-          );
+          setImageUri(typeof userData.photo === "string" ? userData.photo : null);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -131,10 +128,19 @@ const UserForm: React.FC<FormUserProps> = ({
       newErrors.photo = "O campo Foto é obrigatório";
     }
 
+    if (Object.keys(newErrors).length > 0) {
+      console.error("Erros encontrados:", newErrors);
+    }
+
+    // Atualiza o estado normal
     setErrors(newErrors);
+
+    // Retorna true se NÃO houver erros
     return Object.keys(newErrors).length === 0;
   };
-
+  /**
+   * Handles form submission. Validates the form then creates/updates a teacher/student
+   */
   const handleSubmit = async (): Promise<void> => {
     if (!validate()) {
       return;
