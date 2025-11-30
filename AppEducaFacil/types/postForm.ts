@@ -1,5 +1,7 @@
 // Tipos para o formulário de post
 
+import { UserPermissionEnum } from "./userPermissionEnum";
+
 export interface FormPostData {
 	id?: string;
 	title: string;
@@ -14,21 +16,6 @@ export interface FormPostData {
 export type FormPostProps = {
   postId?: string
   afterSubmit?: () => void
-}
-
-export interface FormUserData {
-  id?: string;
-  name: string;
-  email: string;
-  password?: string;
-  photo: File | null | string;
-  permission?: 'admin' | 'user' // teacher or student
-}
-
-export type FormUserProps = {
-  userId?: string
-  afterSubmit?: () => void
-  userType?: 'admin' | 'user' // teacher or student
 }
 
 export type LinkItem = { key: string; value: string };

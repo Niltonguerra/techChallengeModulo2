@@ -1,5 +1,5 @@
 import Header from "@/components/header/header";
-import UserForm from "@/components/UserForm";
+import UserForm from "@/components/UserForm/UserForm";
 import { router } from "expo-router";
 import { View } from "react-native";
 

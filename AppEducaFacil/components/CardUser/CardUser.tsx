@@ -5,7 +5,7 @@ import { Link } from 'expo-router';
 import { Pressable, StyleSheet, TextStyle, View, Image } from 'react-native';
 import styleGuide from '@/constants/styleGuide';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useDeleteUser } from '@/hooks/handleDeleteUser/handleDeleteUser';
+import { useDeleteUser } from '@/hooks/user/handleDeleteUser';
 
 const CardUser = (dataCard: CardUserProps) => {
   const { handleDeleteUser } = useDeleteUser();

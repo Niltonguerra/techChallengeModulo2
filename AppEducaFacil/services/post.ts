@@ -1,7 +1,7 @@
 import { store } from "@/store/store";
 import axios, { type AxiosInstance } from "axios";
 import Constants from "expo-constants";
-import type { FormPostData } from "../types/form-post";
+import type { FormPostData } from "../types/postForm";
 import type {
   DeleteResponse,
   Post,
