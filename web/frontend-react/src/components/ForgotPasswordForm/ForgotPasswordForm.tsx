@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import axios from 'axios';
+import axios from 'axios'; // Import único
 import {
   Box,
   Typography,
@@ -32,12 +32,20 @@ const ForgotPasswordForm = () => {
         'Se o e-mail estiver cadastrado, enviamos um link de recuperação.'
       );
       setEmail('');
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data) {
+          const errorData = err.response.data as { message: string };
+          setError(errorData.message || 'Erro ao processar a solicitação.');
+        } else if (err.request) {
+          setError('Sem conexão com o servidor. Verifique sua internet.');
+        } else {
+          setError('Erro ao enviar a requisição.');
+        }
       } else {
-        setError('Ocorreu um erro ao tentar enviar. Verifique sua conexão.');
+        setError('Ocorreu um erro interno no aplicativo.');
       }
     } finally {
       setLoading(false);
@@ -92,7 +100,9 @@ const ForgotPasswordForm = () => {
             variant="outlined"
             type="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             required
             fullWidth
             disabled={loading}
