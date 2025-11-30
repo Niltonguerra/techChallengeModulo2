@@ -19,28 +19,24 @@ import { imgbbUmaImagem } from "@/services/imgbb";
 const UserForm: React.FC<FormUserProps> = ({
   userId,
   userType = "user",
-  afterSubmit = () => {}, // function of redirect, refresh, etc goes here
+  afterSubmit = () => {},
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // field states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // password hidden or not
   const [showPassword, setShowPassword] = useState(false);
-  // in case of editing, if we are going to open the password field or not
+
   const [editPassword, setEditPassword] = useState(false);
 
   const [imageUri, setImageUri] = useState<File | string | null>(null);
   const [photoAsset, setPhotoAsset] =
     useState<ImagePicker.ImagePickerAsset | null>(null);
 
-  // loading state for fetching existing user data in case of editing
   const [loading, setLoading] = useState(!!userId);
 
-  // displays the validation errors for each field - populated by the validate()
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
@@ -48,13 +44,12 @@ const UserForm: React.FC<FormUserProps> = ({
     photo?: string;
   }>({});
 
-  // getting the info of the existing user, if we are editing
   useEffect(() => {
     if (userId) {
       getUser("id", userId)
         .then((userData: FormUserData) => {
           setName(userData.name);
-          setPassword(""); // we don't fetch the password for security reasons (especially since teachers can also edit users)
+          setPassword("");
           setEmail(userData.email);
           setImageUri(userData.photo);
         })
@@ -68,12 +63,8 @@ const UserForm: React.FC<FormUserProps> = ({
     }
   }, [userId]);
 
-  /**
-   * Dealing with the img upload. for that we need to ask for permission and then open the image picker.
-   */
   const handlePickImage = async (): Promise<void> => {
     try {
-      // requesting permissions to use library
       const permission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (permission.status !== "granted") {
@@ -87,7 +78,7 @@ const UserForm: React.FC<FormUserProps> = ({
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.7, // i might just be old but i remember a bug if you set quality to 1
+        quality: 0.7,
       });
 
       if (result.canceled || !result.assets?.length) return;
@@ -113,14 +104,14 @@ const UserForm: React.FC<FormUserProps> = ({
       password?: string;
       photo?: string;
     } = {};
-    // Name: required, min 2, max 100 characters
+
     const trimmedName = name?.trim();
     if (!trimmedName) {
       newErrors.name = "O campo Nome é obrigatório";
     } else if (trimmedName.length < 2 || trimmedName.length > 100) {
       newErrors.name = "O campo Nome deve ter entre 2 e 100 caracteres";
     }
-    // Email: required and must match be withing email regex
+
     const trimmedEmail = email?.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!trimmedEmail) {
@@ -128,7 +119,7 @@ const UserForm: React.FC<FormUserProps> = ({
     } else if (!emailRegex.test(trimmedEmail)) {
       newErrors.email = "Endereço de email inválido";
     }
-    // Password: required, min 6, max 48 characters (unless we are editing, then password field can be blank)
+
     if (!userId) {
       if (!password) {
         newErrors.password = "O campo Senha é obrigatório";
@@ -144,7 +135,6 @@ const UserForm: React.FC<FormUserProps> = ({
       }
     }
 
-    // Photo: required
     if (!imageUri) {
       newErrors.photo = "O campo Foto é obrigatório";
     }
@@ -152,13 +142,10 @@ const UserForm: React.FC<FormUserProps> = ({
     console.error("set errors: ", newErrors);
 
     setErrors(newErrors);
-    // if there are no errors, the form is valid, returns true.
+
     return Object.keys(newErrors).length === 0;
   };
 
-  /**
-   * Handles form submission. Validates the form then creates/updates a teacher/student
-   */
   const handleSubmit = async (): Promise<void> => {
     if (!validate()) {
       return;
@@ -169,7 +156,7 @@ const UserForm: React.FC<FormUserProps> = ({
       id: userId || undefined,
       name: name,
       email: email,
-      password: password.length > 0 ? password : undefined, // only send password if it's been set
+      password: password.length > 0 ? password : undefined,
       photo: imageUri,
       permission: userType,
     };
@@ -215,7 +202,6 @@ const UserForm: React.FC<FormUserProps> = ({
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-        {/* image selection and preview */}
         <View style={styles.imagePickerSection}>
           {imageUri && (
             <Image
@@ -271,8 +257,6 @@ const UserForm: React.FC<FormUserProps> = ({
           </HelperText>
         )}
 
-        {/* if the user is being edited, we don't show the existing password. but we still allow the user to change it */}
-        {/* creating a new user - should always show the password field normally */}
         {!userId && (
           <TextInput
             label="Senha *"
