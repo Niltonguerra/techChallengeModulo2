@@ -1,14 +1,9 @@
-import React, { useState, useEffect, use } from "react";
-import { View, ScrollView, Alert, Image, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Alert, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import {
-  TextInput,
-  Button,
-  HelperText,
-  Text,
-  List,
-  ActivityIndicator,
-} from "react-native-paper";
+import { TextInput, Button, HelperText, List } from "react-native-paper";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 import { userFormStyles as styles } from "./styles";
 import type { FormUserData, FormUserProps } from "@/types/form-post";
 import { createUser, EditUser, getUser } from "@/services/user";
@@ -28,10 +23,9 @@ const UserForm: React.FC<FormUserProps> = ({
   const [password, setPassword] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
-
   const [editPassword, setEditPassword] = useState(false);
 
-  const [imageUri, setImageUri] = useState<File | string | null>(null);
+  const [imageUri, setImageUri] = useState<string | null>(null);
   const [photoAsset, setPhotoAsset] =
     useState<ImagePicker.ImagePickerAsset | null>(null);
 
@@ -51,7 +45,9 @@ const UserForm: React.FC<FormUserProps> = ({
           setName(userData.name);
           setPassword("");
           setEmail(userData.email);
-          setImageUri(userData.photo);
+          setImageUri(
+            typeof userData.photo === "string" ? userData.photo : null
+          );
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -83,20 +79,14 @@ const UserForm: React.FC<FormUserProps> = ({
 
       if (result.canceled || !result.assets?.length) return;
 
-      const photoAsset = result.assets[0];
-      setImageUri(photoAsset.uri);
-      setPhotoAsset(photoAsset);
+      const asset = result.assets[0];
+      setImageUri(asset.uri);
+      setPhotoAsset(asset);
     } catch (error) {
       console.warn("Error picking image:", error);
     }
   };
 
-  /**
-   * Validate the form fields according to backend DTO requirements.
-   * Populates the `errors` state with messages for each invalid field.
-   *
-   * @returns true if there are no errors in the validation. false otherwise
-   */
   const validate = (): boolean => {
     const newErrors: {
       name?: string;
@@ -139,10 +129,7 @@ const UserForm: React.FC<FormUserProps> = ({
       newErrors.photo = "O campo Foto é obrigatório";
     }
 
-    console.error("set errors: ", newErrors);
-
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
@@ -151,7 +138,9 @@ const UserForm: React.FC<FormUserProps> = ({
       return;
     }
     setIsSubmitting(true);
+
     const actionFunction = userId ? EditUser : createUser;
+
     const formData: FormUserData = {
       id: userId || undefined,
       name: name,
@@ -180,9 +169,11 @@ const UserForm: React.FC<FormUserProps> = ({
         setIsSubmitting(false);
 
         const message = userId
-          ? "Faça login novamente para aplicar as alterações."
+          ? "Usuário editado com sucesso!\nFaça login novamente para aplicar as alterações."
           : "Usuário criado com sucesso!";
+
         Alert.alert("Sucesso", message);
+
         if (afterSubmit) afterSubmit();
       })
       .catch((error) => {
@@ -197,15 +188,17 @@ const UserForm: React.FC<FormUserProps> = ({
   }
 
   return (
-    <View>
-      <ScrollView
-        contentContainerStyle={styles.container}
+    <View style={{ flex: 1 }}>
+      <KeyboardAwareScrollView
+        extraScrollHeight={62}
+        enableOnAndroid={true}
         keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.container}
       >
         <View style={styles.imagePickerSection}>
           {imageUri && (
             <Image
-              source={{ uri: imageUri ? imageUri.toString() : "" }}
+              source={{ uri: imageUri }}
               style={styles.imagePreview}
               resizeMode="cover"
             />
@@ -224,6 +217,7 @@ const UserForm: React.FC<FormUserProps> = ({
             </HelperText>
           )}
         </View>
+
         <TextInput
           label="Nome *"
           placeholder="Digite o nome completo"
@@ -239,6 +233,7 @@ const UserForm: React.FC<FormUserProps> = ({
             {errors.name}
           </HelperText>
         )}
+
         <TextInput
           label="Email *"
           placeholder="Digite o endereço de email"
@@ -314,6 +309,7 @@ const UserForm: React.FC<FormUserProps> = ({
             {errors.password}
           </HelperText>
         )}
+
         <View style={styles.buttonRow}>
           <Button
             mode="contained"
@@ -337,7 +333,7 @@ const UserForm: React.FC<FormUserProps> = ({
             {userId ? "Atualizar Usuário" : "Criar Usuário"}
           </Button>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 };
