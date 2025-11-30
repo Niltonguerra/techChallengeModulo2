@@ -1,3 +1,5 @@
+import { UserPermissionEnum } from "./userPermissionEnum";
+
 export interface ResponseAuthUser {
   token: string;
   user: {
@@ -5,7 +7,7 @@ export interface ResponseAuthUser {
     email: string;
     photo: string;
     id: string;
-    permission: 'admin' | 'user';
+    permission: UserPermissionEnum;
   };
 }
 

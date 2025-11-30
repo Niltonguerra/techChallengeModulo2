@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Alert } from "react-native";
+import { View, Image } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { TextInput, Button, IconButton, Text, HelperText } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
@@ -7,7 +7,7 @@ import { useRouter } from "expo-router";
 import { Chip } from 'react-native-paper';
 
 
-import type { FormPostProps } from "@/types/form-post";
+import type { FormPostProps } from "@/types/postForm";
 
 import { styles } from "./styles";
 import {
@@ -18,6 +18,7 @@ import {
 } from "@/services/post";
 import { imgbbUmaImagem } from "@/services/imgbb";
 import Loading from "../Loading";
+import { useSnackbar } from "@/hooks/snackbar/snackbar";
 
 /**
  * @param postId: for editing existing posts
@@ -26,6 +27,7 @@ import Loading from "../Loading";
 const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { showSnackbar } = useSnackbar();
 
   // string states
   const [title, setTitle] = useState("");
@@ -82,19 +84,13 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
             });
             setLoading(false);
           } else {
-            Alert.alert(
-              "Erro",
-              "Não foi possível carregar os dados do post para edição."
-            );
+            showSnackbar({message: "Ocorreu um erro ao enviar o formulário."});
+
           }
         })
         .catch((err) => {
           console.error("err getting post data:", err);
-          Alert.alert(
-            "Erro", 
-            err.message ||
-            "Não foi possível carregar os dados do post para edição."
-          );
+          showSnackbar({message: "Ocorreu um erro ao enviar o formulário."});
         });
     } else {
       setLoading(false);
@@ -130,10 +126,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       const permission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (permission.status !== "granted") {
-        Alert.alert(
-          "Permission required",
-          "Permission to access the photo library is required to select an image."
-        );
+        showSnackbar({message: "Permission to access the photo library is required to select an image."});
         return;
       }
 
@@ -344,7 +337,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         const cdn = await imgbbUmaImagem(photoAsset);
         payload.image = cdn.data?.url || cdn.data?.display_url;
       } catch {
-        Alert.alert("Erro", "Erro ao fazer upload da imagem! Favor contactar o suporte.");
+        showSnackbar({message: "Erro ao fazer upload da imagem! Favor contactar o suporte."});
         return;
       }
     }
@@ -354,20 +347,12 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
 
     actionFunction(postId ? { id: postId, ...payload } : payload)
       .then((response) => {
-        Alert.alert(
-          "Success",
-          `Post ${postId ? "atualizado" : "criado"} com sucesso!`
-        );
+        showSnackbar({message: `Post ${postId ? "atualizado" : "criado"} com sucesso!`});
         if (afterSubmit) afterSubmit();
       })
       .catch((error) => {
         console.error("Error submitting post:", error);
-        Alert.alert(
-          "Error",
-          error.message ||
-          `Houve um erro ao ${postId ? "atualizar" : "criar"
-          } o post. Por favor, tente novamente.`
-        );
+        showSnackbar({message: `Houve um erro ao ${postId ? "atualizar" : "criar"} o post. Por favor, tente novamente.`});
       }).finally(() => {
         setLoading(false);
       });
