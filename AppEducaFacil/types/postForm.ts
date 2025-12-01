@@ -1,5 +1,3 @@
-// Tipos para o formulário de post
-
 import { UserPermissionEnum } from "./userPermissionEnum";
 
 export interface FormPostData {
@@ -10,7 +8,7 @@ export interface FormPostData {
 	external_link: Record<string, string>;
 	content_hashtags: string[];
 	image: File | null | string;
-	author_id?: string; // backend can set this automatically
+	author_id?: string;
 }
 
 export type FormPostProps = {

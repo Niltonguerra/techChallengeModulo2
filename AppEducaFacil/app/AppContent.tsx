@@ -59,7 +59,6 @@ export default function AppContent() {
     }
   }, [isAuthenticated, pathname, user, router]);
 
-  // trying to force it to light theme
   const theme = {
     ...MD3LightTheme,
   };

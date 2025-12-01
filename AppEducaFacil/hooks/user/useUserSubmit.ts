@@ -46,7 +46,6 @@ export function useUserSubmit({ userId, userType = UserPermissionEnum.USER, afte
   };
 
   const handleUserSubmit = async (data: SubmitUserData): Promise<void> => {
-    // 1. Validação
     if (!validate(data)) {
       return;
     }

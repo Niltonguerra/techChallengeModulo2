@@ -29,21 +29,18 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
 
-  // string states
   const [title, setTitle] = useState("");
   const [introduction, setIntroduction] = useState("");
   const [description, setDescription] = useState("");
 
   let auxScreenWidth = window.innerWidth;
 
-  // image
   const [imageUri, setImageUri] = useState<File | string | null>(null);
   const [photoAsset, setPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [hashtagOptions, setHashtagOptions] = useState<string[]>();
 
-  // displays the validation errors for each field - populated by the validate()
   const [errors, setErrors] = useState<{
     title?: string;
     description?: string;
@@ -53,10 +50,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     links?: string[];
   }>({});
 
-  // getting the info of the existing post, if we are editing
   useEffect(() => {
     if (postId) {
-      // Fetch the post data and set initial values
       getListById(postId)
         .then((data) => {
           if (data) {
@@ -97,7 +92,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     }
   }, [postId]);
 
-  // getting hashtag options
   useEffect(() => {
     getHashtags()
       .then((data) => {
@@ -109,7 +103,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       });
   }, []);
 
-  // initializing links
+
   const [externalLinks, setExternalLinks] = useState<
     { name: string; url: string }[]
   >(() => {
@@ -117,12 +111,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     return [];
   });
 
-  /**
-   * Dealing with the img upload. for that we need to ask for permission and then open the image picker.
-   */
   const handlePickImage = async (): Promise<void> => {
     try {
-      // Requesting permissions to use library
       const permission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (permission.status !== "granted") {
@@ -133,7 +123,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.7, // i might just be old but i remember a bug if you set quality to 1
+        quality: 0.7, 
       });
 
       if (result.canceled || !result.assets?.length) return;
@@ -161,9 +151,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     setExternalLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
   };
 
-  // aux functions for hashtags
   const standardizeTagName= (t: string) => {
-    const s = t.trim().replace(/\s+/g, '-'); // no spaces
+    const s = t.trim().replace(/\s+/g, '-'); 
     if (!s) return '';
     const prefixed = s.startsWith('#') ? s : `#${s}`;
     return prefixed.toLowerCase();
@@ -171,7 +160,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
 
   const [query, setQuery] = useState('');
 
-  // suggestions that match the current query and aren’t already chosen
   const filteredOptions = (hashtagOptions ?? [])
     .filter(o =>
       o.toLowerCase().includes(query.trim().toLowerCase())
@@ -179,21 +167,16 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     .filter(o => !hashtags.some(h => h.toLowerCase() === o.toLowerCase()))
     .slice(0, 8);
 
-  // add the current text as a free option
   const addTypedHashtag = (text: string) => {
     const tag = standardizeTagName(text);
     if (!tag) return;
-    // dont allow duplicates
     if (hashtags.some(h => h.toLowerCase() === tag.toLowerCase())) return;
 
     setHashtags(prev => [...prev, tag]);
 
-    // reset the query afterwards
     setQuery('');
   };
 
-  // if a link has either only the name or the url filled, we throw an error
-  // also there cant be repeated or empty names since they are used as keys in the backend
   const verifyLinks = (): boolean => {
     const auxLinkNames = new Set<string>();
     let auxCount = 0;    
@@ -246,7 +229,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       image?: string;
     } = {};
 
-    // aux functions
     const withingLen = (s: string, min: number, max: number) => {
       const t = s.trim();
       return t.length >= min && t.length <= max;
@@ -260,21 +242,18 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       }
     };
 
-    // Title: required, 20–70
     if (!title) {
       newErrors.title = "O campo Título é obrigatório.";
     } else if (!withingLen(title, 20, 70)) {
       newErrors.title = "O Título deve ter entre 20 e 70 caracteres.";
     }
 
-    // Description: required, 50–500
     if (!description) {
       newErrors.description = "O campo Descrição é obrigatório.";
     } else if (!withingLen(description, 50, 500)) {
       newErrors.description = "A Descrição deve ter entre 50 e 500 caracteres.";
     }
 
-    // Introduction: opcional, 50–500
     if (introduction != null && introduction !== "") {
       if (typeof introduction !== "string") {
         newErrors.introduction = "Introdução deve ser um texto.";
@@ -284,11 +263,9 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       }
     }
 
-    // Hashtags: required, array with at least one
     if (!Array.isArray(hashtags) || hashtags.length === 0) {
       newErrors.content_hashtags = "Informe ao menos uma hashtag de conteúdo.";
     } else {
-      // none can be empty
       for (const tag of hashtags) {
         if (typeof tag !== "string" || tag.trim() === "") {
           newErrors.content_hashtags = "Todas as hashtags de conteúdo devem ser válidas.";
@@ -297,7 +274,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       }
     }
 
-    // Image: required, valid URL with 1–2048
     if (!imageUri) {
       newErrors.image = "A imagem é obrigatória.";
     }
@@ -307,7 +283,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   };
 
   const handleSubmit = async (): Promise<void> => {
-    // parses link data
     const linkData: Record<string, string> = {};
     externalLinks.forEach((externalLink) => {
       if (externalLink.name && externalLink.url) {
@@ -316,13 +291,11 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     });
 
     if (!validate()) {
-      // When validation fails, don't proceed with submission
       return;
     }
 
     setLoading(true);
 
-    // Compose final submission payload
     const payload = {
       title,
       introduction,
@@ -373,7 +346,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     showsVerticalScrollIndicator={false}
     keyboardShouldPersistTaps="handled"
   >
-      {/* image selection and preview */}
       <View style={styles.imagePickerSection}>
         {imageUri && (
           <Image

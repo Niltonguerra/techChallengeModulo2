@@ -13,7 +13,7 @@ export interface SubmitUserData {
   password: string;
   imageUri: any;
   photoAsset: ImagePickerAsset | null;
-  setErrors: (errors: any) => void; // Função para atualizar os erros na tela
+  setErrors: (errors: any) => void;
 }
 
 export interface UseUserSubmitProps {

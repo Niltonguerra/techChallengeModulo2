@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { Button, HelperText } from 'react-native-paper';
-import { useSnackbar } from '@/hooks/snackbar/snackbar'; // Seu hook existente
+import { useSnackbar } from '@/hooks/snackbar/snackbar';
 
 interface UserImagePickerProps {
   imageUri: string | null;
@@ -37,7 +37,6 @@ export const UserImagePicker: React.FC<UserImagePickerProps> = ({
 
       if (!result.canceled && result.assets.length > 0) {
         const asset = result.assets[0];
-        // Devolvemos a URI e o Asset para o componente pai
         onImagePicked(asset.uri, asset);
       }
     } catch (err) {
