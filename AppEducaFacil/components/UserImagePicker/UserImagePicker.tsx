@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet, Alert } from 'react-native';
+import { View, Image, StyleSheet} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { Button, HelperText } from 'react-native-paper';
 import { useSnackbar } from '@/hooks/snackbar/snackbar';
@@ -41,7 +41,10 @@ export const UserImagePicker: React.FC<UserImagePickerProps> = ({
       }
     } catch (err) {
       console.warn("Erro ao selecionar imagem:", err);
-      Alert.alert("Erro", "Não foi possível selecionar a imagem.");
+      showSnackbar({
+        message: "Não foi possível selecionar a imagem.",
+        duration: 3000
+      });
     }
   };
 
