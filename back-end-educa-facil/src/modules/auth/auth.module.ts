@@ -9,8 +9,8 @@ import { RolesGuardStudent } from './guards/roles-student.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@modules/user/entities/user.entity';
 import { EmailModule } from '@modules/email/email.module';
-import { AuthPasswordService } from './auth-password.service';
-import { AuthPasswordController } from './auth-password.controller';
+import { ForgotPasswordController } from '../ForgotPassword/controller/forgot-password.controller';
+import { ForgotPasswordService } from '../ForgotPassword/service/forgot-password.service';
 
 @Module({
   imports: [
@@ -33,9 +33,9 @@ import { AuthPasswordController } from './auth-password.controller';
     RolesGuardProfessor,
     JwtAuthGuardUser,
     HashPasswordPipe,
-    AuthPasswordService,
+    ForgotPasswordService,
   ],
-  controllers: [AuthPasswordController],
+  controllers: [ForgotPasswordController],
   exports: [
     JwtStrategyUser,
     RolesGuardStudent,
@@ -43,6 +43,7 @@ import { AuthPasswordController } from './auth-password.controller';
     JwtAuthGuardUser,
     JwtModule,
     HashPasswordPipe,
+    ForgotPasswordService,
   ],
 })
 export class AuthModule {}

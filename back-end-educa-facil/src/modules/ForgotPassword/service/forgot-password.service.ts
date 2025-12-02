@@ -2,16 +2,16 @@ import { Injectable, NotFoundException, BadRequestException, Logger } from '@nes
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '@modules/user/entities/user.entity';
-import { EmailService } from '../email/service/email.service';
-import { ForgotPasswordDto } from './dtos/forgot-password.dto';
-import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import { User } from '../../user/entities/user.entity';
+import { EmailService } from '../../email/service/email.service';
+import { ForgotPasswordDto } from '../dtos/forgot-password.dto';
+import { ResetPasswordDto } from '../dtos/reset-password.dto';
 
 @Injectable()
-export class AuthPasswordService {
-  private readonly logger = new Logger(AuthPasswordService.name);
+export class ForgotPasswordService {
+  private readonly logger = new Logger(ForgotPasswordService.name);
 
   constructor(
     @InjectRepository(User)
@@ -23,7 +23,6 @@ export class AuthPasswordService {
 
   async forgotPassword(dto: ForgotPasswordDto) {
     const { email } = dto;
-
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (user) {
@@ -35,13 +34,8 @@ export class AuthPasswordService {
         },
       );
 
-      this.logger.debug(`[DEV] Token de redefinição gerado para ${email}: ${token}`);
-
+      this.logger.debug(`Token gerado: ${token}`);
       await this.emailService.sendPasswordResetEmail(user.email, user.name, token);
-
-      this.logger.log(`E-mail de redefinição enviado para ${email}`);
-    } else {
-      this.logger.warn(`Solicitação de redefinição de senha para e-mail não cadastrado: ${email}`);
     }
 
     return {
@@ -67,14 +61,9 @@ export class AuthPasswordService {
       user.password = hashedPassword;
       await this.userRepository.save(user);
 
-      this.logger.log(`Senha redefinida com sucesso para ${email}`);
       return { message: 'Senha redefinida com sucesso.' };
     } catch (error) {
-      this.logger.error(
-        'Erro ao redefinir senha',
-        error instanceof Error ? error.stack : String(error),
-      );
-
+      this.logger.error('Erro ao redefinir senha', error);
       throw new BadRequestException('Token inválido ou expirado.');
     }
   }
