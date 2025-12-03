@@ -524,11 +524,11 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
         </View>
         <TextInput
           label="Adicionar hashtag"
-          placeholder="Digite para buscar ou criar uma hashtag…"
+          placeholder="Selecione ou crie uma hashtag"
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={(e) => addTypedHashtag(e.nativeEvent.text)}
-          style={[styles.input, { width: auxScreenWidth * 0.92 }]}
+          style={[styles.input, { width: auxScreenWidth * 0.92, flexShrink: 1 }]}
           returnKeyType="done"
         />
         {filteredOptions.length > 0 && (
