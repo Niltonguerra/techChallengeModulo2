@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthPasswordController } from './auth-password.controller';
-import { AuthPasswordService } from './auth-password.service';
-import { ForgotPasswordDto } from './dtos/forgot-password.dto';
-import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { ForgotPasswordController } from './forgot-password.controller';
+import { ForgotPasswordService } from '../service/forgot-password.service';
+import { ForgotPasswordDto } from '../dtos/forgot-password.dto';
+import { ResetPasswordDto } from '../dtos/reset-password.dto';
 
-describe('AuthPasswordController', () => {
-  let controller: AuthPasswordController;
-  let service: AuthPasswordService;
+describe('ForgotPasswordController', () => {
+  let controller: ForgotPasswordController;
+  let service: ForgotPasswordService;
 
   const mockService = {
     forgotPassword: jest.fn(),
@@ -15,17 +15,17 @@ describe('AuthPasswordController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [AuthPasswordController],
+      controllers: [ForgotPasswordController],
       providers: [
         {
-          provide: AuthPasswordService,
+          provide: ForgotPasswordService,
           useValue: mockService,
         },
       ],
     }).compile();
 
-    controller = module.get<AuthPasswordController>(AuthPasswordController);
-    service = module.get<AuthPasswordService>(AuthPasswordService);
+    controller = module.get<ForgotPasswordController>(ForgotPasswordController);
+    service = module.get<ForgotPasswordService>(ForgotPasswordService);
   });
 
   it('should be defined', () => {

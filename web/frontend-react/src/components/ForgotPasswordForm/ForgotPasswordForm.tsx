@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import axios from 'axios'; // Import único
+import axios from 'axios';
 import {
   Box,
   Typography,
@@ -27,7 +27,7 @@ const ForgotPasswordForm = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     try {
-      await axios.post(`${apiUrl}/auth-password/forgot-password`, { email });
+      await axios.post(`${apiUrl}/auth/forgot-password`, { email });
       setMessage(
         'Se o e-mail estiver cadastrado, enviamos um link de recuperação.'
       );

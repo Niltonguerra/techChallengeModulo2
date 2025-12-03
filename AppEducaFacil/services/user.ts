@@ -85,7 +85,7 @@ export const sendResetPasswordEmail = async (
 ): Promise<ReturnMessage> => {
   const api = getApi();
   try {
-    const response = await api.post("auth-password/forgot-password", { email });
+    const response = await api.post("auth/forgot-password", { email });
     return response.data;
   } catch (error: any) {
     console.error("Erro ao enviar email de redefinição:", error);

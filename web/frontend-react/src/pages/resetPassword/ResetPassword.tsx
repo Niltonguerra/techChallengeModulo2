@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import {
@@ -28,15 +28,28 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
   const query = new URLSearchParams(location.search);
   const token = query.get('token');
 
-  async function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    if (message?.type === 'success') {
+      const timer = setTimeout(() => {
+        navigate('/login');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message, navigate]);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setMessage(null);
 
     if (!token) {
-      setMessage({ text: 'Token inválido ou ausente.', type: 'error' });
+      setMessage({
+        text: 'Token inválido ou ausente. Solicite uma nova recuperação.',
+        type: 'error',
+      });
       return;
     }
 
@@ -45,24 +58,42 @@ export default function ResetPassword() {
       return;
     }
 
+    if (newPassword.length < 6) {
+      setMessage({
+        text: 'A senha deve ter no mínimo 6 caracteres.',
+        type: 'error',
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const API_URL = import.meta.env.VITE_API_URL;
-      const response = await axios.post(
-        `${API_URL}/auth-password/reset-password`,
-        {
-          token,
-          newPassword,
-          confirmPassword,
-        }
-      );
 
-      setMessage({ text: response.data.message, type: 'success' });
+      const response = await axios.post(`${API_URL}/auth/reset-password`, {
+        token,
+        newPassword,
+        confirmPassword,
+      });
+
+      setMessage({
+        text:
+          response.data.message ||
+          'Senha redefinida com sucesso! Redirecionando...',
+        type: 'success',
+      });
       setNewPassword('');
       setConfirmPassword('');
-    } catch (error: any) {
+    } catch (error) {
+      let errorMsg = 'Erro ao redefinir senha.';
+
+      if (axios.isAxiosError(error) && error.response?.data) {
+        const data = error.response.data as { message: string };
+        if (data.message) errorMsg = data.message;
+      }
+
       setMessage({
-        text: error.response?.data?.message || 'Erro ao redefinir senha.',
+        text: errorMsg,
         type: 'error',
       });
     } finally {
@@ -95,14 +126,18 @@ export default function ResetPassword() {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockResetOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h3">
+          <Typography
+            component="h1"
+            variant="h4"
+            sx={{ fontWeight: 600, mb: 2 }}
+          >
             Redefinir Senha
           </Typography>
 
           <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{ mt: 3, width: '100%' }}
+            sx={{ mt: 1, width: '100%' }}
           >
             {message && (
               <Alert
@@ -147,8 +182,7 @@ export default function ResetPassword() {
                 mb: 2,
                 py: 1.5,
                 fontSize: '1rem',
-
-                height: '52.5px',
+                height: '48px',
               }}
             >
               {loading ? (
