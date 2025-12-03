@@ -8,6 +8,7 @@ import { useUserSubmit } from '@/hooks/user/useUserSubmit';
 import { UserPermissionEnum } from '@/types/userPermissionEnum';
 import { FormUserProps, UserSchemaType } from '@/types/userForm';
 import { UserImagePicker } from '../UserImagePicker/UserImagePicker';
+import PasswordInput from '../passwordField/passwordField';
 
 const UserForm: React.FC<FormUserProps> = ({
   userId,
@@ -22,7 +23,6 @@ const UserForm: React.FC<FormUserProps> = ({
   const [email, setEmail] = useState(user?.email || '');
   const [password, setPassword] = useState(user?.password || '');
   
-  const [showPassword, setShowPassword] = useState(false);
   const [editPassword, setEditPassword] = useState(false);
   
   const [imageUri, setImageUri] = useState<string | null>(user?.photo ? String(user.photo) : null);
@@ -46,36 +46,6 @@ const UserForm: React.FC<FormUserProps> = ({
   const onSubmitPress = () => {
     handleUserSubmit({ name, email, password, imageUri, photoAsset, setErrors });
   };
-
-  const PasswordInput = () => (
-    <View>
-      <TextInput
-        ref={passwordRef}
-        label={userId ? "Nova senha" : "Senha *"}
-        placeholder={userId ? "Digite a nova senha" : "Digite a senha"}
-        value={password}
-        onChangeText={(text) => handleFieldChange(setPassword, 'password', text)}
-        mode="outlined"
-        secureTextEntry={!showPassword}
-        style={styles.input}
-        error={!!errors.password}
-        right={
-          <TextInput.Icon
-            icon={showPassword ? "eye-off" : "eye"}
-            onPress={() => setShowPassword(!showPassword)}
-            forceTextInputFocus={false} 
-          />
-        }
-        returnKeyType="done"
-        onSubmitEditing={onSubmitPress} 
-      />
-      {errors.password && (
-        <HelperText type="error" style={styles.errorText} visible>
-          {errors.password}
-        </HelperText>
-      )}
-    </View>
-  );
 
   return (
     <KeyboardAwareScrollView
@@ -137,7 +107,14 @@ const UserForm: React.FC<FormUserProps> = ({
         </HelperText>
       )}
       {!userId ? (
-        <PasswordInput />
+        <PasswordInput
+          ref={passwordRef}
+          userId={userId}
+          password={password}
+          onPasswordChange={(text) => handleFieldChange(setPassword, 'password', text)}
+          onSubmit={onSubmitPress}
+          error={errors.password}
+        />
       ) : (
         <View style={styles.accordionContainer}>
           <List.Accordion
@@ -149,7 +126,14 @@ const UserForm: React.FC<FormUserProps> = ({
             style={{ backgroundColor: 'white' }}
           >
             <View style={styles.accordionContent}>
-              <PasswordInput />
+              <PasswordInput
+                ref={passwordRef}
+                userId={userId}
+                password={password}
+                onPasswordChange={(text) => handleFieldChange(setPassword, 'password', text)}
+                onSubmit={onSubmitPress}
+                error={errors.password}
+              />
             </View>
           </List.Accordion>
         </View>

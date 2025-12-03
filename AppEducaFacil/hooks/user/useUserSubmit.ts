@@ -36,7 +36,6 @@ export function useUserSubmit({ userId, userType = UserPermissionEnum.USER, afte
             newErrors[err.path[0] as string] = err.message;
           }
         });
-        console.error('Erros de validação:', newErrors);
         data.setErrors(newErrors);
       } else {
         console.error("Erro inesperado na validação:", error);

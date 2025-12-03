@@ -16,6 +16,14 @@ export interface SubmitUserData {
   setErrors: (errors: any) => void;
 }
 
+export interface PasswordInputProps {
+  userId?: string | null;
+  password?: string;
+  onPasswordChange: (text: string) => void;
+  onSubmit: () => void;
+  error?: string;
+}
+
 export interface UseUserSubmitProps {
   userId?: string;
   userType?: UserPermissionEnum;
