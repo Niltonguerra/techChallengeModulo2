@@ -10,7 +10,6 @@ import React, { useEffect, useState } from "react";
 
 export default function UserFormPage() {
   const { userId, userType } = useLocalSearchParams<{ userId?: string; userType?: string }>();
-  const router = useRouter();
   const [loading, setLoading] = useState(!!userId);
   const { showSnackbar } = useSnackbar();
   const [user, setUser] = useState<FormUserData | null>(null);
@@ -41,9 +40,6 @@ export default function UserFormPage() {
       userId={userId}
       userType={userType === UserPermissionEnum.ADMIN ? UserPermissionEnum.ADMIN : UserPermissionEnum.USER}
       user={user}
-      afterSubmit={() => {
-        router.back(); 
-      }}
     />
   );
 }

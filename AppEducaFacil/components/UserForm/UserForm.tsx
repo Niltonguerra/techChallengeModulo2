@@ -4,7 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import { TextInput, Button, HelperText, List } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { styleGuide } from '@/constants/styleGuide';
-import { useUserSubmit } from '@/hooks/user/useUserSubmit';
+import { useCreateUserSubmit } from '@/hooks/user/useCreateUserSubmit';
 import { UserPermissionEnum } from '@/types/userPermissionEnum';
 import { FormUserProps, UserSchemaType } from '@/types/userForm';
 import { UserImagePicker } from '../UserImagePicker/UserImagePicker';
@@ -13,8 +13,7 @@ import PasswordInput from '../passwordField/passwordField';
 const UserForm: React.FC<FormUserProps> = ({
   userId,
   userType = UserPermissionEnum.USER,
-  user,
-  afterSubmit = () => {}
+  user
 }) => {
   const emailRef = useRef<NativeTextInput>(null);
   const passwordRef = useRef<NativeTextInput>(null);
@@ -30,7 +29,7 @@ const UserForm: React.FC<FormUserProps> = ({
   
   const [errors, setErrors] = useState<Partial<UserSchemaType>>({});
   
-  const { handleUserSubmit, isSubmitting } = useUserSubmit({ userId, userType, afterSubmit });
+  const { handleUserSubmit, isSubmitting } = useCreateUserSubmit({ userId, userType });
 
   const handleFieldChange = (
     setter: React.Dispatch<React.SetStateAction<string>>, 

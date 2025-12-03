@@ -8,10 +8,12 @@ import { FormUserData, SubmitUserData, UseUserSubmitProps } from '@/types/userFo
 import { getUserFormSchema, UserSchemaType } from '@/schemas/useSchema';
 import { useSnackbar } from '../snackbar/snackbar';
 import { AxiosError } from 'axios';
+import { useRouter } from 'expo-router';
 
-export function useUserSubmit({ userId, userType = UserPermissionEnum.USER, afterSubmit }: UseUserSubmitProps) {
+export function useCreateUserSubmit({ userId, userType = UserPermissionEnum.USER }: UseUserSubmitProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { showSnackbar } = useSnackbar();
+  const router = useRouter();
   const validate = (data: SubmitUserData): boolean => {
     try {
       const schema = getUserFormSchema(!!userId);
@@ -70,29 +72,12 @@ export function useUserSubmit({ userId, userType = UserPermissionEnum.USER, afte
       }
     }
 
-
-    const actionFunction = userId ? EditUser : createUser;
-
-    actionFunction(formData)
-      .then((response) => {
-        showSnackbar({message: response.message});
-        
-        if (afterSubmit) afterSubmit();
-      })
-      .catch((error) => {
-        console.error("user form error:", error);
-        showSnackbar({message: "Ocorreu um erro ao enviar o formulário."});
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
-
-      try {
-      const returnData = await actionFunction(formData);
+    try {
+      const returnData = await createUser(formData);
       if (returnData.statusCode === 200) {
         showSnackbar({ message: 'usuário cadastrado com sucesso, valide seu email por favor',duration : 10000 });
         setIsSubmitting(false);
-        if (afterSubmit) afterSubmit();
+        router.back(); 
       }
       } catch (error:unknown) {
         if (error instanceof AxiosError && error.response && error.response.status === 409) {
@@ -103,10 +88,9 @@ export function useUserSubmit({ userId, userType = UserPermissionEnum.USER, afte
           setIsSubmitting(false);
         }
       }
-    
   };
 
-  return { 
+  return {
     handleUserSubmit, 
     isSubmitting 
   };
