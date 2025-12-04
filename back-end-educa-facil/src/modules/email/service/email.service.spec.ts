@@ -140,12 +140,7 @@ describe('EmailService', () => {
     });
 
     it('should generate correct email content', async () => {
-      const expectedSubject = 'Verificação de e-mail do aplicativo MoveSmart';
-
-      const expectedHtml = `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${testUrl}?token=${testEmail}`;
-
       const sendMock = jest.fn().mockResolvedValue({ id: 'fake-id' });
-
       (service as unknown as MockEmailService).resend = { emails: { send: sendMock } };
 
       const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
@@ -154,6 +149,7 @@ describe('EmailService', () => {
         expect.objectContaining({
           subject: 'Confirmação de e-mail - EducaFácil',
           html: expect.stringContaining(`http://localhost:3000/${testUrl}?token=${testEmail}`),
+          to: testEmail,
         }),
       );
 
