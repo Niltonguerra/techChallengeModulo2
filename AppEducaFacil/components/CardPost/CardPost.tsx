@@ -1,6 +1,6 @@
 import { fitString } from "@/app/helpers/helper-functions";
 import styleGuide from "@/constants/styleGuide";
-import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
+import { useDeletePost } from "@/hooks/post/handleDeletePost";
 import { CardPostProps } from "@/types/cards";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";

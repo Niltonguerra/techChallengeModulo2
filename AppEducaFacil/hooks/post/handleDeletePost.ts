@@ -1,4 +1,3 @@
-// useDeletePost.ts
 import { useConfirm } from '@/hooks/modalConfirm/ConfirmModal';
 import { useSnackbar } from '@/hooks/snackbar/snackbar';
 import { deletePost } from '@/services/post';

@@ -15,7 +15,6 @@ const guessMime = (uri: string) => {
   return 'application/octet-stream';
 };
 
-// aux function to convert ImagePickerAsset for upload
 async function toFormDataImagePart(asset: ImagePicker.ImagePickerAsset) {
   if (asset?.file && typeof File !== 'undefined') {
     return new File([asset.file], fileNameFrom(asset.uri), {

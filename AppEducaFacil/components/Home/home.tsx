@@ -9,8 +9,8 @@ import { fetchPosts } from "../../services/post";
 
 export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false); // loading inicial/filtros
-  const [loadingMore, setLoadingMore] = useState(false); // loading paginação
+  const [loading, setLoading] = useState(false);  
+  const [loadingMore, setLoadingMore] = useState(false); 
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const limit = 10;

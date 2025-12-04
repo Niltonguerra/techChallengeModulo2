@@ -4,7 +4,7 @@ import { Portal, Snackbar } from 'react-native-paper';
 
 interface SnackbarOptions {
   message: string;
-  duration?: number; // milissegundos
+  duration?: number;
   actionLabel?: string;
   onAction?: () => void;
   top?: boolean;

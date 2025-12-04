@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 
 import CardPost from "@/components/CardPost/CardPost";
 import { Post } from "@/types/post";
-import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
+import { useDeletePost } from "@/hooks/post/handleDeletePost";
 import { getListTodos } from "@/services/post";
 import { useSnackbar } from "@/hooks/snackbar/snackbar";
 import styleGuide from "@/constants/styleGuide";

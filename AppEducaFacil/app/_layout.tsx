@@ -1,4 +1,3 @@
-// app/_layout.tsx
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
@@ -30,7 +29,6 @@ export default function RootLayout() {
 
   if (!loaded) return null;
 
-  // trying to force it to light theme
   const theme = {
     ...MD3LightTheme,
   };

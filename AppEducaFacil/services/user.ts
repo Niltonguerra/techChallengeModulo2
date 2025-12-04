@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
 import Constants from "expo-constants";
 import { RequestUser, ResponseAuthUser } from "@/types/login";
-import { FormUserData } from "@/types/form-post";
+import { FormUserData } from "@/types/postForm";
 import { ReturnMessage } from "@/types/returnMessaget";
 import { store } from "@/store/store";
 

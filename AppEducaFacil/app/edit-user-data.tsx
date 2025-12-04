@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import UserForm from "@/components/UserForm";
+import UserForm from "@/components/UserForm/UserForm";
 import Header from "@/components/header/header";
 import { View } from "react-native";
 
