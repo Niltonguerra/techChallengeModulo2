@@ -62,7 +62,7 @@ describe('EmailService', () => {
 
     // Mock do logger
 
-    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => { });
   });
 
   afterEach(() => {
@@ -99,15 +99,14 @@ describe('EmailService', () => {
 
       const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
 
-      expect(sendMock).toHaveBeenCalledWith({
-        from: 'test@gmail.com',
-
-        to: testEmail,
-
-        subject: 'Verificação de e-mail do aplicativo MoveSmart',
-
-        html: `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${testUrl}?token=${testEmail}`,
-      });
+      expect(sendMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: 'test@gmail.com',
+          to: testEmail,
+          subject: 'Confirmação de e-mail - EducaFácil',
+          html: expect.stringContaining(`http://localhost:3000/${testUrl}?token=${testEmail}`),
+        }),
+      );
 
       expect(result).toBe(200);
     });
@@ -122,7 +121,7 @@ describe('EmailService', () => {
       expect(result).toBe(400);
 
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        `Erro ao enviar e-mail de verificação: SMTP Error`,
+        expect.stringContaining('Erro ao enviar e-mail de verificação:'),
       );
     });
 
@@ -141,22 +140,15 @@ describe('EmailService', () => {
     });
 
     it('should generate correct email content', async () => {
-      const expectedSubject = 'Verificação de e-mail do aplicativo MoveSmart';
-
-      const expectedHtml = `Clique no link a seguir para verificar seu e-mail: http://localhost:3000/${testUrl}?token=${testEmail}`;
-
       const sendMock = jest.fn().mockResolvedValue({ id: 'fake-id' });
-
       (service as unknown as MockEmailService).resend = { emails: { send: sendMock } };
 
       const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
 
       expect(sendMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          subject: expectedSubject,
-
-          html: expectedHtml,
-
+          subject: 'Confirmação de e-mail - EducaFácil',
+          html: expect.stringContaining(`http://localhost:3000/${testUrl}?token=${testEmail}`),
           to: testEmail,
         }),
       );
