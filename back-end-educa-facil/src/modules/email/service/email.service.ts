@@ -43,9 +43,9 @@ export class EmailService {
           ? this.configService.get<string>('URL_SERVER_PROD')
           : this.configService.get<string>('URL_SERVER_DEV');
 
-      const tituloMensagem = 'Confirmação de e-mail - EducaFácil';
-      const linkVerificacao = `${urlServer}${url}?token=${email}`;
-      const corpoMensagem = `
+      const tittleMessage = 'Confirmação de e-mail - EducaFácil';
+      const linkVerification = `${urlServer}${url}?token=${email}`;
+      const bodyMessage = `
       <div style="font-family: Arial, sans-serif; color: #333;">
         <img src="https://seusite.com/logo.png" alt="EducaFácil" style="width: 120px; margin-bottom: 20px;" />
 
@@ -54,8 +54,8 @@ export class EmailService {
         <p>Para ativar sua conta, clique no link abaixo:</p>
 
         <p style="word-break: break-all;">
-          <a href="${linkVerificacao}" target="_blank" style="color: #1a73e8;">
-            ${linkVerificacao}
+          <a href="${linkVerification}" target="_blank" style="color: #1a73e8;">
+            ${linkVerification}
           </a>
         </p>
 
@@ -66,8 +66,8 @@ export class EmailService {
       const mailOptions: SendEmailDTO = {
         from: this.configService.get<string>('EMAIL_USER', ''),
         to: email,
-        subject: tituloMensagem,
-        html: corpoMensagem,
+        subject: tittleMessage,
+        html: bodyMessage,
       };
 
       await this.resend.emails.send(mailOptions);
