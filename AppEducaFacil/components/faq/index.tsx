@@ -37,7 +37,7 @@ export default function FAQ() {
     {
       question: "Esqueci minha senha, o que fazer?",
       answer:
-        "Clique em 'Esqueci minha senha' na tela de login e siga as instruções enviadas para seu e-mail cadastrado.",
+        "Clique em 'Esqueci minha senha' na tela de login, preencha o email que deseja recuperar a senha e siga as instruções enviadas por email.",
     },
     {
       question: "O aplicativo não carrega ou está lento, como resolver?",
@@ -57,7 +57,13 @@ export default function FAQ() {
     {
       question: "Como atualizar meu perfil?",
       answer:
-        "Acesse Perfil > Configurações > Editar Perfil. Atualize os dados e clique em Salvar.",
+        "Após fazer login, na barra de navegação inferior clique na sua foto de perfil e depois em 'Editar Meu Perfil' para atualizar suas informações.",
+    },
+    {
+      question:
+        "Não estou recebendo o email de redefinição de senha ou validação de conta. O que fazer?",
+      answer:
+        "Verifique sua caixa de spam/lixo eletrônico. Adicione nosso email à lista de remetentes confiáveis. Se o problema persistir, entre em contato com o suporte.",
     },
   ];
 
