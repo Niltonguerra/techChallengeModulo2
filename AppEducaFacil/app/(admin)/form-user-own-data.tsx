@@ -1,15 +1,17 @@
 import Loading from "@/components/Loading";
+import UserFormComponent from "@/components/UserForm/UserForm";
 import UserForm from "@/components/UserForm/UserForm";
 import { useSnackbar } from "@/hooks/snackbar/snackbar";
 import { getUser } from "@/services/user";
+import { RootState } from "@/store/store";
 import { FormUserData } from "@/types/userForm";
-import { UserPermissionEnum } from "@/types/userPermissionEnum";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-
+import { useSelector } from "react-redux";
 
 export default function UserFormPage() {
-  const { userId, userType } = useLocalSearchParams<{ userId?: string; userType?: string }>();
+  const userData = useSelector((state: RootState) => state.auth.user);
+  const userId = userData?.id;
+  const userPermission = userData?.permission;
   const [loading, setLoading] = useState(!!userId);
   const { showSnackbar } = useSnackbar();
   const [user, setUser] = useState<FormUserData | null>(null);
@@ -23,7 +25,7 @@ export default function UserFormPage() {
           .catch((error) => {
             console.error("Error fetching user data:", error);
             showSnackbar({
-              message: "Não foi possível carregar os posts.",
+              message: "Não foi possível carregar os dados do usuário.",
               duration: 3000,
             });
           }).finally(() => {
@@ -32,14 +34,14 @@ export default function UserFormPage() {
       }
     }, [userId]);
 
-
   if (loading)  return  <Loading />;
 
   return (
-    <UserForm
+    <UserFormComponent
       userId={userId}
-      userType={userType === UserPermissionEnum.ADMIN ? UserPermissionEnum.ADMIN : UserPermissionEnum.USER}
+      userType={userPermission}
       user={user}
+      returnRoute='/(auth)/login'
     />
   );
 }

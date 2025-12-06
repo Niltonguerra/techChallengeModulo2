@@ -72,7 +72,7 @@ export default function AdminPostsPage() {
         </Button>
         <Button
           mode="contained"
-          onPress={() => router.push({ pathname: "/(admin)/post/form" })}
+          onPress={() => router.push({ pathname: "/(admin)/form-post" })}
           style={{ ...styles.submitButton, ...styles.halfButton }}
           contentStyle={styles.submitContent}
         >

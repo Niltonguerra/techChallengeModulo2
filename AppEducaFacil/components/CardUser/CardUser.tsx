@@ -18,7 +18,7 @@ const CardUser = (dataCard: CardUserProps) => {
             <Image style={styles.img} source={{ uri: dataCard.dataProperties.photo }} />
           ) : (
             <View style={[styles.img, styles.defaultIconContainer]}>
-              <MaterialCommunityIcons name="account" size={32} color="#9ca3af" />
+              <MaterialCommunityIcons name="account" size={32} color="black" />
             </View>
           )}
 
@@ -29,7 +29,7 @@ const CardUser = (dataCard: CardUserProps) => {
               <View style={styles.btnContainer}>
                 <Link
                   href={{
-                    pathname: "/user/form",
+                    pathname: "/(admin)/form-user",
                     params: {
                       userId: dataCard.dataProperties.id,
                       userType: dataCard.dataProperties.permission || "user",

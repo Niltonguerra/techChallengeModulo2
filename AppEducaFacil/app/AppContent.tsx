@@ -16,7 +16,7 @@ export default function AppContent() {
     if (!nav?.key) return;
 
     const currentRoute = pathname;
-    const allowedRoutes = ["/PostDetail","/edit-user-data"];
+    const allowedRoutes = ["/PostDetail","/(admin)/form-user"];
     const isAdmin = user?.permission === "admin" || user?.role === "admin";
     const isAdminRoute =
       currentRoute.startsWith("/admin-") ||

@@ -8,6 +8,7 @@ import { getAllUsers } from "@/services/user";
 import styleGuide from "@/constants/styleGuide";
 import { Link, useRouter } from "expo-router";
 import { useSnackbar } from "@/hooks/snackbar/snackbar";
+import { UserPermissionEnum } from "@/types/userPermissionEnum";
 
 export default function ProfessoresScreen() {
   const [teachers, setTeachers] = useState<any[]>([]);
@@ -54,6 +55,7 @@ export default function ProfessoresScreen() {
               name: teacher.name,
               photo: teacher.photo,
               email: teacher.email,
+              permission: teacher.permission,
             }}
           />
         ))}
@@ -71,8 +73,8 @@ export default function ProfessoresScreen() {
 
         <Link
           href={{
-            pathname: "/(admin)/user/form",
-            params: { userType: "admin" },
+            pathname: "/(admin)/form-user",
+            params: { userType: UserPermissionEnum.ADMIN },
           }}
           asChild
         >
