@@ -33,7 +33,8 @@ export default function LoginScreen() {
     if (!email || !password) {
       showSnackbar({
         message: "Preencha todos os campos",
-        duration: 3000,
+        duration: 3000, 
+        top: true,
       });
       return;
     }
@@ -61,6 +62,7 @@ export default function LoginScreen() {
       showSnackbar({
         message: err.response?.data?.message || "Usuário ou senha incorretos",
         duration: 3000,
+        top: true,
       });
     } finally {
       setLoading(false);

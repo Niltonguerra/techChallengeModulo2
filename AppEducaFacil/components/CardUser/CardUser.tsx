@@ -15,7 +15,10 @@ const CardUser = (dataCard: CardUserProps) => {
       <Pressable accessibilityRole="link">
         <View style={styles.row}>
           {dataCard.dataProperties.photo ? (
-            <Image style={styles.img} source={{ uri: dataCard.dataProperties.photo }} />
+            <Image
+              style={styles.img}
+              source={{ uri: dataCard.dataProperties.photo }}
+            />
           ) : (
             <View style={[styles.img, styles.defaultIconContainer]}>
               <MaterialCommunityIcons name="account" size={32} color="black" />
@@ -50,7 +53,11 @@ const CardUser = (dataCard: CardUserProps) => {
                   style={styles.btnDelete}
                   onPress={() => handleDeleteUser(dataCard.dataProperties.id)}
                 >
-                  <MaterialCommunityIcons name="delete" size={24} color={styleGuide.palette.error} />
+                  <MaterialCommunityIcons
+                    name="delete"
+                    size={24}
+                    color={styleGuide.palette.error}
+                  />
                 </Button>
               </View>
             )}
@@ -70,19 +77,19 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   img: {
     width: 48,
     height: 48,
     borderRadius: 100,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
   },
   defaultIconContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#cccccc',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#cccccc",
     borderRadius: 40,
   },
   userInfo: {
@@ -90,17 +97,16 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   title: {
-    ...styleGuide.typography.h5 as TextStyle,
-    fontWeight: 'bold',
+    ...(styleGuide.typography.h5 as TextStyle),
+    fontWeight: "bold",
     marginBottom: 6,
   },
   btnContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 24,
-
   },
   btnLabel: {
-    ...styleGuide.typography.button as TextStyle,
+    ...(styleGuide.typography.button as TextStyle),
   },
   btnEdit: {},
   btnDelete: {},

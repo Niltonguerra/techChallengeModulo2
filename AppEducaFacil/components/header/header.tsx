@@ -81,15 +81,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: styleGuide.palette.main.primaryColor,
     paddingHorizontal: 18,
-    height: Platform.OS === "android" ? 150 : 190,
+    height: Platform.OS === "android" ? 100 : 140,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: styleGuide.palette.light.primaryLightColor,
   },
   leftContainer: {
+    height: 55,
     minWidth: 64,
     justifyContent: "center",
     alignItems: "flex-start",
-    paddingBottom: 14,
+    paddingBottom: 10,
   },
   titleContainer: {
     flex: 1,

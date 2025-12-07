@@ -43,14 +43,31 @@ export class EmailService {
           ? this.configService.get<string>('URL_SERVER_PROD')
           : this.configService.get<string>('URL_SERVER_DEV');
 
-      const tituloMensagem = 'Verificação de e-mail do aplicativo MoveSmart';
-      const corpoMensagem = `Clique no link a seguir para verificar seu e-mail: ${urlServer}${url}?token=${email}`;
+      const tittleMessage = 'Confirmação de e-mail - EducaFácil';
+      const linkVerification = `${urlServer}${url}?token=${email}`;
+      const bodyMessage = `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+        <img src="https://seusite.com/logo.png" alt="EducaFácil" style="width: 120px; margin-bottom: 20px;" />
+
+        <p>Olá!</p>
+        <p>Obrigado por se cadastrar no <b>EducaFácil</b>.</p>
+        <p>Para ativar sua conta, clique no link abaixo:</p>
+
+        <p style="word-break: break-all;">
+          <a href="${linkVerification}" target="_blank" style="color: #1a73e8;">
+            ${linkVerification}
+          </a>
+        </p>
+
+        <p>Caso você não tenha solicitado este cadastro, ignore este e-mail.</p>
+      </div>
+    `;
 
       const mailOptions: SendEmailDTO = {
         from: this.configService.get<string>('EMAIL_USER', ''),
         to: email,
-        subject: tituloMensagem,
-        html: corpoMensagem,
+        subject: tittleMessage,
+        html: bodyMessage,
       };
 
       await this.resend.emails.send(mailOptions);
