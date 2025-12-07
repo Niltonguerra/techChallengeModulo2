@@ -1,11 +1,11 @@
-import * as React from "react";
-import { Button, Card, Text } from "react-native-paper";
-import { CardUserProps } from "@/types/cards";
-import { Link } from "expo-router";
-import { Pressable, StyleSheet, TextStyle, View, Image } from "react-native";
-import styleGuide from "@/constants/styleGuide";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useDeleteUser } from "@/hooks/handleDeleteUser/handleDeleteUser";
+import * as React from 'react';
+import { Button, Card, Text } from 'react-native-paper';
+import { CardUserProps } from '@/types/cards';
+import { Link } from 'expo-router';
+import { Pressable, StyleSheet, TextStyle, View, Image } from 'react-native';
+import styleGuide from '@/constants/styleGuide';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useDeleteUser } from '@/hooks/user/handleDeleteUser';
 
 const CardUser = (dataCard: CardUserProps) => {
   const { handleDeleteUser } = useDeleteUser();
@@ -32,7 +32,7 @@ const CardUser = (dataCard: CardUserProps) => {
               <View style={styles.btnContainer}>
                 <Link
                   href={{
-                    pathname: "/user/form",
+                    pathname: "/(admin)/form-user",
                     params: {
                       userId: dataCard.dataProperties.id,
                       userType: dataCard.dataProperties.permission || "user",

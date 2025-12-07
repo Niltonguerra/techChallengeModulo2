@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Modal,
   View,
@@ -7,27 +7,16 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 import { RootState } from "@/store/store";
 import { logout } from "@/store/authSlice";
 import styleGuide from "@/constants/styleGuide";
 import { UserPermissionEnum } from "@/types/userPermissionEnum";
-
-interface UserModalProps {
-  visible: boolean;
-  onClose: () => void;
-}
-
-type AppRoutes =
-  | "/edit-user-data"
-  | "/(tabs)/persona-info"
-  | "/(tabs)/admin-teacher"
-  | "/(tabs)/admin-student"
-  | "/(tabs)/admin-posts"
-  | "/(tabs)/register-teacher"
-  | "/(auth)/login";
+import { MenuLink, UserModalProps } from "@/types/Menu";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
   const dispatch = useDispatch();
@@ -36,23 +25,36 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
 
   if (!user) return null;
 
-  const userLinks = [
-    { label: "Editar Meu Perfil", pathname: "/edit-user-data" },
-  ];
+  const links:MenuLink[] = useMemo(() => {
+    const commonLinks:MenuLink[] = [
+      {
+        label: "Editar Meu Perfil",
+        pathname: "/(admin)/form-user-own-data",
+        params: {
+          userId: user.id, 
+          userType: user.permission,
+        },
+      },
+    ];
 
-  const adminLinks = [
-    { label: "Administrador de Professor", pathname: "/(admin)/admin-teacher" },
-    { label: "Administrador de Aluno", pathname: "/(admin)/admin-student" },
-    { label: "Administrador de Postagens", pathname: "/(admin)/admin-post" },
-    { label: "Editar Meu Perfl", pathname: "/edit-user-data" },
-  ];
+    if (user.permission === UserPermissionEnum.ADMIN) {
+      return [
+        { label: "Administrador de Professor", pathname: "/(admin)/admin-teacher" },
+        { label: "Administrador de Aluno", pathname: "/(admin)/admin-student" },
+        { label: "Administrador de Postagens", pathname: "/(admin)/admin-post" },
+        ...commonLinks,
+      ];
+    }
 
-  const links =
-    user.permission === UserPermissionEnum.ADMIN ? adminLinks : userLinks;
+    return commonLinks;
+  }, [user]);
 
-  const handleNavigate = (pathname: string) => {
+  const handleNavigate = (pathname: string, params?: Record<string, any>) => {
     onClose();
-    router.push(pathname as any);
+    router.push({ // @ts-ignore
+      pathname: pathname, 
+      params: params,
+    });
   };
 
   const handleLogout = () => {
@@ -62,52 +64,54 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
   };
 
   return (
-    <Modal animationType="fade" transparent visible={visible}>
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          <Image
-            source={{
-              uri:
-                user.photo ||
-                "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-            }}
-            style={styles.avatar}
-          />
+    <Modal animationType="fade" transparent visible={visible} onRequestClose={onClose}>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modalContainer}>
+              {user.photo ? (
+                <Image style={styles.avatar} source={{ uri: user.photo }} />
+              ) : (
+                <View style={[styles.avatar, styles.defaultIconContainer]}>
+                  <MaterialCommunityIcons name="account" size={32} color="black" />
+                </View>
+              )}
 
-          <Text style={styles.name}>{user.name}</Text>
-          {user.email && <Text style={styles.email}>{user.email}</Text>}
+              <Text style={styles.name}>{user.name}</Text>
+              {user.email && <Text style={styles.email}>{user.email}</Text>}
 
-          <ScrollView
-            style={{ width: "100%", marginTop: 10 }}
-            contentContainerStyle={{ alignItems: "center" }}
-          >
-            {links.map((link, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.optionButton}
-                onPress={() => handleNavigate(link.pathname)}
+              <ScrollView
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
               >
-                <Text style={styles.optionText}>{link.label}</Text>
+                {links.map((link, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.optionButton}
+                    onPress={() => handleNavigate(link.pathname, link.params)}
+                  >
+                    <Text style={styles.optionText}>{link.label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              <TouchableOpacity
+                style={[styles.optionButton, styles.logoutButton]}
+                onPress={handleLogout}
+              >
+                <Text style={[styles.optionText, { color: styleGuide.palette.error }]}>
+                  Sair
+                </Text>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
 
-          <TouchableOpacity
-            style={[styles.optionButton, styles.logoutButton]}
-            onPress={handleLogout}
-          >
-            <Text
-              style={[styles.optionText, { color: styleGuide.palette.error }]}
-            >
-              Sair
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeText}>Fechar</Text>
-          </TouchableOpacity>
+              <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                <Text style={styles.closeText}>Fechar</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    maxHeight: "80%",
+    maxHeight: "80%", // Garante que não estoure a tela em dispositivos pequenos
   },
   avatar: {
     width: 90,
@@ -142,11 +146,22 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: styleGuide.palette.main.textPrimaryColor,
+    textAlign: "center",
   },
   email: {
     fontSize: 14,
     color: styleGuide.palette.main.textSecondaryColor,
     marginBottom: 10,
+    textAlign: "center",
+  },
+  scrollView: {
+    width: "100%",
+    marginTop: 10,
+    maxHeight: 300, // Limita a altura da lista para não empurrar o botão de sair para fora
+  },
+  scrollContent: {
+    alignItems: "center",
+    paddingBottom: 10,
   },
   optionButton: {
     paddingVertical: 14,
@@ -162,13 +177,21 @@ const styles = StyleSheet.create({
   logoutButton: {
     borderColor: styleGuide.palette.main.fourthColor,
     borderTopWidth: 1,
+    marginTop: 5,
   },
   closeButton: {
     marginTop: 10,
+    padding: 10, // Aumenta a área de toque
   },
   closeText: {
     color: styleGuide.palette.main.primaryColor,
     fontSize: 16,
     fontWeight: "500",
+  },
+  defaultIconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#cccccc',
+    borderRadius: 40,
   },
 });

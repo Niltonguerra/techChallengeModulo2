@@ -1,3 +1,5 @@
+import { UserPermissionEnum } from "./userPermissionEnum";
+
 export interface User {
   name: string;
   email: string;
@@ -10,8 +12,8 @@ export interface UserDataReceived {
   email: string;
   photo: string;
   id: string;
-  permission: "admin" | "user";
-  role: "admin" | "user";
+  permission: UserPermissionEnum;
+  role?: UserPermissionEnum;
 }
 
 export interface NavigationItem {

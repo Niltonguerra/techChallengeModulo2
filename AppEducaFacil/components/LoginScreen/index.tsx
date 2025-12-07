@@ -17,6 +17,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { loginSuccess } from "@/store/authSlice";
 import { AppDispatch } from "@/store/store";
 import { RequestUser, ResponseAuthUser } from "@/types/login";
+import { UserPermissionEnum } from "@/types/userPermissionEnum";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -47,7 +48,7 @@ export default function LoginScreen() {
         loginSuccess({
           user: {
             ...response.user,
-            role: response.user.permission === "admin" ? "admin" : "user",
+            role: response.user.permission === UserPermissionEnum.ADMIN ? UserPermissionEnum.ADMIN : UserPermissionEnum.USER,
           },
           token: response.token,
         })

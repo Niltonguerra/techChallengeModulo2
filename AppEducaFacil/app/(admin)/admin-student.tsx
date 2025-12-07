@@ -71,7 +71,7 @@ export default function AlunosScreen() {
 
         <Link
           href={{
-            pathname: "/(admin)/user/form",
+            pathname: "/(admin)/form-user",
             params: { userType: "user" },
           }}
           asChild

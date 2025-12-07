@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 
 import CardPost from "@/components/CardPost/CardPost";
 import { Post } from "@/types/post";
-import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
+import { useDeletePost } from "@/hooks/post/handleDeletePost";
 import { getListTodos } from "@/services/post";
 import { useSnackbar } from "@/hooks/snackbar/snackbar";
 import styleGuide from "@/constants/styleGuide";
@@ -72,7 +72,7 @@ export default function AdminPostsPage() {
         </Button>
         <Button
           mode="contained"
-          onPress={() => router.push({ pathname: "/(admin)/post/form" })}
+          onPress={() => router.push({ pathname: "/(admin)/form-post" })}
           style={{ ...styles.submitButton, ...styles.halfButton }}
           contentStyle={styles.submitContent}
         >
