@@ -6,6 +6,8 @@ import { SendEmailDTO } from '../dtos/sendemail.dto';
 // import { Transporter } from 'nodemailer';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { Resend } from 'resend';
+import { redefinicao_senha } from '../templates/redefinicao_senha';
+import { confirmacao_conta } from '../templates/confirmacao_conta';
 
 @Injectable()
 export class EmailService {
@@ -45,23 +47,7 @@ export class EmailService {
 
       const tittleMessage = 'Confirmação de e-mail - EducaFácil';
       const linkVerification = `${urlServer}${url}?token=${email}`;
-      const bodyMessage = `
-      <div style="font-family: Arial, sans-serif; color: #333;">
-        <img src="https://seusite.com/logo.png" alt="EducaFácil" style="width: 120px; margin-bottom: 20px;" />
-
-        <p>Olá!</p>
-        <p>Obrigado por se cadastrar no <b>EducaFácil</b>.</p>
-        <p>Para ativar sua conta, clique no link abaixo:</p>
-
-        <p style="word-break: break-all;">
-          <a href="${linkVerification}" target="_blank" style="color: #1a73e8;">
-            ${linkVerification}
-          </a>
-        </p>
-
-        <p>Caso você não tenha solicitado este cadastro, ignore este e-mail.</p>
-      </div>
-    `;
+      const bodyMessage = confirmacao_conta(linkVerification);
 
       const mailOptions: SendEmailDTO = {
         from: this.configService.get<string>('EMAIL_USER', ''),
@@ -93,19 +79,7 @@ export class EmailService {
         from: this.configService.get<string>('EMAIL_USER', ''),
         to: email,
         subject: 'Recuperação de senha - EducaFácil',
-        html: `
-          <div style="font-family: Arial, sans-serif; color: #333;">
-            <p>Olá, <b>${nome}</b>!</p>
-            <p>Você solicitou a redefinição da sua senha.</p>
-            <p>Clique no link abaixo para criar uma nova senha:</p>
-            <p style="word-break: break-all;">
-              <a href="${link}" target="_blank" style="color: #1a73e8; text-decoration: underline;">
-                ${link}
-              </a>
-            </p>
-            <p>Este link é válido por 15 minutos.</p>
-          </div>
-        `,
+        html: redefinicao_senha(link, nome),
       };
 
       await this.resend.emails.send(mailOptions);

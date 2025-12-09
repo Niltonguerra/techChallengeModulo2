@@ -15,6 +15,7 @@ import {
   Query,
   UseGuards,
   UsePipes,
+  Res,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -33,6 +34,9 @@ import { UpdateUserDTO } from '../dtos/updateUser.dto';
 import { UserService } from '../service/user.service';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
+import { Response } from 'express';
+import { confirmacao_rota } from '@modules/email/templates/confirmacao_conta_rota';
+import { erro_confirmacao_rota } from '@modules/email/templates/erro_confirmacao_conta_rota';
 
 @ApiInternalServerErrorResponse({ description: 'Internal Server Error', type: ReturnMessageDTO })
 @ApiNotFoundResponse({ description: 'Not found', type: ReturnMessageDTO })
@@ -59,10 +63,11 @@ export class UserWriteController {
 
   @Get('validationEmail')
   @ApiOperation({ summary: 'Validation email' })
-  @ApiOkResponse({ type: ReturnMessageDTO })
-  async validationEmail(@Query('token') token: string): Promise<ReturnMessageDTO> {
-    const createUser: ReturnMessageDTO = await this.createUserUseCase.updateStatus(token);
-    return createUser;
+  async validationEmail(@Query('token') token: string, @Res() res: Response): Promise<void> {
+    const result = await this.createUserUseCase.updateStatus(token);
+
+    if (result.statusCode === 201) res.status(200).send(confirmacao_rota);
+    else res.status(404).send(erro_confirmacao_rota(result.message));
   }
 
   @Put('edit/:id')
