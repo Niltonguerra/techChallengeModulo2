@@ -51,7 +51,7 @@ const CardUser = (dataCard: CardUserProps) => {
                 <Button
                   labelStyle={styles.btnLabel}
                   style={styles.btnDelete}
-                  onPress={() => handleDeleteUser(dataCard.dataProperties.id)}
+                  onPress={() => handleDeleteUser(dataCard.dataProperties.id,dataCard.returnRoute)}
                 >
                   <MaterialCommunityIcons
                     name="delete"

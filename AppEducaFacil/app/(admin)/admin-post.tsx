@@ -2,17 +2,14 @@ import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { useRouter } from "expo-router";
-
 import CardPost from "@/components/CardPost/CardPost";
 import { Post } from "@/types/post";
-import { useDeletePost } from "@/hooks/post/handleDeletePost";
 import { getListTodos } from "@/services/post";
 import { useSnackbar } from "@/hooks/snackbar/snackbar";
 import styleGuide from "@/constants/styleGuide";
 
 export default function AdminPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const { handleDeletePost } = useDeletePost();
   const { showSnackbar } = useSnackbar();
   const router = useRouter();
 
@@ -33,22 +30,6 @@ export default function AdminPostsPage() {
     fetchPosts();
   }, []);
 
-  const onDelete = async (id: string) => {
-    try {
-      await handleDeletePost(id);
-      setPosts((prev) => prev.filter((p) => p.id !== id));
-      showSnackbar({
-        message: "Post deletado com sucesso!",
-        duration: 3000,
-      });
-    } catch (err: any) {
-      console.error(err);
-      showSnackbar({
-        message: "Não foi possível deletar o post.",
-        duration: 3000,
-      });
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -56,7 +37,7 @@ export default function AdminPostsPage() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <CardPost dataProperties={item} isEditable onDelete={onDelete} />
+          <CardPost dataProperties={item} isEditable />
         )}
         contentContainerStyle={{ paddingBottom: 120 }}
       />

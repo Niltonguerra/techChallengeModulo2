@@ -21,7 +21,7 @@ export default function ProfessoresScreen() {
     async function fetchTeachers() {
       try {
         if (!token) return;
-        const users = await getAllUsers("admin");
+        const users = await getAllUsers(UserPermissionEnum.ADMIN);
         setTeachers(users);
       } catch (err) {
         showSnackbar({
@@ -49,6 +49,7 @@ export default function ProfessoresScreen() {
         {teachers.map((teacher) => (
           <CardUser
             key={teacher.id}
+            returnRoute="/(admin)/admin-teacher"
             isEditable
             dataProperties={{
               id: teacher.id,

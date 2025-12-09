@@ -12,6 +12,7 @@ import {
 import { useRouter } from "expo-router";
 import styleGuide from "@/constants/styleGuide";
 import { MaterialIcons } from "@expo/vector-icons";
+import { FAQItem } from "@/types/faq";
 
 if (
   Platform.OS === "android" &&
@@ -20,10 +21,6 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-interface FAQItem {
-  question: string;
-  answer: string;
-}
 
 export default function FAQ() {
   const router = useRouter();

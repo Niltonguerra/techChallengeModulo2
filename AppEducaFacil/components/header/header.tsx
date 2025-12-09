@@ -11,14 +11,9 @@ import { useNavigation } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styleGuide from "@/constants/styleGuide";
+import { HeaderPropsComponent } from "@/types/header-types";
 
-interface HeaderProps {
-  title: string;
-  subtitle?: string;
-  showBack?: boolean;
-}
-
-const Header = ({ title, subtitle, showBack }: HeaderProps) => {
+const Header = ({ title, subtitle, showBack }: HeaderPropsComponent) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 

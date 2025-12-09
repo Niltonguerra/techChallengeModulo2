@@ -10,6 +10,7 @@ export type CardPostProps = {
 
 export type CardUserProps = {
   isEditable: boolean;
+  returnRoute: string;
   dataProperties: {
     id: string;
     name: string;

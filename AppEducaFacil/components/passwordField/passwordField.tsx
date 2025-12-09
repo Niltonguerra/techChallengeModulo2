@@ -1,14 +1,8 @@
+import { PasswordInputProps } from '@/types/userForm';
 import React, { useState, forwardRef } from 'react';
 import { View, StyleSheet, TextInput as NativeTextInput } from 'react-native';
 import { TextInput, HelperText } from 'react-native-paper';
 
-interface PasswordInputProps {
-  userId?: string | null;
-  password?: string;
-  onPasswordChange: (text: string) => void;
-  onSubmit: () => void;
-  error?: string;
-}
 
 const PasswordInput = forwardRef<NativeTextInput, PasswordInputProps>(
   ({ userId, password, onPasswordChange, onSubmit, error }, ref) => {

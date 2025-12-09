@@ -48,12 +48,10 @@ export function useUserForm({ userId, userType, userData,returnRoute }: UseUserF
         password: data.password || undefined,
       };
 
-      const response = await (isEditing 
-        ? EditUser({ ...apiPayload, id: userId }) 
-        : createUser(apiPayload));
+      const response = await (isEditing ? EditUser({ ...apiPayload, id: userId }) : createUser(apiPayload));
 
       if ([200, 201].includes(response.statusCode)) {
-        showSnackbar({ message: isEditing ? 'Atualizado com sucesso' : 'Cadastrado com sucesso' });
+        showSnackbar({ message: isEditing ? 'Atualizado com sucesso' : 'Cadastrado com sucesso, por favor valide seu email por favor' });
         if(returnRoute) {
           router.push({// @ts-ignore 
           pathname: returnRoute
@@ -69,7 +67,6 @@ export function useUserForm({ userId, userType, userData,returnRoute }: UseUserF
       } else {
         showSnackbar({ message: 'Erro ao salvar.' });
       }
-    } finally {
     }
   };
 
