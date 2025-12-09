@@ -3,21 +3,6 @@ import React, { createContext, useContext, useState, ReactNode, useCallback } fr
 import { View, StyleSheet } from 'react-native';
 import { Portal, Snackbar } from 'react-native-paper';
 
-<<<<<<< HEAD
-interface SnackbarOptions {
-  message: string;
-  duration?: number;
-  actionLabel?: string;
-  onAction?: () => void;
-  top?: boolean;
-}
-
-interface SnackbarContextType {
-  showSnackbar: (options: SnackbarOptions) => void;
-}
-
-=======
->>>>>>> 7fe1b62d (fix:ajustes-de-bugs)
 const SnackbarContext = createContext<SnackbarContextType | null>(null);
 
 export const useSnackbar = () => {
