@@ -46,7 +46,7 @@ export class EmailService {
           : this.configService.get<string>('URL_SERVER_DEV');
 
       const tittleMessage = 'Confirmação de e-mail - EducaFácil';
-      const linkVerification = `${urlServer}${url}?token=${email}`;
+      const linkVerification = `${urlServer}/${url}?token=${email}`;
       const bodyMessage = confirmacao_conta(linkVerification);
 
       const mailOptions: SendEmailDTO = {
