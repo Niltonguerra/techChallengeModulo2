@@ -17,7 +17,7 @@ export default function AppContent() {
 
     const currentRoute = pathname;
     const allowedRoutes = ["/PostDetail","/edit-user-data"];
-    const isAdmin = user?.permission === "admin" || user?.role === "admin";
+    const isAdmin = user?.permission === "admin";
     const isAdminRoute =
       currentRoute.startsWith("/admin-") ||
       currentRoute.startsWith("/(admin)") ||
