@@ -9,6 +9,7 @@ import { CreateCommentDTO } from '../dto/create-comment.dto';
 import { PaginateDTO } from '../dto/get-comment.dto';
 import { ListCommentDTO } from '../dto/return-comment.dto';
 import { Comments } from '../entities/comment.entity';
+import { UserStatusEnum } from '@modules/user/enum/status.enum';
 
 @Injectable()
 export class CommentsService {
@@ -77,8 +78,8 @@ export class CommentsService {
       createdAt: c.createdAt,
       user: {
         id: c.user?.id,
-        name: c.user?.name,
-        photo: c.user?.photo,
+        name: c.user.is_active != UserStatusEnum.INACTIVE ? c.user?.name : 'Usuário deletado',
+        photo: c.user.is_active != UserStatusEnum.INACTIVE ? c.user?.photo : 'Usuário deletado',
       },
     }));
   }
