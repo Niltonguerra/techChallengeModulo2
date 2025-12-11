@@ -35,6 +35,12 @@ export default function AdminLayout() {
           header: () => <Header title="Gerir Usuário" showBack />,
         }}
       />
+      <Stack.Screen
+        name="form-user-own-data"
+        options={{
+          header: () => <Header title="Editar Meu Perfil" showBack />,
+        }}
+      />
     </Stack>
   );
 }
