@@ -1,17 +1,16 @@
 import styleGuide from "@/constants/styleGuide";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import React, { useRef, useState } from "react";
 import {
     Animated,
     ScrollView,
     StyleSheet,
-    TouchableOpacity,
     View,
-    useWindowDimensions,
 } from "react-native";
-import { ActivityIndicator, Button, Menu, Searchbar } from "react-native-paper";
+import { Button, Searchbar } from "react-native-paper";
 import { getHashtags } from "../../services/post";
 import { Text } from "react-native";
+import { CustomDropdown } from "../CustomDropdown/CustomDropdown";
 
 type FilterProps = {
     onFilter: (filters: {
@@ -86,54 +85,14 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
             />
 
             <View style={styles.filterRow}>
-                <View style={styles.half}>
-                    {loading ? (
-                        <ActivityIndicator size="small" />
-                    ) : (
-                        <Menu
-                            visible={activePicker === "menu"}
-                            onDismiss={() => setActivePicker(null)}
-                            anchor={
-                                <Button
-                                    mode="outlined"
-                                    onPress={() => setActivePicker("menu")}
-                                    style={styles.button}
-                                    contentStyle={styles.buttonContent}
-                                    labelStyle={styles.buttonLabel}
-                                    icon="shape-outline"
-                                >
-                                    <View style={styles.truncatedTextContainer}>
-                                        <Text
-                                            style={styles.truncatedText}
-                                            numberOfLines={1}
-                                            ellipsizeMode="tail"
-                                        >
-                                            {content || "Categoria"}
-                                        </Text>
-                                    </View>
-                                </Button>
-                            }
-                        >
-                            <Menu.Item
-                                title="Todos"
-                                onPress={() => {
-                                    setContent("");
-                                    setActivePicker(null);
-                                }}
-                            />
 
-                            {hashtags.map((tag) => (
-                                <Menu.Item
-                                    key={tag}
-                                    title={tag}
-                                    onPress={() => {
-                                        setContent(tag);
-                                        setActivePicker(null);
-                                    }}
-                                />
-                            ))}
-                        </Menu>
-                    )}
+                <View style={styles.half}>
+                    <CustomDropdown
+                        label="Categoria"
+                        options={hashtags}
+                        value={content}
+                        onChange={(v) => setContent(v || "")}
+                    />
                 </View>
 
                 <View style={styles.quarter}>
@@ -149,7 +108,7 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                             style={styles.truncatedText}
                             numberOfLines={1}
                             ellipsizeMode="tail"
-                            
+
                         >
                             {dates.after ? dates.after.toLocaleDateString() : "De"}
                         </Text>
@@ -201,17 +160,25 @@ export const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                 </Button>
             </View>
 
+
             {(activePicker === "after" || activePicker === "before") && (
                 <DateTimePicker
                     value={dates[activePicker] || new Date()}
                     mode="date"
                     display="default"
-                    onChange={(_, d) => {
-                        if (d) setDates((prev) => ({ ...prev, [activePicker]: d }));
+                    onChange={(event: DateTimePickerEvent, selectedDate?: Date) => {
+                        if (event.type === "dismissed") {
+                            setActivePicker(null);
+                            return;
+                        }
+                        if (selectedDate) {
+                            setDates((prev) => ({ ...prev, [activePicker]: selectedDate }));
+                        }
                         setActivePicker(null);
                     }}
                 />
             )}
+
         </View>
     );
 };
