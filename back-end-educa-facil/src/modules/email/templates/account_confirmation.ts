@@ -1,4 +1,4 @@
-export const confirmacao_conta = (linkVerification: string) => `
+export const account_confirmation = (linkVerification: string) => `
 <div style="font-family: Arial, sans-serif; color: #333;">
   <img src="https://seusite.com/logo.png" alt="EducaFácil" style="width: 120px; margin-bottom: 20px;" />
 

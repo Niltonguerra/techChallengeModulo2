@@ -1,4 +1,3 @@
-// Mocks para roles-student.guard.spec.ts
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ExecutionContext } from '@nestjs/common';
@@ -22,7 +21,6 @@ export const mockRequest: { user: JwtPayload } = {
   },
 };
 
-// getRequest sempre retorna o valor atualizado de mockRequest
 export const getRequest = jest.fn(() => mockRequest);
 
 export const mockExecutionContext: Partial<ExecutionContext> = {

@@ -1,4 +1,4 @@
-export const erro_confirmacao_rota = (result: string) => `
+export const error_confirmation_route_account = (result: string) => `
 <!doctype html>
 <html lang="pt-BR">
   <head>

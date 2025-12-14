@@ -1,4 +1,4 @@
-export const confirmacao_rota = `
+export const route_account_confirmation = `
 <!doctype html>
 <html lang="pt-BR">
   <head>

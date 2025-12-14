@@ -6,8 +6,8 @@ import { SendEmailDTO } from '../dtos/sendemail.dto';
 // import { Transporter } from 'nodemailer';
 import { systemMessage } from '@config/i18n/pt/systemMessage';
 import { Resend } from 'resend';
-import { redefinicao_senha } from '../templates/redefinicao_senha';
-import { confirmacao_conta } from '../templates/confirmacao_conta';
+import { account_confirmation } from '../templates/account_confirmation';
+import { password_reset } from '../templates/password_reset';
 
 @Injectable()
 export class EmailService {
@@ -47,7 +47,7 @@ export class EmailService {
 
       const tittleMessage = 'Confirmação de e-mail - EducaFácil';
       const linkVerification = `${urlServer}/${url}?token=${email}`;
-      const bodyMessage = confirmacao_conta(linkVerification);
+      const bodyMessage = account_confirmation(linkVerification);
 
       const mailOptions: SendEmailDTO = {
         from: this.configService.get<string>('EMAIL_USER', ''),
@@ -79,7 +79,7 @@ export class EmailService {
         from: this.configService.get<string>('EMAIL_USER', ''),
         to: email,
         subject: 'Recuperação de senha - EducaFácil',
-        html: redefinicao_senha(link, nome),
+        html: password_reset(link, nome),
       };
 
       await this.resend.emails.send(mailOptions);

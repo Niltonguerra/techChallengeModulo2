@@ -77,7 +77,7 @@ describe('EmailService', () => {
         if (key === 'EMAIL_USER') return 'test@gmail.com';
         if (key === 'EMAIL_PASSWORD') return 'testpassword';
         if (key === 'AMBIENTE') return 'DEV';
-        if (key === 'URL_SERVER_DEV') return 'http://localhost:3000'; // Removi a barra extra no final para facilitar comparação
+        if (key === 'URL_SERVER_DEV') return 'http://localhost:3000';
         if (key === 'URL_SERVER_PROD') return 'https://meusite.com';
         if (key === 'RESEND_API_KEY') return 're_123';
         return '';
@@ -120,7 +120,6 @@ describe('EmailService', () => {
       const result = await service.enviaVerificacaoEmail(testEmail, testUrl);
 
       expect(result).toBe(400);
-      // Verifica se logou, a mensagem exata depende do seu arquivo systemMessage
       expect(loggerErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining('Erro ao enviar e-mail de verificação:'),
       );
