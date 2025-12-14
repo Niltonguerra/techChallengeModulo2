@@ -1,5 +1,6 @@
 import { ImagePickerAsset } from "expo-image-picker";
 import { UserPermissionEnum } from "./userPermissionEnum";
+import * as ImagePicker from 'expo-image-picker';
 
 export interface PasswordInputProps {
   userId?: string | null;
@@ -40,3 +41,17 @@ export type UseUserFormProps = {
   userData?: any; 
   returnRoute?: string;
 };
+
+export interface PasswordInputProps {
+  userId?: string | null;
+  password?: string;
+  onPasswordChange: (text: string) => void;
+  onSubmit: () => void;
+  error?: string;
+}
+
+export interface UserImagePickerProps {
+  imageUri: string | null;
+  error?: string;
+  onImagePicked: (uri: string, asset: ImagePicker.ImagePickerAsset) => void;
+}

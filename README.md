@@ -208,21 +208,21 @@ instalar o pnpm:
 ### Variáveis do backend:
 
 ```env
-AMBIENTE=PROD
+AMBIENTE=DEV
 
-DB_HOST_DEV=localhost
+DB_HOST_DEV=ep-ancient-cake-acre7ab1-pooler.sa-east-1.aws.neon.tech
 DB_PORT_DEV=5432
-URL_SERVER_DEV=http://localhost:3000/
-DB_DATABASE_DEV=nest_db
-DB_USERNAME_DEV=nest_user
-DB_PASSWORD_DEV=nest_password
+URL_SERVER_DEV=https://techchallengemodulo2-emdn.onrender.com
+DB_DATABASE_DEV=neondb
+DB_USERNAME_DEV=neondb_owner
+DB_PASSWORD_DEV=npg_vTh5oRIgzWU1
 
-DB_HOST_PROD=aws-1-sa-east-1.pooler.supabase.com
+DB_HOST_PROD=ep-royal-dust-actwblu2-pooler.sa-east-1.aws.neon.tech
 DB_PORT_PROD=5432
-URL_SERVER_PROD=https://techchallengemodulo2.onrender.com/
-DB_DATABASE_PROD=postgres
-DB_USERNAME_PROD=postgres.lvonfxuhdykgviwqcmyw
-DB_PASSWORD_PROD=VxoVH8ReYuqsB3N1
+URL_SERVER_PROD=https://techchallengemodulo2-prod.onrender.com
+DB_DATABASE_PROD=neondb
+DB_USERNAME_PROD=neondb_owner
+DB_PASSWORD_PROD=npg_vTh5oRIgzWU1
 
 BCRYPT_SALT_ROUNDS=10
 JWT_SECRET=educa_facil

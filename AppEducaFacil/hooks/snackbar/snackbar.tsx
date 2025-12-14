@@ -1,18 +1,7 @@
+import { SnackbarContextType, SnackbarOptions } from '@/types/snackBar';
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Portal, Snackbar } from 'react-native-paper';
-
-interface SnackbarOptions {
-  message: string;
-  duration?: number;
-  actionLabel?: string;
-  onAction?: () => void;
-  top?: boolean;
-}
-
-interface SnackbarContextType {
-  showSnackbar: (options: SnackbarOptions) => void;
-}
 
 const SnackbarContext = createContext<SnackbarContextType | null>(null);
 

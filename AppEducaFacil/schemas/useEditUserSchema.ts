@@ -12,7 +12,7 @@ export const editUserSchema = z.object({
     .min(1, 'O campo Email é obrigatório')
     .email('Endereço de email inválido'),
 
-  imageUri: z.any().refine((val) => !!val, { message: 'O campo Foto é obrigatório' }),
+  imageUri: z.any().refine((val) => !!val, { message: 'O campo Foto é obrigatório' }).optional(),
   photoAsset: z.any().optional(),
   password: z.string()
     .optional()

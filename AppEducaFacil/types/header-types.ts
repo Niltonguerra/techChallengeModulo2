@@ -36,3 +36,9 @@ export interface HeaderProps {
   onSearch?: (query: string) => void;
   onNavigate?: (path: string) => void;
 }
+
+export interface HeaderPropsComponent {
+  title: string;
+  subtitle?: string;
+  showBack?: boolean;
+}

@@ -12,12 +12,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import type { Post } from "@/types/post";
 import styleGuide from "@/constants/styleGuide";
+import { CarouselPostsProps } from "@/types/carrossel";
 
 const { width } = Dimensions.get("window");
-
-interface CarouselPostsProps {
-  posts: Post[];
-}
 
 export default function CarouselPosts({ posts }: CarouselPostsProps) {
   const [recentPosts, setRecentPosts] = useState<Post[]>([]);
