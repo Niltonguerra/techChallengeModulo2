@@ -8,18 +8,16 @@ import { UserService } from '../service/user.service';
 import { RolesGuardProfessor } from '@modules/auth/guards/roles-professor.guard';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { Response } from 'express';
-// Importe seus DTOs e Mocks reais aqui.
-// Para garantir que o exemplo funcione, estou recriando mocks simples baseados no contexto:
 import { CreateUserDTO } from '../dtos/createUser.dto';
 import { UpdateUserDTO } from '../dtos/updateUser.dto';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { route_account_confirmation } from '@modules/email/templates/route_account_confirmation';
 
-// --- Mocks dos Templates e Dados ---
-jest.mock('@modules/email/templates/confirmacao_conta_rota', () => ({
-  confirmacao_rota: '<html>Success</html>',
+jest.mock('@modules/email/templates/account_confirmation', () => ({
+  account_confirmation: '<html>Success</html>',
 }));
-jest.mock('@modules/email/templates/erro_confirmacao_conta_rota', () => ({
-  erro_confirmacao_rota: (msg: string) => `<html>Error: ${msg}</html>`,
+jest.mock('@modules/email/templates/error_confirmation_route_account', () => ({
+  error_confirmation_route_account: (msg: string) => `<html>Error: ${msg}</html>`,
 }));
 
 const mockReturnMessageDTO: ReturnMessageDTO = { message: 'Success', statusCode: 200 };
@@ -78,7 +76,6 @@ describe('UserWriteController', () => {
     userDeleteService = module.get<UserDeleteService>(UserDeleteService);
     userService = module.get<UserService>(UserService);
 
-    // Mock do Logger para suprimir logs de erro no terminal durante os testes
     loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
   });
 
@@ -109,7 +106,6 @@ describe('UserWriteController', () => {
   });
 
   describe('validationEmail', () => {
-    // Helper para criar o mock do Response
     const mockResponse = () => {
       const res: Partial<Response> = {};
       res.status = jest.fn().mockReturnValue(res);
@@ -119,7 +115,6 @@ describe('UserWriteController', () => {
 
     it('should validate email successfully (Status 201 -> 200 OK)', async () => {
       const res = mockResponse();
-      // O UseCase retorna status 201 quando dá certo
       mockCreateUserUseCase.updateStatus.mockResolvedValue({
         statusCode: 201,
         message: 'Validado',
@@ -128,13 +123,12 @@ describe('UserWriteController', () => {
       await controller.validationEmail(mockToken, res);
 
       expect(createUserUseCase.updateStatus).toHaveBeenCalledWith(mockToken);
-      expect(res.status).toHaveBeenCalledWith(200); // Controller converte para 200 no sucesso
-      expect(res.send).toHaveBeenCalledWith(expect.stringContaining('Success'));
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.send).toHaveBeenCalledWith(expect.stringContaining(route_account_confirmation));
     });
 
     it('should handle validation failure (Status != 201 -> 404 Not Found)', async () => {
       const res = mockResponse();
-      // O UseCase retorna erro ou status diferente de 201
       mockCreateUserUseCase.updateStatus.mockResolvedValue({
         statusCode: 400,
         message: 'Token inválido',
@@ -157,7 +151,6 @@ describe('UserWriteController', () => {
       const result = await controller.EditUser(userId, mockUpdateUserDTO);
 
       expect(result).toBe(mockReturnMessageDTO);
-      // CORREÇÃO AQUI: O controller faz { id, ...dto }, então o teste deve esperar isso
       expect(userService.createUpdateUser).toHaveBeenCalledWith({
         id: userId,
         ...mockUpdateUserDTO,
