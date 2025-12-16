@@ -79,7 +79,7 @@ export class CommentsService {
       user: {
         id: c.user?.id,
         name: c.user.is_active != UserStatusEnum.INACTIVE ? c.user?.name : 'Usuário deletado',
-        photo: c.user.is_active != UserStatusEnum.INACTIVE ? c.user?.photo : 'Usuário deletado',
+        photo: c.user.is_active != UserStatusEnum.INACTIVE ? c.user?.photo : null,
       },
     }));
   }
