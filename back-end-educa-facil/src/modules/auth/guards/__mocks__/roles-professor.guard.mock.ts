@@ -1,4 +1,3 @@
-// Mocks para roles-professor.guard.spec.ts
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ExecutionContext } from '@nestjs/common';

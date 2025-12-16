@@ -3,12 +3,7 @@ import { View, Image, StyleSheet} from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import { Button, HelperText } from 'react-native-paper';
 import { useSnackbar } from '@/hooks/snackbar/snackbar';
-
-interface UserImagePickerProps {
-  imageUri: string | null;
-  error?: string;
-  onImagePicked: (uri: string, asset: ImagePicker.ImagePickerAsset) => void;
-}
+import { UserImagePickerProps } from '@/types/userForm';
 
 export const UserImagePicker: React.FC<UserImagePickerProps> = ({ 
   imageUri, 

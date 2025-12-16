@@ -29,7 +29,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             database: config.get<string>('DB_DATABASE_PROD'),
             autoLoadEntities: true,
             synchronize: true,
-            ssl: true,
+            ssl: {
+              rejectUnauthorized: false,
+            },
             extra: { ssl: { rejectUnauthorized: false } },
             family: 4,
             entities: [Post, User, Comments],
@@ -45,6 +47,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             autoLoadEntities: true,
             synchronize: true,
             entities: [Post, User, Comments],
+            ssl: {
+              rejectUnauthorized: false,
+            },
           };
         }
       },

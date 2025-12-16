@@ -9,12 +9,15 @@ import { useDeleteUser } from '@/hooks/user/handleDeleteUser';
 
 const CardUser = (dataCard: CardUserProps) => {
   const { handleDeleteUser } = useDeleteUser();
+  const photoRaw = dataCard.dataProperties.photo;
+  const photo = (photoRaw ?? '').toString().trim();
+  const hasPhoto = photo.length > 0 && photo !== '\\n';
 
   return (
     <Card style={styles.card} mode="elevated" elevation={1}>
       <Pressable accessibilityRole="link">
         <View style={styles.row}>
-          {dataCard.dataProperties.photo ? (
+          { hasPhoto ? (
             <Image
               style={styles.img}
               source={{ uri: dataCard.dataProperties.photo }}
@@ -26,7 +29,7 @@ const CardUser = (dataCard: CardUserProps) => {
           )}
 
           <View style={styles.userInfo}>
-            <Text style={styles.title}>{dataCard.dataProperties.name}</Text>
+            <Text style={styles.title}>{dataCard.dataProperties.photo}</Text>
             <Text style={styles.title}>{dataCard.dataProperties.email}</Text>
             {dataCard.isEditable && (
               <View style={styles.btnContainer}>
@@ -51,7 +54,7 @@ const CardUser = (dataCard: CardUserProps) => {
                 <Button
                   labelStyle={styles.btnLabel}
                   style={styles.btnDelete}
-                  onPress={() => handleDeleteUser(dataCard.dataProperties.id)}
+                  onPress={() => handleDeleteUser(dataCard.dataProperties.id,dataCard.returnRoute)}
                 >
                   <MaterialCommunityIcons
                     name="delete"
