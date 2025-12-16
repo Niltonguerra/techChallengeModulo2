@@ -13,7 +13,6 @@ export interface UserDataReceived {
   photo: string;
   id: string;
   permission: UserPermissionEnum;
-  role?: UserPermissionEnum;
 }
 
 export interface NavigationItem {

@@ -48,7 +48,7 @@ export default function LoginScreen() {
         loginSuccess({
           user: {
             ...response.user,
-            role: response.user.permission === UserPermissionEnum.ADMIN ? UserPermissionEnum.ADMIN : UserPermissionEnum.USER,
+            permission: response.user.permission === UserPermissionEnum.ADMIN ? UserPermissionEnum.ADMIN : UserPermissionEnum.USER,
           },
           token: response.token,
         })
@@ -89,9 +89,16 @@ export default function LoginScreen() {
         <TextInput
           style={[styles.input, styles.inputWithIcon]}
           placeholder="Digite aqui a sua senha*"
-          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
+
+          secureTextEntry={!showPassword}
+
+          keyboardType="visible-password"
+          autoComplete="off"
+          importantForAutofill="no"
+          autoCorrect={false}
+          textContentType="none"
           placeholderTextColor={styleGuide.palette.main.textSecondaryColor}
         />
         <TouchableOpacity

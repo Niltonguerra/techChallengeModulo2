@@ -5,6 +5,7 @@ import { RootState } from "@/store/store";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import { ConfirmModalProvider } from "@/hooks/modalConfirm/ConfirmModal";
 import { SnackbarProvider } from "@/hooks/snackbar/snackbar";
+import { UserPermissionEnum } from "@/types/userPermissionEnum";
 
 export default function AppContent() {
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
@@ -17,7 +18,7 @@ export default function AppContent() {
 
     const currentRoute = pathname;
     const allowedRoutes = ["/PostDetail","/(admin)/form-user"];
-    const isAdmin = user?.permission === "admin" || user?.role === "admin";
+    const isAdmin = user?.permission === UserPermissionEnum.ADMIN;
     const isAdminRoute =
       currentRoute.startsWith("/admin-") ||
       currentRoute.startsWith("/(admin)") ||
