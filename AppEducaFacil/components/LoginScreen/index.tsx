@@ -35,6 +35,7 @@ export default function LoginScreen() {
         message: "Preencha todos os campos",
         duration: 3000, 
         top: true,
+        noHeader: true,
       });
       return;
     }
@@ -56,6 +57,7 @@ export default function LoginScreen() {
       showSnackbar({
         message: `Bem-vindo ${response.user.name}`,
         duration: 3000,
+        noHeader: true,
       });
       router.replace("/(tabs)");
     } catch (err: any) {
@@ -63,6 +65,7 @@ export default function LoginScreen() {
         message: err.response?.data?.message || "Usuário ou senha incorretos",
         duration: 3000,
         top: true,
+        noHeader: true,
       });
     } finally {
       setLoading(false);

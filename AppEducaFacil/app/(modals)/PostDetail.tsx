@@ -455,14 +455,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap",
         marginBottom: 10,
+        gap: 8,
     },
     tag: {
         backgroundColor: styleGuide.palette.main.primaryColor,
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 12,
-        marginRight: 6,
-        marginBottom: 6,
     },
     tagText: {
         color: styleGuide.palette.main.fourthColor,

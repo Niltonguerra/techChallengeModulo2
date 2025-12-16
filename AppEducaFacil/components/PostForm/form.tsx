@@ -159,6 +159,9 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   };
 
   const [query, setQuery] = useState('');
+  // dynamic heights
+  const [titleHeight, setTitleHeight] = useState(0);
+  const [introHeight, setIntroHeight] = useState(0);
 
   const filteredOptions = (hashtagOptions ?? [])
     .filter(o =>
@@ -377,8 +380,12 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
           setTitle(text);
         }}
         mode="outlined"
-        style={styles.input}
         returnKeyType="next"
+        style={[styles.input, { height: Math.max(56, titleHeight) }]}
+        multiline={true}
+        onContentSizeChange={(e) =>
+          setTitleHeight(e.nativeEvent.contentSize.height)
+        }
       />
       {errors.title && (
         <HelperText type="error" style={styles.errorText} visible>
@@ -393,8 +400,12 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
           setIntroduction(text);
         }}
         mode="outlined"
-        style={styles.input}
         returnKeyType="next"
+        multiline={true}
+        style={[styles.input, { height: Math.max(56, introHeight) }]}
+        onContentSizeChange={(e) =>
+          setIntroHeight(e.nativeEvent.contentSize.height)
+        }
       />
       {errors.introduction && (
         <HelperText type="error" style={styles.errorText} visible>
