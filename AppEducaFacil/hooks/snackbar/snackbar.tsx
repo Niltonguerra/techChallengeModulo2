@@ -1,7 +1,7 @@
 import { SnackbarContextType, SnackbarOptions } from '@/types/snackBar';
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Portal, Snackbar } from 'react-native-paper';
+import { Portal, Snackbar, Text } from 'react-native-paper';
 
 const SnackbarContext = createContext<SnackbarContextType | null>(null);
 
@@ -17,6 +17,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
     message: '',
     duration: 3000,
     top: false,
+    noHeader: false,
   });
 
   const showSnackbar = useCallback((opts: SnackbarOptions) => {
@@ -25,6 +26,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
       message: opts.message,
       actionLabel: opts.actionLabel,
       top: opts.top ?? false,
+      noHeader: opts.noHeader ?? false,
       onAction: opts.onAction,
     });
     setVisible(true);
@@ -44,6 +46,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
             wrapperStyle={[
               styles.snackbarBase,
               options.top ? styles.snackbarTop : styles.snackbarBottom,
+              options.noHeader ? { marginTop: 50 } : {},
             ]}
             action={
               options.actionLabel
@@ -54,7 +57,11 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
                 : undefined
             }
           >
-            {options.message}
+            <View style={styles.snackbarContent}>
+              <Text style={styles.snackbarText}>
+                {options.message}
+              </Text>
+            </View>
           </Snackbar>
         </Portal>
       </View>
@@ -67,11 +74,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    backgroundColor: "#313033"
+  },
+    snackbarContent: {
+    minHeight: 24,
+    justifyContent: "center",
+    alignItems: "flex-start",
+    paddingHorizontal: 8,
   },
     snackbarBase: {
     position: 'absolute',
     left: 0,
     right: 0,
+  },
+  snackbarText: {
+    color: '#eee7e7ff',
   },
   snackbarTop: {
     top: 0,

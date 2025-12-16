@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
   tagsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 8,
+    marginBottom: 16,
+    gap: 8,
   },
   tag: {
     backgroundColor: styleGuide.palette.main.primaryColor,
