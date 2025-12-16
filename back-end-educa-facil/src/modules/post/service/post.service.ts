@@ -257,7 +257,6 @@ export class PostService {
       .select('DISTINCT unnest(p.content_hashtags)', 'hashtag')
       .where('p.content_hashtags IS NOT NULL')
       .andWhere('p.is_active <= :is_active', { is_active: PostStatusEnum.ACTIVE })
-      .limit(10)
       .getRawMany();
     return result.map((row) => row.hashtag);
   }

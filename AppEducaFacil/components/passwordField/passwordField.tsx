@@ -7,12 +7,11 @@ import { TextInput, HelperText } from 'react-native-paper';
 const PasswordInput = forwardRef<NativeTextInput, PasswordInputProps>(
   ({ userId, password, onPasswordChange, onSubmit, error }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
-
     return (
       <View>
         <TextInput
           ref={ref}
-          label={userId ? "Nova senha" : "Senha *"}
+          label={userId ? "Redefinir senha" : "Senha *"}
           placeholder={userId ? "Digite a nova senha" : "Digite a senha"}
           value={password}
           onChangeText={onPasswordChange}

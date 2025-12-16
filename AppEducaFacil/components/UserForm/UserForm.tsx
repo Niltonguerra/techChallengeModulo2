@@ -97,6 +97,7 @@ const UserFormComponent: React.FC<FormUserProps> = ({ userId, userType = UserPer
         render={({ field: { onChange, value } }) => (
           <PasswordInput
             ref={passwordRef}
+            userId={userId} 
             password={value || ''}
             onPasswordChange={onChange}
             onSubmit={submit}
