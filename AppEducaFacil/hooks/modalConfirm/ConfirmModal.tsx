@@ -1,4 +1,3 @@
-// ConfirmModalProvider.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { View, Text, StyleSheet, TextStyle } from 'react-native';
 import Modal from 'react-native-modal';

@@ -1,3 +1,5 @@
+import { UserPermissionEnum } from "./userPermissionEnum";
+
 export interface User {
   name: string;
   email: string;
@@ -10,7 +12,7 @@ export interface UserDataReceived {
   email: string;
   photo: string;
   id: string;
-  permission: "admin" | "user";
+  permission: UserPermissionEnum;
 }
 
 export interface NavigationItem {
@@ -32,4 +34,10 @@ export interface HeaderProps {
   onLogin?: (userData: User, token: string) => void;
   onSearch?: (query: string) => void;
   onNavigate?: (path: string) => void;
+}
+
+export interface HeaderPropsComponent {
+  title: string;
+  subtitle?: string;
+  showBack?: boolean;
 }

@@ -1,9 +1,11 @@
 import axios, { type AxiosInstance } from "axios";
 import Constants from "expo-constants";
 import { RequestUser, ResponseAuthUser } from "@/types/login";
-import { FormUserData } from "@/types/form-post";
+import { FormUserData } from "@/types/postForm";
 import { ReturnMessage } from "@/types/returnMessaget";
 import { store } from "@/store/store";
+import { UserPermissionEnum } from "@/types/userPermissionEnum";
+import { UserListDTO } from "@/types/user";
 
 const API_URL = Constants.expoConfig!.extra!.apiUrl;
 let api: AxiosInstance | null = null;
@@ -60,7 +62,7 @@ export const getAuthors = async () => {
   return response.data;
 };
 
-export const getAllUsers = async (permission?: "user" | "admin") => {
+export const getAllUsers = async (permission?: UserPermissionEnum): Promise<UserListDTO[]>=> {
   const api = getApi();
   const response = await api.get("user/list-all", {
     params: permission ? { permission } : {},
@@ -85,7 +87,7 @@ export const sendResetPasswordEmail = async (
 ): Promise<ReturnMessage> => {
   const api = getApi();
   try {
-    const response = await api.post("auth-password/forgot-password", { email });
+    const response = await api.post("auth/forgot-password", { email });
     return response.data;
   } catch (error: any) {
     console.error("Erro ao enviar email de redefinição:", error);

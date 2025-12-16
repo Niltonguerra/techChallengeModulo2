@@ -8,9 +8,11 @@ import { getAllUsers } from "@/services/user";
 import styleGuide from "@/constants/styleGuide";
 import { Link, useRouter } from "expo-router";
 import { useSnackbar } from "@/hooks/snackbar/snackbar";
+import { UserListDTO } from "@/types/user";
+import { UserPermissionEnum } from "@/types/userPermissionEnum";
 
 export default function AlunosScreen() {
-  const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<UserListDTO[]>([]);
   const token = useSelector((state: RootState) => state.auth.token);
   const currentUser = useSelector((state: RootState) => state.auth.user);
   const { showSnackbar } = useSnackbar();
@@ -20,7 +22,7 @@ export default function AlunosScreen() {
     async function fetchStudents() {
       try {
         if (!token) return;
-        const users = await getAllUsers("user");
+        const users = await getAllUsers(UserPermissionEnum.USER);
         setStudents(users);
       } catch (err) {
         showSnackbar({
@@ -49,6 +51,7 @@ export default function AlunosScreen() {
           <CardUser
             key={student.id}
             isEditable
+            returnRoute="/(admin)/admin-student"
             dataProperties={{
               id: student.id,
               name: student.name,
@@ -71,7 +74,7 @@ export default function AlunosScreen() {
 
         <Link
           href={{
-            pathname: "/(admin)/user/form",
+            pathname: "/(admin)/form-user",
             params: { userType: "user" },
           }}
           asChild

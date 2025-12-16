@@ -5,31 +5,37 @@ import { Link } from 'expo-router';
 import { Pressable, StyleSheet, TextStyle, View, Image } from 'react-native';
 import styleGuide from '@/constants/styleGuide';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useDeleteUser } from '@/hooks/handleDeleteUser/handleDeleteUser';
+import { useDeleteUser } from '@/hooks/user/handleDeleteUser';
 
 const CardUser = (dataCard: CardUserProps) => {
   const { handleDeleteUser } = useDeleteUser();
+  const photoRaw = dataCard.dataProperties.photo;
+  const photo = (photoRaw ?? '').toString().trim();
+  const hasPhoto = photo.length > 0 && photo !== '\\n';
 
   return (
     <Card style={styles.card} mode="elevated" elevation={1}>
       <Pressable accessibilityRole="link">
         <View style={styles.row}>
-          {dataCard.dataProperties.photo ? (
-            <Image style={styles.img} source={{ uri: dataCard.dataProperties.photo }} />
+          { hasPhoto ? (
+            <Image
+              style={styles.img}
+              source={{ uri: dataCard.dataProperties.photo }}
+            />
           ) : (
             <View style={[styles.img, styles.defaultIconContainer]}>
-              <MaterialCommunityIcons name="account" size={32} color="#9ca3af" />
+              <MaterialCommunityIcons name="account" size={32} color="black" />
             </View>
           )}
 
           <View style={styles.userInfo}>
-            <Text style={styles.title}>{dataCard.dataProperties.name}</Text>
+            <Text style={styles.title}>{dataCard.dataProperties.photo}</Text>
             <Text style={styles.title}>{dataCard.dataProperties.email}</Text>
             {dataCard.isEditable && (
               <View style={styles.btnContainer}>
                 <Link
                   href={{
-                    pathname: "/user/form",
+                    pathname: "/(admin)/form-user",
                     params: {
                       userId: dataCard.dataProperties.id,
                       userType: dataCard.dataProperties.permission || "user",
@@ -48,9 +54,13 @@ const CardUser = (dataCard: CardUserProps) => {
                 <Button
                   labelStyle={styles.btnLabel}
                   style={styles.btnDelete}
-                  onPress={() => handleDeleteUser(dataCard.dataProperties.id)}
+                  onPress={() => handleDeleteUser(dataCard.dataProperties.id,dataCard.returnRoute)}
                 >
-                  <MaterialCommunityIcons name="delete" size={24} color={styleGuide.palette.error} />
+                  <MaterialCommunityIcons
+                    name="delete"
+                    size={24}
+                    color={styleGuide.palette.error}
+                  />
                 </Button>
               </View>
             )}
@@ -70,19 +80,19 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   img: {
     width: 48,
     height: 48,
     borderRadius: 100,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
   },
   defaultIconContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#cccccc',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#cccccc",
     borderRadius: 40,
   },
   userInfo: {
@@ -90,17 +100,16 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   title: {
-    ...styleGuide.typography.h5 as TextStyle,
-    fontWeight: 'bold',
+    ...(styleGuide.typography.h5 as TextStyle),
+    fontWeight: "bold",
     marginBottom: 6,
   },
   btnContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 24,
-
   },
   btnLabel: {
-    ...styleGuide.typography.button as TextStyle,
+    ...(styleGuide.typography.button as TextStyle),
   },
   btnEdit: {},
   btnDelete: {},

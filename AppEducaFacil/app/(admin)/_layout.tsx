@@ -24,13 +24,13 @@ export default function AdminLayout() {
         }}
       />
       <Stack.Screen
-        name="post/form"
+        name="form-post"
         options={{
           header: () => <Header title="Gerir Postagem" showBack />,
         }}
       />
       <Stack.Screen
-        name="user/form"
+        name="form-user"
         options={{
           header: () => <Header title="Gerir Usuário" showBack />,
         }}

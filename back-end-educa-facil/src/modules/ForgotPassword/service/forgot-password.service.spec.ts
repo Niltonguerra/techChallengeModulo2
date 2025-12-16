@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthPasswordService } from './auth-password.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '@modules/user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { EmailService } from '../email/service/email.service';
 import { BadRequestException, Logger } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+
+import { ForgotPasswordService } from './forgot-password.service';
+import { User } from '../../user/entities/user.entity';
+import { EmailService } from '../../email/service/email.service';
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn(),
@@ -33,13 +34,13 @@ const mockConfigService = {
   }),
 };
 
-describe('AuthPasswordService', () => {
-  let service: AuthPasswordService;
+describe('ForgotPasswordService', () => {
+  let service: ForgotPasswordService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        AuthPasswordService,
+        ForgotPasswordService,
         {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository,
@@ -59,7 +60,7 @@ describe('AuthPasswordService', () => {
       ],
     }).compile();
 
-    service = module.get<AuthPasswordService>(AuthPasswordService);
+    service = module.get<ForgotPasswordService>(ForgotPasswordService);
 
     jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
     jest.spyOn(Logger.prototype, 'debug').mockImplementation(() => {});
@@ -94,7 +95,7 @@ describe('AuthPasswordService', () => {
       });
     });
 
-    it('não deve quebrar se o usuário não existir (segurança)', async () => {
+    it('não deve quebrar se o usuário não existir', async () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
       const result = await service.forgotPassword({ email: 'naoexiste@teste.com' });
@@ -137,7 +138,7 @@ describe('AuthPasswordService', () => {
       await expect(service.resetPassword(dto)).rejects.toThrow(BadRequestException);
     });
 
-    it('deve lançar NotFoundException (convertido em BadRequest) se usuário não existir', async () => {
+    it('deve lançar NotFoundException se usuário não existir', async () => {
       mockJwtService.verify.mockReturnValue({ email: 'ghost@teste.com' });
       mockUserRepository.findOne.mockResolvedValue(null);
 

@@ -1,6 +1,6 @@
 import { fitString } from "@/app/helpers/helper-functions";
 import styleGuide from "@/constants/styleGuide";
-import { useDeletePost } from "@/hooks/handleDeletePost/handleDeletePost";
+import { useDeletePost } from "@/hooks/post/handleDeletePost";
 import { CardPostProps } from "@/types/cards";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -21,14 +21,14 @@ const CardPost = (dataCard: CardPostProps) => {
 
   const handleOpenEdit = () => {
     router.push({
-      pathname: "/post/form" as const,
+      pathname: "/(admin)/form-post" as const,
       params: { edit: dataCard.dataProperties.id },
     });
   };
 
   const onDeletePress = async () => {
     try {
-      await handleDeletePost(dataCard.dataProperties.id);
+      await handleDeletePost(dataCard.dataProperties.id, '(admin)/admin-post');
     } catch (error) {
       console.error("Erro ao deletar:", error);
     }

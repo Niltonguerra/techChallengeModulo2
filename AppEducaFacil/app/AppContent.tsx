@@ -16,7 +16,7 @@ export default function AppContent() {
     if (!nav?.key) return;
 
     const currentRoute = pathname;
-    const allowedRoutes = ["/PostDetail","/edit-user-data"];
+    const allowedRoutes = ["/PostDetail","/(admin)/form-user"];
     const isAdmin = user?.permission === "admin";
     const isAdminRoute =
       currentRoute.startsWith("/admin-") ||
@@ -59,7 +59,6 @@ export default function AppContent() {
     }
   }, [isAuthenticated, pathname, user, router]);
 
-  // trying to force it to light theme
   const theme = {
     ...MD3LightTheme,
   };

@@ -1,4 +1,5 @@
 import styleGuide from "@/constants/styleGuide";
+import { useSnackbar } from "@/hooks/snackbar/snackbar";
 import {
     createComment,
     deleteComment,
@@ -48,6 +49,7 @@ export default function PostDetail() {
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const COMMENTS_LIMIT = 10;
+    const { showSnackbar } = useSnackbar();
 
     const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
     const [snackbar, setSnackbar] = useState({

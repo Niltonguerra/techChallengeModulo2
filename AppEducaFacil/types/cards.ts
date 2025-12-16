@@ -1,4 +1,5 @@
 import { Post } from "./post";
+import { UserPermissionEnum } from "./userPermissionEnum";
 
 export type CardPostProps = {
   isEditable: boolean;
@@ -9,11 +10,12 @@ export type CardPostProps = {
 
 export type CardUserProps = {
   isEditable: boolean;
+  returnRoute: string;
   dataProperties: {
     id: string;
     name: string;
     photo: string;
     email: string;
-    permission?: "user" | "admin";
+    permission?: UserPermissionEnum;
   };
 }

@@ -17,6 +17,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { loginSuccess } from "@/store/authSlice";
 import { AppDispatch } from "@/store/store";
 import { RequestUser, ResponseAuthUser } from "@/types/login";
+import { UserPermissionEnum } from "@/types/userPermissionEnum";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -32,7 +33,8 @@ export default function LoginScreen() {
     if (!email || !password) {
       showSnackbar({
         message: "Preencha todos os campos",
-        duration: 3000,
+        duration: 3000, 
+        top: true,
       });
       return;
     }
@@ -46,7 +48,7 @@ export default function LoginScreen() {
         loginSuccess({
           user: {
             ...response.user,
-            permission: response.user.permission === "admin" ? "admin" : "user",
+            permission: response.user.permission === UserPermissionEnum.ADMIN ? UserPermissionEnum.ADMIN : UserPermissionEnum.USER,
           },
           token: response.token,
         })
@@ -60,6 +62,7 @@ export default function LoginScreen() {
       showSnackbar({
         message: err.response?.data?.message || "Usuário ou senha incorretos",
         duration: 3000,
+        top: true,
       });
     } finally {
       setLoading(false);

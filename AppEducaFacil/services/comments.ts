@@ -38,7 +38,6 @@ export const createComment = async (
 ): Promise<Comments> => {
     const api = getApi();
     const response = await api.post<Comments>("/comments", payload);
-    // Converter createdAt para Date
     return response.data;
 };
 
