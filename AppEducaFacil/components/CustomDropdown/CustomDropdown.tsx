@@ -1,4 +1,5 @@
 import styleGuide from "@/constants/styleGuide";
+import { PropsCustomDropdown } from "@/types/CustomDropdown";
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useRef, useState } from "react";
 import {
@@ -14,14 +15,8 @@ import {
 } from "react-native";
 import { Portal } from "react-native-paper";
 
-interface Props {
-    label: string;
-    options: string[];
-    value: string | null;
-    onChange: (value: string | null) => void;
-}
 
-export function CustomDropdown({ label, options, value, onChange }: Props) {
+export function CustomDropdown({ label, options, value, onChange }: PropsCustomDropdown) {
     const [open, setOpen] = useState(false);
     const [inputLayout, setInputLayout] = useState<LayoutRectangle | null>(null);
     const inputRef = useRef<View>(null);
