@@ -16,22 +16,21 @@ import { logout } from "@/store/authSlice";
 import styleGuide from "@/constants/styleGuide";
 import { UserPermissionEnum } from "@/types/userPermissionEnum";
 import { MenuLink, UserModalProps } from "@/types/Menu";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth.user);
 
-  if (!user) return null;
-
-  const links:MenuLink[] = useMemo(() => {
-    const commonLinks:MenuLink[] = [
+  const links: MenuLink[] = useMemo(() => {
+    if (!user) return [];
+    const commonLinks: MenuLink[] = [
       {
         label: "Editar Meu Perfil",
         pathname: "/(admin)/form-user-own-data",
         params: {
-          userId: user.id, 
+          userId: user.id,
           userType: user.permission,
         },
       },
@@ -39,9 +38,15 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
 
     if (user.permission === UserPermissionEnum.ADMIN) {
       return [
-        { label: "Administrador de Professor", pathname: "/(admin)/admin-teacher" },
+        {
+          label: "Administrador de Professor",
+          pathname: "/(admin)/admin-teacher",
+        },
         { label: "Administrador de Aluno", pathname: "/(admin)/admin-student" },
-        { label: "Administrador de Postagens", pathname: "/(admin)/admin-post" },
+        {
+          label: "Administrador de Postagens",
+          pathname: "/(admin)/admin-post",
+        },
         ...commonLinks,
       ];
     }
@@ -51,20 +56,28 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
 
   const handleNavigate = (pathname: string, params?: Record<string, any>) => {
     onClose();
-    router.push({ // @ts-ignore
-      pathname: pathname, 
+    router.push({
+      // @ts-ignore
+      pathname: pathname,
       params: params,
     });
   };
 
   const handleLogout = () => {
-    dispatch(logout());
     onClose();
+    dispatch(logout());
     router.replace("/(auth)/login");
   };
 
+  if (!user) return null;
+
   return (
-    <Modal animationType="fade" transparent visible={visible} onRequestClose={onClose}>
+    <Modal
+      animationType="fade"
+      transparent
+      visible={visible}
+      onRequestClose={onClose}
+    >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
           <TouchableWithoutFeedback>
@@ -73,7 +86,11 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
                 <Image style={styles.avatar} source={{ uri: user.photo }} />
               ) : (
                 <View style={[styles.avatar, styles.defaultIconContainer]}>
-                  <MaterialCommunityIcons name="account" size={32} color="black" />
+                  <MaterialCommunityIcons
+                    name="account"
+                    size={32}
+                    color="black"
+                  />
                 </View>
               )}
 
@@ -100,7 +117,12 @@ export const UserModal: React.FC<UserModalProps> = ({ visible, onClose }) => {
                 style={[styles.optionButton, styles.logoutButton]}
                 onPress={handleLogout}
               >
-                <Text style={[styles.optionText, { color: styleGuide.palette.error }]}>
+                <Text
+                  style={[
+                    styles.optionText,
+                    { color: styleGuide.palette.error },
+                  ]}
+                >
                   Sair
                 </Text>
               </TouchableOpacity>
@@ -134,7 +156,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    maxHeight: "80%", // Garante que não estoure a tela em dispositivos pequenos
+    maxHeight: "80%",
   },
   avatar: {
     width: 90,
@@ -157,7 +179,7 @@ const styles = StyleSheet.create({
   scrollView: {
     width: "100%",
     marginTop: 10,
-    maxHeight: 300, // Limita a altura da lista para não empurrar o botão de sair para fora
+    maxHeight: 300,
   },
   scrollContent: {
     alignItems: "center",
@@ -181,7 +203,11 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     marginTop: 10,
-    padding: 10, // Aumenta a área de toque
+    width: "100%",
+    alignItems: "center",
+    paddingVertical: 14,
+    borderTopWidth: 1,
+    borderColor: styleGuide.palette.main.fourthColor,
   },
   closeText: {
     color: styleGuide.palette.main.primaryColor,
@@ -189,9 +215,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   defaultIconContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#cccccc',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#cccccc",
     borderRadius: 40,
   },
 });
