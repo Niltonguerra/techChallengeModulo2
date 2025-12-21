@@ -70,7 +70,7 @@ export class EmailService {
     try {
       const frontendUrl =
         this.configService.get<string>('AMBIENTE') === 'PROD'
-          ? this.configService.get<string>('FRONTEND_URL_PROD')
+          ? this.configService.get<string>('FRONTEND_URL_RESET_PASSWORD')
           : this.configService.get<string>('FRONTEND_URL_LOCAL');
 
       const link = `${frontendUrl}/reset-password?token=${token}`;
