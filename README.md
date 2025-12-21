@@ -241,6 +241,7 @@ FRONTEND_URL_PROD =https://tech-challenge-modulo2-qcu447prv-niltonguerras-projec
 FRONTEND_URL_PROFESSOR=https://tech-challenge-modulo2-zv8l-gmbfouuf6-niltonguerras-projects.vercel.app
 FRONTEND_URL_MOBILE_LOCAL =http://localhost:8081
 FRONTEND_URL_MOBILE_PROD =http://localhost:8081
+FRONTEND_URL_RESET_PASSWORD=https://recuperar-senha.onrender.com
 ```
 
 ### Variáveis de frontend:
