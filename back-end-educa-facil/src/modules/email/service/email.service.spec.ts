@@ -22,6 +22,7 @@ describe('EmailService', () => {
   let service: EmailService;
   let configService: jest.Mocked<ConfigService>;
   let loggerErrorSpy: jest.SpyInstance;
+  let loggerLogSpy: jest.SpyInstance;
 
   beforeEach(async () => {
     // Mock do ConfigService
@@ -58,6 +59,7 @@ describe('EmailService', () => {
 
     // Mock do logger para evitar poluição no console durante os testes
     loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    loggerLogSpy = jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
 
     // Limpa o mock do resend antes de cada teste
     mockResendSend.mockClear();
@@ -163,7 +165,7 @@ describe('EmailService', () => {
         if (key === 'RESEND_API_KEY') return 're_123';
         if (key === 'AMBIENTE') return 'DEV';
         if (key === 'FRONTEND_URL_LOCAL') return expectedFrontendUrlDev;
-        if (key === 'FRONTEND_URL_PROD') return 'https://prod.com';
+        if (key === 'FRONTEND_URL_RESET_PASSWORD') return 'https://prod-reset.com';
         return '';
       });
     });
@@ -182,13 +184,15 @@ describe('EmailService', () => {
         }),
       );
 
+      expect(loggerLogSpy).toHaveBeenCalledWith(`E-mail de recuperação enviado para ${testEmail}`);
       expect(result).toBe(200);
     });
 
     it('deve montar o link corretamente com URL PROD e enviar o e-mail', async () => {
+      const prodUrl = 'https://reset.meusite.com';
       configService.get.mockImplementation((key: string) => {
         if (key === 'AMBIENTE') return 'PROD';
-        if (key === 'FRONTEND_URL_PROD') return 'https://meusite.com';
+        if (key === 'FRONTEND_URL_RESET_PASSWORD') return prodUrl;
         if (key === 'EMAIL_USER') return 'test@gmail.com';
         if (key === 'RESEND_API_KEY') return 're_123';
         return '';
@@ -203,7 +207,8 @@ describe('EmailService', () => {
           html: expect.stringContaining('https://meusite.com?token='),
         }),
       );
-      //
+     
+
       expect(result).toBe(200);
     });
 
@@ -214,7 +219,7 @@ describe('EmailService', () => {
 
       expect(result).toBe(400);
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Erro ao enviar e-mail de recuperação:'),
+        'Erro ao enviar e-mail de recuperação: SMTP Error',
       );
     });
   });

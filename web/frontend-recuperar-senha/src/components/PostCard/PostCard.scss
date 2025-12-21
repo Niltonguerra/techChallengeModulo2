@@ -1,0 +1,195 @@
+.post-card {
+  width: 100%;
+  max-width: 600px;
+  background: var(--background-paper);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  height: 100%;
+  position: relative;
+
+  .post-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .post-content {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+
+    h3 {
+      font-family: 'Inter', sans-serif;
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-lg);
+      margin-bottom: var(--spacing-sm);
+      color: var(--text-primary);
+    }
+
+    .post-description {
+      font-family: 'Inter', sans-serif;
+      font-weight: var(--font-weight-normal);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .post-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      margin-bottom: 8%;
+
+      .category {
+        background: var(--primary-light);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        font-size: var(--font-size-xs);
+        font-family: 'Inter', sans-serif;
+        font-weight: var(--font-weight-normal);
+        color: var(--secondary-contrast);
+
+        &.more {
+          background: var(--primary-main);
+          color: var(--secondary-contrast);
+          cursor: pointer;
+        }
+      }
+    }
+
+    .post-content-footer {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      margin-top: auto;
+      padding-top: 8px;
+
+      .post-author,
+      .post-date {
+        font-family: 'Inter', sans-serif;
+        font-weight: var(--font-weight-normal);
+        font-size: var(--font-size-xs);
+        color: var(--text-secondary);
+      }
+
+      .post-date {
+        padding-bottom: 8px;
+      }
+
+      .post-btn {
+        font-family: 'Inter', sans-serif;
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-md);
+        display: inline-block;
+        background: var(--secondary-main);
+        color: var(--primary-contrast);
+        text-align: center;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        margin-top: var(--spacing-xs);
+
+        &:hover {
+          background: var(--secondary-dark);
+        }
+      }
+    }
+  }
+}
+
+.admin-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+
+  .menu-toggle {
+    background: var(--secondary-main);;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--secondary-main);;
+    }
+  }
+
+  .menu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 20;
+
+    li {
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+
+      &:hover {
+        background: #f5f5f5;
+      }
+    }
+  }
+}
+
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .post-card {
+    .post-content {
+      padding: var(--spacing-md);
+
+      h3 {
+        margin-bottom: var(--spacing-md);
+      }
+
+      .post-description {
+        margin-bottom: var(--spacing-sm);
+      }
+    }
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .post-card {
+    .post-content {
+      padding: var(--spacing-sm);
+
+      h3 {
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .post-description {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .post-categories {
+        gap: var(--spacing-xs);
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .post-btn {
+        margin-top: var(--spacing-sm);
+        padding: var(--spacing-xs) var(--spacing-md);
+      }
+    }
+  }
+}

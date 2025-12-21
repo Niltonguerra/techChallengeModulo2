@@ -1,0 +1,76 @@
+import { useEffect, useState } from "react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Autoplay, Keyboard, Mousewheel, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Post } from "../../types/post";
+import PostModal from "../PostModal/PostModal";
+import "./Carousel.scss";
+import { usePosts } from "../../store/post";
+
+
+export default function Carrosel () {
+  
+  const [open, setOpen] = useState(false);
+  const [ recentPosts, setRecentPosts ] = useState<Post[]>([]);
+  const { posts } = usePosts();
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  // getting just the most recent posts for the carousel
+  useEffect(() => {
+    if(!posts || recentPosts.length) return;
+    setRecentPosts(posts.slice(0, 5));
+  }, [posts, recentPosts.length]);
+
+  const handleOpen = (post: Post) => {
+    setSelectedPost(post);
+    setOpen(true);
+  };
+  return (
+    <>
+      <div className="carrosel-container">
+        <Swiper
+          cssMode={true}
+          navigation={true}
+          pagination={{ clickable: true }}
+          mousewheel={true}
+          keyboard={true}
+          autoplay={{ delay: 5000 }}
+          loop={true}
+          modules={[Navigation, Pagination, Mousewheel, Keyboard, Autoplay]}
+          className="mySwiper"
+        >
+          {recentPosts.slice(0, 5).map((post) => (
+            <SwiperSlide key={post.id}>
+              <div
+                className="slide-content"
+                style={{ backgroundImage: `url("${post.image}")` }}
+              >
+                <div className="slide-overlay">
+                  <div className="slide-title">
+                    <h2>{post.title}</h2>
+                    <p>{post.introduction}</p>
+                    <button
+                      className="btn-slide"
+                      onClick={() => handleOpen(post)}
+                    >
+                      Ir para Atividade
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+      {selectedPost && (
+        <PostModal
+          open={open}
+          onClose={() => setOpen(false)}
+          initialValues={selectedPost}
+        />
+      )}
+    </>
+  );
+}
