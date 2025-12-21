@@ -73,7 +73,7 @@ export class EmailService {
           ? this.configService.get<string>('FRONTEND_URL_PROD')
           : this.configService.get<string>('FRONTEND_URL_LOCAL');
 
-      const link = `${frontendUrl}/reset-password?token=${token}`;
+      const link = `${frontendUrl}?token=${token}`;
 
       const mailOptions: SendEmailDTO = {
         from: this.configService.get<string>('EMAIL_USER', ''),
