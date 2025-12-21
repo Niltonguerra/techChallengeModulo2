@@ -157,7 +157,7 @@ describe('EmailService', () => {
     const testName = 'User Test';
     const testToken = 'fake-jwt-token';
     const expectedFrontendUrlDev = 'http://localhost:5173';
-    const expectedLinkDev = `${expectedFrontendUrlDev}/reset-password?token=${testToken}`;
+    const expectedLinkDev = `${expectedFrontendUrlDev}?token=${testToken}`;
 
     beforeEach(() => {
       configService.get.mockImplementation((key: string) => {
@@ -204,7 +204,7 @@ describe('EmailService', () => {
 
       expect(mockResendSend).toHaveBeenCalledWith(
         expect.objectContaining({
-          html: expect.stringContaining(`${prodUrl}/reset-password?token=${testToken}`),
+          html: expect.stringContaining(`${prodUrl}?token=${testToken}`),
         }),
       );
       expect(loggerLogSpy).toHaveBeenCalledWith(`E-mail de recuperação enviado para ${testEmail}`);
