@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { View, Image } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { TextInput, Button, IconButton, Text, HelperText } from "react-native-paper";
+import {
+  TextInput,
+  Button,
+  IconButton,
+  Text,
+  HelperText,
+} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { Chip } from 'react-native-paper';
-
+import { Chip } from "react-native-paper";
 
 import type { FormPostProps } from "@/types/postForm";
 
@@ -36,7 +41,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   let auxScreenWidth = window.innerWidth;
 
   const [imageUri, setImageUri] = useState<File | string | null>(null);
-  const [photoAsset, setPhotoAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [photoAsset, setPhotoAsset] =
+    useState<ImagePicker.ImagePickerAsset | null>(null);
 
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [hashtagOptions, setHashtagOptions] = useState<string[]>();
@@ -79,13 +85,14 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
             });
             setLoading(false);
           } else {
-            showSnackbar({message: "Ocorreu um erro ao enviar o formulário."});
-
+            showSnackbar({
+              message: "Ocorreu um erro ao enviar o formulário.",
+            });
           }
         })
         .catch((err) => {
           console.error("err getting post data:", err);
-          showSnackbar({message: "Ocorreu um erro ao enviar o formulário."});
+          showSnackbar({ message: "Ocorreu um erro ao enviar o formulário." });
         });
     } else {
       setLoading(false);
@@ -103,7 +110,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       });
   }, []);
 
-
   const [externalLinks, setExternalLinks] = useState<
     { name: string; url: string }[]
   >(() => {
@@ -116,14 +122,17 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       const permission =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (permission.status !== "granted") {
-        showSnackbar({message: "Permission to access the photo library is required to select an image."});
+        showSnackbar({
+          message:
+            "Permission to access the photo library is required to select an image.",
+        });
         return;
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.7, 
+        quality: 0.7,
       });
 
       if (result.canceled || !result.assets?.length) return;
@@ -151,38 +160,38 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     setExternalLinks((prevLinks) => prevLinks.filter((_, i) => i !== index));
   };
 
-  const standardizeTagName= (t: string) => {
-    const s = t.trim().replace(/\s+/g, '-'); 
-    if (!s) return '';
-    const prefixed = s.startsWith('#') ? s : `#${s}`;
+  const standardizeTagName = (t: string) => {
+    const s = t.trim().replace(/\s+/g, "-");
+    if (!s) return "";
+    const prefixed = s.startsWith("#") ? s : `#${s}`;
     return prefixed.toLowerCase();
   };
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   // dynamic heights
   const [titleHeight, setTitleHeight] = useState(0);
   const [introHeight, setIntroHeight] = useState(0);
 
+  const [descHeight, setDescHeight] = useState(0);
+
   const filteredOptions = (hashtagOptions ?? [])
-    .filter(o =>
-      o.toLowerCase().includes(query.trim().toLowerCase())
-    )
-    .filter(o => !hashtags.some(h => h.toLowerCase() === o.toLowerCase()))
+    .filter((o) => o.toLowerCase().includes(query.trim().toLowerCase()))
+    .filter((o) => !hashtags.some((h) => h.toLowerCase() === o.toLowerCase()))
     .slice(0, 8);
 
   const addTypedHashtag = (text: string) => {
     const tag = standardizeTagName(text);
     if (!tag) return;
-    if (hashtags.some(h => h.toLowerCase() === tag.toLowerCase())) return;
+    if (hashtags.some((h) => h.toLowerCase() === tag.toLowerCase())) return;
 
-    setHashtags(prev => [...prev, tag]);
+    setHashtags((prev) => [...prev, tag]);
 
-    setQuery('');
+    setQuery("");
   };
 
   const verifyLinks = (): boolean => {
     const auxLinkNames = new Set<string>();
-    let auxCount = 0;    
+    let auxCount = 0;
     let auxLinkErrors: string[] = [];
     let anyError = false;
     for (const externalLink of externalLinks) {
@@ -210,7 +219,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       auxCount++;
       auxLinkNames.add(externalLink.name);
     }
-    if(anyError) {
+    if (anyError) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         links: auxLinkErrors,
@@ -220,7 +229,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     return !anyError;
   };
 
-   const validate = (): boolean => {
+  const validate = (): boolean => {
     const linksOk = verifyLinks();
     if (!linksOk) return false;
 
@@ -271,7 +280,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     } else {
       for (const tag of hashtags) {
         if (typeof tag !== "string" || tag.trim() === "") {
-          newErrors.content_hashtags = "Todas as hashtags de conteúdo devem ser válidas.";
+          newErrors.content_hashtags =
+            "Todas as hashtags de conteúdo devem ser válidas.";
           break;
         }
       }
@@ -308,47 +318,57 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       content_hashtags: hashtags,
     };
 
-    if(photoAsset) {
+    if (photoAsset) {
       try {
         const cdn = await imgbbUmaImagem(photoAsset);
         payload.image = cdn.data?.url || cdn.data?.display_url;
       } catch {
-        showSnackbar({message: "Erro ao fazer upload da imagem! Favor contactar o suporte."});
+        showSnackbar({
+          message: "Erro ao fazer upload da imagem! Favor contactar o suporte.",
+        });
         return;
       }
     }
-    
 
     const actionFunction = postId ? updatePost : createPost;
 
     actionFunction(postId ? { id: postId, ...payload } : payload)
       .then((response) => {
-        showSnackbar({message: `Post ${postId ? "atualizado" : "criado"} com sucesso!`});
+        showSnackbar({
+          message: `Post ${postId ? "atualizado" : "criado"} com sucesso!`,
+        });
         if (afterSubmit) afterSubmit();
       })
       .catch((error) => {
         console.error("Error submitting post:", error);
-        showSnackbar({message: `Houve um erro ao ${postId ? "atualizar" : "criar"} o post. Por favor, tente novamente.`});
-      }).finally(() => {
+        showSnackbar({
+          message: `Houve um erro ao ${
+            postId ? "atualizar" : "criar"
+          } o post. Por favor, tente novamente.`,
+        });
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
 
-  if(loading) {
-    return <Loading loadingText={postId ? 'Carregando dados...' : 'Carregando...'} />;
+  if (loading) {
+    return (
+      <Loading loadingText={postId ? "Carregando dados..." : "Carregando..."} />
+    );
   }
 
   return (
-     <KeyboardAwareScrollView
-    style={{ flex: 1 }}
-    contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
-    enableOnAndroid={true}
-    keyboardOpeningTime={0}
-    extraScrollHeight={45}
-    enableAutomaticScroll
-    showsVerticalScrollIndicator={false}
-    keyboardShouldPersistTaps="handled"
-  >
+    <KeyboardAwareScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+      enableOnAndroid={true}
+      keyboardOpeningTime={0}
+      extraScrollHeight={45}
+      enableAutomaticScroll
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+    >
       <View style={styles.imagePickerSection}>
         {imageUri && (
           <Image
@@ -478,7 +498,14 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       {/* hashtags (select/autocomplete and free text) */}
       <View style={styles.hashtagContainer}>
         <Text style={{ marginBottom: 4, fontWeight: "bold" }}>Hashtags*</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8, width: auxScreenWidth * 0.92 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            marginBottom: 8,
+            width: auxScreenWidth * 0.92,
+          }}
+        >
           {hashtags.map((tag, idx) => (
             <Chip
               key={tag + idx}
@@ -496,11 +523,16 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={(e) => addTypedHashtag(e.nativeEvent.text)}
-          style={[styles.input, { width: auxScreenWidth * 0.92, flexShrink: 1 }]}
+          style={[
+            styles.input,
+            { width: auxScreenWidth * 0.92, flexShrink: 1 },
+          ]}
           returnKeyType="done"
         />
         {filteredOptions.length > 0 && (
-          <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8 }}>
+          <View
+            style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 8 }}
+          >
             {filteredOptions.map((option, idx) => (
               <Chip
                 key={option + idx}
@@ -534,16 +566,24 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
           setDescription(text);
         }}
         mode="outlined"
-        style={styles.descriptionInput}
-        multiline
-        numberOfLines={4}
+        style={[styles.descriptionInput, { height: Math.max(56, descHeight) }]}
+        multiline={true}
+        onContentSizeChange={(e) =>
+          setDescHeight(e.nativeEvent.contentSize.height)
+        }
       />
       {errors.description && (
         <HelperText type="error" style={styles.errorText} visible>
           {errors.description}
         </HelperText>
       )}
-      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 16 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 16,
+        }}
+      >
         <Button
           mode="contained"
           onPress={() => router.back()}
