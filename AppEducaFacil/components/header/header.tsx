@@ -29,7 +29,7 @@ const Header = ({ title, subtitle, showBack }: HeaderPropsComponent) => {
       style={[
         styles.container,
         {
-          paddingTop: insets.top + (Platform.OS === "android" ? 22 : 28),
+          paddingTop: insets.top + (Platform.OS === "android" ? 20 : 10),
         },
       ]}
     >
@@ -39,7 +39,7 @@ const Header = ({ title, subtitle, showBack }: HeaderPropsComponent) => {
             <MaterialIcons
               testID="header-back-button"
               name="arrow-back-ios"
-              size={30}
+              size={28}
               color={styleGuide.palette.main.fourthColor}
             />
           </TouchableOpacity>
@@ -51,7 +51,7 @@ const Header = ({ title, subtitle, showBack }: HeaderPropsComponent) => {
           testID="header-title"
           accessibilityLabel="header-title"
           style={styles.title}
-          numberOfLines={1}
+          numberOfLines={2}
           ellipsizeMode="tail"
         >
           {title && title.trim().length > 0 ? title : "Educafácil"}
@@ -72,11 +72,10 @@ const Header = ({ title, subtitle, showBack }: HeaderPropsComponent) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: styleGuide.palette.main.primaryColor,
-    paddingHorizontal: 18,
-    height: Platform.OS === "android" ? 100 : 140,
+    paddingHorizontal: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: styleGuide.palette.light.primaryLightColor,
   },
