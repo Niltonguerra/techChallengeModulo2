@@ -51,7 +51,7 @@ export function useUserForm({ userId, userType, userData,returnRoute }: UseUserF
       const response = await (isEditing ? EditUser({ ...apiPayload, id: userId }) : createUser(apiPayload));
 
       if ([200, 201].includes(response.statusCode)) {
-        showSnackbar({ message: isEditing ? 'Atualizado com sucesso' : 'Cadastrado com sucesso, por favor valide seu email por favor' });
+        showSnackbar({ message: isEditing ? 'Atualizado com sucesso' : 'Cadastrado com sucesso, informe o usuário para que valide seu email' });
         if(returnRoute) {
           router.push({// @ts-ignore 
           pathname: returnRoute
