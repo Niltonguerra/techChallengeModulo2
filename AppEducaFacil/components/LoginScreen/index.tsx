@@ -33,7 +33,7 @@ export default function LoginScreen() {
     if (!email || !password) {
       showSnackbar({
         message: "Preencha todos os campos",
-        duration: 3000, 
+        duration: 3000,
         top: true,
         noHeader: true,
       });
@@ -94,14 +94,10 @@ export default function LoginScreen() {
           placeholder="Digite aqui a sua senha*"
           value={password}
           onChangeText={setPassword}
-
           secureTextEntry={!showPassword}
-
-          keyboardType="visible-password"
-          autoComplete="off"
-          importantForAutofill="no"
+          autoCapitalize="none"
           autoCorrect={false}
-          textContentType="none"
+          textContentType="password"
           placeholderTextColor={styleGuide.palette.main.textSecondaryColor}
         />
         <TouchableOpacity
