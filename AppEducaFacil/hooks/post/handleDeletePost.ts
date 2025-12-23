@@ -27,8 +27,6 @@ export function useDeletePost() {
       } catch {
         showSnackbar({ message: 'Erro ao deletar a postagem!', duration: 3000 });
       }
-    } else {
-      showSnackbar({ message: 'Ação cancelada', duration: 3000 });
     }
   };
   

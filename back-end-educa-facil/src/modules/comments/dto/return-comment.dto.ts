@@ -8,7 +8,7 @@ export class UserSummaryDTO {
   name: string;
 
   @ApiProperty()
-  photo: string;
+  photo: string | null;
 }
 
 export class ListCommentDTO {

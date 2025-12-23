@@ -29,7 +29,7 @@ const CardUser = (dataCard: CardUserProps) => {
           )}
 
           <View style={styles.userInfo}>
-            <Text style={styles.title}>{dataCard.dataProperties.photo}</Text>
+            <Text style={styles.title}>{dataCard.dataProperties.name}</Text>
             <Text style={styles.title}>{dataCard.dataProperties.email}</Text>
             {dataCard.isEditable && (
               <View style={styles.btnContainer}>

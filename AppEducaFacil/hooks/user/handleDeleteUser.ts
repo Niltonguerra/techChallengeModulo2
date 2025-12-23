@@ -27,8 +27,6 @@ export function useDeleteUser() {
       } catch {
         showSnackbar({ message: 'Erro ao deletar o usuário!', duration: 3000 });
       }
-    } else {
-      showSnackbar({ message: 'Ação cancelada', duration: 3000 });
     }
   };
   
