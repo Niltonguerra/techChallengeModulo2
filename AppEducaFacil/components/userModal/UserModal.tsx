@@ -199,10 +199,8 @@ const styles = StyleSheet.create({
   logoutButton: {
     borderColor: styleGuide.palette.main.fourthColor,
     borderTopWidth: 1,
-    marginTop: 5,
   },
   closeButton: {
-    marginTop: 10,
     width: "100%",
     alignItems: "center",
     paddingVertical: 14,
