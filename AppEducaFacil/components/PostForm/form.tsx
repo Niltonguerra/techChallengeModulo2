@@ -244,14 +244,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       const t = s.trim();
       return t.length >= min && t.length <= max;
     };
-    const isUrl = (v: string) => {
-      try {
-        const u = new URL(v);
-        return !!u.protocol && !!u.host;
-      } catch {
-        return false;
-      }
-    };
 
     if (!title) {
       newErrors.title = "O campo Título é obrigatório.";
@@ -261,8 +253,6 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
 
     if (!description) {
       newErrors.description = "O campo Descrição é obrigatório.";
-    } else if (!withingLen(description, 50, 500)) {
-      newErrors.description = "A Descrição deve ter entre 50 e 500 caracteres.";
     }
 
     if (introduction != null && introduction !== "") {
@@ -332,7 +322,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
     const actionFunction = postId ? updatePost : createPost;
 
     actionFunction(postId ? { id: postId, ...payload } : payload)
-      .then((response) => {
+      .then(() => {
         showSnackbar({
           message: `Post ${postId ? "atualizado" : "criado"} com sucesso!`,
         });
