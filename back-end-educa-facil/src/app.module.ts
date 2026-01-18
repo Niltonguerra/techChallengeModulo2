@@ -9,6 +9,11 @@ import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { QuestionModule } from './modules/question/question.module';
+import { SchoolSubjectModule } from './modules/school_subject/school_subject.module';
+import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
+import { Question } from '@modules/question/entities/question.entity';
+import { Conversation } from '@modules/question/entities/conversation.entity';
 
 @Module({
   imports: [
@@ -34,7 +39,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             },
             extra: { ssl: { rejectUnauthorized: false } },
             family: 4,
-            entities: [Post, User, Comments],
+            entities: [Post, User, Comments, SchoolSubject, Question, Conversation],
           };
         } else {
           return {
@@ -46,7 +51,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             database: config.get<string>('DB_DATABASE_DEV'),
             autoLoadEntities: true,
             synchronize: true,
-            entities: [Post, User, Comments],
+            entities: [Post, User, Comments, SchoolSubject, Question, Conversation],
             ssl: {
               rejectUnauthorized: false,
             },
@@ -59,6 +64,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     AuthModule,
     EmailModule,
     CommentsModule,
+    QuestionModule,
+    SchoolSubjectModule,
   ],
 })
 export class AppModule {}
