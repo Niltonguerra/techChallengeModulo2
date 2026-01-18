@@ -4,12 +4,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserPermissionEnum } from '../../auth/Enum/permission.enum';
 import { UserStatusEnum } from '../enum/status.enum';
+import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
+import { Question } from '@modules/question/entities/question.entity';
 
 @Entity({
   name: 'User',
@@ -73,4 +77,21 @@ export class User {
 
   @OneToMany(() => Comments, (comment) => comment.post)
   comments: Comment[];
+
+  @ManyToMany(() => SchoolSubject, (school_subject) => school_subject.users)
+  @JoinTable({
+    name: 'user_school_subjects',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'school_subject_id',
+      referencedColumnName: 'id',
+    },
+  })
+  school_subjects: SchoolSubject[];
+
+  @ManyToMany(() => Question, (question) => question.users)
+  questions: Question[];
 }

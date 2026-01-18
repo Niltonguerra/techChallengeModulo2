@@ -9,6 +9,8 @@ import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { QuestionModule } from './modules/question/question.module';
+import { SchoolSubjectModule } from './modules/school_subject/school_subject.module';
 
 @Module({
   imports: [
@@ -59,6 +61,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     AuthModule,
     EmailModule,
     CommentsModule,
+    QuestionModule,
+    SchoolSubjectModule,
   ],
 })
 export class AppModule {}
