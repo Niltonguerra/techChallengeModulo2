@@ -17,6 +17,8 @@ export const mockUser: User = {
   permission: UserPermissionEnum.USER,
   posts: [],
   comments: [],
+  school_subjects: [],
+  questions: [],
 };
 
 export const mockPost: Post = {
