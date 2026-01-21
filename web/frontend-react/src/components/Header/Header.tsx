@@ -32,34 +32,34 @@ const Header: React.FC<HeaderProps> = ({
     handleUserMenuClose();
     onLogout?.();
   }, [handleUserMenuClose, onLogout]);
-  
+
   const handleAdmin = useCallback(() => {
-  handleUserMenuClose();
-  navigate('/admin');
+    handleUserMenuClose();
+    navigate('/admin');
   }, [handleUserMenuClose]);
- 
+
 
   return (
     <AppBar position="static" className="header">
       <Toolbar className="header__toolbar">
-    
+
         <Box className="header__logo">
           <img src="/logo.png" alt={HEADER_TEXTS.logoAlt} className="header__logo-image" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
           <Typography variant="h6" className="header__logo-text">{HEADER_TEXTS.logoText}</Typography>
         </Box>
-     
+
         <Box className="header__user-section">
-   
+
           {isLoggedIn && user ? (
             <Box className="header__user-logged">
               <Button className="header__user-button" onClick={handleUserMenuClick} startIcon={
                 <Avatar src={user.photo} alt={`Avatar de ${user.name}`} className="header__user-avatar">
-               
+
                   {user.name?.charAt(0).toUpperCase() || 'U'}
                 </Avatar>
               } endIcon={<KeyboardArrowDown />}>
                 <Box className="header__user-info">
-              
+
                   <Typography variant="body2" className="header__user-name">{user.name}</Typography>
                   <Typography variant="caption" className="header__user-email">{user.email}</Typography>
                 </Box>
@@ -80,7 +80,7 @@ const Header: React.FC<HeaderProps> = ({
             </Box>
           ) : (
             <Box className="header__user-not-logged">
-            
+
               <Button variant="outlined" className="header__login-button">
                 <Link to="/login" style={{ textDecoration: 'none', color: 'inherit' }}>
                   {HEADER_TEXTS.loginButton}

@@ -19,8 +19,7 @@ export default {
       supportsTablet: true
     },
     android: {
-      // ADICIONE ESTA LINHA ABAIXO:
-      package: "com.niltonguerra.appeducafacil", 
+      package: "com.niltonguerra.appeducafacil",
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
