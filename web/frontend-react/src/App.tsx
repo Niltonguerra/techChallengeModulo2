@@ -29,6 +29,7 @@ import { CreateEditUserFormPage } from './pages/createUserForm/CreateUserForm';
 import Home from './pages/home/Home';
 import ResetPassword from './pages/resetPassword/ResetPassword';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordForm';
+import { DropdownPlayground } from './pages/temp-componet/DropdownPlayground';
 
 function App() {
   const dispatch = useDispatch();
@@ -85,6 +86,8 @@ function App() {
           <Route path="/styleGuide" element={<TypographyShowcase />} />
           <Route path="/search" element={<SearchPost />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+          {/* TODO: PAGINA SOMENTE DE TESTE DEPOIS DELETAR */}
+          <Route path="/playground/dropdown" element={<DropdownPlayground />} />
         </Routes>
       </main>
       <Footer />

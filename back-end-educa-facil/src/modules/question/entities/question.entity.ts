@@ -1,6 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '@modules/user/entities/user.entity';
 import { Conversation } from './conversation.entity';
+import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
 
 @Entity({
   name: 'question',
@@ -37,11 +38,19 @@ export class Question {
   })
   users: User[];
 
-  @Column({
-    name: 'id_school_subject',
-    type: 'varchar',
+  @ManyToMany(() => SchoolSubject, (subject) => subject.questions)
+  @JoinTable({
+    name: 'question_school_subjects',
+    joinColumn: {
+      name: 'question_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'school_subject_id',
+      referencedColumnName: 'id',
+    },
   })
-  id_school_subject: string;
+  school_subjects: SchoolSubject[];
 
   @OneToOne(() => Conversation, (conversation) => conversation.question)
   conversation: Conversation;

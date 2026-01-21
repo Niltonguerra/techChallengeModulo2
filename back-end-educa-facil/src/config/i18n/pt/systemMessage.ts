@@ -53,5 +53,6 @@ export const systemMessage: SystemMessageType = {
     successDeleteComment: 'Comentário deletado com sucesso',
     errorCommentNotFound: 'Comentário não encontrado no banco de dados',
     successCreatedComment: 'Comentário criado com sucesso',
+    errorGetDropdown: 'Erro ao retornar valores dropown',
   },
 };
