@@ -29,8 +29,6 @@ import { CreateEditUserFormPage } from './pages/createUserForm/CreateUserForm';
 import Home from './pages/home/Home';
 import ResetPassword from './pages/resetPassword/ResetPassword';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordForm';
-import ChatMessage from './components/Message/ChatMessage';
-import Conversation from './components/Conversation/Conversation';
 
 function App() {
   const dispatch = useDispatch();
@@ -49,25 +47,6 @@ function App() {
   const handleNavigate = (path: string) => {
     navigate(path);
   };
-  //<< also undo before deploy
-
-  return (
-    <Conversation onConcludeConversation={() => {}} questionId='123523513'/>
-  )
-
-  //<< undo before deploy
-  return (
-    <div>
-      <ChatMessage content="Hello, this is a test message!" isUserTheAuthor={true} authorName="João da Silva" createdAt={new Date()} />
-      <ChatMessage content="This is a test message!
-This is a test message!
-      This is a test message! This is a test message!
-This is a test message!This is a test message!" isUserTheAuthor={true} authorName="João da Silva" createdAt={new Date()} />
-      <ChatMessage content="Vc me chamou de que" isUserTheAuthor={false} authorName="Pedro Rocha" createdAt={new Date()} />
-      <ChatMessage content="Hello, this is a test message!" isUserTheAuthor={true} authorName="João da Silva" createdAt={new Date()} />
-      <ChatMessage content="Fala português alienigenaFala português alienigenaFala português alienigenaFala português alienigenaFala português alienigenaFala português alienigena" isUserTheAuthor={false} authorName="Pedro Rocha" createdAt={new Date()} />
-    </div>
-  )
 
   return (
     <>
