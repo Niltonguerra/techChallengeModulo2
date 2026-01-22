@@ -1,14 +1,5 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from './question.entity';
-import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
 
 @Entity({
   name: 'conversation',
@@ -36,20 +27,6 @@ export class Conversation {
     name: 'question_id',
   })
   question: Question;
-
-  @ManyToMany(() => SchoolSubject, (school_subject) => school_subject.conversations)
-  @JoinTable({
-    name: 'conversation_school_subjects',
-    joinColumn: {
-      name: 'conversation_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'school_subject_id',
-      referencedColumnName: 'id',
-    },
-  })
-  school_subjects: SchoolSubject[];
 
   @Column({
     name: 'created_at',

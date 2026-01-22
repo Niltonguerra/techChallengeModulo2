@@ -29,6 +29,7 @@ import { CreateEditUserFormPage } from './pages/createUserForm/CreateUserForm';
 import Home from './pages/home/Home';
 import ResetPassword from './pages/resetPassword/ResetPassword';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordForm';
+import { DropdownPlayground } from './pages/temp-componet/DropdownPlayground';
 import { CreateQuestionPageForm } from './pages/createQuestionForm/CreateQuestionForm';
 import Question from './pages/Question/Question';
 
@@ -89,6 +90,8 @@ function App() {
           <Route path="/styleGuide" element={<TypographyShowcase />} />
           <Route path="/search" element={<SearchPost />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+          {/* TODO: PAGINA SOMENTE DE TESTE DEPOIS DELETAR */}
+          <Route path="/playground/dropdown" element={<DropdownPlayground />} />
         </Routes>
       </main>
       <Footer />

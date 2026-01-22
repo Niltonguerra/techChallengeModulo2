@@ -1,28 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSchoolSubjectDto } from './dto/create-school_subject.dto';
-import { UpdateSchoolSubjectDto } from './dto/update-school_subject.dto';
+import { SchoolSubject } from './entities/school_subject.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { SchoolSubjectDropdownDto } from './dto/get-shcool_subject.dto';
 
 @Injectable()
 export class SchoolSubjectService {
-  create(createSchoolSubjectDto: CreateSchoolSubjectDto) {
-    console.log(createSchoolSubjectDto);
-    return 'This action adds a new schoolSubject';
-  }
+  constructor(
+    @InjectRepository(SchoolSubject)
+    private readonly schoolSubjectRepository: Repository<SchoolSubject>,
+  ) {}
 
-  findAll() {
-    return `This action returns all schoolSubject`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} schoolSubject`;
-  }
-
-  update(id: number, updateSchoolSubjectDto: UpdateSchoolSubjectDto) {
-    console.log(updateSchoolSubjectDto);
-    return `This action updates a #${id} schoolSubject`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} schoolSubject`;
+  async getSubjectsForDropdown(): Promise<SchoolSubjectDropdownDto[]> {
+    return await this.schoolSubjectRepository
+      .createQueryBuilder('subject')
+      .innerJoin('subject.questions', 'question')
+      .select(['DISTINCT ON (subject.id) subject.id AS value', 'subject.name AS label'])
+      .orderBy('subject.id')
+      .addOrderBy('LOWER(subject.name)', 'ASC')
+      .getRawMany<SchoolSubjectDropdownDto>();
   }
 }

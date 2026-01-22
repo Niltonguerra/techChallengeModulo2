@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateQuestionDto {
   @ApiProperty()
@@ -12,10 +12,10 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   description: string;
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  tags: string;
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @IsUUID('4', { each: true })
+  tags: string[];
 
   @ApiProperty()
   @IsString()

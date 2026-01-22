@@ -49,5 +49,6 @@ export type SystemMessageType = {
     errorCommentNotFound: string;
     successCreatedComment: string;
     errorPostNotFound: string;
+    errorGetDropdown: string;
   };
 };
