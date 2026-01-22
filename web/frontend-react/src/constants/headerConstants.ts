@@ -15,9 +15,21 @@ import {
 import type { NavigationItem, UserMenuItem } from '../types/header-types';
 
 export const NAVIGATION_ITEMS: NavigationItem[] = [
-  { label: 'Português', icon: React.createElement(MenuBook), path: '/portugues' },
-  { label: 'Matemática', icon: React.createElement(Calculate), path: '/matematica' },
-  { label: 'História', icon: React.createElement(HistoryEdu), path: '/historia' },
+  {
+    label: 'Português',
+    icon: React.createElement(MenuBook),
+    path: '/portugues',
+  },
+  {
+    label: 'Matemática',
+    icon: React.createElement(Calculate),
+    path: '/matematica',
+  },
+  {
+    label: 'História',
+    icon: React.createElement(HistoryEdu),
+    path: '/historia',
+  },
   { label: 'Geografia', icon: React.createElement(Public), path: '/geografia' },
   { label: 'Biologia', icon: React.createElement(Biotech), path: '/biologia' },
   { label: 'Física', icon: React.createElement(Science), path: '/fisica' },
@@ -26,20 +38,21 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   { label: 'Artes', icon: React.createElement(Palette), path: '/artes' },
 ];
 
-
-export const createUserMenuItems = (onProfileClick: () => void, onSettingsClick: () => void): UserMenuItem[] => [
-  { 
-    label: 'Meu Perfil', 
-    icon: React.createElement(Person), 
-    action: onProfileClick 
+export const createUserMenuItems = (
+  onProfileClick: () => void,
+  onSettingsClick: () => void
+): UserMenuItem[] => [
+  {
+    label: 'Meu Perfil',
+    icon: React.createElement(Person),
+    action: onProfileClick,
   },
-  { 
-    label: 'Configurações', 
-    icon: React.createElement(Settings), 
-    action: onSettingsClick 
+  {
+    label: 'Configurações',
+    icon: React.createElement(Settings),
+    action: onSettingsClick,
   },
 ];
-
 
 export const MENU_CONFIG = {
   navigation: {
@@ -51,7 +64,6 @@ export const MENU_CONFIG = {
     buttonId: 'user-button',
   },
 } as const;
-
 
 export const DEFAULT_USER = {
   name: 'Usuário',
@@ -66,5 +78,6 @@ export const HEADER_TEXTS = {
   searchButton: 'Buscar',
   loginButton: 'Entrar',
   logoutButton: 'Sair',
-  AdminButton: 'acessar admin',
+  AdminButton: 'Acessar Admin',
+  faqButton: 'Minhas Dúvidas',
 } as const;
