@@ -43,7 +43,7 @@ describe('QuestionController', () => {
       const dto: CreateQuestionDto = {
         title: 'Test',
         description: 'Desc',
-        tags: 'Tag',
+        tags: ['dsdsd123'],
         author_id: '123',
       };
       const expectedResult = { statusCode: 201, message: 'Created' };

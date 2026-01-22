@@ -53,7 +53,7 @@ describe('QuestionService', () => {
     const createQuestionDto: CreateQuestionDto = {
       title: 'Test Question',
       description: 'Test Description',
-      tags: 'Math',
+      tags: ['ridfeh347983'],
       author_id: 'user-id',
     };
 
