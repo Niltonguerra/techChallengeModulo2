@@ -6,5 +6,5 @@ export interface UserModalProps {
 export interface MenuLink {
   label: string;
   pathname: string;
-  params?: Record<string, any>; // O '?' indica que é opcional
+  params?: Record<string, any>; 
 }

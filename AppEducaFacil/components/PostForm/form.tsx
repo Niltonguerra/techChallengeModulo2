@@ -168,7 +168,7 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
   };
 
   const [query, setQuery] = useState("");
-  // dynamic heights
+
   const [titleHeight, setTitleHeight] = useState(0);
   const [introHeight, setIntroHeight] = useState(0);
   const [descHeight, setDescHeight] = useState(0);
@@ -331,9 +331,8 @@ const Form: React.FC<FormPostProps> = ({ postId = null, afterSubmit }) => {
       .catch((error) => {
         console.error("Error submitting post:", error);
         showSnackbar({
-          message: `Houve um erro ao ${
-            postId ? "atualizar" : "criar"
-          } o post. Por favor, tente novamente.`,
+          message: `Houve um erro ao ${postId ? "atualizar" : "criar"
+            } o post. Por favor, tente novamente.`,
         });
       })
       .finally(() => {

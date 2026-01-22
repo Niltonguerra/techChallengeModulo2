@@ -29,6 +29,7 @@ import { CreateEditUserFormPage } from './pages/createUserForm/CreateUserForm';
 import Home from './pages/home/Home';
 import ResetPassword from './pages/resetPassword/ResetPassword';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordForm';
+import { CreateQuestionPageForm } from './pages/createQuestionForm/CreateQuestionForm';
 import Question from './pages/Question/Question';
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
       <SnackBarComponent />
       <main className="main-content">
         <Routes>
+          <Route path="/create-question" element={<CreateQuestionPageForm />} />
           <Route path="/" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/home" element={<Home />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

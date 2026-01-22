@@ -16,3 +16,24 @@ export const initialFormUserState: FormUserData = {
   password: '',
   photo: null,
 };
+
+export const initialFormQuestionState: import("../types/form-post").FormQuestionData = {
+  title: '',
+  description: '',
+  tags: '',
+  author_id: '',
+};
+
+export const schoolSubjects = [
+  { value: 'Matemática', label: 'Matemática' },
+  { value: 'Português', label: 'Português' },
+  { value: 'História', label: 'História' },
+  { value: 'Geografia', label: 'Geografia' },
+  { value: 'Ciências', label: 'Ciências' },
+  { value: 'Física', label: 'Física' },
+  { value: 'Química', label: 'Química' },
+  { value: 'Biologia', label: 'Biologia' },
+  { value: 'Inglês', label: 'Inglês' },
+  { value: 'Artes', label: 'Artes' },
+  { value: 'Educação Física', label: 'Educação Física' },
+];

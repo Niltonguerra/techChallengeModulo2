@@ -20,6 +20,13 @@ export interface FormUserData {
   permission?: string;
 }
 
+export interface FormQuestionData {
+  title: string;
+  description: string;
+  tags: string; 
+  author_id: string;
+}
+
 export type LinkItem = { key: string; value: string };
 
 export interface Foto{
