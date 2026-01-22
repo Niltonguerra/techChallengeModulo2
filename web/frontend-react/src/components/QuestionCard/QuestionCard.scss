@@ -1,0 +1,104 @@
+.question-card {
+  background: var(--background-paper);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-1);
+  margin-bottom: var(--spacing-md);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-left: 120px;
+  margin-right: 120px;
+
+  &:hover {
+    box-shadow: var(--shadow-2);
+  }
+
+  &__header {
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+
+      &:hover {
+        color: var(--primary-main);
+      }
+
+      &.danger:hover {
+        color: var(--error-main);
+      }
+    }
+
+    .expand-icon {
+      color: var(--text-secondary);
+      transition: transform 0.3s ease;
+    }
+
+    .rotate {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__content {
+    max-height: 0;
+    overflow: hidden;
+    background: var(--background-default);
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 var(--spacing-lg);
+
+    p {
+      margin: 0;
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+  }
+
+  &.open {
+    .question-card__content {
+      max-height: 300px;
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+  }
+
+   &__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__meta {
+    margin-top: 4px;
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .subject {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .separator {
+    opacity: 0.6;
+  }
+}

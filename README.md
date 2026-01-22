@@ -243,15 +243,15 @@ FRONTEND_URL_MOBILE_LOCAL =http://localhost:8081
 FRONTEND_URL_MOBILE_PROD =http://localhost:8081
 FRONTEND_URL_RESET_PASSWORD=https://recuperar-senha.onrender.com
 ```
-
-### Variáveis de frontend:
+### Variáveis de frontend DEV:
+#### Variáveis de WEB:
 ```
 VITE_URL_IMGBB=https://api.imgbb.com/1/upload
 VITE_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
-VITE_API_URL=https://techchallengemodulo2.onrender.com
+VITE_API_URL=https://techchallengemodulo2-emdn.onrender.com
 ```
 
-### Variáveis do mobile:
+#### Variáveis do mobile:
 ```
 EXPO_ROUTER_APP_ROOT=app
 EXPO_URL_IMGBB=https://api.imgbb.com/1/upload
@@ -259,6 +259,21 @@ EXPO_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
 EXPO_API_URL=https://techchallengemodulo2-emdn.onrender.com
 ```
 
+### Variáveis de frontend PROD:
+#### Variáveis de WEB:
+```
+VITE_URL_IMGBB=https://api.imgbb.com/1/upload
+VITE_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
+VITE_API_URL=https://techchallengemodulo2-prod.onrender.com/
+```
+
+#### Variáveis do mobile:
+```
+EXPO_ROUTER_APP_ROOT=app
+EXPO_URL_IMGBB=https://api.imgbb.com/1/upload
+EXPO_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
+EXPO_API_URL=https://techchallengemodulo2-prod.onrender.com/
+```
 
 ---
 

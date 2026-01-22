@@ -29,6 +29,7 @@ import { CreateEditUserFormPage } from './pages/createUserForm/CreateUserForm';
 import Home from './pages/home/Home';
 import ResetPassword from './pages/resetPassword/ResetPassword';
 import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordForm';
+import Question from './pages/Question/Question';
 
 function App() {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/question" element={<Question />} />
           <Route path="/admin">
             <Route path="post">
               <Route path="create" element={<CreateEditPostFormPage />} />
