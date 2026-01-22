@@ -3,9 +3,10 @@ import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from '@modules/user/entities/user.entity';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
+import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
 
 @Injectable()
 export class QuestionService {
@@ -14,6 +15,8 @@ export class QuestionService {
     private questionRepository: Repository<Question>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(SchoolSubject)
+    private readonly schoolSubjectRepository: Repository<SchoolSubject>,
   ) {}
 
   async create(createQuestionDto: CreateQuestionDto): Promise<ReturnMessageDTO> {
@@ -25,10 +28,14 @@ export class QuestionService {
       throw new NotFoundException('Usuário não encontrado');
     }
 
+    const subjects: SchoolSubject[] = await this.schoolSubjectRepository.findBy({
+      id: In(createQuestionDto.tags),
+    });
+
     const question = this.questionRepository.create({
       title: createQuestionDto.title,
       description: createQuestionDto.description,
-      id_school_subject: createQuestionDto.tags,
+      school_subjects: subjects,
       created_at: new Date().toISOString(),
       users: [user],
     });
