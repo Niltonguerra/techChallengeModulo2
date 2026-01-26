@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from './question.entity';
+import { User } from '@modules/user/entities/user.entity';
 
 @Entity({
   name: 'conversation',
@@ -10,11 +11,9 @@ export class Conversation {
   })
   id: string;
 
-  @Column({
-    name: 'id_user',
-    type: 'varchar',
-  })
-  id_user: string;
+  @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column({
     name: 'message',
@@ -22,10 +21,8 @@ export class Conversation {
   })
   message: string;
 
-  @OneToOne(() => Question, (question) => question.conversation)
-  @JoinColumn({
-    name: 'question_id',
-  })
+  @ManyToOne(() => Question, (q) => q.conversations)
+  @JoinColumn({ name: 'question_id' })
   question: Question;
 
   @Column({

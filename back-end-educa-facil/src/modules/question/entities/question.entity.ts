@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '@modules/user/entities/user.entity';
 import { Conversation } from './conversation.entity';
 import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
@@ -52,12 +52,16 @@ export class Question {
   })
   school_subjects: SchoolSubject[];
 
-  @OneToOne(() => Conversation, (conversation) => conversation.question)
-  conversation: Conversation;
+  @OneToMany(() => Conversation, (c) => c.question)
+  conversations: Conversation[];
 
   @Column({
     name: 'created_at',
-    type: 'varchar',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
   })
-  created_at: string;
+  created_at: Date;
+
+  @Column({ name: 'created_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  updated_at: Date;
 }

@@ -7,9 +7,10 @@ import {
 import posts from './post/postSlice';
 import snackbar from './snackbar/snackbarSlice';
 import userReducer from './userSlice';
+import notifications from './notificationsSlice';
 
 export const store = configureStore({
-  reducer: { posts, snackbar, user: userReducer },
+  reducer: { posts, snackbar, user: userReducer, notifications, },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
