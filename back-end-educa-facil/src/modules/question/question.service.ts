@@ -109,7 +109,7 @@ export class QuestionService {
       throw new BadRequestException('A dúvida já está fechada.');
     }
 
-    const isAdmin = user.permission === UserPermissionEnum.ADMIN;
+    const isAdmin = (user.permission as UserPermissionEnum) === UserPermissionEnum.ADMIN;
 
     const usersList = question.users || [];
     const isAuthor = usersList.some((u) => u.id === user.id);

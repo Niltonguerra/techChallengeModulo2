@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionController } from './question.controller';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 
 describe('QuestionController', () => {
   let controller: QuestionController;
@@ -49,7 +50,7 @@ describe('QuestionController', () => {
         author_id: '123',
       };
 
-      const mockUser = { id: 'user-uuid' } as any;
+      const mockUser = { id: 'user-uuid' } as unknown as JwtPayload;
 
       const expectedResult = { statusCode: 201, message: 'Created' };
       mockQuestionService.create.mockResolvedValue(expectedResult);
