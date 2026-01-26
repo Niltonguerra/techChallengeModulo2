@@ -17,6 +17,8 @@ describe('QuestionService', () => {
   const mockQuestionRepository = {
     create: jest.fn(),
     save: jest.fn(),
+    find: jest.fn(),
+    findOne: jest.fn(),
   };
 
   const mockUserRepository = {
@@ -126,21 +128,34 @@ describe('QuestionService', () => {
     });
   });
 
-  describe('placeholders', () => {
-    it('findAll should return string', () => {
-      expect(service.findAll()).toBe('This action returns all question');
+  describe('Reads (findAll & findOne)', () => {
+    it('findAll should return an array of questions', async () => {
+      const mockQuestions = [{ id: 'uuid-1', title: 'Test' }];
+      mockQuestionRepository.find.mockResolvedValue(mockQuestions);
+
+      const result = await service.findAll();
+
+      expect(result).toEqual(mockQuestions);
+      expect(mockQuestionRepository.find).toHaveBeenCalled();
     });
 
-    it('findOne should return string', () => {
-      expect(service.findOne(1)).toBe('This action returns a #1 question');
+    it('findOne should return a question by id', async () => {
+      const mockQuestion = { id: 'uuid-1', title: 'Test' };
+      mockQuestionRepository.findOne.mockResolvedValue(mockQuestion);
+
+      const result = await service.findOne('uuid-1');
+
+      expect(result).toEqual(mockQuestion);
+      expect(mockQuestionRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 'uuid-1' },
+        relations: ['school_subjects', 'users', 'admin'],
+      });
     });
 
-    it('update should return string', () => {
-      expect(service.update(1, {} as any)).toBe('This action updates a #1 question');
-    });
+    it('findOne should throw NotFoundException if question not found', async () => {
+      mockQuestionRepository.findOne.mockResolvedValue(null);
 
-    it('remove should return string', () => {
-      expect(service.remove(1)).toBe('This action removes a #1 question');
+      await expect(service.findOne('uuid-999')).rejects.toThrow(NotFoundException);
     });
   });
 });
