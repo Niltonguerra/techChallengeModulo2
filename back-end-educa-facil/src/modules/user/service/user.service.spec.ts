@@ -13,20 +13,25 @@ describe('UserService', () => {
   let service: UserService;
   let repository: jest.Mocked<Repository<User>>;
 
+  const mockQueryBuilder = {
+    where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    addSelect: jest.fn().mockReturnThis(),
+    innerJoin: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
+    distinct: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    take: jest.fn().mockReturnThis(),
+    getOne: jest.fn(),
+    getMany: jest.fn(),
+  };
+
   beforeEach(async () => {
     const repositoryMock = {
       save: jest.fn(),
       findOne: jest.fn(),
       find: jest.fn(),
-      createQueryBuilder: jest.fn().mockReturnValue({
-        innerJoin: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        distinct: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        getMany: jest.fn().mockResolvedValue([userMock]),
-      }),
+      createQueryBuilder: jest.fn(() => mockQueryBuilder),
     } as unknown as jest.Mocked<Repository<User>>;
 
     const module: TestingModule = await Test.createTestingModule({
@@ -41,6 +46,10 @@ describe('UserService', () => {
 
     service = module.get<UserService>(UserService);
     repository = module.get(getRepositoryToken(User));
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('deve criar usuário com sucesso', async () => {
@@ -98,12 +107,12 @@ describe('UserService', () => {
   });
 
   it('deve retornar dados para login interno', async () => {
-    repository.findOne.mockResolvedValue(userMock as any);
+    mockQueryBuilder.getOne.mockResolvedValue(userMock);
 
     const result = await service.findOneUserLogin(userMock.email);
 
-    expect(repository.findOne).toHaveBeenCalledWith({
-      where: { email: userMock.email, is_active: UserStatusEnum.ACTIVE },
+    expect(mockQueryBuilder.where).toHaveBeenCalledWith('user.email = :email', {
+      email: userMock.email,
     });
     expect(result).toEqual({
       id: userMock.id,
@@ -117,17 +126,18 @@ describe('UserService', () => {
   });
 
   it('deve retornar false se usuário não encontrado para login interno', async () => {
-    repository.findOne.mockResolvedValue(null);
+    mockQueryBuilder.getOne.mockResolvedValue(null);
 
     const result = await service.findOneUserLogin('notfound@email.com');
 
-    expect(repository.findOne).toHaveBeenCalledWith({
-      where: { email: 'notfound@email.com', is_active: UserStatusEnum.ACTIVE },
+    expect(mockQueryBuilder.where).toHaveBeenCalledWith('user.email = :email', {
+      email: 'notfound@email.com',
     });
     expect(result).toBe(false);
   });
 
   it('deve listar autores com sucesso', async () => {
+    mockQueryBuilder.getMany.mockResolvedValue([userMock]);
     const result = await service.listAuthors('', '');
 
     expect(repository.createQueryBuilder).toHaveBeenCalled();
