@@ -11,11 +11,7 @@ import {
 import { User } from '@modules/user/entities/user.entity';
 import { Conversation } from './conversation.entity';
 import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
-
-export enum QuestionStatus {
-  OPEN = 'OPEN',
-  CLOSED = 'CLOSED',
-}
+import { QuestionStatus } from '../enum/question-status.enum';
 
 @Entity({
   name: 'question',
@@ -47,11 +43,8 @@ export class Question {
   status: QuestionStatus;
 
   @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'admin_id' })
+  @JoinColumn({ name: 'id_admin' })
   admin: User;
-
-  @Column({ name: 'admin_id', nullable: true })
-  admin_id: string;
 
   @ManyToMany(() => User, (user) => user.questions)
   @JoinTable({

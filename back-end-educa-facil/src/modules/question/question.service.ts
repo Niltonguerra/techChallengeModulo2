@@ -7,7 +7,8 @@ import {
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Question, QuestionStatus } from './entities/question.entity';
+import { Question } from './entities/question.entity';
+import { QuestionStatus } from './enum/question-status.enum';
 import { In, Repository } from 'typeorm';
 import { User } from '@modules/user/entities/user.entity';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
