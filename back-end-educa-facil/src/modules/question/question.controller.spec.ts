@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionController } from './question.controller';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 
 describe('QuestionController', () => {
   let controller: QuestionController;
@@ -13,6 +14,8 @@ describe('QuestionController', () => {
     findOne: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
+    assignToAdmin: jest.fn(),
+    closeQuestion: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -46,10 +49,13 @@ describe('QuestionController', () => {
         tags: ['dsdsd123'],
         author_id: '123',
       };
+
+      const mockUser = { id: 'user-uuid' } as unknown as JwtPayload;
+
       const expectedResult = { statusCode: 201, message: 'Created' };
       mockQuestionService.create.mockResolvedValue(expectedResult);
 
-      const result = await controller.create(dto);
+      const result = await controller.create(dto, mockUser);
 
       expect(service.create).toHaveBeenCalledWith(dto);
       expect(result).toEqual(expectedResult);
@@ -68,7 +74,7 @@ describe('QuestionController', () => {
     it('should call service.findOne with correct id', () => {
       mockQuestionService.findOne.mockReturnValue('one');
       expect(controller.findOne('1')).toBe('one');
-      expect(service.findOne).toHaveBeenCalledWith(1);
+      expect(service.findOne).toHaveBeenCalledWith('1');
     });
   });
 
