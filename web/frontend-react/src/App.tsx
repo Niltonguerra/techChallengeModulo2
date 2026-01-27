@@ -32,6 +32,14 @@ import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordForm';
 import { DropdownPlayground } from './pages/temp-componet/DropdownPlayground';
 import { CreateQuestionPageForm } from './pages/createQuestionForm/CreateQuestionForm';
 import Question from './pages/Question/Question';
+import { connectSocket, disconnectSocket, getSocket } from './service/socket';
+import { useEffect } from 'react';
+import { addNotification } from './store/notificationsSlice';
+import SocketTest from './pages/playground/SocketTest';
+import { nanoid } from '@reduxjs/toolkit';
+import type { QuestionNotification } from './types/conversation';
+import { getNotifications } from './service/question';
+
 
 function App() {
   const dispatch = useDispatch();
@@ -40,9 +48,11 @@ function App() {
 
   const handleLogin = (userData: User, token: string) => {
     dispatch(loginSuccess({ user: userData, token }));
+    connectSocket(userData.id);
   };
 
   const handleLogout = () => {
+    disconnectSocket();
     dispatch(logout());
     navigate('/login');
   };
@@ -50,6 +60,54 @@ function App() {
   const handleNavigate = (path: string) => {
     navigate(path);
   };
+  // @ts-expect-error TS2345
+  useEffect(() => {
+  if (!isLoggedIn || !user?.id) return;
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await getNotifications(); // função que busca do backend
+      response.forEach((n: QuestionNotification) =>
+        dispatch(
+          addNotification({
+            id: nanoid(),
+            questionId: n.questionId,
+            title: `Nova resposta de ${n.senderName || 'alguém'}: ${n.title}`,
+            read: n.read,
+            senderPhoto: n.senderPhoto,
+            senderId: n.senderId,
+          })
+        )
+      );
+    } catch (err) {
+      console.error('Erro ao buscar notificações:', err);
+    }
+  };
+
+  fetchNotifications(); // pega notificações pendentes
+
+  const socket = getSocket(); // escuta notificações novas em tempo real
+
+  const onQuestionUpdate = (payload: QuestionNotification) => {
+    dispatch(
+      addNotification({
+        id: nanoid(),
+        questionId: payload.questionId,
+        title: `Nova resposta de ${payload.senderName || 'alguém'}: ${payload.title}`,
+        read: false,
+        senderPhoto: payload.senderPhoto,
+        senderId: payload.senderId,
+      })
+    );
+  };
+
+  socket.on('question:update', onQuestionUpdate);
+
+  return () => socket.off('question:update', onQuestionUpdate);
+}, [isLoggedIn, user?.id, dispatch]);
+
+
+
 
   return (
     <>
@@ -92,6 +150,10 @@ function App() {
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           {/* TODO: PAGINA SOMENTE DE TESTE DEPOIS DELETAR */}
           <Route path="/playground/dropdown" element={<DropdownPlayground />} />
+          <Route
+            path="/playground/socket-test"
+            element={<SocketTest />}
+          />
         </Routes>
       </main>
       <Footer />
