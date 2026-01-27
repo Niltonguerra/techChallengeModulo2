@@ -15,6 +15,13 @@ describe('QuestionController', () => {
     remove: jest.fn(),
   };
 
+  const mockReq = {
+    user: {
+      id: 'user-123',
+      email: 'test@test.com',
+    },
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [QuestionController],
@@ -46,6 +53,7 @@ describe('QuestionController', () => {
         tags: ['dsdsd123'],
         author_id: '123',
       };
+
       const expectedResult = { statusCode: 201, message: 'Created' };
       mockQuestionService.create.mockResolvedValue(expectedResult);
 
@@ -57,35 +65,60 @@ describe('QuestionController', () => {
   });
 
   describe('findAll', () => {
-    it('should call service.findAll', () => {
+    it('should call service.findAll with filters', () => {
       mockQuestionService.findAll.mockReturnValue('all');
-      expect(controller.findAll()).toBe('all');
-      expect(service.findAll).toHaveBeenCalled();
+
+      const result = controller.findAll(
+        mockReq,
+        'math',
+        'MINE',
+      );
+
+      expect(service.findAll).toHaveBeenCalledWith({
+        user: mockReq.user,
+        subject: 'math',
+        assignment: 'MINE',
+      });
+
+      expect(result).toBe('all');
     });
   });
 
   describe('findOne', () => {
     it('should call service.findOne with correct id', () => {
       mockQuestionService.findOne.mockReturnValue('one');
-      expect(controller.findOne('1')).toBe('one');
+
+      const result = controller.findOne('1');
+
       expect(service.findOne).toHaveBeenCalledWith(1);
+      expect(result).toBe('one');
     });
   });
 
   describe('update', () => {
     it('should call service.update with correct params', () => {
-      mockQuestionService.update.mockReturnValue('updated');
       const dto = { title: 'new' };
-      expect(controller.update('1', dto as any)).toBe('updated');
+      mockQuestionService.update.mockReturnValue('updated');
+
+      const result = controller.update('1', dto as any);
+
       expect(service.update).toHaveBeenCalledWith(1, dto);
+      expect(result).toBe('updated');
     });
   });
 
   describe('remove', () => {
-    it('should call service.remove with correct id', () => {
-      mockQuestionService.remove.mockReturnValue('removed');
-      expect(controller.remove('1')).toBe('removed');
-      expect(service.remove).toHaveBeenCalledWith(1);
+    it('should call service.remove with correct params', async () => {
+      mockQuestionService.remove.mockResolvedValue('removed');
+
+      const result = await controller.remove('1', mockReq);
+
+      expect(service.remove).toHaveBeenCalledWith({
+        questionId: '1',
+        user: mockReq.user,
+      });
+
+      expect(result).toBe('removed');
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -48,9 +48,41 @@ export class QuestionService {
     };
   }
 
-  findAll() {
-    return `This action returns all question`;
+findAll(params: {
+  user: any;
+  subject?: string;
+  assignment?: 'UNASSIGNED' | 'MINE';
+}) {
+  const { user, subject, assignment } = params;
+
+  const qb = this.questionRepository
+    .createQueryBuilder('question')
+    .leftJoinAndSelect('question.users', 'users')
+    .leftJoinAndSelect('question.school_subjects', 'subjects')
+    .leftJoinAndSelect('question.conversation', 'conversation')
+    .orderBy('question.created_at', 'DESC');
+
+  if (subject) {
+    qb.andWhere('subjects.id = :subject', { subject });
   }
+
+  if (user.permission === 'student') {
+    qb.andWhere('users.id = :userId', { userId: user.id });
+    return qb.getMany();
+  }
+
+  if (assignment === 'MINE') {
+    qb.andWhere('users.id = :userId', { userId: user.id });
+  }
+
+  if (assignment === 'UNASSIGNED') {
+    qb.andWhere('users.id IS NULL');
+  }
+
+  return qb.getMany();
+}
+
+
 
   findOne(id: number) {
     return `This action returns a #${id} question`;
@@ -61,7 +93,29 @@ export class QuestionService {
     return `This action updates a #${id} question`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  async remove({ questionId, user }) {
+  const question = await this.questionRepository.findOne({
+    where: { id: questionId },
+    relations: { users: true },
+  });
+
+  if (!question) {
+    throw new NotFoundException('Dúvida não encontrada');
   }
+
+  if (user.permission === 'student') {
+    const isOwner = question.users.some((u) => u.id === user.id);
+
+    if (!isOwner) {
+      throw new ForbiddenException(
+        'Você não tem permissão para excluir esta dúvida',
+      );
+    }
+  }
+
+  await this.questionRepository.remove(question);
+
+  return { message: 'Dúvida removida com sucesso' };
+}
+
 }

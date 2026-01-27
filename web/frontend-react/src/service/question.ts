@@ -3,6 +3,7 @@ import type { FormQuestionData } from "../types/form-post";
 
 import { store } from "../store";
 import { showSnackbar } from "../store/snackbar/snackbarSlice";
+import type { Question } from "../types/question";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/";
 
@@ -44,3 +45,21 @@ export const createQuestion = async (data: FormQuestionData)
   const response = await api.post("question/create", data);
   return response.data;
 };
+
+
+export const getQuestions = async (params?: {
+  subject?: string;
+  assignment?: 'UNASSIGNED' | 'MINE';
+}): Promise<Question[]> => {
+  const api = getApi();
+  const response = await api.get('question', { params });
+
+  return response.data;
+};
+
+export const deleteQuestion = async (id: string) => {
+  const api = getApi();
+  const response = await api.delete(`question/${id}`);
+  return response.data;
+};
+
