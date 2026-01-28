@@ -7,6 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from '@modules/user/entities/user.entity';
 import { Conversation } from './conversation.entity';
@@ -74,12 +75,9 @@ export class Question {
   })
   school_subjects: SchoolSubject[];
 
-  @OneToOne(() => Conversation, (conversation) => conversation.question)
-  conversation: Conversation;
+  @OneToMany(() => Conversation, (conversation) => conversation.question) /* //<< double check com os outros - one to one -> one to many */
+  conversations: Conversation[];
 
-  @Column({
-    name: 'created_at',
-    type: 'varchar',
-  })
-  created_at: string;
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
 }
