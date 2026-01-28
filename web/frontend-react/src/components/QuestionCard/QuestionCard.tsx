@@ -6,13 +6,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import type { Question } from '../../types/question';
 import './QuestionCard.scss';
+import Button from '@mui/material/Button';
 
 interface QuestionCardProps {
   question: Question;
-  onDelete: (id: string) => void;
+  isAdmin: boolean;
+  onDelete?: (id: string) => void;
+  onAssign?: (id: string) => void;
 }
 
-export function QuestionCard({ question, onDelete }: QuestionCardProps) {
+export function QuestionCard({ question, onDelete, onAssign, isAdmin }: QuestionCardProps) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -22,7 +25,7 @@ export function QuestionCard({ question, onDelete }: QuestionCardProps) {
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onDelete(question.id);
+    onDelete?.(question.id);
   };
 
   const openChat = (e: React.MouseEvent) => {
@@ -48,6 +51,16 @@ export function QuestionCard({ question, onDelete }: QuestionCardProps) {
         </div>
 
         <div className="question-card__actions">
+          {isAdmin && !question.admin && question.status === 'OPEN' && (
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => onAssign?.(question.id)}
+            >
+              Pegar dúvida
+            </Button>
+          )}
+
           <button onClick={openChat} title="Abrir chat">
             <ChatBubbleOutlineIcon />
           </button>

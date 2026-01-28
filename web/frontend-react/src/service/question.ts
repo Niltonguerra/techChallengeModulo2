@@ -63,3 +63,10 @@ export const deleteQuestion = async (id: string) => {
   return response.data;
 };
 
+export async function assignQuestion(id: string) {
+  const api = getApi();
+  const response = await api.patch(`/question/${id}/assign`);
+  return response.data;
+}
+
+

@@ -12,6 +12,8 @@ import type { RootState } from '../../store';
 
 import { getSchoolSubjectsDropdown } from '../../service/schoolSubject';
 import { getQuestions, deleteQuestion } from '../../service/question';
+import { assignQuestion } from '../../service/question';
+
 
 export default function Question() {
   const navigate = useNavigate();
@@ -52,49 +54,70 @@ export default function Question() {
       }
     }
 
-      loadSubjects();
+    loadSubjects();
   }, []);
 
   const loadQuestions = async () => {
-    try {
-      setLoadingQuestions(true);
+  try {
+    setLoadingQuestions(true);
 
-      const data = await getQuestions({
-        subject: subject || undefined,
-        assignment: isAdmin
-          ? (filterType as 'UNASSIGNED' | 'MINE')
-          : 'MINE',
-      });
+    const params: {
+      subject?: string;
+      assignment?: 'UNASSIGNED' | 'MINE';
+    } = {};
 
-      setQuestions(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Erro ao carregar dúvidas', error);
-    } finally {
-      setLoadingQuestions(false);
+    if (subject) {
+      params.subject = subject;
     }
-  };
+
+    if (isAdmin && filterType) {
+      params.assignment = filterType as 'UNASSIGNED' | 'MINE';
+    }
+
+    if (!isAdmin) {
+      params.assignment = 'MINE';
+    }
+
+    const data = await getQuestions(params);
+    setQuestions(Array.isArray(data) ? data : []);
+  } catch (error) {
+    console.error('Erro ao carregar dúvidas', error);
+  } finally {
+    setLoadingQuestions(false);
+  }
+};
 
   useEffect(() => {
     loadQuestions();
   }, [subject, filterType]);
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteQuestion = async (id: string) => {
+  try {
+    await deleteQuestion(id); 
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+  const handleAssign = async (id: string) => {
     try {
-      await deleteQuestion(id);
-      setQuestions((prev) => prev.filter((q) => q.id !== id));
+      await assignQuestion(id);
+      loadQuestions();
     } catch (error) {
-      console.error('Erro ao excluir dúvida', error);
+      console.error('Erro ao assumir dúvida', error);
     }
   };
 
 
-  const handleClearFilters = () => {
-  setSubject('');
 
-  if (isAdmin) {
-    setFilterType('');
-  }
-};
+  const handleClearFilters = () => {
+    setSubject('');
+
+    if (isAdmin) {
+      setFilterType('');
+    }
+  };
 
   return (
     <Box px={3} py={4}>
@@ -158,7 +181,9 @@ export default function Question() {
           <QuestionCard
             key={question.id}
             question={question}
-            onDelete={handleDelete}
+            isAdmin={isAdmin}
+            onDelete={handleDeleteQuestion}
+            onAssign={handleAssign}
           />
         ))
       )}

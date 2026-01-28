@@ -74,9 +74,12 @@ export class UserService {
   }
 
   async findOneUserLogin(value: string): Promise<LoginUsuarioInternoDTO | false> {
-    const user = await this.userRepository.findOne({
-      where: { email: value, is_active: UserStatusEnum.ACTIVE },
-    });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email: value })
+      .andWhere('user.is_active = :isActive', { isActive: UserStatusEnum.ACTIVE })
+      .addSelect('user.password')
+      .getOne();
 
     if (!user) {
       return false;

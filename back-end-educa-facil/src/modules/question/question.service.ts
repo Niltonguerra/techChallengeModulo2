@@ -1,12 +1,20 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
+import { QuestionStatus } from './enum/question-status.enum';
 import { In, Repository } from 'typeorm';
 import { User } from '@modules/user/entities/user.entity';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
+import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
+import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 
 @Injectable()
 export class QuestionService {
@@ -28,15 +36,19 @@ export class QuestionService {
       throw new NotFoundException('Usuário não encontrado');
     }
 
-    const subjects: SchoolSubject[] = await this.schoolSubjectRepository.findBy({
-      id: In(createQuestionDto.tags),
-    });
+    let subjects: SchoolSubject[] = [];
+    if (createQuestionDto.tags && createQuestionDto.tags.length > 0) {
+      subjects = await this.schoolSubjectRepository.findBy({
+        id: In(createQuestionDto.tags),
+      });
+    }
 
     const question = this.questionRepository.create({
       title: createQuestionDto.title,
       description: createQuestionDto.description,
       school_subjects: subjects,
       created_at: new Date().toISOString(),
+      status: QuestionStatus.OPEN,
       users: [user],
     });
 
@@ -48,44 +60,112 @@ export class QuestionService {
     };
   }
 
-findAll(params: {
-  user: any;
-  subject?: string;
-  assignment?: 'UNASSIGNED' | 'MINE';
-}) {
-  const { user, subject, assignment } = params;
+  findAll(params: { user: JwtPayload; subject?: string; assignment?: 'UNASSIGNED' | 'MINE' }) {
+    const { user, subject, assignment } = params;
 
-  const qb = this.questionRepository
-    .createQueryBuilder('question')
-    .leftJoinAndSelect('question.users', 'users')
-    .leftJoinAndSelect('question.school_subjects', 'subjects')
-    .leftJoinAndSelect('question.conversation', 'conversation')
-    .orderBy('question.created_at', 'DESC');
+    const qb = this.questionRepository
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.users', 'users')
+      .leftJoinAndSelect('question.school_subjects', 'subjects')
+      .leftJoinAndSelect('question.conversation', 'conversation')
+      .leftJoinAndSelect('question.admin', 'admin')
+      .orderBy('question.created_at', 'DESC');
 
-  if (subject) {
-    qb.andWhere('subjects.id = :subject', { subject });
-  }
+    if (subject) {
+      qb.andWhere('subjects.id = :subject', { subject });
+    }
 
-  if (user.permission === 'student') {
-    qb.andWhere('users.id = :userId', { userId: user.id });
+    if (user.permission === 'USER') {
+      qb.andWhere('users.id = :userId', { userId: user.id });
+      return qb.getMany();
+    }
+
+    if (assignment === 'MINE') {
+      qb.andWhere('admin.id = :userId', { userId: user.id });
+    }
+
+    if (assignment === 'UNASSIGNED') {
+      qb.andWhere('admin.id IS NULL');
+    }
+
     return qb.getMany();
   }
 
-  if (assignment === 'MINE') {
-    qb.andWhere('users.id = :userId', { userId: user.id });
+  async assignToAdmin(questionId: string, adminId: string): Promise<ReturnMessageDTO> {
+    const adminUser = await this.userRepository.findOne({
+      where: { id: adminId },
+    });
+
+    if (!adminUser) throw new NotFoundException('Usuário não encontrado.');
+
+    if (adminUser.permission !== UserPermissionEnum.ADMIN) {
+      throw new ForbiddenException('Apenas Professores podem atender dúvidas.');
+    }
+
+    const question = await this.questionRepository.findOne({
+      where: { id: questionId },
+      relations: ['users', 'admin'],
+    });
+
+    if (!question) throw new NotFoundException('Pergunta não encontrada');
+
+    if (question.status === QuestionStatus.CLOSED) {
+      throw new BadRequestException('Esta dúvida já foi finalizada e não pode ser assumida.');
+    }
+
+    if (question.admin) {
+      throw new BadRequestException('Esta dúvida já está sob responsabilidade de outro professor.');
+    }
+
+    question.admin = adminUser;
+
+    const isAlreadyParticipant = question.users.some((u) => u.id === adminUser.id);
+    if (!isAlreadyParticipant) {
+      question.users.push(adminUser);
+    }
+
+    await this.questionRepository.save(question);
+
+    return { message: 'Dúvida atribuída com sucesso!', statusCode: 200 };
   }
 
-  if (assignment === 'UNASSIGNED') {
-    qb.andWhere('users.id IS NULL');
+  async closeQuestion(questionId: string, user: JwtPayload): Promise<ReturnMessageDTO> {
+    const question = await this.questionRepository.findOne({
+      where: { id: questionId },
+      relations: ['users', 'admin'],
+    });
+
+    if (!question) throw new NotFoundException('Pergunta não encontrada');
+
+    if (question.status === QuestionStatus.CLOSED) {
+      throw new BadRequestException('A dúvida já está fechada.');
+    }
+
+    const isAdmin = user.permission === 'ADMIN';
+
+    if (!isAdmin) {
+      const isAuthor = question.users?.some((u) => u.id === user.id);
+
+      if (!isAuthor) {
+        throw new ForbiddenException('Você não tem permissão para encerrar esta dúvida.');
+      }
+    }
+
+    question.status = QuestionStatus.CLOSED;
+    await this.questionRepository.save(question);
+
+    return { message: 'Dúvida finalizada com sucesso!', statusCode: 200 };
   }
 
-  return qb.getMany();
-}
-
-
-
-  findOne(id: number) {
-    return `This action returns a #${id} question`;
+  async findOne(id: string) {
+    const question = await this.questionRepository.findOne({
+      where: { id },
+      relations: ['school_subjects', 'users', 'admin'],
+    });
+    if (!question) {
+      throw new NotFoundException(`Pergunta com ID ${id} não encontrada.`);
+    }
+    return question;
   }
 
   update(id: number, updateQuestionDto: UpdateQuestionDto) {
@@ -93,29 +173,37 @@ findAll(params: {
     return `This action updates a #${id} question`;
   }
 
-  async remove({ questionId, user }) {
-  const question = await this.questionRepository.findOne({
-    where: { id: questionId },
-    relations: { users: true },
-  });
+  async remove({
+    questionId,
+    user,
+  }: {
+    questionId: string;
+    user: JwtPayload;
+  }): Promise<ReturnMessageDTO> {
+    const question = await this.questionRepository.findOne({
+      where: { id: questionId },
+      relations: { users: true },
+    });
 
-  if (!question) {
-    throw new NotFoundException('Dúvida não encontrada');
-  }
-
-  if (user.permission === 'student') {
-    const isOwner = question.users.some((u) => u.id === user.id);
-
-    if (!isOwner) {
-      throw new ForbiddenException(
-        'Você não tem permissão para excluir esta dúvida',
-      );
+    if (!question) {
+      throw new NotFoundException('Dúvida não encontrada');
     }
+
+    const isStudent = user.permission === 'USER';
+
+    if (isStudent) {
+      const isOwner = Array.isArray(question.users) && question.users.some((u) => u.id === user.id);
+
+      if (!isOwner) {
+        throw new ForbiddenException('Você não tem permissão para excluir esta dúvida');
+      }
+    }
+
+    await this.questionRepository.remove(question);
+
+    return {
+      message: 'Dúvida removida com sucesso',
+      statusCode: 200,
+    };
   }
-
-  await this.questionRepository.remove(question);
-
-  return { message: 'Dúvida removida com sucesso' };
-}
-
 }

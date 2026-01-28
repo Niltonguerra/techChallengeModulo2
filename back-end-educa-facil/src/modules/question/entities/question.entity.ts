@@ -1,7 +1,17 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToOne,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '@modules/user/entities/user.entity';
 import { Conversation } from './conversation.entity';
 import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
+import { QuestionStatus } from '../enum/question-status.enum';
 
 @Entity({
   name: 'question',
@@ -23,6 +33,18 @@ export class Question {
     type: 'varchar',
   })
   description: string;
+
+  @Column({
+    name: 'status',
+    type: 'enum',
+    enum: QuestionStatus,
+    default: QuestionStatus.OPEN,
+  })
+  status: QuestionStatus;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'id_admin' })
+  admin: User;
 
   @ManyToMany(() => User, (user) => user.questions)
   @JoinTable({
