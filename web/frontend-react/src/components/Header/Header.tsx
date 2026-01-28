@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleFaq = useCallback(() => {
     handleUserMenuClose();
-    navigate('/faq');
+    navigate('/question');
   }, [handleUserMenuClose, navigate]);
 
   return (

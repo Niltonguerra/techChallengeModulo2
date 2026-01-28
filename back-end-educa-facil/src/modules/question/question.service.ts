@@ -60,6 +60,37 @@ export class QuestionService {
     };
   }
 
+  findAll(params: { user: JwtPayload; subject?: string; assignment?: 'UNASSIGNED' | 'MINE' }) {
+    const { user, subject, assignment } = params;
+
+    const qb = this.questionRepository
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.users', 'users')
+      .leftJoinAndSelect('question.school_subjects', 'subjects')
+      .leftJoinAndSelect('question.conversation', 'conversation')
+      .leftJoinAndSelect('question.admin', 'admin')
+      .orderBy('question.created_at', 'DESC');
+
+    if (subject) {
+      qb.andWhere('subjects.id = :subject', { subject });
+    }
+
+    if (user.permission === 'USER') {
+      qb.andWhere('users.id = :userId', { userId: user.id });
+      return qb.getMany();
+    }
+
+    if (assignment === 'MINE') {
+      qb.andWhere('admin.id = :userId', { userId: user.id });
+    }
+
+    if (assignment === 'UNASSIGNED') {
+      qb.andWhere('admin.id IS NULL');
+    }
+
+    return qb.getMany();
+  }
+
   async assignToAdmin(questionId: string, adminId: string): Promise<ReturnMessageDTO> {
     const adminUser = await this.userRepository.findOne({
       where: { id: adminId },
@@ -110,25 +141,20 @@ export class QuestionService {
       throw new BadRequestException('A dúvida já está fechada.');
     }
 
-    const isAdmin = (user.permission as UserPermissionEnum) === UserPermissionEnum.ADMIN;
+    const isAdmin = user.permission === 'ADMIN';
 
-    const usersList = question.users || [];
-    const isAuthor = usersList.some((u) => u.id === user.id);
+    if (!isAdmin) {
+      const isAuthor = question.users?.some((u) => u.id === user.id);
 
-    if (!isAdmin && !isAuthor) {
-      throw new ForbiddenException('Você não tem permissão para encerrar esta dúvida.');
+      if (!isAuthor) {
+        throw new ForbiddenException('Você não tem permissão para encerrar esta dúvida.');
+      }
     }
 
     question.status = QuestionStatus.CLOSED;
     await this.questionRepository.save(question);
 
     return { message: 'Dúvida finalizada com sucesso!', statusCode: 200 };
-  }
-  async findAll() {
-    return await this.questionRepository.find({
-      order: { created_at: 'DESC' },
-      relations: ['school_subjects', 'users', 'admin'],
-    });
   }
 
   async findOne(id: string) {
@@ -147,7 +173,37 @@ export class QuestionService {
     return `This action updates a #${id} question`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  async remove({
+    questionId,
+    user,
+  }: {
+    questionId: string;
+    user: JwtPayload;
+  }): Promise<ReturnMessageDTO> {
+    const question = await this.questionRepository.findOne({
+      where: { id: questionId },
+      relations: { users: true },
+    });
+
+    if (!question) {
+      throw new NotFoundException('Dúvida não encontrada');
+    }
+
+    const isStudent = user.permission === 'USER';
+
+    if (isStudent) {
+      const isOwner = Array.isArray(question.users) && question.users.some((u) => u.id === user.id);
+
+      if (!isOwner) {
+        throw new ForbiddenException('Você não tem permissão para excluir esta dúvida');
+      }
+    }
+
+    await this.questionRepository.remove(question);
+
+    return {
+      message: 'Dúvida removida com sucesso',
+      statusCode: 200,
+    };
   }
 }
