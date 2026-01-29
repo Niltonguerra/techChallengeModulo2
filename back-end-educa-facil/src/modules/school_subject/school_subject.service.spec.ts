@@ -3,19 +3,19 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SchoolSubjectService } from './school_subject.service';
 import { SchoolSubject } from './entities/school_subject.entity';
-import { SchoolSubjectDropdownDto } from './dto/get-shcool_subject.dto';
+
+const mockQueryBuilder = {
+  innerJoin: jest.fn().mockReturnThis(),
+  select: jest.fn().mockReturnThis(),
+  distinctOn: jest.fn().mockReturnThis(),
+  orderBy: jest.fn().mockReturnThis(),
+  addOrderBy: jest.fn().mockReturnThis(),
+  getRawMany: jest.fn(),
+};
 
 describe('SchoolSubjectService', () => {
   let service: SchoolSubjectService;
   let repository: Repository<SchoolSubject>;
-
-  const mockQueryBuilder = {
-    innerJoin: jest.fn().mockReturnThis(),
-    select: jest.fn().mockReturnThis(),
-    orderBy: jest.fn().mockReturnThis(),
-    addOrderBy: jest.fn().mockReturnThis(),
-    getRawMany: jest.fn(),
-  };
 
   const mockRepository = {
     createQueryBuilder: jest.fn(() => mockQueryBuilder),
@@ -44,8 +44,8 @@ describe('SchoolSubjectService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should return subjects formatted for dropdown', async () => {
-    const mockResult: SchoolSubjectDropdownDto[] = [
+  it('should return subjects WITH questions formatted for dropdown', async () => {
+    const mockResult = [
       { label: 'Matemática', value: '1' },
       { label: 'Português', value: '2' },
     ];
@@ -58,12 +58,44 @@ describe('SchoolSubjectService', () => {
 
     expect(repository.createQueryBuilder).toHaveBeenCalledWith('subject');
     expect(mockQueryBuilder.innerJoin).toHaveBeenCalledWith('subject.questions', 'question');
+
     expect(mockQueryBuilder.select).toHaveBeenCalledWith([
-      'DISTINCT ON (subject.id) subject.id AS value',
+      'subject.id AS value',
       'subject.name AS label',
     ]);
-    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('subject.id');
+
+    expect(mockQueryBuilder.distinctOn).toHaveBeenCalledWith(['subject.id']);
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('subject.id', 'ASC');
     expect(mockQueryBuilder.addOrderBy).toHaveBeenCalledWith('LOWER(subject.name)', 'ASC');
+
+    expect(mockQueryBuilder.getRawMany).toHaveBeenCalled();
+  });
+
+  it('should return ALL subjects formatted for dropdown', async () => {
+    const mockResult = [
+      { label: 'Biologia', value: '3' },
+      { label: 'Física', value: '4' },
+    ];
+
+    mockQueryBuilder.getRawMany.mockResolvedValue(mockResult);
+
+    const result = await service.getAllSubjectsDropdown();
+
+    expect(result).toEqual(mockResult);
+
+    expect(repository.createQueryBuilder).toHaveBeenCalledWith('subject');
+
+    expect(mockQueryBuilder.select).toHaveBeenCalledWith([
+      'subject.id AS value',
+      'subject.name AS label',
+    ]);
+
+    expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith('LOWER(subject.name)', 'ASC');
+
+    expect(mockQueryBuilder.innerJoin).not.toHaveBeenCalled();
+    expect(mockQueryBuilder.distinctOn).not.toHaveBeenCalled();
+    expect(mockQueryBuilder.addOrderBy).not.toHaveBeenCalled();
+
     expect(mockQueryBuilder.getRawMany).toHaveBeenCalled();
   });
 });
