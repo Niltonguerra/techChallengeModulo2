@@ -67,7 +67,7 @@ export class QuestionService {
       .createQueryBuilder('question')
       .leftJoinAndSelect('question.users', 'users')
       .leftJoinAndSelect('question.school_subjects', 'subjects')
-      .leftJoinAndSelect('question.conversation', 'conversation')
+      .leftJoinAndSelect('question.conversations', 'conversations')
       .leftJoinAndSelect('question.admin', 'admin')
       .orderBy('question.created_at', 'DESC');
 
