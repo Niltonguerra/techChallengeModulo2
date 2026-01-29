@@ -15,13 +15,10 @@ export class ConversationController {
   constructor(private readonly service: ConversationService) {}
 
   @Get()
-	@ApiOperation({ summary: 'List conversations/messages from a question' })
-	list(
-	@Param('questionId') questionId: string,
-	@GetTokenValues() user: JwtPayload,
-	) {
-		return this.service.listByQuestion(questionId, user.id);
-	}
+  @ApiOperation({ summary: 'List conversations/messages from a question' })
+  list(@Param('questionId') questionId: string, @GetTokenValues() user: JwtPayload) {
+    return this.service.listByQuestion(questionId, user.id);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Send a message to a question conversation' })

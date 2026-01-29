@@ -18,19 +18,13 @@ export class ConversationGateway {
   server: Server;
 
   @SubscribeMessage('joinQuestion')
-  handleJoin(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { questionId: string },
-  ) {
+  handleJoin(@ConnectedSocket() client: Socket, @MessageBody() data: { questionId: string }) {
     client.join(roomName(data.questionId));
     client.emit('joinedQuestion', { questionId: data.questionId });
   }
 
   @SubscribeMessage('leaveQuestion')
-  handleLeave(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { questionId: string },
-  ) {
+  handleLeave(@ConnectedSocket() client: Socket, @MessageBody() data: { questionId: string }) {
     client.leave(roomName(data.questionId));
   }
 

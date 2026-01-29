@@ -75,7 +75,7 @@ export class QuestionService {
       qb.andWhere('subjects.id = :subject', { subject });
     }
 
-    if (user.permission === 'USER') {
+    if (user.permission === UserPermissionEnum.USER) {
       qb.andWhere('users.id = :userId', { userId: user.id });
       return qb.getMany();
     }
