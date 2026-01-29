@@ -34,6 +34,7 @@ import { Conversation } from '@modules/question/entities/conversation.entity';
             database: config.get<string>('DB_DATABASE_PROD'),
             autoLoadEntities: true,
             synchronize: true,
+            logging: ['query', 'error'],
             ssl: {
               rejectUnauthorized: false,
             },

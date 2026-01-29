@@ -23,7 +23,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [messages, setMessages] = useState<ChatMessageProps[]>([]);
   const [draft, setDraft] = useState<string>("");
   const listRef = useRef<HTMLDivElement | null>(null);
-	const bottomRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const { user } = useSelector((state: RootState) => state.user);
   const { showSnackbar } = useSnackbar();
@@ -41,8 +41,8 @@ export const Conversation: React.FC<ConversationProps> = ({
     el.scrollTop = el.scrollHeight;
   };
 
-	const handleGetMessages = useCallback(async (conversationId: string) => {
-		getMessages(conversationId).then((msgs) => {
+	const handleGetMessages = useCallback(async (questionId: string) => {
+		getMessages(questionId).then((msgs) => {
 			setMessages(msgs);
 		}).catch((err) => {
 			showSnackbar({
@@ -67,8 +67,8 @@ export const Conversation: React.FC<ConversationProps> = ({
   const handleSend = () => {
 		if(!user) return;
 
-    sendMessage(questionId, draft.trim(), user.id).then(() => {
-			setMessages((prev) => [...prev, { content: draft.trim(), isUserTheAuthor: true, authorName: user.name, createdAt: new Date() }]);
+    sendMessage(questionId, draft.trim()).then(() => {
+			setMessages((prev) => [...prev, { message: draft.trim(), isUserTheAuthor: true, authorName: user.name, createdAt: new Date() }]);
     	setDraft("");
 		}).catch((err) => {
 			console.error("Erro ao enviar mensagem:", err);
@@ -112,7 +112,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       items.push(
         <ChatMessage
           key={`msg-${i}`}
-          content={msg.content}
+          message={msg.message}
           isUserTheAuthor={msg.isUserTheAuthor}
           authorName={msg.authorName}
           createdAt={msg.createdAt}

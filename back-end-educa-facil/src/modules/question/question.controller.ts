@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
@@ -13,6 +24,7 @@ import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { GetTokenValues } from '@modules/auth/decorators/token.decorator';
+import { AuthenticatedRequest } from '@modules/auth/decorators/token.decorator';
 
 @ApiTags('question')
 @Controller('question')
@@ -48,8 +60,19 @@ export class QuestionController {
   }
 
   @Get()
-  findAll() {
-    return this.questionService.findAll();
+  @ApiBearerAuth('JWT-Auth')
+  @UseGuards(JwtAuthGuardUser)
+  @ApiOperation({ summary: 'List questions with filters' })
+  findAll(
+    @Req() req: AuthenticatedRequest,
+    @Query('subject') subject?: string,
+    @Query('assignment') assignment?: 'UNASSIGNED' | 'MINE',
+  ) {
+    return this.questionService.findAll({
+      user: req.user,
+      subject,
+      assignment,
+    });
   }
 
   @Get(':id')
@@ -63,7 +86,12 @@ export class QuestionController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.questionService.remove(+id);
+  @UseGuards(JwtAuthGuardUser)
+  @ApiBearerAuth('JWT-Auth')
+  async remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.questionService.remove({
+      questionId: id,
+      user: req.user,
+    });
   }
 }

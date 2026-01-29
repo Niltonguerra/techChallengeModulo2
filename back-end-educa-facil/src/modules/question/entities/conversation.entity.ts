@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Question } from './question.entity';
 
 @Entity({
@@ -22,15 +22,10 @@ export class Conversation {
   })
   message: string;
 
-  @OneToOne(() => Question, (question) => question.conversation)
-  @JoinColumn({
-    name: 'question_id',
-  })
+  @ManyToOne(() => Question, (question) => question.conversations, { onDelete: 'CASCADE' }) /* //<< double check com os outros - on to one -> many to one */
+  @JoinColumn({ name: 'question_id' })
   question: Question;
 
-  @Column({
-    name: 'created_at',
-    type: 'varchar',
-  })
-  created_at: string;
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
 }

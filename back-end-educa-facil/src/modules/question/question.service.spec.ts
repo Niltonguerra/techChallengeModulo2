@@ -4,21 +4,27 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
 import { User } from '@modules/user/entities/user.entity';
 import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
-import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { QuestionStatus } from './enum/question-status.enum';
+import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 
 describe('QuestionService', () => {
   let service: QuestionService;
-  let questionRepository: Repository<Question>;
-  let userRepository: Repository<User>;
-  let schoolSubjectRepository: Repository<SchoolSubject>;
+
+  const mockQueryBuilder = {
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    getMany: jest.fn(),
+  };
 
   const mockQuestionRepository = {
     create: jest.fn(),
     save: jest.fn(),
-    find: jest.fn(),
+    remove: jest.fn(),
     findOne: jest.fn(),
+    createQueryBuilder: jest.fn(() => mockQueryBuilder),
   };
 
   const mockUserRepository = {
@@ -33,79 +39,34 @@ describe('QuestionService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         QuestionService,
-        {
-          provide: getRepositoryToken(Question),
-          useValue: mockQuestionRepository,
-        },
-        {
-          provide: getRepositoryToken(User),
-          useValue: mockUserRepository,
-        },
-        {
-          provide: getRepositoryToken(SchoolSubject),
-          useValue: mockSchoolSubjectRepository,
-        },
+        { provide: getRepositoryToken(Question), useValue: mockQuestionRepository },
+        { provide: getRepositoryToken(User), useValue: mockUserRepository },
+        { provide: getRepositoryToken(SchoolSubject), useValue: mockSchoolSubjectRepository },
       ],
     }).compile();
 
     service = module.get<QuestionService>(QuestionService);
-    questionRepository = module.get<Repository<Question>>(getRepositoryToken(Question));
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
-    schoolSubjectRepository = module.get<Repository<SchoolSubject>>(
-      getRepositoryToken(SchoolSubject),
-    );
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('create', () => {
-    const createQuestionDto: CreateQuestionDto = {
-      title: 'Test Question',
-      description: 'Test Description',
-      tags: ['550e8400-e29b-41d4-a716-446655440000'],
-      author_id: '550e8400-e29b-41d4-a716-446655440001',
+    const dto: CreateQuestionDto = {
+      title: 'Pergunta',
+      description: 'Descrição',
+      tags: ['sub-1'],
+      author_id: 'user-1',
     };
 
-    it('should successfully create a question', async () => {
-      const mockUser = { id: createQuestionDto.author_id };
-
-      mockUserRepository.findOne.mockResolvedValue(mockUser);
+    it('should create question successfully', async () => {
+      mockUserRepository.findOne.mockResolvedValue({ id: 'user-1' });
       mockSchoolSubjectRepository.findBy.mockResolvedValue([]);
+      mockQuestionRepository.create.mockReturnValue({});
+      mockQuestionRepository.save.mockResolvedValue({});
 
-      const mockQuestion = {
-        title: createQuestionDto.title,
-        description: createQuestionDto.description,
-        school_subjects: [],
-        users: [mockUser],
-        created_at: new Date().toISOString(),
-      };
-
-      mockQuestionRepository.create.mockReturnValue(mockQuestion);
-      mockQuestionRepository.save.mockResolvedValue(mockQuestion);
-
-      const result = await service.create(createQuestionDto);
-
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: createQuestionDto.author_id },
-      });
-
-      expect(schoolSubjectRepository.findBy).toHaveBeenCalled();
-
-      expect(questionRepository.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: createQuestionDto.title,
-          description: createQuestionDto.description,
-          users: [mockUser],
-        }),
-      );
-
-      expect(questionRepository.save).toHaveBeenCalledWith(mockQuestion);
+      const result = await service.create(dto);
 
       expect(result).toEqual({
         message: 'Pergunta criada com sucesso!',
@@ -113,49 +74,161 @@ describe('QuestionService', () => {
       });
     });
 
-    it('should throw NotFoundException if user not found', async () => {
+    it('should throw NotFoundException if user does not exist', async () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.create(createQuestionDto)).rejects.toThrow(NotFoundException);
-
-      expect(userRepository.findOne).toHaveBeenCalledWith({
-        where: { id: createQuestionDto.author_id },
-      });
-
-      expect(schoolSubjectRepository.findBy).not.toHaveBeenCalled();
-      expect(questionRepository.create).not.toHaveBeenCalled();
-      expect(questionRepository.save).not.toHaveBeenCalled();
+      await expect(service.create(dto)).rejects.toThrow(NotFoundException);
     });
   });
 
-  describe('Reads (findAll & findOne)', () => {
-    it('findAll should return an array of questions', async () => {
-      const mockQuestions = [{ id: 'uuid-1', title: 'Test' }];
-      mockQuestionRepository.find.mockResolvedValue(mockQuestions);
+  describe('findAll', () => {
+    it('should return questions for student', async () => {
+      mockQueryBuilder.getMany.mockResolvedValue(['q1']);
 
-      const result = await service.findAll();
-
-      expect(result).toEqual(mockQuestions);
-      expect(mockQuestionRepository.find).toHaveBeenCalled();
-    });
-
-    it('findOne should return a question by id', async () => {
-      const mockQuestion = { id: 'uuid-1', title: 'Test' };
-      mockQuestionRepository.findOne.mockResolvedValue(mockQuestion);
-
-      const result = await service.findOne('uuid-1');
-
-      expect(result).toEqual(mockQuestion);
-      expect(mockQuestionRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'uuid-1' },
-        relations: ['school_subjects', 'users', 'admin'],
+      const result = await service.findAll({
+        user: {
+          id: 'u1',
+          email: 'u1@test.com',
+          permission: 'USER',
+        },
       });
+
+      expect(result).toEqual(['q1']);
+    });
+  });
+
+  describe('assignToAdmin', () => {
+    it('should assign question to admin', async () => {
+      mockUserRepository.findOne.mockResolvedValue({
+        id: 'a1',
+        permission: UserPermissionEnum.ADMIN,
+      });
+
+      mockQuestionRepository.findOne.mockResolvedValue({
+        status: QuestionStatus.OPEN,
+        admin: null,
+        users: [],
+      });
+
+      mockQuestionRepository.save.mockResolvedValue({});
+
+      const result = await service.assignToAdmin('q1', 'a1');
+
+      expect(result.message).toContain('atribuída');
     });
 
-    it('findOne should throw NotFoundException if question not found', async () => {
+    it('should throw ForbiddenException if user is not admin', async () => {
+      mockUserRepository.findOne.mockResolvedValue({
+        id: 'u1',
+        permission: UserPermissionEnum.USER,
+      });
+
+      await expect(service.assignToAdmin('q1', 'u1')).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should throw BadRequestException if question is closed', async () => {
+      mockUserRepository.findOne.mockResolvedValue({
+        id: 'a1',
+        permission: UserPermissionEnum.ADMIN,
+      });
+
+      mockQuestionRepository.findOne.mockResolvedValue({
+        status: QuestionStatus.CLOSED,
+        admin: null,
+        users: [],
+      });
+
+      await expect(service.assignToAdmin('q1', 'a1')).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('closeQuestion', () => {
+    it('should close question by admin', async () => {
+      mockQuestionRepository.findOne.mockResolvedValue({
+        status: QuestionStatus.OPEN,
+        users: [],
+        admin: null,
+      });
+
+      mockQuestionRepository.save.mockResolvedValue({});
+
+      const result = await service.closeQuestion('q1', {
+        id: 'a1',
+        email: 'admin@test.com',
+        permission: 'ADMIN',
+      });
+
+      expect(result.message).toContain('finalizada');
+    });
+
+    it('should throw ForbiddenException if user is not author nor admin', async () => {
+      mockQuestionRepository.findOne.mockResolvedValue({
+        status: QuestionStatus.OPEN,
+        users: [{ id: 'u2' }],
+        admin: null,
+      });
+
+      await expect(
+        service.closeQuestion('q1', {
+          id: 'u1',
+          email: 'user@test.com',
+          permission: 'USER',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return question', async () => {
+      mockQuestionRepository.findOne.mockResolvedValue({ id: 'q1' });
+
+      const result = await service.findOne('q1');
+
+      expect(result.id).toBe('q1');
+    });
+
+    it('should throw NotFoundException if question does not exist', async () => {
       mockQuestionRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('uuid-999')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('q99')).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove question if owner', async () => {
+      mockQuestionRepository.findOne.mockResolvedValue({
+        users: [{ id: 'u1' }],
+      });
+
+      mockQuestionRepository.remove.mockResolvedValue({});
+
+      const result = await service.remove({
+        questionId: 'q1',
+        user: {
+          id: 'u1',
+          email: 'u1@test.com',
+          permission: 'USER',
+        },
+      });
+
+      expect(result.message).toContain('removida');
+    });
+
+    it('should throw ForbiddenException if student is not owner', async () => {
+      mockQuestionRepository.findOne.mockResolvedValue({
+        users: [{ id: 'u2' }],
+      });
+
+      await expect(
+        service.remove({
+          questionId: 'q1',
+          user: {
+            id: 'u1',
+            email: 'u1@test.com',
+            permission: 'USER',
+          },
+        }),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 });

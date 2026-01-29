@@ -13,7 +13,7 @@ function formatTime(value: Date | string | number): string {
 }
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
-  content,
+  message,
   isUserTheAuthor,
   authorName,
   createdAt,
@@ -33,7 +33,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
       <div className="chatMessage__body">
         <div className="chatMessage__bubble">
-          <span className="chatMessage__content">{content}</span>
+          <span className="chatMessage__content">{message}</span>
           {time && <span className="chatMessage__time">{time}</span>}
         </div>
       </div>
