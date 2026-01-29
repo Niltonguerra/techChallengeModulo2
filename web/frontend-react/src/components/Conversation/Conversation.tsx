@@ -23,7 +23,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [messages, setMessages] = useState<ChatMessageProps[]>([]);
   const [draft, setDraft] = useState<string>("");
   const listRef = useRef<HTMLDivElement | null>(null);
-	const bottomRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const { user } = useSelector((state: RootState) => state.user);
   const { showSnackbar } = useSnackbar();

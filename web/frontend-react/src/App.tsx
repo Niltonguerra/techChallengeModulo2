@@ -32,6 +32,7 @@ import ForgotPasswordPage from './pages/ForgotPassword/ForgotPasswordForm';
 import { DropdownPlayground } from './pages/temp-componet/DropdownPlayground';
 import { CreateQuestionPageForm } from './pages/createQuestionForm/CreateQuestionForm';
 import Question from './pages/Question/Question';
+import ConversationPage from './pages/Conversation/ConversationPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/question" element={<Question />} />
+          <Route path="/questions/:questionId/chat" element={<ConversationPage />} />
           <Route path="/admin">
             <Route path="post">
               <Route path="create" element={<CreateEditPostFormPage />} />

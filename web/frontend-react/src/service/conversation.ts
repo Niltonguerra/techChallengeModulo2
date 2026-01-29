@@ -1,5 +1,5 @@
 import type { ChatMessageProps } from "../types/conversation";
-import { getApi } from "./user";
+import { getApi } from "./post";
 
 export const getMessages = async (questionId: string) => {
 	const api = getApi();
@@ -14,6 +14,7 @@ export const getMessages = async (questionId: string) => {
 
 export const sendMessage = async (questionId: string, message: string) => {
 	const api = getApi();
+	
 	try {
 		const response = await api.post(`/question/${questionId}/conversations`, { message });
 		return response.data;

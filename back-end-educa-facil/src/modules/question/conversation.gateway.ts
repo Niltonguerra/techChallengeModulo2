@@ -17,7 +17,6 @@ export class ConversationGateway {
   @WebSocketServer()
   server: Server;
 
-  // FE joins a room for a specific question
   @SubscribeMessage('joinQuestion')
   handleJoin(
     @ConnectedSocket() client: Socket,

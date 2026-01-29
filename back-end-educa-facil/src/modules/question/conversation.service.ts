@@ -23,20 +23,20 @@ export class ConversationService {
 		if (!question) throw new NotFoundException('Pergunta não encontrada');
 
 		return this.conversationRepo
-			.createQueryBuilder('c')
-			.leftJoin(User, 'u', 'u.id = c.id_user')
-			.where('c.question_id = :questionId', { questionId })
-			.orderBy('c.created_at', 'ASC')
-			.select([
-				'c.message AS "content"',
-				'u.name AS "authorName"',
-				'(c.id_user = :requesterId) AS "isUserTheAuthor"',
-				'c.created_at AS "createdAt"',
-			])
-			.setParameter('requesterId', requesterId)
-			.getRawMany<GetConversationDto>();
-	}
-
+      .createQueryBuilder('c')
+      .leftJoin('c.question', 'q')
+      .leftJoin(User, 'u', 'u.id = c.id_user::uuid')
+      .where('q.id = :questionId::uuid', { questionId })
+      .orderBy('c.created_at', 'ASC')
+      .select([
+        'c.message AS "content"',
+        'u.name AS "authorName"',
+        '(c.id_user = :requesterId) AS "isUserTheAuthor"',
+        'c.created_at AS "createdAt"',
+      ])
+      .setParameter('requesterId', requesterId)
+      .getRawMany<GetConversationDto>();
+    }
 
   async sendMessage(questionId: string, dto: CreateConversationDto, user: JwtPayload) {
     const question = await this.questionRepo.findOne({
