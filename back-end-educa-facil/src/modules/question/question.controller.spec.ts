@@ -1,157 +1,205 @@
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { QuestionController } from './question.controller';
-import { QuestionService } from './question.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { ConversationService } from './conversation.service';
+import { Conversation } from './entities/conversation.entity';
+import { Question } from './entities/question.entity';
+import { ConversationGateway } from './conversation.gateway';
+import { CreateConversationDto } from './dto/create-conversation.dto';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
-import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
+import { User } from '@modules/user/entities/user.entity';
+import { GetConversationDto } from './dto/get-conversations-response.dto';
+type QBMock<T> = {
+  leftJoin: jest.MockedFunction<any>;
+  where: jest.MockedFunction<any>;
+  orderBy: jest.MockedFunction<any>;
+  select: jest.MockedFunction<any>;
+  setParameter: jest.MockedFunction<any>;
+  getRawMany: jest.Mock<Promise<T[]>>;
+};
 
-describe('QuestionController', () => {
-  let controller: QuestionController;
-  let service: QuestionService;
-
-  const mockQuestionService = {
-    create: jest.fn(),
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
-    assignToAdmin: jest.fn(),
-    closeQuestion: jest.fn(),
-  };
-
-  const mockReq = {
-    user: {
-      id: 'user-123',
-      permission: 'student',
-    },
-  };
-
-  const mockUser: JwtPayload = {
-    id: 'user-123',
-    permission: UserPermissionEnum.USER,
-  } as JwtPayload;
+describe('ConversationService', () => {
+  let service: ConversationService;
+  let conversationRepo: jest.Mocked<Repository<Conversation>>;
+  let questionRepo: jest.Mocked<Repository<Question>>;
+  let gateway: { notifyNewMessages: jest.Mock };
+  let qbMock: QBMock<GetConversationDto>;
 
   beforeEach(async () => {
+    qbMock = {
+      leftJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      setParameter: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn<Promise<GetConversationDto[]>, []>(),
+    };
+
+    const conversationRepoMock = {
+      create: jest.fn(),
+      save: jest.fn(),
+      createQueryBuilder: jest.fn(() => qbMock),
+    };
+
+    const questionRepoMock = {
+      findOne: jest.fn(),
+    };
+
+    const gatewayMock = {
+      notifyNewMessages: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [QuestionController],
       providers: [
-        {
-          provide: QuestionService,
-          useValue: mockQuestionService,
-        },
+        ConversationService,
+        { provide: getRepositoryToken(Conversation), useValue: conversationRepoMock },
+        { provide: getRepositoryToken(Question), useValue: questionRepoMock },
+        { provide: ConversationGateway, useValue: gatewayMock },
       ],
     }).compile();
 
-    controller = module.get<QuestionController>(QuestionController);
-    service = module.get<QuestionService>(QuestionService);
-  });
+    service = module.get(ConversationService);
+    conversationRepo = module.get(getRepositoryToken(Conversation));
+    questionRepo = module.get(getRepositoryToken(Question));
+    gateway = module.get(ConversationGateway);
 
-  afterEach(() => {
     jest.clearAllMocks();
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 
-  describe('create', () => {
-    it('should call service.create with correct params', async () => {
-      const dto = {
-        title: 'Test',
-        description: 'Desc',
-        tags: ['dsdsd123'],
-      } as CreateQuestionDto;
+  describe('listByQuestion', () => {
+    it('should throw NotFoundException if question does not exist', async () => {
+      questionRepo.findOne.mockResolvedValue(null);
 
-      const mockUser = { id: 'user-uuid' } as JwtPayload;
+      await expect(service.listByQuestion('q1', 'u1')).rejects.toBeInstanceOf(NotFoundException);
+    });
 
-      const expectedResult = { statusCode: 201, message: 'Created' };
-      mockQuestionService.create.mockResolvedValue(expectedResult);
+    it('should return conversations ordered by created_at ASC', async () => {
+      questionRepo.findOne.mockResolvedValue({ id: 'q1' } as Question);
 
-      const result = await controller.create(dto, mockUser);
+      const expected = [
+        {
+          content: 'hi',
+          authorName: 'Nilton',
+          isUserTheAuthor: true,
+          createdAt: '2026-01-01T10:00:00.000Z',
+        },
+        {
+          content: 'hello',
+          authorName: 'Maria',
+          isUserTheAuthor: false,
+          createdAt: '2026-01-01T10:01:00.000Z',
+        },
+      ];
 
-      expect(service.create).toHaveBeenCalledWith({
-        ...dto,
-        author_id: mockUser.id,
-      });
+      qbMock.getRawMany.mockResolvedValue(expected as unknown as GetConversationDto[]);
 
-      expect(result).toEqual(expectedResult);
+      const result = await service.listByQuestion('q1', 'u1');
+
+      expect(conversationRepo.createQueryBuilder).toHaveBeenCalledWith('c');
+
+      expect(qbMock.leftJoin).toHaveBeenCalledTimes(2);
+      expect(qbMock.leftJoin).toHaveBeenNthCalledWith(1, 'c.question', 'q');
+      expect(qbMock.leftJoin).toHaveBeenNthCalledWith(2, User, 'u', 'u.id = c.id_user::uuid');
+
+      expect(qbMock.where).toHaveBeenCalledWith('q.id = :questionId::uuid', { questionId: 'q1' });
+
+      expect(qbMock.orderBy).toHaveBeenCalledWith('c.created_at', 'ASC');
+
+      expect(qbMock.select).toHaveBeenCalledWith([
+        'c.message AS "content"',
+        'u.name AS "authorName"',
+        '(c.id_user = :requesterId) AS "isUserTheAuthor"',
+        'c.created_at AS "createdAt"',
+      ]);
+
+      expect(qbMock.setParameter).toHaveBeenCalledWith('requesterId', 'u1');
+
+      expect(qbMock.getRawMany).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(expected);
     });
   });
 
-  describe('assignAdmin', () => {
-    it('should call service.assignToAdmin with correct params', () => {
-      mockQuestionService.assignToAdmin.mockReturnValue('assigned');
+  describe('sendMessage', () => {
+    it('should throw NotFoundException if question does not exist', async () => {
+      questionRepo.findOne.mockResolvedValue(null);
 
-      const result = controller.assignAdmin('q1', mockUser);
-
-      expect(service.assignToAdmin).toHaveBeenCalledWith('q1', mockUser.id);
-
-      expect(result).toBe('assigned');
+      await expect(
+        service.sendMessage('q1', { message: 'hi' }, { id: 'u1' } as JwtPayload),
+      ).rejects.toBeInstanceOf(NotFoundException);
     });
-  });
 
-  describe('closeQuestion', () => {
-    it('should call service.closeQuestion with correct params', () => {
-      mockQuestionService.closeQuestion.mockReturnValue('closed');
+    it('should throw ForbiddenException if user is not participant nor assigned admin', async () => {
+      questionRepo.findOne.mockResolvedValue({
+        id: 'q1',
+        users: [{ id: 'u2' }],
+        admin: { id: 'u3' },
+      } as Question);
 
-      const result = controller.closeQuestion('q1', mockUser);
-
-      expect(service.closeQuestion).toHaveBeenCalledWith('q1', mockUser);
-      expect(result).toBe('closed');
+      await expect(
+        service.sendMessage('q1', { message: 'hi' }, { id: 'u1' } as JwtPayload),
+      ).rejects.toBeInstanceOf(ForbiddenException);
     });
-  });
 
-  describe('findAll', () => {
-    it('should call service.findAll with filters', () => {
-      mockQuestionService.findAll.mockReturnValue('all');
+    it('should save message and notify gateway when user is a participant', async () => {
+      const question = {
+        id: 'q1',
+        users: [{ id: 'u1' }],
+        admin: { id: 'u9' },
+      } as Question;
 
-      const result = controller.findAll(mockReq as any, 'math', 'MINE');
+      questionRepo.findOne.mockResolvedValue(question);
 
-      expect(service.findAll).toHaveBeenCalledWith({
-        user: mockReq.user,
-        subject: 'math',
-        assignment: 'MINE',
-      });
+      const dto: CreateConversationDto = { message: 'hello' };
+      const user = { id: 'u1' } as JwtPayload;
 
-      expect(result).toBe('all');
+      const createdEntity = {
+        id_user: 'u1',
+        message: 'hello',
+        question,
+      } as Conversation;
+
+      conversationRepo.create.mockReturnValue(createdEntity);
+      conversationRepo.save.mockResolvedValue(createdEntity);
+
+      const result = await service.sendMessage('q1', dto, user);
+
+      expect(conversationRepo.create).toHaveBeenCalledTimes(1);
+      expect(conversationRepo.save).toHaveBeenCalledTimes(1);
+      expect(gateway.notifyNewMessages).toHaveBeenCalledWith('q1');
+      expect(result).toBe(createdEntity);
     });
-  });
 
-  describe('findOne', () => {
-    it('should call service.findOne with string id', () => {
-      mockQuestionService.findOne.mockReturnValue('one');
+    it('should save message and notify gateway when user is the assigned admin', async () => {
+      const question = {
+        id: 'q1',
+        users: [{ id: 'u8' }],
+        admin: { id: 'u1' },
+      } as Question;
 
-      const result = controller.findOne('uuid-1');
+      questionRepo.findOne.mockResolvedValue(question);
 
-      expect(service.findOne).toHaveBeenCalledWith('uuid-1');
-      expect(result).toBe('one');
-    });
-  });
+      const dto: CreateConversationDto = { message: 'admin message' };
+      const user = { id: 'u1' } as JwtPayload;
 
-  describe('update', () => {
-    it('should call service.update with correct params', () => {
-      const dto = { title: 'new title' };
-      mockQuestionService.update.mockReturnValue('updated');
+      const createdEntity = {
+        id_user: 'u1',
+        message: dto.message,
+        question,
+      } as Conversation;
 
-      const result = controller.update('1', dto as any);
+      conversationRepo.create.mockReturnValue(createdEntity);
+      conversationRepo.save.mockResolvedValue(createdEntity);
 
-      expect(service.update).toHaveBeenCalledWith(1, dto);
-      expect(result).toBe('updated');
-    });
-  });
+      const result = await service.sendMessage('q1', dto, user);
 
-  describe('remove', () => {
-    it('should call service.remove with correct params', async () => {
-      mockQuestionService.remove.mockResolvedValue('removed');
-
-      const result = await controller.remove('q1', mockReq as any);
-
-      expect(service.remove).toHaveBeenCalledWith({
-        questionId: 'q1',
-        user: mockReq.user,
-      });
-
-      expect(result).toBe('removed');
+      expect(gateway.notifyNewMessages).toHaveBeenCalledWith('q1');
+      expect(result).toBe(createdEntity);
     });
   });
 });

@@ -9,6 +9,8 @@ import { Question } from './entities/question.entity';
 import { ConversationGateway } from './conversation.gateway';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
+import { GetConversationDto } from './dto/get-conversations-response.dto';
+import { User } from '@modules/user/entities/user.entity';
 
 describe('ConversationService', () => {
   let service: ConversationService;
@@ -71,21 +73,44 @@ describe('ConversationService', () => {
     it('should return conversations ordered by created_at ASC', async () => {
       questionRepo.findOne.mockResolvedValue({ id: 'q1' } as any);
 
-      const expected = [
-        { content: 'hi', authorName: 'Nilton', isUserTheAuthor: true, createdAt: '2026-01-01T10:00:00.000Z' },
-        { content: 'hello', authorName: 'Maria', isUserTheAuthor: false, createdAt: '2026-01-01T10:01:00.000Z' },
+      const expected: GetConversationDto[] = [
+        {
+          id: 'c1',
+          questionId: 'q1',
+          userId: 'u1',
+          message: 'hi',
+          authorName: 'Nilton',
+          isUserTheAuthor: true,
+          createdAt: '2026-01-01T10:00:00.000Z',
+        },
+        {
+          id: 'c2',
+          questionId: 'q1',
+          userId: 'u2',
+          message: 'hello',
+          authorName: 'Maria',
+          isUserTheAuthor: false,
+          createdAt: '2026-01-01T10:01:00.000Z',
+        },
       ];
 
       qbMock.getRawMany.mockResolvedValue(expected);
 
+      qbMock.getRawMany.mockResolvedValue(expected as unknown as GetConversationDto[]);
+
       const result = await service.listByQuestion('q1', 'u1');
 
+      // QueryBuilder
       expect(conversationRepo.createQueryBuilder).toHaveBeenCalledWith('c');
-      expect(qbMock.leftJoin).toHaveBeenCalledTimes(1);
-      expect(qbMock.where).toHaveBeenCalledWith('c.question_id = :questionId', { questionId: 'q1' });
+
+      expect(qbMock.leftJoin).toHaveBeenCalledWith('c.question', 'q');
+      expect(qbMock.leftJoin).toHaveBeenCalledWith(User, 'u', 'u.id = c.id_user::uuid');
+
+      expect(qbMock.where).toHaveBeenCalledWith('q.id = :questionId::uuid', { questionId: 'q1' });
+
       expect(qbMock.orderBy).toHaveBeenCalledWith('c.created_at', 'ASC');
       expect(qbMock.setParameter).toHaveBeenCalledWith('requesterId', 'u1');
-      expect(qbMock.getRawMany).toHaveBeenCalledTimes(1);
+      expect(qbMock.getRawMany).toHaveBeenCalled();
 
       expect(result).toEqual(expected);
     });

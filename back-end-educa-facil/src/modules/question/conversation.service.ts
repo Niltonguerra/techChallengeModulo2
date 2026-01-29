@@ -18,11 +18,11 @@ export class ConversationService {
     private readonly gateway: ConversationGateway,
   ) {}
 
-	async listByQuestion(questionId: string, requesterId: string): Promise<GetConversationDto[]> {
-		const question = await this.questionRepo.findOne({ where: { id: questionId } });
-		if (!question) throw new NotFoundException('Pergunta não encontrada');
+  async listByQuestion(questionId: string, requesterId: string): Promise<GetConversationDto[]> {
+    const question = await this.questionRepo.findOne({ where: { id: questionId } });
+    if (!question) throw new NotFoundException('Pergunta não encontrada');
 
-		return this.conversationRepo
+    return this.conversationRepo
       .createQueryBuilder('c')
       .leftJoin('c.question', 'q')
       .leftJoin(User, 'u', 'u.id = c.id_user::uuid')
@@ -36,7 +36,7 @@ export class ConversationService {
       ])
       .setParameter('requesterId', requesterId)
       .getRawMany<GetConversationDto>();
-    }
+  }
 
   async sendMessage(questionId: string, dto: CreateConversationDto, user: JwtPayload) {
     const question = await this.questionRepo.findOne({

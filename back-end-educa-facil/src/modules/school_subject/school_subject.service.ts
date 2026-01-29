@@ -15,9 +15,18 @@ export class SchoolSubjectService {
     return await this.schoolSubjectRepository
       .createQueryBuilder('subject')
       .innerJoin('subject.questions', 'question')
-      .select(['DISTINCT ON (subject.id) subject.id AS value', 'subject.name AS label'])
-      .orderBy('subject.id')
+      .select(['subject.id AS value', 'subject.name AS label'])
+      .distinctOn(['subject.id'])
+      .orderBy('subject.id', 'ASC')
       .addOrderBy('LOWER(subject.name)', 'ASC')
+      .getRawMany<SchoolSubjectDropdownDto>();
+  }
+
+  async getAllSubjectsDropdown(): Promise<SchoolSubjectDropdownDto[]> {
+    return await this.schoolSubjectRepository
+      .createQueryBuilder('subject')
+      .select(['subject.id AS value', 'subject.name AS label'])
+      .orderBy('LOWER(subject.name)', 'ASC')
       .getRawMany<SchoolSubjectDropdownDto>();
   }
 }

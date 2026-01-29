@@ -28,4 +28,13 @@ export class SchoolSubjectController {
   async getDropdown(): Promise<SchoolSubjectDropdownDto[]> {
     return await this.getSchoolSubjectCase.getDropdownUseCase();
   }
+
+  @Get('/dropdown/all')
+  @ApiBearerAuth('JWT-Auth')
+  @UseGuards(JwtAuthGuardUser, RolesGuardStudent)
+  @ApiOperation({ summary: 'Lista todas matérias' })
+  @ApiOkResponse({ type: SchoolSubjectDropdownDto, isArray: true })
+  async getAllDropdown(): Promise<SchoolSubjectDropdownDto[]> {
+    return await this.getSchoolSubjectCase.getAllDropdownUseCase();
+  }
 }
