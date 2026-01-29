@@ -33,81 +33,94 @@ import { DropdownPlayground } from './pages/temp-componet/DropdownPlayground';
 import { CreateQuestionPageForm } from './pages/createQuestionForm/CreateQuestionForm';
 import Question from './pages/Question/Question';
 import { connectSocket, disconnectSocket, getSocket } from './service/socket';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { addNotification } from './store/notificationsSlice';
 import SocketTest from './pages/playground/SocketTest';
 import { nanoid } from '@reduxjs/toolkit';
 import type { QuestionNotification } from './types/conversation';
 import { getNotifications } from './service/question';
 
-
 function App() {
   const dispatch = useDispatch();
   const { isLoggedIn, user } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
+  const onQuestionUpdate = useCallback(
+    (payload: QuestionNotification) => {
+      console.log('🔥 EVENTO RECEBIDO:', payload);
+
+      dispatch(
+        addNotification({
+          id: nanoid(),
+          questionId: payload.questionId,
+          title: `Nova resposta de ${payload.senderName || 'alguém'}: ${payload.title}`,
+          read: false,
+          senderPhoto: payload.senderPhoto,
+          senderId: payload.senderId,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
+  /** Login */
   const handleLogin = (userData: User, token: string) => {
     dispatch(loginSuccess({ user: userData, token }));
     connectSocket(userData.id);
   };
 
+  /** Logout */
   const handleLogout = () => {
     disconnectSocket();
     dispatch(logout());
     navigate('/login');
   };
 
-  const handleNavigate = (path: string) => {
-    navigate(path);
-  };
-  // @ts-expect-error TS2345
+  /** BUSCA notificações pendentes ao logar / refresh */
   useEffect(() => {
-  if (!isLoggedIn || !user?.id) return;
+    if (!isLoggedIn || !user?.id) return;
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await getNotifications(); // função que busca do backend
-      response.forEach((n: QuestionNotification) =>
-        dispatch(
-          addNotification({
-            id: nanoid(),
-            questionId: n.questionId,
-            title: `Nova resposta de ${n.senderName || 'alguém'}: ${n.title}`,
-            read: n.read,
-            senderPhoto: n.senderPhoto,
-            senderId: n.senderId,
-          })
-        )
-      );
-    } catch (err) {
-      console.error('Erro ao buscar notificações:', err);
-    }
-  };
+    console.log(' Buscando notificações pendentes');
 
-  fetchNotifications(); // pega notificações pendentes
+    const fetchNotifications = async () => {
+      try {
+        const response = await getNotifications();
 
-  const socket = getSocket(); // escuta notificações novas em tempo real
+        response.forEach((n: QuestionNotification) => {
+          dispatch(
+            addNotification({
+              id: nanoid(),
+              questionId: n.questionId,
+              title: `Nova resposta de ${n.senderName || 'alguém'}: ${n.title}`,
+              read: n.read,
+              senderPhoto: n.senderPhoto,
+              senderId: n.senderId,
+            }),
+          );
+        });
+      } catch (err) {
+        console.error('Erro ao buscar notificações:', err);
+      }
+    };
 
-  const onQuestionUpdate = (payload: QuestionNotification) => {
-    dispatch(
-      addNotification({
-        id: nanoid(),
-        questionId: payload.questionId,
-        title: `Nova resposta de ${payload.senderName || 'alguém'}: ${payload.title}`,
-        read: false,
-        senderPhoto: payload.senderPhoto,
-        senderId: payload.senderId,
-      })
-    );
-  };
+    fetchNotifications();
+  }, [isLoggedIn, user?.id, dispatch]);
 
-  socket.on('question:update', onQuestionUpdate);
+  /** SOCKET em tempo real */
+  useEffect(() => {
+    if (!isLoggedIn || !user?.id) return;
 
-  return () => socket.off('question:update', onQuestionUpdate);
-}, [isLoggedIn, user?.id, dispatch]);
+    const socket = getSocket();
 
+    console.log(' Registrando listener question:update');
 
+    socket.on('question:update', onQuestionUpdate);
 
+    return () => {
+      console.log(' Removendo listener question:update');
+      socket.off('question:update', onQuestionUpdate);
+    };
+  }, [isLoggedIn, user?.id, onQuestionUpdate]);
 
   return (
     <>
@@ -115,9 +128,11 @@ function App() {
         isLoggedIn={isLoggedIn}
         user={user}
         onLogout={handleLogout}
-        onNavigate={handleNavigate}
+        onNavigate={navigate}
       />
+
       <SnackBarComponent />
+
       <main className="main-content">
         <Routes>
           <Route path="/create-question" element={<CreateQuestionPageForm />} />
@@ -156,6 +171,7 @@ function App() {
           />
         </Routes>
       </main>
+
       <Footer />
     </>
   );

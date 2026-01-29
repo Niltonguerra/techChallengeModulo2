@@ -26,7 +26,7 @@ export class QuestionService {
     private questionViewRepository: Repository<QuestionView>,
 
     private notificationsGateway: NotificationsGateway,
-  ) {}
+  ) { }
 
   async create(createQuestionDto: CreateQuestionDto): Promise<ReturnMessageDTO> {
     const user = await this.userRepository.findOne({
@@ -67,23 +67,37 @@ export class QuestionService {
     const senderUser = question.users.find((u) => u.id === senderId);
     if (!senderUser) throw new NotFoundException('Usuário não está vinculado a essa questão');
 
-    // Cria a conversa
+    // cria conversa
     const conversation = this.conversationRepository.create({
       question,
       user: senderUser,
       message,
-      created_at: new Date().toISOString(),
+      created_at: new Date(),
     });
     await this.conversationRepository.save(conversation);
 
-    // Notificar apenas quem ainda não viu a questão
-    for (const recipientUser of question.users.filter((u) => u.id !== senderId)) {
+    // ATUALIZA A ATIVIDADE DA QUESTÃO PRIMEIRO
+    question.last_activity_at = conversation.created_at;
+    await this.questionRepository.save(question);
+
+    // AGORA decide quem notificar
+    for (const recipientUser of question.users) {
+      if (recipientUser.id === senderId) continue;
+
       const view = await this.questionViewRepository.findOne({
         where: { user: recipientUser, question },
       });
 
-      // Se não existe view, ou a última vez que viu foi antes da mensagem
-      const shouldNotify = !view || new Date(conversation.created_at) > new Date(view.last_seen_at);
+      const shouldNotify =
+        !view || !view.last_seen_at || view.last_seen_at < question.last_activity_at;
+
+      console.log({
+        recipient: recipientUser.id,
+        last_seen_at: view?.last_seen_at,
+        last_activity_at: question.last_activity_at,
+        shouldNotify,
+      });
+
       if (shouldNotify) {
         this.notificationsGateway.notifyQuestionUpdate(recipientUser.id, {
           questionId: question.id,
@@ -114,6 +128,12 @@ export class QuestionService {
 
     if (view) {
       view.last_seen_at = new Date();
+      await this.questionViewRepository.update(
+        { id: question.id },
+        {
+          last_seen_at: new Date(),
+        },
+      );
     } else {
       view = this.questionViewRepository.create({
         user,
@@ -135,20 +155,24 @@ export class QuestionService {
 
     for (const view of views) {
       const question = view.question;
+
+      if (!question.last_activity_at) continue;
+
       for (const u of question.users) {
-        if (u.id !== userId) {
-          notifications.push({
-            questionId: question.id,
-            title: question.title,
-            senderId: u.id,
-            senderName: u.name,
-            senderPhoto: u.photo,
-            read: view.last_seen_at && view.last_seen_at >= question.updated_at ? true : false,
-          });
-        }
+        if (u.id === userId) continue;
+
+        notifications.push({
+          questionId: question.id,
+          title: question.title,
+          senderId: u.id,
+          senderName: u.name,
+          senderPhoto: u.photo,
+          read: !!view.last_seen_at && view.last_seen_at >= question.last_activity_at,
+        });
       }
     }
 
     return notifications;
   }
+
 }

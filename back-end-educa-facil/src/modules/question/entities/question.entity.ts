@@ -62,6 +62,6 @@ export class Question {
   })
   created_at: Date;
 
-  @Column({ name: 'created_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
-  updated_at: Date;
+  @Column({ name: 'updated_at', type: 'timestamptz', nullable: true })
+  last_activity_at: Date;
 }

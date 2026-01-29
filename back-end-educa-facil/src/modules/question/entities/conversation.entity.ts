@@ -27,7 +27,7 @@ export class Conversation {
 
   @Column({
     name: 'created_at',
-    type: 'varchar',
+    type: 'timestamptz',
   })
-  created_at: string;
+  created_at: Date;
 }

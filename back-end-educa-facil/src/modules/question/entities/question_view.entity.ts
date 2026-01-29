@@ -17,6 +17,6 @@ export class QuestionView {
   @JoinColumn({ name: 'question_id' })
   question: Question;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamptz' })
   last_seen_at: Date;
 }

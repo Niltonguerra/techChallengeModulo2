@@ -1,35 +1,41 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction, nanoid } from '@reduxjs/toolkit';
 import type { QuestionNotification } from '../types/conversation';
 
 interface NotificationsState {
   items: QuestionNotification[];
 }
 
-const initialState: NotificationsState = { items: [] };
+const initialState: NotificationsState = {
+  items: [],
+};
 
 const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
     addNotification(state, action: PayloadAction<QuestionNotification>) {
-      // Procura se já existe notificação para a mesma questão
-      const existing = state.items.find(n => n.questionId === action.payload.questionId);
+      const notification: QuestionNotification = {
+        ...action.payload,
+        id: action.payload.id ?? nanoid(),
+        read: action.payload.read ?? false,
+      };
 
-      if (existing) {
-        // Atualiza a notificação existente com os novos dados
-        existing.title = action.payload.title;
-        existing.read = false; // sempre marca como nova
-        existing.senderPhoto = action.payload.senderPhoto;
-        existing.senderId = action.payload.senderId;
-      } else {
-        // Se não existe, adiciona no início da lista
-        state.items.unshift(action.payload);
+      const existingIndex = state.items.findIndex(
+        n => n.questionId === notification.questionId
+      );
+
+      if (existingIndex !== -1) {
+        state.items.splice(existingIndex, 1);
       }
+
+      state.items.unshift(notification);
     },
 
     markAsRead(state, action: PayloadAction<string>) {
       const notification = state.items.find(n => n.id === action.payload);
-      if (notification) notification.read = true;
+      if (notification) {
+        notification.read = true;
+      }
     },
 
     clearNotifications(state) {
@@ -38,5 +44,10 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const { addNotification, markAsRead, clearNotifications } = notificationsSlice.actions;
+export const {
+  addNotification,
+  markAsRead,
+  clearNotifications,
+} = notificationsSlice.actions;
+
 export default notificationsSlice.reducer;

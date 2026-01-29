@@ -63,9 +63,8 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn = false, user, onLogout }) =
   const isNotificationMenuOpen = Boolean(notificationMenuAnchor);
 
   const notifications = useAppSelector(state => state.notifications.items);
-
   // Conta apenas notificações não lidas e que não foram enviadas por você
-  const unreadCount = notifications.filter(n => !n.read && n.senderId !== user?.id).length;
+  const unreadCount = notifications.filter(n => n.read && n.senderId !== user?.id).length;
 
   // Marca a notificação como lida e navega para a questão
   const handleNotificationClick = async (questionId: string) => {
