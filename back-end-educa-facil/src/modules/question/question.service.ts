@@ -47,7 +47,6 @@ export class QuestionService {
       title: createQuestionDto.title,
       description: createQuestionDto.description,
       school_subjects: subjects,
-      created_at: new Date().toISOString(),
       status: QuestionStatus.OPEN,
       users: [user],
     });
@@ -75,7 +74,7 @@ export class QuestionService {
       qb.andWhere('subjects.id = :subject', { subject });
     }
 
-    if (user.permission === UserPermissionEnum.USER) {
+    if (user.permission === 'user') {
       qb.andWhere('users.id = :userId', { userId: user.id });
       return qb.getMany();
     }
