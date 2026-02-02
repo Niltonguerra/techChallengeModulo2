@@ -50,3 +50,16 @@ export const getSchoolSubjectsDropdown = async (): Promise<DropdownOption[]> => 
     }
 };
 
+export const getSchoolSubjectsDropdownAll = async (): Promise<DropdownOption[]> => {
+    const api = getApi();
+    try {
+        const response = await api.get<DropdownOption[]>(
+            '/school-subject/dropdown/all',
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao chamar getSchoolSubjectsDropdown:', error);
+        throw error;
+    }
+};
+

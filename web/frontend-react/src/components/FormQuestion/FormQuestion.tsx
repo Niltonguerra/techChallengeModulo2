@@ -5,7 +5,7 @@ import type { FormQuestionData } from '../../types/form-post';
 import './FormQuestion.scss';
 import { initialFormQuestionState } from '../../constants/formConstants';
 import { useFormQuestionSubmit } from '../../hooks/useFormQuestionSubmit';
-import { getSchoolSubjectsDropdown } from '../../service/schoolSubject';
+import { getSchoolSubjectsDropdownAll } from '../../service/schoolSubject';
 import type { DropdownOption } from '../../types/dropdown';
 
 const CreateQuestionForm: React.FC<Partial<FormQuestionData>> = (props) => {
@@ -32,7 +32,7 @@ const CreateQuestionForm: React.FC<Partial<FormQuestionData>> = (props) => {
     async function loadSubjects() {
       try {
         setLoadingSubjects(true);
-        const data = await getSchoolSubjectsDropdown();
+        const data = await getSchoolSubjectsDropdownAll();
         setSubjectOptions(data);
       } catch (error) {
         console.error('Erro ao carregar matérias', error);
