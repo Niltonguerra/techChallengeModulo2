@@ -24,7 +24,7 @@ import { JwtAuthGuardUser } from '@modules/auth/guards/jwt-auth-user.guard';
 import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 import { GetTokenValues } from '@modules/auth/decorators/token.decorator';
-import { AuthenticatedRequest } from '@modules/auth/decorators/token.decorator';
+import { AuthenticatedRequest } from '@modules/auth/Request/request.auth';
 
 @ApiTags('question')
 @Controller('question')

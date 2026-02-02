@@ -22,7 +22,9 @@ export class Conversation {
   })
   message: string;
 
-  @ManyToOne(() => Question, (question) => question.conversations, { onDelete: 'CASCADE' }) /* //<< double check com os outros - on to one -> many to one */
+  @ManyToOne(() => Question, (question) => question.conversations, {
+    onDelete: 'CASCADE',
+  }) /* //<< double check com os outros - on to one -> many to one */
   @JoinColumn({ name: 'question_id' })
   question: Question;
 

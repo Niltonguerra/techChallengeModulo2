@@ -74,7 +74,10 @@ export class Question {
   })
   school_subjects: SchoolSubject[];
 
-  @OneToMany(() => Conversation, (conversation) => conversation.question) /* //<< double check com os outros - one to one -> one to many */
+  @OneToMany(
+    () => Conversation,
+    (conversation) => conversation.question,
+  ) /* //<< double check com os outros - one to one -> one to many */
   conversations: Conversation[];
 
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })

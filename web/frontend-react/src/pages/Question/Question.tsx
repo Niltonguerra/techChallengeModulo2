@@ -93,11 +93,16 @@ export default function Question() {
 
   const handleDeleteQuestion = async (id: string) => {
   try {
-    await deleteQuestion(id); 
+    await deleteQuestion(id);
+
+    setQuestions((prev) =>
+      prev.filter((question) => question.id !== id),
+    );
   } catch (err) {
     console.error(err);
   }
 };
+
 
 
   const handleAssign = async (id: string) => {

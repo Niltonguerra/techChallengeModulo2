@@ -40,7 +40,14 @@ describe('ConversationController', () => {
       const questionId = 'q1';
       const user = { id: 'u1' } as JwtPayload;
 
-      const expected = [{ message: 'x', authorName: 'A', isUserTheAuthor: true, createdAt: new Date().toISOString() }] as GetConversationDto[];
+      const expected = [
+        {
+          message: 'x',
+          authorName: 'A',
+          isUserTheAuthor: true,
+          createdAt: new Date().toISOString(),
+        },
+      ] as GetConversationDto[];
 
       service.listByQuestion.mockResolvedValue(expected);
 
