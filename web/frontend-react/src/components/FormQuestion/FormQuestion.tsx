@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Box, Paper, TextField, Button, Typography, MenuItem } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Paper, TextField, Button, Typography, MenuItem, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { FormQuestionData } from '../../types/form-post';
 import './FormQuestion.scss';
-import { initialFormQuestionState, schoolSubjects } from '../../constants/formConstants';
+import { initialFormQuestionState } from '../../constants/formConstants';
 import { useFormQuestionSubmit } from '../../hooks/useFormQuestionSubmit';
+import { getSchoolSubjectsDropdown } from '../../service/schoolSubject';
+import type { DropdownOption } from '../../types/dropdown';
 
 const CreateQuestionForm: React.FC<Partial<FormQuestionData>> = (props) => {
   const [form, setForm] = useState<FormQuestionData>({
@@ -15,6 +17,8 @@ const CreateQuestionForm: React.FC<Partial<FormQuestionData>> = (props) => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const [subjectOptions, setSubjectOptions] = useState<DropdownOption[]>([]);
+  const [loadingSubjects, setLoadingSubjects] = useState<boolean>(false);
   const formTitle = 'Criar Pergunta';
 
   React.useEffect(() => {
@@ -24,9 +28,28 @@ const CreateQuestionForm: React.FC<Partial<FormQuestionData>> = (props) => {
     }));
   }, [props]);
 
+  useEffect(() => {
+    async function loadSubjects() {
+      try {
+        setLoadingSubjects(true);
+        const data = await getSchoolSubjectsDropdown();
+        setSubjectOptions(data);
+      } catch (error) {
+        console.error('Erro ao carregar matérias', error);
+      } finally {
+        setLoadingSubjects(false);
+      }
+    }
+    loadSubjects();
+  }, []);
+
   const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    if (name === 'tags') {
+      setForm(prev => ({ ...prev, [name]: [value] }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   }, []);
 
   const { handleSubmit } = useFormQuestionSubmit({ form, setErrors, setLoading });
@@ -59,18 +82,25 @@ const CreateQuestionForm: React.FC<Partial<FormQuestionData>> = (props) => {
             select
             label="Matéria"
             name="tags"
-            value={form.tags}
+            value={form.tags[0] || ''}
             onChange={handleChange}
             required
             fullWidth
             error={!!errors.tags}
             helperText={errors.tags}
+            disabled={loadingSubjects}
           >
-            {schoolSubjects.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {loadingSubjects ? (
+              <MenuItem disabled>
+                <CircularProgress size={20} /> Carregando...
               </MenuItem>
-            ))}
+            ) : (
+              subjectOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))
+            )}
           </TextField>
 
           <TextField

@@ -23,7 +23,7 @@ export interface FormUserData {
 export interface FormQuestionData {
   title: string;
   description: string;
-  tags: string; 
+  tags: string[]; 
   author_id: string;
 }
 
