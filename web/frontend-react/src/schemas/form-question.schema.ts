@@ -8,7 +8,7 @@ export const formQuestionSchema = z.object({
   description: z.string()
     .min(10, 'Descrição deve ter no mínimo 10 caracteres')
     .nonempty('Descrição é obrigatória'),
-  tags: z.string()
+  tags: z.array(z.string())
     .nonempty('Matéria é obrigatória'),
   author_id: z.string()
     .nonempty('ID do autor é obrigatório'),

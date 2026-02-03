@@ -20,7 +20,7 @@ export const initialFormUserState: FormUserData = {
 export const initialFormQuestionState: import("../types/form-post").FormQuestionData = {
   title: '',
   description: '',
-  tags: '',
+  tags: [],
   author_id: '',
 };
 
