@@ -53,7 +53,7 @@ function App() {
   };
 
   return (
-    <>
+    <div className="app">
       <Header
         isLoggedIn={isLoggedIn}
         user={user}
@@ -97,7 +97,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
 
