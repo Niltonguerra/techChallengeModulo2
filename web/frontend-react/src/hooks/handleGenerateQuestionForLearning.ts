@@ -1,7 +1,8 @@
 import { generateQuestionForLearning, sendMessage } from "../service/conversation";
+import type { ChatMessageProps } from "../types/conversation";
 import { formatConversationToPrompt } from "../utils/promptFormatter";
 
-export async function handleGenerateQuestionsForLearning(conversation: any,userName: string, setLoading: (loading: boolean) => void,questionId: string) {
+export async function handleGenerateQuestionsForLearning(conversation: ChatMessageProps[],userName: string, setLoading: (loading: boolean) => void,questionId: string) {
     try {
         setLoading(true);
         const prompt = formatConversationToPrompt(conversation);

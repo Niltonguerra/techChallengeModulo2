@@ -1,6 +1,6 @@
-import type { ChatMessageLocal } from "../types/conversation";
+import type { ChatMessageProps } from "../types/conversation";
 
-export function formatConversationToPrompt(conversation: ChatMessageLocal[]): string {
+export function formatConversationToPrompt(conversation: ChatMessageProps[]): string {
     const conversationHistory = conversation
         .map((msg) => `${msg.authorName}: ${msg.content}`)
         .join("\n");
