@@ -37,12 +37,15 @@ export function QuestionCard({ question, onDelete, onAssign, isAdmin }: Question
     <div className={`question-card ${open ? 'open' : ''}`}>
       <div className="question-card__header" onClick={toggleOpen}>
         <div className="question-card__info">
-          <span className="question-card__title">
+          <span className="question-card__title">-
             {question.title}
           </span>
-
           <div className="question-card__meta">
-            <span className="subject">{question.id_school_subject}</span>
+            <span className="subject">
+              {question.school_subjects && question.school_subjects.length > 0
+                ? question.school_subjects.map(s => s.name).join(', ')
+                : 'Sem matéria'}
+            </span>
             <span className="separator">•</span>
             <span className="date">
               {new Date(question.created_at).toLocaleDateString('pt-BR')}
