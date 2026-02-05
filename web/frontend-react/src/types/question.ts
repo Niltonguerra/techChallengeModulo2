@@ -2,7 +2,10 @@ export interface Question {
   id: string;
   title: string;
   description: string;
-  id_school_subject: string;
+  school_subjects?: {
+  id: string;
+  name: string;
+}[];
   created_at: string;
 
   status: 'OPEN' | 'CLOSED';
