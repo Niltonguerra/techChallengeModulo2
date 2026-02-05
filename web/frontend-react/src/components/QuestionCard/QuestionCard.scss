@@ -31,7 +31,11 @@
     align-items: center;
     gap: var(--spacing-sm);
 
-    button {
+    .assign-btn {
+      background-color: var(--secondary-main) !important;
+    }
+
+    button:not(.MuiButton-root) {
       background: none;
       border: none;
       cursor: pointer;
@@ -45,6 +49,9 @@
 
       &.danger:hover {
         color: var(--error-main);
+      }
+      &.chat-btn:hover {
+        color: var(--success-main);
       }
     }
 
@@ -62,7 +69,9 @@
     max-height: 0;
     overflow: hidden;
     background: var(--background-default);
-    transition: max-height 0.3s ease, padding 0.3s ease;
+    transition:
+      max-height 0.3s ease,
+      padding 0.3s ease;
     padding: 0 var(--spacing-lg);
 
     p {
@@ -80,7 +89,7 @@
     }
   }
 
-   &__info {
+  &__info {
     display: flex;
     flex-direction: column;
   }
@@ -92,13 +101,69 @@
     display: flex;
     align-items: center;
     gap: 6px;
-  }
 
-  .subject {
-    font-weight: var(--font-weight-medium);
-  }
+    .admin-info {
+      display: flex;
+      align-items: center;
+      color: var(--primary-main);
+      border: 1px solid var(--primary-light);
+      background-color: color-mix(
+        in srgb,
+        var(--primary-main),
+        transparent 90%
+      );
+      border-radius: 12px;
+      padding: 2px 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
-  .separator {
-    opacity: 0.6;
+      font-weight: 600;
+      font-size: 0.75rem;
+      white-space: nowrap;
+
+      span {
+        line-height: 1;
+        margin-top: 1px;
+      }
+
+      svg {
+        color: var(--primary-main);
+        margin-right: 4px;
+        font-size: 1rem;
+      }
+    }
+
+    .pending-info {
+      display: flex;
+      align-items: center;
+      color: var(--warning-dark);
+      border: 1px solid var(--warning-light);
+      background-color: color-mix(
+        in srgb,
+        var(--warning-main),
+        transparent 90%
+      );
+      border-radius: 12px;
+      padding: 2px 10px;
+      box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1);
+
+      font-weight: 600;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+    span {
+      line-height: 1;
+      margin-top: 1px;
+    }
+    svg {
+      color: var(--warning-main);
+    }
   }
+}
+
+.subject {
+  font-weight: var(--font-weight-medium);
+}
+
+.separator {
+  opacity: 0.6;
 }
