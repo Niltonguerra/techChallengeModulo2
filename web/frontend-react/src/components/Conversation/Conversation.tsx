@@ -10,6 +10,7 @@ import { getMessages, sendMessage } from "../../service/conversation";
 import { useSnackbar } from "../../store/snackbar/useSnackbar";
 import type { RootState } from "../../store";
 import { useSelector } from "react-redux";
+import { useConversationRealtime } from "../../service/conversation-socket";
 
 export type ConversationProps = {
   questionId: string;
@@ -30,16 +31,25 @@ export const Conversation: React.FC<ConversationProps> = ({
 
 	// delays the scroll to the bottom to next frame to ensure messages are rendered
 	useLayoutEffect(() => {
-		requestAnimationFrame(() => {
-			bottomRef.current?.scrollIntoView({ block: "end" });
-		});
+		const el = listRef.current;
+		if (!el) return;
+		el.scrollTop = el.scrollHeight;
 	}, [messages.length]);
+
 
   const scrollToBottom = () => {
     const el = listRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
   };
+
+	useConversationRealtime({
+		questionId,
+		callbackFunction: () => {
+			if (!questionId) return;
+			handleGetMessages(questionId);
+		},
+	});
 
 	const handleGetMessages = useCallback(async (questionId: string) => {
 		getMessages(questionId).then((msgs) => {
@@ -68,7 +78,7 @@ export const Conversation: React.FC<ConversationProps> = ({
 		if(!user) return;
 
     sendMessage(questionId, draft.trim()).then(() => {
-			setMessages((prev) => [...prev, { message: draft.trim(), isUserTheAuthor: true, authorName: user.name, createdAt: new Date() }]);
+			setMessages((prev) => [...prev, { content: draft.trim(), isUserTheAuthor: true, authorName: user.name, createdAt: new Date() }]);
     	setDraft("");
 		}).catch((err) => {
 			console.error("Erro ao enviar mensagem:", err);
@@ -112,7 +122,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       items.push(
         <ChatMessage
           key={`msg-${i}`}
-          message={msg.message}
+          content={msg.content}
           isUserTheAuthor={msg.isUserTheAuthor}
           authorName={msg.authorName}
           createdAt={msg.createdAt}

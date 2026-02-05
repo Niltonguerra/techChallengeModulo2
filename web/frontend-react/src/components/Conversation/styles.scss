@@ -1,6 +1,7 @@
 .container {
-	height: 100vh;
+  height: 100%;
   display: flex;
+  overflow: hidden;
 }
 
 .conversation {
@@ -38,8 +39,9 @@
 .conversation__messages {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
   padding: 14px 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .conversation__dateSeparatorWrap {
@@ -63,6 +65,7 @@
   display: flex;
   gap: 10px;
   align-items: flex-end;
+  flex-shrink: 0;
 
   padding: 12px;
   background: #ffffff;
