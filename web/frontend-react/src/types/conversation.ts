@@ -4,3 +4,8 @@ export type ChatMessageProps = {
   authorName: string;
   createdAt: Date | string | number;
 }
+
+export interface UseGenerateQuestion {
+  conversation: ChatMessageProps[];
+  setLoading: (loading: boolean) => void;
+}
