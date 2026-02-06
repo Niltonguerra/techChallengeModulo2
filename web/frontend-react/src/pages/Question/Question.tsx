@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Box, Stack, Button, CircularProgress, Typography } from '@mui/material';
+import {
+  Box,
+  Stack,
+  Button,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +19,6 @@ import type { RootState } from '../../store';
 import { getSchoolSubjectsDropdown } from '../../service/schoolSubject';
 import { getQuestions, deleteQuestion } from '../../service/question';
 import { assignQuestion } from '../../service/question';
-
 
 export default function Question() {
   const navigate = useNavigate();
@@ -58,52 +63,48 @@ export default function Question() {
   }, []);
 
   const loadQuestions = async () => {
-  try {
-    setLoadingQuestions(true);
+    try {
+      setLoadingQuestions(true);
 
-    const params: {
-      subject?: string;
-      assignment?: 'UNASSIGNED' | 'MINE';
-    } = {};
+      const params: {
+        subject?: string;
+        assignment?: 'UNASSIGNED' | 'MINE';
+      } = {};
 
-    if (subject) {
-      params.subject = subject;
+      if (subject) {
+        params.subject = subject;
+      }
+
+      if (isAdmin && filterType) {
+        params.assignment = filterType as 'UNASSIGNED' | 'MINE';
+      }
+
+      if (!isAdmin) {
+        params.assignment = 'MINE';
+      }
+
+      const data = await getQuestions(params);
+      setQuestions(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Erro ao carregar dúvidas', error);
+    } finally {
+      setLoadingQuestions(false);
     }
-
-    if (isAdmin && filterType) {
-      params.assignment = filterType as 'UNASSIGNED' | 'MINE';
-    }
-
-    if (!isAdmin) {
-      params.assignment = 'MINE';
-    }
-
-    const data = await getQuestions(params);
-    setQuestions(Array.isArray(data) ? data : []);
-  } catch (error) {
-    console.error('Erro ao carregar dúvidas', error);
-  } finally {
-    setLoadingQuestions(false);
-  }
-};
+  };
 
   useEffect(() => {
     loadQuestions();
   }, [subject, filterType]);
 
   const handleDeleteQuestion = async (id: string) => {
-  try {
-    await deleteQuestion(id);
+    try {
+      await deleteQuestion(id);
 
-    setQuestions((prev) =>
-      prev.filter((question) => question.id !== id),
-    );
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-
+      setQuestions(prev => prev.filter(question => question.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleAssign = async (id: string) => {
     try {
@@ -113,8 +114,6 @@ export default function Question() {
       console.error('Erro ao assumir dúvida', error);
     }
   };
-
-
 
   const handleClearFilters = () => {
     setSubject('');
@@ -126,6 +125,14 @@ export default function Question() {
 
   return (
     <Box px={3} py={4}>
+      <Button
+        type="button"
+        variant="outlined"
+        onClick={() => navigate('/home')}
+        sx={{ marginBottom: 2 }}
+      >
+        Voltar
+      </Button>
       <Typography variant="h4" mb={2}>
         Dúvidas
       </Typography>
@@ -182,7 +189,7 @@ export default function Question() {
           Nenhuma dúvida encontrada.
         </Typography>
       ) : (
-        questions.map((question) => (
+        questions.map(question => (
           <QuestionCard
             key={question.id}
             question={question}

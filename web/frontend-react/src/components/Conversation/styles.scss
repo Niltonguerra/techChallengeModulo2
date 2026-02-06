@@ -19,12 +19,24 @@
 
 .conversation__topbar {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-
+  gap: 12px;
   padding: 10px 12px;
   background: #ffffff;
   border-bottom: 1px solid rgba(60, 70, 87, 0.08);
+}
+
+button.conversation__backBtn {
+  margin-right: auto;
+  text-transform: none;
+  font-weight: 600;
+  border: 1px solid rgba(60, 70, 87, 0.18);
+  color: rgba(47, 58, 74, 0.9);
+  min-width: auto;
+  padding: 6px 12px;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }
 
 button.conversation__conclude {
@@ -34,10 +46,6 @@ button.conversation__conclude {
   border-radius: 8px;
   border: 1px solid rgba(60, 70, 87, 0.18);
   color: rgba(47, 58, 74, 0.9);
-}
-
-button.conversation__conclude:first-child {
-  margin-right: 10px;
 }
 
 .conversation__messages {
