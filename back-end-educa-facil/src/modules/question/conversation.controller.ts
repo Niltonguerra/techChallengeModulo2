@@ -6,17 +6,22 @@ import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
 
 import { ConversationService } from './conversation.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
+import { QuestionViewService } from 'question_view/question_view.service';
 
 @ApiTags('conversation')
 @ApiBearerAuth('JWT-Auth')
 @UseGuards(JwtAuthGuardUser)
 @Controller('question/:questionId/conversations')
 export class ConversationController {
-  constructor(private readonly service: ConversationService) {}
+  constructor(
+    private readonly service: ConversationService,
+    private readonly questionViewService: QuestionViewService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'List conversations/messages from a question' })
   list(@Param('questionId') questionId: string, @GetTokenValues() user: JwtPayload) {
+    void this.questionViewService.markAsViewed(questionId, user.id);
     return this.service.listByQuestion(questionId, user.id);
   }
 
@@ -27,6 +32,7 @@ export class ConversationController {
     @Body() dto: CreateConversationDto,
     @GetTokenValues() user: JwtPayload,
   ) {
+    void this.questionViewService.markAsViewed(questionId, user.id);
     return this.service.sendMessage(questionId, dto, user);
   }
 }

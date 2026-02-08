@@ -43,7 +43,7 @@ export function QuestionCard({
     <div className={`question-card ${open ? 'open' : ''}`}>
       <div className="question-card__header" onClick={toggleOpen}>
         <div className="question-card__info">
-          <span className="question-card__title">-{question.title}</span>
+          <span className="question-card__title"> - {question.title}</span>
           <div className="question-card__meta">
             <span className="subject">
               {question.school_subjects && question.school_subjects.length > 0

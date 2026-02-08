@@ -66,6 +66,7 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   useConversationRealtime({
     questionId,
+    user,
     callbackFunction: () => {
       if (!questionId) return;
       handleGetMessages(questionId);
@@ -77,7 +78,6 @@ export const Conversation: React.FC<ConversationProps> = ({
       getMessages(questionId)
         .then(msgs => {
           setMessages(msgs);
-          console.log('Mensagens carregadas:', msgs);
         })
         .catch(err => {
           showSnackbar({
@@ -105,15 +105,15 @@ export const Conversation: React.FC<ConversationProps> = ({
 
     sendMessage(questionId, draft.trim())
       .then(() => {
-        setMessages(prev => [
-          ...prev,
-          {
-            content: draft.trim(),
-            isUserTheAuthor: true,
-            authorName: user.name,
-            createdAt: new Date(),
-          },
-        ]);
+        // setMessages(prev => [
+        //   ...prev,
+        //   {
+        //     content: draft.trim(),
+        //     isUserTheAuthor: true,
+        //     authorName: user.name,
+        //     createdAt: new Date(),
+        //   },
+        // ]);
         setDraft('');
       })
       .catch(err => {
@@ -157,7 +157,7 @@ export const Conversation: React.FC<ConversationProps> = ({
 
       items.push(
         <ChatMessage
-          key={`msg-${i}`}
+          key={`${msg.authorName}-${msg.createdAt}`}
           content={msg.content}
           isUserTheAuthor={msg.isUserTheAuthor}
           authorName={msg.authorName}

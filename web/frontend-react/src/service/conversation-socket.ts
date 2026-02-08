@@ -1,6 +1,9 @@
 import { io, Socket } from "socket.io-client";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+import { useEffect } from "react";
+import type { User } from "../types/header-types";
+import type { ConversationMessage, MessageConversation } from "../types/conversation";
 
 let socket: Socket | null = null;
 
@@ -8,7 +11,7 @@ export function getConversationSocket(): Socket {
   if (!socket) {
     socket = io(`${API_URL}/conversation`, {
       transports: ["websocket"],
-      autoConnect: true,
+      autoConnect: false,
     });
   }
   return socket;
@@ -19,39 +22,45 @@ export function disconnectConversationSocket() {
   socket = null;
 }
 
-import { useEffect } from "react";
-
 type Props = {
   questionId: string;
-  callbackFunction?: () => void;
+  user: User | null;
+  callbackFunction?: (message: MessageConversation) => void;
 };
 
-export function useConversationRealtime({ questionId, callbackFunction }: Props) {
+
+export function useConversationRealtime({ questionId, user, callbackFunction }: Props) {
   useEffect(() => {
-    if (!questionId) return;
+    if (!questionId || !user) return;
 
     const socket = getConversationSocket();
+    const userId = user.id;
 
-    // Join the room for this question
-    socket.emit("joinQuestion", { questionId });
+    if (!socket.connected) {
+      socket.connect();
+    }
 
-    const onNewMessages = async (payload: { questionId: string }) => {
-      // only react to the current question
-      if (payload.questionId !== questionId) return;
-
-			if(callbackFunction) {
-				callbackFunction();
-				return;
-			}
+    const onConnect = () => {
+      
+      socket.emit("joinQuestion", { questionId, userId });
     };
 
-    socket.on("newMessages", onNewMessages);
+    const onNewMessage = (payload: ConversationMessage) => {
+      if (payload.questionId !== questionId) return;
+      callbackFunction?.(payload.message);
+    };
 
-    socket.on("joinedQuestion", ({ questionId }) => console.log("CONVERSATION SOCKET LISTENING --- ", questionId));
+    socket.on("connect", onConnect);
+    socket.on("conversation:new-message", onNewMessage);
+
+    socket.on("joinedQuestion", () => {
+    });
 
     return () => {
-      socket.off("newMessages", onNewMessages);
-      socket.emit("leaveQuestion", { questionId });
+      socket.off("connect", onConnect);
+      socket.off("conversation:new-message", onNewMessage);
+
+      socket.emit("leaveQuestion", { questionId, userId });
     };
-  }, [questionId, callbackFunction]);
+  }, [questionId, user?.id]);
 }

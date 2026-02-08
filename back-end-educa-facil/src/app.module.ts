@@ -14,6 +14,8 @@ import { SchoolSubjectModule } from './modules/school_subject/school_subject.mod
 import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
 import { Question } from '@modules/question/entities/question.entity';
 import { Conversation } from '@modules/question/entities/conversation.entity';
+import { QuestionViewModule } from 'question_view/question_view.module';
+import { QuestionView } from 'question_view/entities/question_view.entity';
 
 @Module({
   imports: [
@@ -40,7 +42,7 @@ import { Conversation } from '@modules/question/entities/conversation.entity';
             },
             extra: { ssl: { rejectUnauthorized: false } },
             family: 4,
-            entities: [Post, User, Comments, SchoolSubject, Question, Conversation],
+            entities: [Post, User, Comments, SchoolSubject, Question, Conversation, QuestionView],
           };
         } else {
           return {
@@ -52,7 +54,7 @@ import { Conversation } from '@modules/question/entities/conversation.entity';
             database: config.get<string>('DB_DATABASE_DEV'),
             autoLoadEntities: true,
             synchronize: true,
-            entities: [Post, User, Comments, SchoolSubject, Question, Conversation],
+            entities: [Post, User, Comments, SchoolSubject, Question, Conversation, QuestionView],
             ssl: {
               rejectUnauthorized: false,
             },
@@ -67,6 +69,7 @@ import { Conversation } from '@modules/question/entities/conversation.entity';
     CommentsModule,
     QuestionModule,
     SchoolSubjectModule,
+    QuestionViewModule,
   ],
 })
 export class AppModule {}

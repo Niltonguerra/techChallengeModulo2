@@ -80,4 +80,7 @@ export const HEADER_TEXTS = {
   logoutButton: 'Sair',
   AdminButton: 'Acessar Admin',
   faqButton: 'Minhas Dúvidas',
+  NotNotification: 'Nenhuma notificação',
+  checkQuestion: 'Clique para ver: ',
+  question: 'Pergunta: '
 } as const;
