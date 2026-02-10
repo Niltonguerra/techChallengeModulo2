@@ -15,6 +15,7 @@ import { ReturnMessageDTO } from '@modules/common/dtos/returnMessage.dto';
 import { SchoolSubject } from '@modules/school_subject/entities/school_subject.entity';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
 import { JwtPayload } from '@modules/auth/dtos/JwtPayload.dto';
+import { QuestionView } from 'question_view/entities/question_view.entity';
 
 @Injectable()
 export class QuestionService {
@@ -25,6 +26,8 @@ export class QuestionService {
     private userRepository: Repository<User>,
     @InjectRepository(SchoolSubject)
     private readonly schoolSubjectRepository: Repository<SchoolSubject>,
+    @InjectRepository(QuestionView)
+    private questionViewRepository: Repository<QuestionView>,
   ) {}
 
   async create(createQuestionDto: CreateQuestionDto): Promise<ReturnMessageDTO> {
@@ -197,6 +200,8 @@ export class QuestionService {
         throw new ForbiddenException('Você não tem permissão para excluir esta dúvida');
       }
     }
+
+    await this.questionViewRepository.delete({ question: { id: questionId } });
 
     await this.questionRepository.remove(question);
 
