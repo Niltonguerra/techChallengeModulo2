@@ -14,6 +14,7 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { formatDayLabel, sameDay, toDate } from '../../utils';
 import type { ChatMessageProps } from '../../types/conversation';
 import { getMessages, sendMessage } from '../../service/conversation';
+import { closeQuestion } from '../../service/question';
 import { useSnackbar } from '../../store/snackbar/useSnackbar';
 import type { RootState } from '../../store';
 import { useSelector } from 'react-redux';
@@ -25,16 +26,14 @@ export type ConversationProps = {
   onConcludeConversation?: () => void;
 };
 
-export const Conversation: React.FC<ConversationProps> = ({
-  questionId,
-  onConcludeConversation,
-}) => {
+export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
   const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatMessageProps[]>([]);
   const [draft, setDraft] = useState<string>('');
   const listRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const { user } = useSelector((state: RootState) => state.user);
   const { showSnackbar } = useSnackbar();
@@ -50,6 +49,43 @@ export const Conversation: React.FC<ConversationProps> = ({
     const el = listRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
+  };
+
+  const handleConclude = async () => {
+    if (!questionId) return;
+
+    try {
+      setIsClosing(true);
+
+      await closeQuestion(questionId);
+
+      showSnackbar({
+        message: 'Dúvida finalizada com sucesso!',
+        severity: 'success',
+      });
+      navigate('/question');
+    } catch (error: any) {
+      console.error('Erro ao finalizar conversa:', error);
+      const errorMessage = error?.response?.data?.message;
+      if (
+        errorMessage &&
+        (errorMessage.includes('já está fechada') ||
+          errorMessage.includes('finalizada'))
+      ) {
+        showSnackbar({
+          message: 'Esta dúvida já foi encerrada.',
+          severity: 'warning',
+        });
+        navigate('/question');
+      } else {
+        showSnackbar({
+          message: 'Erro ao concluir a conversa. Tente novamente.',
+          severity: 'error',
+        });
+      }
+    } finally {
+      setIsClosing(false);
+    }
   };
 
   const createQuestionForLearning = () => {
@@ -185,9 +221,10 @@ export const Conversation: React.FC<ConversationProps> = ({
             variant="text"
             size="small"
             className="conversation__conclude"
-            onClick={onConcludeConversation}
+            onClick={handleConclude}
+            disabled={isClosing || loading}
           >
-            Concluir conversa
+            {isClosing ? 'Finalizando...' : 'Concluir conversa'}
           </Button>
           <Button
             variant="text"

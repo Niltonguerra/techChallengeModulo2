@@ -1,36 +1,39 @@
-import axios, { type AxiosInstance } from "axios";
-import type { FormQuestionData } from "../types/form-post";
+import axios, { type AxiosInstance } from 'axios';
+import type { FormQuestionData } from '../types/form-post';
 
-import { store } from "../store";
-import { showSnackbar } from "../store/snackbar/snackbarSlice";
-import type { Question } from "../types/question";
+import { store } from '../store';
+import { showSnackbar } from '../store/snackbar/snackbarSlice';
+import type { Question } from '../types/question';
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/";
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/';
 
 let api: AxiosInstance | null = null;
 
 export function getApi(): AxiosInstance {
-  const token = sessionStorage.getItem("token");
+  const token = sessionStorage.getItem('token');
   api = axios.create({
-    baseURL:  API_URL,
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`},
+    baseURL: API_URL,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
   });
 
-   api.interceptors.response.use(
-    (response) => response,
-    (error) => {
+  api.interceptors.response.use(
+    response => response,
+    error => {
       if (error.response && error.response.status === 401) {
-        sessionStorage.removeItem("token");
-        
+        sessionStorage.removeItem('token');
+
         store.dispatch(
           showSnackbar({
-            message: "Sessão expirada. Faça login novamente.",
-            severity: "error",
+            message: 'Sessão expirada. Faça login novamente.',
+            severity: 'error',
           })
         );
 
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = '/';
         }, 500);
       }
       return Promise.reject(error);
@@ -39,13 +42,13 @@ export function getApi(): AxiosInstance {
   return api;
 }
 
-export const createQuestion = async (data: FormQuestionData)
-  : Promise<{ statusCode: number; message: string }> => {
+export const createQuestion = async (
+  data: FormQuestionData
+): Promise<{ statusCode: number; message: string }> => {
   const api = getApi();
-  const response = await api.post("question/create", data);
+  const response = await api.post('question/create', data);
   return response.data;
 };
-
 
 export const getQuestions = async (params?: {
   subject?: string;
@@ -69,4 +72,8 @@ export async function assignQuestion(id: string) {
   return response.data;
 }
 
-
+export async function closeQuestion(id: string) {
+  const api = getApi();
+  const response = await api.patch(`/question/${id}/close`);
+  return response.data;
+}

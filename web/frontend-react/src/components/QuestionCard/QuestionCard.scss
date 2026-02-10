@@ -157,6 +157,55 @@
     svg {
       color: var(--warning-main);
     }
+    .status-info {
+      display: flex;
+      align-items: center;
+      border-radius: 12px;
+      padding: 2px 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      font-weight: 600;
+      font-size: 0.75rem;
+      white-space: nowrap;
+
+      span {
+        line-height: 1;
+        margin-top: 1px;
+      }
+
+      svg {
+        margin-right: 4px;
+        font-size: 1rem;
+      }
+
+      &.open {
+        color: var(--success-dark);
+        border: 1px solid var(--success-light);
+        background-color: color-mix(
+          in srgb,
+          var(--success-main),
+          transparent 90%
+        );
+
+        svg {
+          color: var(--success-main);
+        }
+      }
+
+      &.closed {
+        color: var(--error-dark);
+        border: 1px solid var(--error-light);
+        background-color: color-mix(
+          in srgb,
+          var(--error-main),
+          transparent 90%
+        );
+
+        svg {
+          color: var(--error-main);
+        }
+      }
+    }
   }
 }
 
