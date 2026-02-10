@@ -8,6 +8,7 @@ import { ForbiddenException, NotFoundException, BadRequestException } from '@nes
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { QuestionStatus } from './enum/question-status.enum';
 import { UserPermissionEnum } from '@modules/auth/Enum/permission.enum';
+import { QuestionView } from 'question_view/entities/question_view.entity';
 
 describe('QuestionService', () => {
   let service: QuestionService;
@@ -35,6 +36,12 @@ describe('QuestionService', () => {
     findBy: jest.fn(),
   };
 
+  const mockQuestionViewRepository = {
+    delete: jest.fn(), // Usado no método remove
+    findOne: jest.fn(),
+    save: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -42,6 +49,10 @@ describe('QuestionService', () => {
         { provide: getRepositoryToken(Question), useValue: mockQuestionRepository },
         { provide: getRepositoryToken(User), useValue: mockUserRepository },
         { provide: getRepositoryToken(SchoolSubject), useValue: mockSchoolSubjectRepository },
+        {
+          provide: getRepositoryToken(QuestionView),
+          useValue: mockQuestionViewRepository,
+        },
       ],
     }).compile();
 
@@ -200,6 +211,7 @@ describe('QuestionService', () => {
         users: [{ id: 'u1' }],
       });
 
+      mockQuestionViewRepository.delete.mockResolvedValue({});
       mockQuestionRepository.remove.mockResolvedValue({});
 
       const result = await service.remove({
@@ -211,6 +223,7 @@ describe('QuestionService', () => {
         },
       });
 
+      expect(mockQuestionViewRepository.delete).toHaveBeenCalled();
       expect(result.message).toContain('removida');
     });
 
