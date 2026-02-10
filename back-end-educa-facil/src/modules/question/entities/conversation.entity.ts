@@ -12,7 +12,7 @@ export class Conversation {
 
   @Column({
     name: 'id_user',
-    type: 'varchar',
+    type: 'uuid',
   })
   id_user: string;
 

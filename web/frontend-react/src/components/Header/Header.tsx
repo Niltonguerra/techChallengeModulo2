@@ -17,6 +17,12 @@ import type { HeaderProps } from '../../types/header-types';
 import { HEADER_TEXTS } from '../../constants/headerConstants';
 import { Link, useNavigate } from 'react-router-dom';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
+import IconButton from '@mui/material/IconButton';
+import { useSelector, useDispatch } from 'react-redux';
+import type { RootState } from '../../store';
+import { clearUnread } from '../../store/notificationSlice';
 
 const Header: React.FC<HeaderProps> = ({
   isLoggedIn = false,
@@ -28,6 +34,36 @@ const Header: React.FC<HeaderProps> = ({
   );
   const userMenuOpen = Boolean(userMenuAnchor);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { unreadCount, items } = useSelector(
+    (state: RootState) => state.notification
+  );
+
+  const [notificationAnchor, setNotificationAnchor] =
+    useState<null | HTMLElement>(null);
+
+  const notificationMenuOpen = Boolean(notificationAnchor);
+
+  const handleNotificationClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      setNotificationAnchor(event.currentTarget);
+    },
+    []
+  );
+  const handleNotificationClose = useCallback(() => {
+    setNotificationAnchor(null);
+  }, []);
+
+  const handleNotificationItemClick = useCallback(
+    (notification: { questionId: string, type: string }) => {
+      navigate(`/questions/${notification.questionId}/chat`);
+      dispatch(clearUnread());
+      handleNotificationClose();
+    },
+    [navigate, dispatch, handleNotificationClose]
+  );
+
 
   const handleUserMenuClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
@@ -54,10 +90,10 @@ const Header: React.FC<HeaderProps> = ({
     handleUserMenuClose();
     navigate('/question');
   }, [handleUserMenuClose, navigate]);
-
   return (
     <AppBar position="static" className="header">
       <Toolbar className="header__toolbar">
+        {/* Logo */}
         <Box className="header__logo">
           <img
             src="/logo.png"
@@ -72,86 +108,120 @@ const Header: React.FC<HeaderProps> = ({
           </Typography>
         </Box>
 
-        <Box className="header__user-section">
-          {isLoggedIn && user ? (
-            <Box className="header__user-logged">
-              <Button
-                className="header__user-button"
-                onClick={handleUserMenuClick}
-                startIcon={
-                  <Avatar
-                    src={user.photo}
-                    alt={`Avatar de ${user.name}`}
-                    className="header__user-avatar"
-                  >
-                    {user.name?.charAt(0).toUpperCase() || 'U'}
-                  </Avatar>
-                }
-                endIcon={<KeyboardArrowDown />}
-              >
-                <Box className="header__user-info">
-                  <Typography variant="body2" className="header__user-name">
-                    {user.name}
-                  </Typography>
-                  <Typography variant="caption" className="header__user-email">
-                    {user.email}
-                  </Typography>
-                </Box>
-              </Button>
-              <Menu
-                id="user-menu"
-                anchorEl={userMenuAnchor}
-                open={userMenuOpen}
-                onClose={handleUserMenuClose}
-              >
-                {user.permission === 'admin' && (
+        {/* Espaço entre logo e usuário */}
+        <Box flexGrow={1} />
+
+        {/* Notificações + avatar juntos */}
+        {isLoggedIn && user && (
+          <Box display="flex" alignItems="center" gap={1}>
+            {/* Notificação */}
+            <IconButton
+              color="inherit"
+              onClick={handleNotificationClick}
+              className="header__notification-button"
+            >
+              <Badge badgeContent={unreadCount} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+
+            <Menu
+              anchorEl={notificationAnchor}
+              open={notificationMenuOpen}
+              onClose={handleNotificationClose}
+            >
+              {items.length === 0 ? (
+                <MenuItem disabled>
+                  <Typography variant="body2">{HEADER_TEXTS.NotNotification}</Typography>
+                </MenuItem>
+              ) : (
+                items.map((notification, index) => (
                   <MenuItem
-                    onClick={handleAdmin}
-                    className="header__admin-item"
+                    key={index}
+                    onClick={() => handleNotificationItemClick(notification)}
                   >
-                    <ListItemIcon>
-                      <AdminPanelSettingsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={HEADER_TEXTS.AdminButton} />
+                    <ListItemText
+                      primary={HEADER_TEXTS.checkQuestion}
+                      secondary={HEADER_TEXTS.question + notification.questionTitle}
+                    />
                   </MenuItem>
-                )}
+                ))
+              )}
+            </Menu>
 
-                <MenuItem
-                  onClick={handleFaq}
-                  className="header__user-menu-item"
+            {/* Avatar + menu de usuário */}
+            <Button
+              className="header__user-button"
+              onClick={handleUserMenuClick}
+              startIcon={
+                <Avatar
+                  src={user.photo}
+                  alt={`Avatar de ${user.name}`}
+                  className="header__user-avatar"
                 >
-                  <ListItemIcon>
-                    <HelpOutline />
-                  </ListItemIcon>
-                  <ListItemText primary={HEADER_TEXTS.faqButton} />
-                </MenuItem>
+                  {user.name?.charAt(0).toUpperCase() || "U"}
+                </Avatar>
+              }
+              endIcon={<KeyboardArrowDown />}
+            >
+              <Box className="header__user-info">
+                <Typography variant="body2" className="header__user-name">
+                  {user.name}
+                </Typography>
+                <Typography variant="caption" className="header__user-email">
+                  {user.email}
+                </Typography>
+              </Box>
+            </Button>
 
-                <MenuItem
-                  onClick={handleLogout}
-                  className="header__logout-item"
-                >
+            <Menu
+              id="user-menu"
+              anchorEl={userMenuAnchor}
+              open={userMenuOpen}
+              onClose={handleUserMenuClose}
+            >
+              {user.permission === "admin" && (
+                <MenuItem onClick={handleAdmin} className="header__admin-item">
                   <ListItemIcon>
-                    <Logout />
+                    <AdminPanelSettingsIcon />
                   </ListItemIcon>
-                  <ListItemText primary={HEADER_TEXTS.logoutButton} />
+                  <ListItemText primary={HEADER_TEXTS.AdminButton} />
                 </MenuItem>
-              </Menu>
-            </Box>
-          ) : (
-            <Box className="header__user-not-logged">
-              <Button variant="outlined" className="header__login-button">
-                <Link
-                  to="/login"
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
-                  {HEADER_TEXTS.loginButton}
-                </Link>
-              </Button>
-            </Box>
-          )}
-        </Box>
+              )}
+
+              <MenuItem onClick={handleFaq} className="header__user-menu-item">
+                <ListItemIcon>
+                  <HelpOutline />
+                </ListItemIcon>
+                <ListItemText primary={HEADER_TEXTS.faqButton} />
+              </MenuItem>
+
+              <MenuItem onClick={handleLogout} className="header__logout-item">
+                <ListItemIcon>
+                  <Logout />
+                </ListItemIcon>
+                <ListItemText primary={HEADER_TEXTS.logoutButton} />
+              </MenuItem>
+            </Menu>
+          </Box>
+        )}
+
+        {/* Caso não logado */}
+        {!isLoggedIn && (
+          <Box className="header__user-not-logged">
+            <Button variant="outlined" className="header__login-button">
+              <Link
+                to="/login"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                {HEADER_TEXTS.loginButton}
+              </Link>
+            </Button>
+          </Box>
+        )}
       </Toolbar>
     </AppBar>
+
   );
 };
 

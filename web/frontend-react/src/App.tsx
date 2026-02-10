@@ -33,11 +33,17 @@ import { DropdownPlayground } from './pages/temp-componet/DropdownPlayground';
 import { CreateQuestionPageForm } from './pages/createQuestionForm/CreateQuestionForm';
 import Question from './pages/Question/Question';
 import ConversationPage from './pages/Conversation/ConversationPage';
+import { useNotificationRealtime } from './hooks/useNotificationRealtime';
+import { useEffect } from 'react';
+import { addNotification } from './store/notificationSlice';
+import { getUnreadNotifications } from './service/question_view';
+import type { NotificationItem } from './types/questionView';
 
 function App() {
   const dispatch = useDispatch();
   const { isLoggedIn, user } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  useNotificationRealtime(user?.id);
 
   const handleLogin = (userData: User, token: string) => {
     dispatch(loginSuccess({ user: userData, token }));
@@ -51,6 +57,26 @@ function App() {
   const handleNavigate = (path: string) => {
     navigate(path);
   };
+  useEffect(() => {
+  if (!user?.id) return;
+
+  async function loadUnread() {
+    const data = await getUnreadNotifications()
+    data.forEach((n: NotificationItem) => {
+      dispatch(
+        addNotification({
+          questionId: n.questionId,
+          message: n.message,
+          questionTitle: n.questionTitle,
+          createdAt: n.createdAt,
+          type: n.type,
+        }),
+      );
+    });
+  }
+
+  loadUnread();
+}, [user?.id, dispatch]);
 
   return (
     <div className="app">
