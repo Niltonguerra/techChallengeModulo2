@@ -8,6 +8,8 @@ import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import type { Question } from '../../types/question';
 import './QuestionCard.scss';
 import Button from '@mui/material/Button';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import LockIcon from '@mui/icons-material/Lock';
 
 interface QuestionCardProps {
   question: Question;
@@ -82,9 +84,25 @@ export function QuestionCard({
                       marginTop: '2px',
                     }}
                   />
-                  <span>Aguardando atribuição</span>
+                  <span>Aguardando Professor</span>
                 </div>
               </>
+            )}
+            <span className="separator">•</span>
+            {question.status === 'OPEN' ? (
+              <div className="status-info open" title="Dúvida em aberto">
+                <CheckCircleOutlineIcon
+                  sx={{ fontSize: 16, marginRight: '4px', marginTop: '2px' }}
+                />
+                <span>Dúvida Aberta</span>
+              </div>
+            ) : (
+              <div className="status-info closed" title="Dúvida finalizada">
+                <LockIcon
+                  sx={{ fontSize: 16, marginRight: '4px', marginTop: '2px' }}
+                />
+                <span>Dúvida Fechada</span>
+              </div>
             )}
           </div>
         </div>
