@@ -1,13 +1,14 @@
 .form-post-container {
   margin: 32px auto 0 auto;
   padding: 50px;
+  width: 100%;
 }
 
 .form-post-paper {
   padding: 32px;
 }
 
-.submitButton{
+.submitButton {
   background-color: #ccc !important;
   box-shadow: none !important;
 }
@@ -27,7 +28,8 @@
   margin-top: 16px;
 }
 
-.form-post-keywords, .form-post-hashtags {
+.form-post-keywords,
+.form-post-hashtags {
   margin-bottom: 16px;
 }
 
@@ -36,7 +38,8 @@
   font-weight: 500;
 }
 
-.form-post-keyword-row, .form-post-hashtag-row {
+.form-post-keyword-row,
+.form-post-hashtag-row {
   display: flex;
   align-items: center;
   gap: 8px;
