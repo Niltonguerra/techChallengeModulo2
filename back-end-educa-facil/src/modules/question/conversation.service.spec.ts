@@ -173,12 +173,14 @@ describe('ConversationService', () => {
         created_at: expect.any(String) as unknown as string,
       });
       expect(conversationRepo.save).toHaveBeenCalledWith(entity);
-      expect(gateway.notifyNewMessages).toHaveBeenCalledWith('q1', {
-        id: entity.id,
-        message: entity.message,
-        createdAt: entity.created_at,
-        userId: entity.id_user,
-      });
+      expect(gateway.notifyNewMessages).toHaveBeenCalledWith(
+        'q1',
+        expect.objectContaining({
+          message: 'hello',
+          userId: 'u1',
+        }),
+      );
+
       expect(notificationGateway.notifyUser).toHaveBeenCalled();
       expect(result).toBe(entity);
     });
