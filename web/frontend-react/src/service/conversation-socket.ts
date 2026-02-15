@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { User } from "../types/header-types";
 import type { ConversationMessage, MessageConversation } from "../types/conversation";
 
@@ -29,38 +29,47 @@ type Props = {
 };
 
 
-export function useConversationRealtime({ questionId, user, callbackFunction }: Props) {
+export function leaveConversation(questionId: string, userId: string) {
+  const socket = getConversationSocket();
+  socket.emit("leaveQuestion", { questionId, userId });
+}
+
+
+export function useConversationRealtime({
+  questionId,
+  user,
+  callbackFunction,
+}: Props) {
   useEffect(() => {
     if (!questionId || !user) return;
 
     const socket = getConversationSocket();
     const userId = user.id;
 
-    if (!socket.connected) {
-      socket.connect();
-    }
-
-    const onConnect = () => {
-      
+    const handleConnect = () => {
+      console.log("🟢 Conectado:", socket.id);
       socket.emit("joinQuestion", { questionId, userId });
     };
 
-    const onNewMessage = (payload: ConversationMessage) => {
+    const handleMessage = (payload: ConversationMessage) => {
       if (payload.questionId !== questionId) return;
       callbackFunction?.(payload.message);
     };
 
-    socket.on("connect", onConnect);
-    socket.on("conversation:new-message", onNewMessage);
+    socket.on("connect", handleConnect);
+    socket.on("conversation:new-message", handleMessage);
 
-    socket.on("joinedQuestion", () => {
-    });
+    if (!socket.connected) {
+      socket.connect();
+    }
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("conversation:new-message", onNewMessage);
-
+      console.log("🧹 Saindo da conversa:", questionId);
       socket.emit("leaveQuestion", { questionId, userId });
+      socket.off("connect", handleConnect);
+      socket.off("conversation:new-message", handleMessage);
+
+      socket.disconnect();
     };
   }, [questionId, user?.id]);
 }
