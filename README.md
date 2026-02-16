@@ -23,8 +23,13 @@
       - [Rodando local (desenvolvimento)](#rodando-local-desenvolvimento-2)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
     - [Variáveis do backend:](#variáveis-do-backend)
-    - [Variáveis de frontend:](#variáveis-de-frontend)
-    - [Variáveis do mobile:](#variáveis-do-mobile)
+    - [Variáveis de frontend DEV:](#variáveis-de-frontend-dev)
+      - [Variáveis de WEB:](#variáveis-de-web)
+      - [Variáveis do mobile:](#variáveis-do-mobile)
+    - [Variáveis de frontend PROD:](#variáveis-de-frontend-prod)
+      - [Variáveis de WEB:](#variáveis-de-web-1)
+      - [variáveis de web para rodar local:](#variáveis-de-web-para-rodar-local)
+      - [Variáveis do mobile:](#variáveis-do-mobile-1)
 - [Comandos úteis (resumo)](#comandos-úteis-resumo)
 - [Estrutura do projeto (backend)](#estrutura-do-projeto-backend)
 - [Credenciais](#credenciais)
@@ -249,6 +254,8 @@ FRONTEND_URL_RESET_PASSWORD=https://recuperar-senha.onrender.com
 VITE_URL_IMGBB=https://api.imgbb.com/1/upload
 VITE_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
 VITE_API_URL=https://techchallengemodulo2-emdn.onrender.com
+VITE_API_KEY_GEMINI=AIzaSyBVKq9J0QFg6PWTd9EG24RJRapKH4dr4l0
+"por  favor coloque sua chave do gemini aqui, pois pode ser que essa chave se torne invalida"
 ```
 
 #### Variáveis do mobile:
@@ -265,7 +272,19 @@ EXPO_API_URL=https://techchallengemodulo2-emdn.onrender.com
 VITE_URL_IMGBB=https://api.imgbb.com/1/upload
 VITE_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
 VITE_API_URL=https://techchallengemodulo2-prod.onrender.com/
+VITE_API_KEY_GEMINI=AIzaSyBVKq9J0QFg6PWTd9EG24RJRapKH4dr4l0
 ```
+"por  favor coloque sua chave do gemini aqui, pois pode ser que essa chave se torne invalida"
+
+#### variáveis de web para rodar local:
+```
+VITE_URL_IMGBB=https://api.imgbb.com/1/upload
+VITE_KEY_IMGBB=676c0bd4e17dba1ee3c06b04c599f085
+VITE_API_URL=http://localhost:3000
+VITE_API_KEY_GEMINI=AIzaSyBVKq9J0QFg6PWTd9EG24RJRapKH4dr4l0
+"por  favor coloque sua chave do gemini aqui, pois pode ser que essa chave se torne invalida"
+```
+
 
 #### Variáveis do mobile:
 ```
