@@ -16,7 +16,6 @@ export interface MessageConversation {
   id: string;
   message: string;
   createdAt: string;
-  authorName: string;
   userId: string;
 }
  export interface ConversationMessage {

@@ -64,11 +64,10 @@ export class ConversationService {
     });
 
     const saved = await this.conversationRepo.save(entity);
-    const nameUser = question.users.find((u) => u.id !== user.id);
-    void this.gateway.notifyNewMessages(questionId, {
+
+    this.gateway.notifyNewMessages(questionId, {
       id: saved.id,
       message: saved.message,
-      authorName: nameUser?.name ?? '',
       createdAt: saved.created_at,
       userId: saved.id_user,
     });

@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import type { User } from "../types/header-types";
 import type { ConversationMessage, MessageConversation } from "../types/conversation";
 
@@ -29,47 +29,38 @@ type Props = {
 };
 
 
-export function leaveConversation(questionId: string, userId: string) {
-  const socket = getConversationSocket();
-  socket.emit("leaveQuestion", { questionId, userId });
-}
-
-
-export function useConversationRealtime({
-  questionId,
-  user,
-  callbackFunction,
-}: Props) {
+export function useConversationRealtime({ questionId, user, callbackFunction }: Props) {
   useEffect(() => {
     if (!questionId || !user) return;
 
     const socket = getConversationSocket();
     const userId = user.id;
 
-    const handleConnect = () => {
-      console.log("🟢 Conectado:", socket.id);
-      socket.emit("joinQuestion", { questionId, userId });
-    };
-
-    const handleMessage = (payload: ConversationMessage) => {
-      if (payload.questionId !== questionId) return;
-      callbackFunction?.(payload.message);
-    };
-
-    socket.on("connect", handleConnect);
-    socket.on("conversation:new-message", handleMessage);
-
     if (!socket.connected) {
       socket.connect();
     }
 
-    return () => {
-      console.log("🧹 Saindo da conversa:", questionId);
-      socket.emit("leaveQuestion", { questionId, userId });
-      socket.off("connect", handleConnect);
-      socket.off("conversation:new-message", handleMessage);
+    const onConnect = () => {
+      
+      socket.emit("joinQuestion", { questionId, userId });
+    };
 
-      socket.disconnect();
+    const onNewMessage = (payload: ConversationMessage) => {
+      if (payload.questionId !== questionId) return;
+      callbackFunction?.(payload.message);
+    };
+
+    socket.on("connect", onConnect);
+    socket.on("conversation:new-message", onNewMessage);
+
+    socket.on("joinedQuestion", () => {
+    });
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("conversation:new-message", onNewMessage);
+
+      socket.emit("leaveQuestion", { questionId, userId });
     };
   }, [questionId, user?.id]);
 }
