@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   useCallback,
   useEffect,
@@ -19,7 +18,7 @@ import { closeQuestion } from '../../service/question';
 import { useSnackbar } from '../../store/snackbar/useSnackbar';
 import type { RootState } from '../../store';
 import { useSelector } from 'react-redux';
-import { leaveConversation, useConversationRealtime } from '../../service/conversation-socket';
+import { useConversationRealtime } from '../../service/conversation-socket';
 import { handleGenerateQuestionsForLearning } from '../../hooks/handleGenerateQuestionForLearning';
 
 export type ConversationProps = {
@@ -104,16 +103,9 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
   useConversationRealtime({
     questionId,
     user,
-    callbackFunction: (newMessage) => {
-      if (!user) return;
-      const formattedMessage: ChatMessageProps = {
-        content: newMessage.message,
-        createdAt: newMessage.createdAt,
-        authorName: newMessage.authorName ?? "Usuário",
-        isUserTheAuthor: newMessage.userId === user.id,
-      };
-
-      setMessages(prev => [...prev, formattedMessage]);
+    callbackFunction: () => {
+      if (!questionId) return;
+      handleGetMessages(questionId);
     },
   });
 
@@ -149,6 +141,15 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
 
     sendMessage(questionId, draft.trim())
       .then(() => {
+        // setMessages(prev => [
+        //   ...prev,
+        //   {
+        //     content: draft.trim(),
+        //     isUserTheAuthor: true,
+        //     authorName: user.name,
+        //     createdAt: new Date(),
+        //   },
+        // ]);
         setDraft('');
       })
       .catch(err => {
@@ -159,14 +160,6 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
         });
       });
   };
-  
-  const handleBack = () => {
-  if (user) {
-    leaveConversation(questionId, user.id);
-  }
-
-  navigate(-1);
-};
 
   // pressing enter sends the msg, but shift+enter adds a newline
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = e => {
@@ -200,7 +193,7 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
 
       items.push(
         <ChatMessage
-          key={msg.createdAt + msg.content}
+          key={`${msg.authorName}-${msg.createdAt}`}
           content={msg.content}
           isUserTheAuthor={msg.isUserTheAuthor}
           authorName={msg.authorName}
@@ -217,7 +210,7 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
       <div className="conversation">
         <div className="conversation__topbar">
           <Button
-            onClick={handleBack}
+            onClick={() => navigate(-1)}
             variant="text"
             size="small"
             className="conversation__backBtn"
