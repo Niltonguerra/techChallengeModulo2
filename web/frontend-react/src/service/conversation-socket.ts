@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import type { User } from "../types/header-types";
 import type { ConversationMessage, MessageConversation } from "../types/conversation";
 
