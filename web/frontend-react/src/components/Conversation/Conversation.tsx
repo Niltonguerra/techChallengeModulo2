@@ -37,6 +37,7 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
 
   const { user } = useSelector((state: RootState) => state.user);
   const { showSnackbar } = useSnackbar();
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
   // delays the scroll to the bottom to next frame to ensure messages are rendered
   useLayoutEffect(() => {
@@ -139,17 +140,12 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
   const handleSend = () => {
     if (!user) return;
 
+    if (isSendingMessage) return;
+
+    setIsSendingMessage(true);
+
     sendMessage(questionId, draft.trim())
       .then(() => {
-        // setMessages(prev => [
-        //   ...prev,
-        //   {
-        //     content: draft.trim(),
-        //     isUserTheAuthor: true,
-        //     authorName: user.name,
-        //     createdAt: new Date(),
-        //   },
-        // ]);
         setDraft('');
       })
       .catch(err => {
@@ -158,6 +154,9 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
           message: 'Não foi possível enviar a mensagem.',
           severity: 'error',
         });
+      })
+      .finally(() => {
+        setIsSendingMessage(false);
       });
   };
 
@@ -257,7 +256,7 @@ export const Conversation: React.FC<ConversationProps> = ({ questionId }) => {
           <IconButton
             className="conversation__sendIcon"
             onClick={handleSend}
-            disabled={!draft.trim()}
+            disabled={!draft.trim() || isSendingMessage}
           >
             <SendRoundedIcon />
           </IconButton>
